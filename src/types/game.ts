@@ -10,11 +10,11 @@ export type Country = {
 export type Game = {
   id: string;
   title: string;
-  titleZh?: string;
+  titleZh: string;
   countryCode: string;
   countryName: string;
   developer: string;
-  publisher?: string;
+  publisher: string;
   releaseYear: number;
   genres: string[];
   platforms: string[];

@@ -9,8 +9,9 @@ The first MVP should use:
 - Tailwind CSS 4.3.0
 - React 19.2.7
 - ESLint 9.39.4
-- React Three Fiber / Three.js for 3D earth rendering
-- Local mock data
+- `react-globe.gl` + Three.js for real interactive 3D earth rendering
+- SVG + CSS transforms for the default 2.5D earth map rendering
+- Local generated / mock data
 - No backend database in MVP
 ## Architecture Principle
 Game Earth should separate:
@@ -33,6 +34,7 @@ src/
 ├─ components/
 │  ├─ GameEarthApp.tsx
 │  ├─ globe/
+│  │  ├─ GameGlobe2D.tsx
 │  │  ├─ GameGlobe.tsx
 │  │  ├─ GameMarkers.tsx
 │  │  ├─ CountryLayer.tsx
@@ -49,7 +51,9 @@ src/
 │     └─ ViewModeToggle.tsx
 ├─ data/
 │  ├─ countries.ts
-│  └─ games.ts
+│  ├─ games.ts
+│  ├─ games.generated.ts
+│  └─ games.mock.ts
 ├─ lib/
 │  ├─ filterGames.ts
 │  ├─ stats.ts
@@ -71,26 +75,36 @@ eslint.config.mjs
 .gitignore
 ```
 
+Data generation files:
+
+```txt
+scripts/fetch-rawg-games.mjs
+scripts/rawg-seeds.mjs
+```
+
 Main Component Responsibilities
 
 File	Responsibility
 src/app/page.tsx	Home page entry. Should render GameEarthApp.
-src/app/layout.tsx	App Router root layout and page metadata.
+src/app/layout.tsx	App Router root layout, page metadata, and favicon metadata.
 src/app/globals.css	Global Tailwind import and base visual tokens.
 src/components/GameEarthApp.tsx	Main product shell. Owns top-level UI state and layout.
-src/components/globe/GameGlobe.tsx	Renders the main 3D earth or map scene.
+src/components/globe/GameGlobe2D.tsx	Renders the default SVG 2.5D planet map scene.
+src/components/globe/GameGlobe.tsx	Renders the default real 3D earth scene.
 src/components/globe/GameMarkers.tsx	Renders game cover markers on the globe.
 src/components/globe/CountryLayer.tsx	Handles country boundaries, hover, and click interaction.
 src/components/globe/GameTooltip.tsx	Shows hover information for a game marker.
-src/components/panels/RightPanel.tsx	Wraps right-side country and detail panels.
-src/components/panels/CountryPanel.tsx	Shows country list and country-level statistics.
-src/components/panels/CountryDetailPanel.tsx	Shows games from the selected country.
-src/components/panels/GameDetailCard.tsx	Shows selected game details.
+src/components/panels/RightPanel.tsx	Switches between right-side country overview and selected-country detail panels.
+src/components/panels/CountryPanel.tsx	Shows compact searchable country rows and country-level statistics.
+src/components/panels/CountryDetailPanel.tsx	Shows selected-country detail mode with stats, current-year game cards, return control, and bottom game summary dock.
+src/components/panels/GameDetailCard.tsx	Shows closable compact selected game details.
 src/components/controls/BottomControls.tsx	Wraps bottom interaction controls.
 src/components/controls/YearSlider.tsx	Filters games by release year range.
 src/components/controls/CoverSizeSlider.tsx	Controls visual size of game cover markers.
 src/components/controls/ViewModeToggle.tsx	Switches marker display mode.
-src/data/games.ts	Local mock game data.
+src/data/games.ts	Stable frontend game data export.
+src/data/games.generated.ts	Generated local static game data. Overwritten by `npm run data:rawg`.
+src/data/games.mock.ts	Stable original mock game data fallback.
 src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
 src/lib/stats.ts	Pure statistics functions.
@@ -111,35 +125,71 @@ Top-level state should include:
 * `yearRange`
 * `coverSize`
 * `viewMode`
+* `globeMode`
 * auto rotate enabled or disabled
 
 Do not introduce Zustand or Redux in the first MVP unless state becomes difficult to maintain.
 
 Rendering Strategy
 
-MVP can choose one of two approaches:
+The current MVP uses a dual-mode globe renderer:
 
-Option A: 3D Globe
+* `GameGlobe` is the default first-screen mode and keeps the real WebGL 3D globe as the main experience.
+* `GameGlobe2D` remains available as a fallback mode.
+* `GameEarthApp` owns the render-mode switch so selected country, selected game, hovered game, filters, cover size, and marker view mode persist when switching between 2.5D and 3D.
 
-Use React Three Fiber or a globe library to render:
+Fallback 2.5D globe behavior:
 
-* earth sphere
-* country points or simplified country layer
-* game cover markers as sprites or cards
-* hover and click interaction
+* `GameGlobe2D` renders a large circular / hemispheric SVG planet stage with deep blue-purple sci-fi styling, star texture, scanline overlay, and grid paths.
+* It loads `public/data/mock-countries.geojson` and converts the 10 mock country polygons into SVG paths through `src/lib/geo.ts`.
+* Country polygon hover and selected states only affect the actual polygon path. Empty ocean / blank stage hover does not recolor the planet.
+* Selected country focus uses an SVG `viewBox` change through `getCountry2DViewBox`; the `全球视角` button restores the full world view and `聚焦当前国家` restores the selected country view.
+* The selected country's games render as cover-like placeholder cards with full Chinese-first title, optional English subtitle, year, rating, selected state, and hover tooltip.
+* Other countries' games render as small glowing dots to keep the map lightweight and avoid covering the globe.
+* The component memoizes country paths, marker positions, selected-country marker lists, and non-selected marker lists.
 
-Option B: Interactive 2D World Map
+Current 3D globe behavior:
 
-Use SVG or a map library to render:
+* `GameGlobe` dynamically imports `react-globe.gl` with SSR disabled because the WebGL globe depends on browser APIs.
+* Three.js `MeshPhongMaterial` provides a near-black globe surface, while `react-globe.gl` provides orbit controls, zoom, drag rotation, polygon layers, point layers, and HTML marker layers.
+* `public/data/countries.geojson` stores the full source country border data copied from `https://github.com/datasets/geo-countries`.
+* `public/data/world-countries-lite.geojson` stores a simplified runtime world country outline dataset generated from the full source file. `GameGlobe` loads this file for the 3D base layer so all world country outlines are visible without loading the 14 MB source GeoJSON.
+* `public/data/mock-countries.geojson` stores the simplified MVP country border data for the current 10 mock countries and remains available to the 2.5D fallback mode.
+* `CountryLayer` converts the lightweight world GeoJSON feature collection and local mock country list into globe polygon props and point-cloud props. It handles all-country border color, selected / hovered country elevation, polygon hover, polygon click, mock-country dot-matrix points, and country point hover / click.
+* `src/lib/geo.ts` maps GeoJSON `ISO3166-1-Alpha-2` values to project country codes, with Alpha-3 / name fallback keys for non-mock countries and a small name fallback for records like France where this GeoJSON source uses `-99`.
+* `src/lib/geo.ts` also owns globe camera view helpers: a global point of view and per-country focus points for Europe, East Asia, North America, and other mock regions.
+* `src/lib/geo.ts` samples a controlled dot matrix inside the 10 mock country polygons. The 3D globe uses those points to make mock countries easier to spot without turning all game data into heavy HTML markers.
+* `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as HTML labels only when a mock country is hovered or selected. With no selected country, the globe shows one representative cover marker per mock country; after country selection, it shows that country's current-year game markers.
+* Marker size responds to `coverSize`; view mode changes marker presentation while keeping the same local mock data source.
+* `GameTooltip` still provides the React tooltip component for reusable UI and now also provides escaped HTML tooltip markup for globe HTML markers.
+* `src/app/globals.css` provides the black / white sci-fi visual system, globe stage styling, country tooltip styling, dot / border styling, and globe HTML marker styling.
 
-* world map
-* country regions
-* game cover markers
-* hover and click interaction
+Real 3D Globe performance strategy:
 
-Preferred MVP direction: start with the simpler implementation that can run reliably.
+* Automatic rotation is disabled. The globe should rotate only from user drag / zoom interaction.
+* Initial and selected-country camera views use closer `pointOfView` altitude values so the globe fills the central stage and country selection focuses on the relevant geographic region.
+* Orbit controls allow deeper zoom than the first Real 3D Globe implementation, while still retaining a global zoom-out range.
+* Runtime country borders use `public/data/world-countries-lite.geojson`, not the full 14MB source GeoJSON. The lightweight file is about 1.1 MB and contains simplified world country / region outlines.
+* The WebGL renderer pixel ratio is capped at 1.25 and antialiasing is disabled through `rendererConfig` to keep drag and zoom responsive on high-DPI screens.
+* Polygon altitude, opacity, curvature resolution, and transition duration are kept low to reduce hover and drag overhead. Hover / selected states brighten only the matching country dots and border; ocean / blank hover does not recolor the globe.
+* Atmosphere and graticules are disabled in the current MVP to prioritize interaction smoothness.
+* Globe HTML country labels are disabled by default. They appear only for hovered / selected mock countries and are hidden during drag / zoom.
+* With no selected country, `GameGlobe` shows only one representative game marker per mock country. After a country is selected, the globe shows only that country's current-year game markers and hides other countries' games.
+* During drag / zoom interaction, `GameGlobe` hides country labels and downgrades cover-card markers into lightweight dots, then restores the needed card / label layer about 200ms after interaction ends.
+* Polygon hover uses per-feature country keys. Ocean / blank hover clears the hovered country state instead of applying a broad globe highlight. Non-mock country clicks only highlight the globe polygon; mock country clicks still update the right panel.
+* Missing cover images are not requested by default, so mock cover paths do not create repeated 404 requests during globe rendering.
+* If real local cover files are added later, marker image loading should be gated by an explicit cover-availability check rather than blindly using every mock `coverImage` path.
 
-If 3D globe becomes too unstable, implement a 2D world map first and keep the component names compatible.
+Data Generation Strategy
+
+RAWG is integrated as a build-time / local generation source, not as a browser runtime dependency.
+
+* `scripts/rawg-seeds.mjs` stores a manually curated country-to-representative-game seed list.
+* `scripts/fetch-rawg-games.mjs` reads `RAWG_API_KEY` from `.env.local` or the shell environment.
+* The script fetches RAWG game details, maps them into the existing `Game` type, and overwrites `src/data/games.generated.ts`.
+* `src/data/games.ts` remains the only frontend data import path and exports the generated local module.
+* `.env.local` is ignored by Git, so the RAWG API key is not bundled or committed.
+* The frontend may render RAWG remote `background_image` URLs as `coverImage`, but components must not call RAWG APIs directly.
 
 Data Flow
 
@@ -153,10 +203,13 @@ GameGlobe / RightPanel / BottomControls
 
 Current interaction flow:
 
-* `CountryPanel` emits country selection to `GameEarthApp`.
-* `CountryDetailPanel` emits game selection to `GameEarthApp`.
+* `CountryPanel` emits searchable country overview selection to `GameEarthApp`.
+* `GameGlobe2D` emits country selection and game selection to `GameEarthApp`.
+* `CountryLayer` emits 3D country selection to `GameEarthApp`.
+* `GameMarkers` emits game hover and game selection to `GameEarthApp`.
+* `CountryDetailPanel` emits game selection, game clear, and clear-country actions to `GameEarthApp`.
 * `BottomControls` emits year range, cover size, and view mode updates to `GameEarthApp`.
-* `GameGlobe` receives filtered games and current state, and can emit game hover / selection.
+* `GameGlobe2D` and `GameGlobe` receive year-filtered games and current state, and emit country selection plus game hover / selection.
 
 Statistics flow:
 
@@ -175,18 +228,26 @@ The MVP layout should include:
     * total games
     * total countries
 2. main center area
-    * globe or map
+    * default real 3D globe mode
+    * fallback 2.5D globe map
     * game cover markers
     * hover tooltip
 3. right panel
-    * country list
-    * selected country detail
-    * selected game detail
+    * compact searchable country overview when no country is selected
+    * selected country detail shell when a country is selected
+    * selected-country stats and current-year game card flow
+    * selected game detail as a sticky bottom compact HUD card inside the country detail panel
+    * bounded vertical scrolling for long country detail content
 4. bottom controls
     * year slider
     * cover size slider
     * view mode toggle
     * rotation control if using 3D
+
+The current 3D globe panel also includes two local view controls:
+
+* `全球视角`: returns the camera to the global point of view.
+* `聚焦当前国家`: moves the camera back to the selected country's regional focus point.
 
 Documentation Update Rule
 

@@ -25,7 +25,7 @@ export function BottomControls({
   onViewModeChange
 }: BottomControlsProps) {
   return (
-    <section className="grid gap-3 border border-emerald-500/40 bg-black p-4 md:grid-cols-3">
+    <section className="glass-panel grid gap-3 p-4 md:grid-cols-3">
       <YearSlider
         yearRange={yearRange}
         minYear={minYear}

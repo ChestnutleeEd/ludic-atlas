@@ -47,6 +47,7 @@ If the task involves product scope, read:
 | `docs/04_DATA_SCHEMA.md`   | Game, country, genre, and filter data structures   |
 | `docs/05_TASK_LOG.md`      | Iteration log and major change history             |
 | `docs/06_CODEX_RULES.md`   | Detailed execution rules for Codex                 |
+| `docs/assets/preview.png`  | README project preview image for GitHub            |
 
 ## Current Core Directories
 
@@ -57,10 +58,11 @@ If the task involves product scope, read:
 | `src/components/globe/`    | 3D earth, country layer, game cover markers               |
 | `src/components/panels/`   | Country list, country detail, game detail panels          |
 | `src/components/controls/` | Bottom controls, year slider, cover size slider           |
-| `src/data/`                | Local mock data for countries and games                   |
+| `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
 | `src/lib/`                 | Filtering, statistics, country mapping, utility functions |
 | `src/types/`               | TypeScript data types                                     |
-| `public/`                  | Static assets, including game cover images if needed      |
+| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/` and future game cover images under `public/covers/` |
+| `scripts/`                 | Local data generation scripts, including RAWG static data generation |
 | `docs/`                    | Project planning and architecture documents               |
 
 ## Project Setup Files
@@ -90,6 +92,9 @@ Ignored by default:
 - `.turbo/`
 - `coverage/`
 - `.env` and `.env.*`, except `.env.example`
+- `screenshots/`
+- `transcript_raw.txt`
+- video reference files such as `*.mp4`, `*.MP4`, `*.mov`, `*.MOV`, `*.m4v`, and `*.M4V`
 - log files
 
 Do not push to a remote repository unless the user explicitly requests it.
@@ -115,8 +120,18 @@ http://localhost:3000
 | Page entry           | `src/app/page.tsx`                |
 | App shell            | `src/components/GameEarthApp.tsx` |
 | Global styles        | `src/app/globals.css`             |
-| Mock game data       | `src/data/games.ts`               |
+| Game data export     | `src/data/games.ts`               |
+| Generated RAWG game data | `src/data/games.generated.ts` |
+| Stable mock game fallback | `src/data/games.mock.ts` |
+| RAWG seed list       | `scripts/rawg-seeds.mjs`          |
+| RAWG generation script | `scripts/fetch-rawg-games.mjs`   |
 | Mock country data    | `src/data/countries.ts`           |
+| Future cover assets  | `public/covers/README.md`         |
+| Browser favicon      | `public/favicon.svg`              |
+| MVP country border data | `public/data/mock-countries.geojson` |
+| Lightweight world country border data | `public/data/world-countries-lite.geojson` |
+| Full source country border data | `public/data/countries.geojson` |
+| README preview image | `docs/assets/preview.png` |
 | Shared types         | `src/types/game.ts`               |
 | Filtering logic      | `src/lib/filterGames.ts`          |
 | Statistics logic     | `src/lib/stats.ts`                |
@@ -129,6 +144,7 @@ http://localhost:3000
 | Root layout               | `src/app/layout.tsx`                           |
 | Global styles             | `src/app/globals.css`                          |
 | Main product shell        | `src/components/GameEarthApp.tsx`              |
+| 2.5D earth map view       | `src/components/globe/GameGlobe2D.tsx`         |
 | 3D earth view             | `src/components/globe/GameGlobe.tsx`           |
 | Game cover markers        | `src/components/globe/GameMarkers.tsx`         |
 | Country interaction layer | `src/components/globe/CountryLayer.tsx`        |
@@ -141,7 +157,9 @@ http://localhost:3000
 | Year filter               | `src/components/controls/YearSlider.tsx`       |
 | Cover size control        | `src/components/controls/CoverSizeSlider.tsx`  |
 | View mode toggle          | `src/components/controls/ViewModeToggle.tsx`   |
-| Game mock data            | `src/data/games.ts`                            |
+| Game data export          | `src/data/games.ts`                            |
+| Generated RAWG game data  | `src/data/games.generated.ts`                  |
+| Stable mock game fallback | `src/data/games.mock.ts`                       |
 | Country mock data         | `src/data/countries.ts`                        |
 | Data types                | `src/types/game.ts`                            |
 | Filtering logic           | `src/lib/filterGames.ts`                       |

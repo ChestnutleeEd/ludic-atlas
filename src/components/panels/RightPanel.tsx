@@ -6,12 +6,13 @@ type RightPanelProps = {
   countries: Country[];
   games: Game[];
   selectedCountry: Country | null;
-  selectedCountryCode: string;
+  selectedCountryCode: string | null;
   selectedGame: Game | null;
   selectedGameId: string | null;
   yearRange: YearRange;
   onSelectCountry: (countryCode: string) => void;
-  onSelectGame: (gameId: string) => void;
+  onClearCountry: () => void;
+  onSelectGame: (gameId: string | null) => void;
 };
 
 export function RightPanel({
@@ -23,24 +24,29 @@ export function RightPanel({
   selectedGameId,
   yearRange,
   onSelectCountry,
+  onClearCountry,
   onSelectGame
 }: RightPanelProps) {
   return (
-    <aside className="grid min-h-[460px] gap-4 border border-emerald-500/40 bg-black p-4 lg:grid-rows-[auto_minmax(0,1fr)]">
-      <CountryPanel
-        countries={countries}
-        games={games}
-        selectedCountryCode={selectedCountryCode}
-        onSelectCountry={onSelectCountry}
-      />
-      <CountryDetailPanel
-        country={selectedCountry}
-        games={games}
-        selectedGame={selectedGame}
-        selectedGameId={selectedGameId}
-        yearRange={yearRange}
-        onSelectGame={onSelectGame}
-      />
+    <aside className="glass-panel right-panel-shell min-h-[460px] max-h-[calc(100vh-180px)] overflow-y-auto p-4">
+      {selectedCountry ? (
+        <CountryDetailPanel
+          country={selectedCountry}
+          games={games}
+          selectedGame={selectedGame}
+          selectedGameId={selectedGameId}
+          yearRange={yearRange}
+          onClearCountry={onClearCountry}
+          onSelectGame={onSelectGame}
+        />
+      ) : (
+        <CountryPanel
+          countries={countries}
+          games={games}
+          selectedCountryCode={selectedCountryCode}
+          onSelectCountry={onSelectCountry}
+        />
+      )}
     </aside>
   );
 }

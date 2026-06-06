@@ -1,32 +1,66 @@
-# Game Earth
+# Game Earth / 游戏地球
 
-Game Earth is a global game culture discovery product.
+Game Earth is an interactive 3D globe-based game culture exploration project.
 
-Users explore representative games by country or region through a 3D earth / world map style interface. The current MVP uses local mock data and maps games to countries based on the developer or studio's country or region.
+游戏地球是一个基于 3D 地球的全球游戏文化探索项目。
 
-## Tech Stack
+## Preview / 项目预览
 
-- Next.js 16
-- React 19
+![Game Earth Preview](docs/assets/preview.png)
+
+## Overview / 项目简介
+
+中文：
+
+游戏地球是一个基于 3D 地球的全球游戏文化探索项目。用户可以按国家和地区浏览代表性游戏，查看游戏封面、评分、类型、发行年份、开发商、发行商和简介。
+
+English:
+
+Game Earth is an interactive 3D globe-based game culture exploration project. Users can discover representative games by country or region and view metadata such as cover images, ratings, genres, release years, developers, publishers, and descriptions.
+
+## Features / 核心功能
+
+- 真实 3D 地球视图 / Real 3D globe view
+- 国家边界展示 / Country border rendering
+- 国家搜索与快速跳转 / Country search and quick navigation
+- 按国家浏览代表性游戏 / Representative games by country or region
+- 游戏封面与详情展示 / Game cover and detail display
+- 年份筛选 / Release year filtering
+- 右侧国家详情面板 / Right-side country detail panel
+- RAWG 本地静态数据生成管线 / Local static RAWG data generation pipeline
+- 中文优先、英文辅助的信息展示 / Chinese-first UI copy with English support
+
+## Tech Stack / 技术栈
+
+- Next.js
 - TypeScript
 - Tailwind CSS
-- ESLint
-- Playwright for browser QA
-- Local mock data
+- React
+- react-globe.gl
+- three.js
+- RAWG API data generation script
 
-## Install
+## Project Structure / 项目结构
+
+- `src/app/`: Next.js App Router page entry, root layout, and global styles.
+- `src/components/`: Main product shell and shared UI components.
+- `src/components/globe/`: 3D globe, country layer, marker layer, tooltip, and fallback map view.
+- `src/components/panels/`: Country list, country detail, right panel, and game detail card.
+- `src/components/controls/`: Year filter, cover size control, and view mode controls.
+- `src/data/`: Country data, generated game data entrypoint, and stable mock fallback data.
+- `src/lib/`: Filtering, statistics, localization, search, and geographic helpers.
+- `src/types/`: Shared TypeScript data types.
+- `scripts/`: Local RAWG seed list and static data generation script.
+- `docs/`: Project planning, architecture, schema, task log, and README preview assets.
+
+## Getting Started / 本地运行
+
+Install dependencies and start the development server:
 
 ```bash
 npm install
-```
-
-## Run Locally
-
-```bash
 npm run dev
 ```
-
-## Page URL
 
 Open:
 
@@ -34,46 +68,81 @@ Open:
 http://localhost:3000
 ```
 
-## Core Source Entrypoints
+## RAWG Data Pipeline / RAWG 数据生成
 
-- Page entry: `src/app/page.tsx`
-- App shell: `src/components/GameEarthApp.tsx`
-- Global styles: `src/app/globals.css`
-- Mock game data: `src/data/games.ts`
-- Mock country data: `src/data/countries.ts`
-- Shared types: `src/types/game.ts`
-- Filtering logic: `src/lib/filterGames.ts`
-- Statistics logic: `src/lib/stats.ts`
+中文：
 
-## Current Features
+本项目不会在浏览器端直接请求 RAWG API。数据通过本地脚本生成静态数据文件。
 
-- Next.js App Router project skeleton
-- Dark technical MVP interface
-- Country list panel with derived statistics
-- Country detail panel
-- Game detail card
-- Year range filter
-- Cover size control
-- View mode toggle
-- Interactive placeholder map / globe area
-- Local mock data for Japan, United States, and Poland
+English:
 
-## Development Plan
+This project does not call the RAWG API from the browser. RAWG data is generated locally into a static TypeScript data file.
 
-- Improve central map country selection
-- Refine marker placement for countries with multiple games
-- Add more countries and representative game data
-- Add richer hover tooltip behavior
-- Replace the placeholder map with a stable 2D map or lightweight 3D globe when the MVP flow is ready
-
-## Verification
+Create a local environment file:
 
 ```bash
-npm run typecheck
-npm run lint
-npm run build
+touch .env.local
 ```
 
-For UI acceptance, start the dev server with `npm run dev` and check `http://localhost:3000`.
+Add your RAWG API key:
 
-Playwright browser QA should also use `http://localhost:3000`. In Next.js development mode, avoid using `127.0.0.1` unless `allowedDevOrigins` is configured, because dev resources can be blocked as cross-origin.
+```bash
+RAWG_API_KEY=your_rawg_api_key
+```
+
+Generate static game data:
+
+```bash
+npm run data:rawg
+```
+
+Notes:
+
+- `.env.local` is ignored by Git and should not be committed.
+- API keys must not be written into source code, documentation, or generated build output.
+- Generated game data is written to `src/data/games.generated.ts`.
+
+## Data Source & Attribution / 数据来源与署名
+
+- Game metadata and cover images can be generated from RAWG API.
+- This project uses RAWG data for personal, educational, and portfolio purposes.
+- Please follow RAWG API Terms of Use when using generated data.
+
+中文：
+
+本项目的部分游戏数据和封面图可通过 RAWG API 生成，仅用于个人学习、作品集展示和非商业用途。使用时请遵守 RAWG API 使用条款。
+
+## Scripts / 常用命令
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run typecheck
+npm run data:rawg
+```
+
+## Current Status / 当前状态
+
+- 当前是 MVP / prototype。
+- 3D 地球和国家探索功能已经具备。
+- 数据生成管线已具备。
+- 后续仍需继续优化 3D 性能、封面资源、国家交互和视觉细节。
+
+## Roadmap / 后续计划
+
+- 优化 3D 地球性能 / Improve 3D globe performance
+- 增强国家 hover 与选中效果 / Enhance country hover and selected states
+- 增加更多国家和游戏数据 / Add more countries and representative games
+- 优化游戏封面展示 / Improve game cover presentation
+- 增加国家详情大面板 / Add a larger country detail panel
+- 提升移动端体验 / Improve mobile experience
+- 后续可考虑 IGDB 或其他更高质量封面源 / Consider IGDB or other higher-quality cover sources later
+
+## Repository / 仓库地址
+
+[https://github.com/ChestnutleeEd/game-earth](https://github.com/ChestnutleeEd/game-earth)
+
+## License / 许可证
+
+No license has been selected yet.

@@ -8,7 +8,7 @@ export function CoverSizeSlider({ coverSize, onChange }: CoverSizeSliderProps) {
     <div>
       <div className="flex items-center justify-between gap-3">
         <label className="block text-sm text-emerald-300" htmlFor="cover-size">
-          Cover size
+          封面大小
         </label>
         <span className="text-xs text-emerald-50/60">{coverSize}px</span>
       </div>
@@ -23,9 +23,7 @@ export function CoverSizeSlider({ coverSize, onChange }: CoverSizeSliderProps) {
           type="range"
           value={coverSize}
         />
-        <div className="mt-3 text-emerald-50/60">
-        {coverSize}px
-        </div>
+        <div className="mt-3 text-emerald-50/60">{coverSize}px</div>
       </div>
     </div>
   );

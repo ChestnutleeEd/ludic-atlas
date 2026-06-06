@@ -31,7 +31,7 @@ export function YearSlider({
     <div>
       <div className="flex items-center justify-between gap-3">
         <label className="block text-sm text-emerald-300" htmlFor="year-min">
-          Year filter
+          年份筛选
         </label>
         <span className="text-xs text-emerald-50/60">
           {yearRange.min}-{yearRange.max}
@@ -48,7 +48,7 @@ export function YearSlider({
           value={yearRange.min}
         />
         <input
-          aria-label="Maximum release year"
+          aria-label="最大发行年份"
           className="w-full accent-emerald-400"
           max={maxYear}
           min={minYear}

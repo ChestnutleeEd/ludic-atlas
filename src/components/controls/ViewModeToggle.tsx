@@ -1,3 +1,4 @@
+import { getViewModeLabel } from "@/lib/localization";
 import type { ViewMode } from "@/types/game";
 
 type ViewModeToggleProps = {
@@ -10,7 +11,7 @@ const viewModes: ViewMode[] = ["countries", "games"];
 export function ViewModeToggle({ viewMode, onChange }: ViewModeToggleProps) {
   return (
     <div>
-      <label className="block text-sm text-emerald-300">View mode</label>
+      <label className="block text-sm text-emerald-300">展示模式</label>
       <div className="mt-2 grid grid-cols-2 gap-2 border border-emerald-500/30 p-3 text-sm text-emerald-50/70">
         {viewModes.map((mode) => (
           <button
@@ -23,7 +24,7 @@ export function ViewModeToggle({ viewMode, onChange }: ViewModeToggleProps) {
             onClick={() => onChange(mode)}
             type="button"
           >
-            {mode}
+            {getViewModeLabel(mode)}
           </button>
         ))}
       </div>

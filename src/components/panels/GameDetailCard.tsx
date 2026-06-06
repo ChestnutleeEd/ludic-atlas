@@ -1,63 +1,79 @@
+"use client";
+
+import {
+  getGameDisplayTitle,
+  getGameSecondaryTitle,
+  getGenreLabel
+} from "@/lib/localization";
 import type { Game } from "@/types/game";
 
 type GameDetailCardProps = {
   game: Game;
+  onClose?: () => void;
 };
 
-export function GameDetailCard({ game }: GameDetailCardProps) {
+export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
+  const secondaryTitle = getGameSecondaryTitle(game);
+
   return (
-    <article className="border border-emerald-500/30 bg-black p-3">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="font-semibold text-emerald-50">{game.title}</h3>
-          {game.titleZh ? (
-            <p className="mt-1 text-xs text-emerald-50/50">{game.titleZh}</p>
-          ) : null}
+    <article className="game-detail-card">
+      <div className="game-detail-card-header">
+        <div className="game-detail-cover" aria-hidden="true">
+          <span>{getGameDisplayTitle(game)}</span>
+          <strong>{game.releaseYear}</strong>
         </div>
-        <span className="border border-emerald-500/30 px-2 py-1 text-xs text-emerald-300">
-          {game.rating.toFixed(1)}
-        </span>
+        <div className="min-w-0">
+          <h3>{getGameDisplayTitle(game)}</h3>
+          {secondaryTitle ? <p>{secondaryTitle}</p> : null}
+          <span>评分 {game.rating.toFixed(1)}</span>
+        </div>
+        {onClose ? (
+          <button
+            aria-label="关闭游戏简介"
+            className="game-detail-close"
+            onClick={onClose}
+            type="button"
+          >
+            关闭
+          </button>
+        ) : null}
       </div>
-      <dl className="mt-4 grid gap-3 text-xs text-emerald-50/60">
+
+      <dl className="game-detail-meta">
         <div>
-          <dt>Developer</dt>
-          <dd className="mt-1 text-emerald-50">{game.developer}</dd>
+          <dt>开发商</dt>
+          <dd>{game.developer}</dd>
         </div>
         <div>
-          <dt>Publisher</dt>
-          <dd className="mt-1 text-emerald-50">{game.publisher ?? "Unknown"}</dd>
+          <dt>发行商</dt>
+          <dd>{game.publisher}</dd>
         </div>
         <div>
-          <dt>Release year</dt>
-          <dd className="mt-1 text-emerald-50">{game.releaseYear}</dd>
+          <dt>发行年份</dt>
+          <dd>{game.releaseYear}</dd>
         </div>
         <div>
-          <dt>Genres</dt>
-          <dd className="mt-2 flex flex-wrap gap-2">
+          <dt>类型</dt>
+          <dd>
             {game.genres.map((genre) => (
-              <span className="border border-emerald-500/25 px-2 py-1" key={genre}>
-                {genre}
-              </span>
+              <span key={genre}>{getGenreLabel(genre)}</span>
             ))}
           </dd>
         </div>
         <div>
-          <dt>Platforms</dt>
-          <dd className="mt-2 flex flex-wrap gap-2">
+          <dt>平台</dt>
+          <dd>
             {game.platforms.map((platform) => (
-              <span
-                className="border border-emerald-500/25 px-2 py-1"
-                key={platform}
-              >
-                {platform}
-              </span>
+              <span key={platform}>{platform}</span>
             ))}
           </dd>
         </div>
       </dl>
-      <p className="mt-4 text-sm leading-6 text-emerald-50/70">
-        {game.description}
-      </p>
+
+      <div className="game-detail-description">
+        <h4>简介</h4>
+        <p>{game.description}</p>
+      </div>
     </article>
   );
 }

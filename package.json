@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "data:rawg": "node scripts/fetch-rawg-games.mjs",
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
@@ -11,13 +12,16 @@
   "dependencies": {
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-globe.gl": "^2.38.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/three": "^0.184.1",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "playwright": "^1.60.0",

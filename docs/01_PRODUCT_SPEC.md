@@ -31,6 +31,19 @@ Game Earth should learn from its functional structure:
 
 Game Earth does not need to copy Movie Globe's exact visual style.
 
+## Product Language Policy
+
+Game Earth should use Chinese as the primary interface language.
+
+UI titles, field labels, buttons, panel headings, empty states, and explanatory copy should be written in Chinese first. English can remain as supporting information for proper nouns such as game titles, studio / company names, publisher names, platform names, and English country names.
+
+Display rules:
+
+- Countries should prefer Chinese names and may show English names as secondary information, for example `日本 Japan`.
+- Games should prefer `titleZh` when available and show the English title as a subtitle.
+- Company names and platform names can remain in their official English form.
+- Genre values may stay in raw mock data, but UI should map common genre labels to Chinese where practical.
+
 ## Target Users
 
 ### Primary Users
