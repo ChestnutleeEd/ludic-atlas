@@ -2,13 +2,13 @@
 
 ## Project Name
 
-Game Earth
+Ludic Atlas / 游戏星图
 
 ## Product Positioning
 
-Game Earth is a global game culture discovery product.
+Ludic Atlas / 游戏星图 is a global game culture discovery product with two primary entrances: Earth Explorer for spatial country-based exploration and Game Chronicle for timeline-based game archive browsing.
 
-Users explore representative games by country or region through a 3D earth / world map interface. The first MVP uses local mock data and maps games to countries based on the developer or studio's country or region.
+Users explore representative games by country or region through a 3D earth interface, or browse generated global game records through a horizontal chronology archive. The first MVP uses local mock / generated data and maps Earth Explorer games to countries based on the developer or studio's country or region.
 
 ## Current MVP Direction
 
@@ -55,13 +55,15 @@ If the task involves product scope, read:
 | -------------------------- | --------------------------------------------------------- |
 | `src/app/`                 | Next.js App Router page routes, layout, and global styles |
 | `src/components/`          | Main product shell and shared UI components               |
+| `src/components/home/`     | Ludic Atlas landing hub and product entrance components   |
+| `src/components/archive/`  | Game Chronicle timeline browsing components               |
 | `src/components/globe/`    | 3D earth, country layer, game cover markers               |
 | `src/components/panels/`   | Country list, country detail, game detail panels          |
 | `src/components/controls/` | Bottom controls, year slider, cover size slider           |
 | `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
 | `src/lib/`                 | Filtering, statistics, country mapping, utility functions |
 | `src/types/`               | TypeScript data types                                     |
-| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/` and future game cover images under `public/covers/` |
+| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, and future game cover images under `public/covers/` |
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation |
 | `docs/`                    | Project planning and architecture documents               |
 
@@ -119,6 +121,7 @@ http://localhost:3000
 | -------------------- | --------------------------------- |
 | Page entry           | `src/app/page.tsx`                |
 | App shell            | `src/components/GameEarthApp.tsx` |
+| Landing hub          | `src/components/home/LandingHub.tsx` |
 | Global styles        | `src/app/globals.css`             |
 | Game data export     | `src/data/games.ts`               |
 | Generated RAWG game data | `src/data/games.generated.ts` |
@@ -128,6 +131,12 @@ http://localhost:3000
 | Mock country data    | `src/data/countries.ts`           |
 | Future cover assets  | `public/covers/README.md`         |
 | Browser favicon      | `public/favicon.svg`              |
+| Game Chronicle wood texture | `public/textures/archive-wood.svg` |
+| Game Chronicle noise texture | `public/textures/archive-noise.svg` |
+| Game Chronicle grid texture | `public/textures/archive-grid.svg` |
+| Game Chronicle walnut texture | `public/textures/walnut-wood.svg` |
+| Game Chronicle paper texture | `public/textures/archive-paper.svg` |
+| Game Chronicle brass texture | `public/textures/brass-noise.svg` |
 | MVP country border data | `public/data/mock-countries.geojson` |
 | Lightweight world country border data | `public/data/world-countries-lite.geojson` |
 | Full source country border data | `public/data/countries.geojson` |
@@ -144,7 +153,13 @@ http://localhost:3000
 | Root layout               | `src/app/layout.tsx`                           |
 | Global styles             | `src/app/globals.css`                          |
 | Main product shell        | `src/components/GameEarthApp.tsx`              |
-| 2.5D earth map view       | `src/components/globe/GameGlobe2D.tsx`         |
+| Landing hub               | `src/components/home/LandingHub.tsx`           |
+| Game Chronicle view       | `src/components/archive/GameArchiveView.tsx`   |
+| Archive timeline          | `src/components/archive/ArchiveTimeline.tsx`   |
+| Archive year exhibition modal | `src/components/archive/ArchiveYearModal.tsx` |
+| Archive active year drawer | `src/components/archive/ArchiveYearDrawer.tsx` |
+| Archive dossier panel     | `src/components/archive/ArchiveDossier.tsx`    |
+| Legacy 2.5D earth map view | `src/components/globe/GameGlobe2D.tsx`        |
 | 3D earth view             | `src/components/globe/GameGlobe.tsx`           |
 | Game cover markers        | `src/components/globe/GameMarkers.tsx`         |
 | Country interaction layer | `src/components/globe/CountryLayer.tsx`        |

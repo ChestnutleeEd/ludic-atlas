@@ -32,7 +32,7 @@ export const rawgGameSeeds = [
     publisher: "Square"
   },
   {
-    slug: "monster-hunter-world",
+    slug: "monster-hunter-world-2",
     countryCode: "JP",
     countryName: "Japan",
     titleZh: "怪物猎人：世界",

@@ -141,6 +141,48 @@ Generation command:
 npm run data:rawg
 ```
 
+Batch generation mode:
+
+```bash
+RAWG_FETCH_MODE=batch npm run data:rawg
+```
+
+Batch mode uses the RAWG `/api/games` list endpoint and does not read `scripts/rawg-seeds.mjs`. It fetches paginated results with these defaults, each of which can be overridden through environment variables:
+
+| Environment variable | Default |
+| -------------------- | ------- |
+| `RAWG_START_DATE` | `2010-01-01` |
+| `RAWG_END_DATE` | `2026-12-31` |
+| `RAWG_MIN_METACRITIC` | `80` |
+| `RAWG_MAX_METACRITIC` | `100` |
+| `RAWG_ORDERING` | `-metacritic` |
+| `RAWG_PAGE_SIZE` | `40` |
+| `RAWG_MAX_GAMES` | `100` |
+
+Batch mode keeps only records with `background_image`, filters obvious non-primary content names such as DLC / expansion / soundtrack / demo / beta / bundle / pack / collection, and deduplicates by RAWG id plus same title / release date where possible. RAWG list results do not include reliable developer country data, so batch generated records use `countryCode: "UNKNOWN"` and `countryName: "Global"` until a separate country enrichment step exists.
+
+Batch mode can optionally add a recent-game supplement pool so 2024-2026 games whose `metacritic` is still empty can enter the generated Archive timeline. Enable it with:
+
+```bash
+RAWG_FETCH_MODE=batch RAWG_INCLUDE_RECENT=true npm run data:rawg
+```
+
+Recent supplement defaults:
+
+| Environment variable | Default |
+| -------------------- | ------- |
+| `RAWG_INCLUDE_RECENT` | `false` |
+| `RAWG_RECENT_START_DATE` | `2024-01-01` |
+| `RAWG_RECENT_END_DATE` | `2026-12-31` |
+| `RAWG_RECENT_ORDERING` | `-rating` |
+| `RAWG_RECENT_MAX_GAMES` | `100` |
+| `RAWG_RECENT_MIN_RATING` | `4.0` |
+| `RAWG_RECENT_MIN_RATINGS_COUNT` | `20` |
+| `RAWG_RECENT_MAX_PAGES` | `25` |
+| `RAWG_REQUEST_TIMEOUT_MS` | `8000` |
+
+When `RAWG_INCLUDE_RECENT=true`, the script fetches the main classic pool first, then fetches the recent pool from RAWG `/api/games` with `dates`, `ordering`, `page_size=40`, and no `metacritic` parameter. Recent results are filtered locally by `background_image`, RAWG 0-5 `rating`, `ratings_count`, and the same non-primary content keywords. The main pool target is reduced by `RAWG_RECENT_MAX_GAMES` so the final merged data stays within `RAWG_MAX_GAMES`; final merging keeps main-pool games first, appends recent games, deduplicates by RAWG id or normalized title plus release year, and writes at most `RAWG_MAX_GAMES` records.
+
 Seed file:
 
 ```text
@@ -167,21 +209,21 @@ RAWG field mapping:
 
 | Game field | Source |
 | ---------- | ------ |
-| `id` | Seed slug, RAWG slug, or normalized search/title |
+| `id` | Batch: RAWG `slug`, falling back to normalized title / RAWG id. Seed: seed slug, RAWG slug, or normalized search/title |
 | `title` | RAWG `name` |
-| `titleZh` | Seed `titleZh`, falling back to RAWG `name` |
-| `countryCode` | Seed `countryCode` |
-| `countryName` | Seed `countryName` |
-| `developer` | First RAWG developer, falling back to seed `developer`, then `Unknown` |
-| `publisher` | First RAWG publisher, falling back to seed `publisher`, then `Unknown` |
+| `titleZh` | Batch: RAWG `name`. Seed: seed `titleZh`, falling back to RAWG `name` |
+| `countryCode` | Batch: `UNKNOWN`. Seed: seed `countryCode` |
+| `countryName` | Batch: `Global`. Seed: seed `countryName` |
+| `developer` | Batch: `Unknown`. Seed: first RAWG developer, falling back to seed `developer`, then `Unknown` |
+| `publisher` | Batch: `Unknown`. Seed: first RAWG publisher, falling back to seed `publisher`, then `Unknown` |
 | `releaseYear` | Year parsed from RAWG `released`, falling back to `0` |
 | `genres` | RAWG `genres[].name`, falling back to `Unknown` |
 | `platforms` | RAWG `platforms[].platform.name`, falling back to `Unknown` |
 | `rating` | RAWG 0-5 rating converted to the existing 0-10 display scale |
 | `coverImage` | RAWG `background_image` remote URL |
-| `description` | RAWG `description_raw`, falling back to a short generated sentence |
+| `description` | Batch: short generated RAWG / Metacritic / release summary. Seed: RAWG `description_raw`, falling back to a short generated sentence |
 
-The checked-in default `games.generated.ts` points to `mockGames` so the app remains runnable before a RAWG API key is configured. Running `npm run data:rawg` overwrites it with static generated records.
+The checked-in default `games.generated.ts` may point to `mockGames` so the app remains runnable before a RAWG API key is configured. Running `RAWG_FETCH_MODE=batch npm run data:rawg` overwrites it with static generated RAWG records. Non-batch mode preserves the legacy manually maintained seed flow.
 
 ## Stable Mock Data
 

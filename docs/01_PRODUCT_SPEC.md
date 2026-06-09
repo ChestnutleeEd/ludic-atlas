@@ -2,15 +2,15 @@
 
 ## Product Name
 
-Game Earth
+Ludic Atlas / 游戏星图
 
 ## One-Sentence Positioning
 
-Game Earth is a global game culture discovery product that lets users explore representative games by country or region through a 3D earth / world map interface.
+Ludic Atlas / 游戏星图 is a global game culture discovery product that lets users explore games through space and time: Earth Explorer focuses on country-based 3D earth exploration, while Game Chronicle focuses on timeline-based game archive browsing.
 
 ## Product Type
 
-Game Earth is primarily a game culture discovery and recommendation product.
+Ludic Atlas is primarily a game culture discovery and recommendation product.
 
 It is not intended to be a complete game database in the first MVP. It should first work as an interactive, visual, and explorable product prototype.
 
@@ -18,7 +18,7 @@ It is not intended to be a complete game database in the first MVP. It should fi
 
 The reference product is Movie Globe.
 
-Game Earth should learn from its functional structure:
+Earth Explorer should learn from its functional structure:
 
 - global map / earth as the main exploration space
 - country-based content organization
@@ -29,11 +29,11 @@ Game Earth should learn from its functional structure:
 - year filter
 - cover size control
 
-Game Earth does not need to copy Movie Globe's exact visual style.
+Ludic Atlas does not need to copy Movie Globe's exact visual style.
 
 ## Product Language Policy
 
-Game Earth should use Chinese as the primary interface language.
+Ludic Atlas should use Chinese as the primary interface language.
 
 UI titles, field labels, buttons, panel headings, empty states, and explanatory copy should be written in Chinese first. English can remain as supporting information for proper nouns such as game titles, studio / company names, publisher names, platform names, and English country names.
 
@@ -82,6 +82,14 @@ A user browses game covers on the globe and hovers over a cover to see the game 
 
 A user drags a year slider to explore games from different periods.
 
+### Scenario 5: Browse the game chronology
+
+A user opens Game Chronicle / 游戏编年馆 and browses the generated global game list through a large horizontal 2010-2026 year cabinet timeline, title search, genre filters, platform filters, and rating. Clicking a year opens a Year Exhibition / 年份展柜 modal for that year's games and dossier details.
+
+### Scenario 6: Choose an exploration mode
+
+A user opens the site and first sees Ludic Atlas / 游戏星图 with two independent entrances: Earth Explorer / 地球探索 and Game Chronicle / 游戏编年馆.
+
 ## Country Mapping Rule
 
 For the MVP, each game is mapped to the country or region of its main developer / studio.
@@ -111,6 +119,12 @@ The first version should include:
 8. year filter
 9. cover size control
 10. local mock data
+11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
+12. Game Chronicle horizontal timeline view for RAWG-generated global game records
+
+RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
+
+Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. It groups filtered games by `releaseYear`, shows a large horizontal year cabinet timeline with year counts and cover previews, supports title search, multi-select genre / platform OR filters, year-desc and rating-desc sorting, opens the selected year in a museum-style Year Exhibition modal, and shows either a year overview or selected-game museum dossier card.
 
 ## MVP Data Fields
 

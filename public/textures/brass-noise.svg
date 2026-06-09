@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="120" viewBox="0 0 180 120">
+  <defs>
+    <linearGradient id="brass" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f2d27a"/>
+      <stop offset="0.36" stop-color="#b98235"/>
+      <stop offset="0.7" stop-color="#6f431e"/>
+      <stop offset="1" stop-color="#d2a85a"/>
+    </linearGradient>
+    <filter id="noise">
+      <feTurbulence baseFrequency="0.9" numOctaves="2" seed="31" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0.05 0.24"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="180" height="120" fill="url(#brass)"/>
+  <rect width="180" height="120" filter="url(#noise)" opacity="0.6"/>
+  <path d="M0 18h180M0 62h180M0 100h180" stroke="#fff1b6" stroke-opacity="0.18"/>
+  <path d="M0 24h180M0 68h180M0 106h180" stroke="#2b1608" stroke-opacity="0.2"/>
+</svg>

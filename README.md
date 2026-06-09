@@ -1,26 +1,28 @@
-# Game Earth / 游戏地球
+# Ludic Atlas / 游戏星图
 
-Game Earth is an interactive 3D globe-based game culture exploration project.
+Ludic Atlas is a game culture exploration project with two entrances: Earth Explorer for 3D globe exploration and Game Chronicle for timeline archive browsing.
 
-游戏地球是一个基于 3D 地球的全球游戏文化探索项目。
+游戏星图是一个全球游戏文化探索项目，包含 3D 地球探索和游戏编年馆两个入口。
 
 ## Preview / 项目预览
 
-![Game Earth Preview](docs/assets/preview.png)
+![Ludic Atlas Preview](docs/assets/preview.png)
 
 ## Overview / 项目简介
 
 中文：
 
-游戏地球是一个基于 3D 地球的全球游戏文化探索项目。用户可以按国家和地区浏览代表性游戏，查看游戏封面、评分、类型、发行年份、开发商、发行商和简介。
+游戏星图提供两个入口：用户可以在 Earth Explorer 中按国家和地区浏览代表性游戏，也可以在 Game Chronicle / 游戏编年馆中沿时间轴查看高分游戏馆藏，查看游戏封面、评分、类型、发行年份、开发商、发行商和简介。
 
 English:
 
-Game Earth is an interactive 3D globe-based game culture exploration project. Users can discover representative games by country or region and view metadata such as cover images, ratings, genres, release years, developers, publishers, and descriptions.
+Ludic Atlas is an interactive game culture exploration project. Users can discover representative games by country or region on a 3D globe, or browse a time-based game archive with cover images, ratings, genres, release years, developers, publishers, and descriptions.
 
 ## Features / 核心功能
 
+- Ludic Atlas landing hub / 游戏星图总入口
 - 真实 3D 地球视图 / Real 3D globe view
+- Game Chronicle 横向时间轴与年份抽屉 / Game Chronicle horizontal timeline and year drawer
 - 国家边界展示 / Country border rendering
 - 国家搜索与快速跳转 / Country search and quick navigation
 - 按国家浏览代表性游戏 / Representative games by country or region
@@ -96,11 +98,21 @@ Generate static game data:
 npm run data:rawg
 ```
 
+If RAWG API cannot be reached directly from your local network, set proxy environment variables before running the script:
+
+```bash
+export HTTPS_PROXY=http://127.0.0.1:7890
+export HTTP_PROXY=http://127.0.0.1:7890
+export ALL_PROXY=http://127.0.0.1:7890
+npm run data:rawg
+```
+
 Notes:
 
 - `.env.local` is ignored by Git and should not be committed.
 - API keys must not be written into source code, documentation, or generated build output.
 - Generated game data is written to `src/data/games.generated.ts`.
+- The RAWG script reads `HTTPS_PROXY`, `HTTP_PROXY`, or `ALL_PROXY` through `undici` when a local proxy is needed.
 
 ## Data Source & Attribution / 数据来源与署名
 

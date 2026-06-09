@@ -1,6 +1,6 @@
 # 03_ARCHITECTURE.md
 ## Purpose
-This document defines the technical architecture for Game Earth.
+This document defines the technical architecture for Ludic Atlas / 游戏星图.
 The goal is to help Codex quickly understand where each module belongs and avoid unnecessary full-project search.
 ## Tech Stack
 The first MVP should use:
@@ -10,11 +10,12 @@ The first MVP should use:
 - React 19.2.7
 - ESLint 9.39.4
 - `react-globe.gl` + Three.js for real interactive 3D earth rendering
-- SVG + CSS transforms for the default 2.5D earth map rendering
+- `undici` for RAWG data script proxy-aware fetch transport
+- SVG + CSS transforms remain available only in the legacy 2.5D earth component
 - Local generated / mock data
 - No backend database in MVP
 ## Architecture Principle
-Game Earth should separate:
+Ludic Atlas should separate:
 1. page entry
 2. 3D globe rendering
 3. UI panels
@@ -33,6 +34,14 @@ src/
 │  └─ globals.css
 ├─ components/
 │  ├─ GameEarthApp.tsx
+│  ├─ home/
+│  │  └─ LandingHub.tsx
+│  ├─ archive/
+│  │  ├─ GameArchiveView.tsx
+│  │  ├─ ArchiveTimeline.tsx
+│  │  ├─ ArchiveYearModal.tsx
+│  │  ├─ ArchiveYearDrawer.tsx
+│  │  └─ ArchiveDossier.tsx
 │  ├─ globe/
 │  │  ├─ GameGlobe2D.tsx
 │  │  ├─ GameGlobe.tsx
@@ -89,7 +98,13 @@ src/app/page.tsx	Home page entry. Should render GameEarthApp.
 src/app/layout.tsx	App Router root layout, page metadata, and favicon metadata.
 src/app/globals.css	Global Tailwind import and base visual tokens.
 src/components/GameEarthApp.tsx	Main product shell. Owns top-level UI state and layout.
-src/components/globe/GameGlobe2D.tsx	Renders the default SVG 2.5D planet map scene.
+src/components/home/LandingHub.tsx	Renders the Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrance cards.
+src/components/archive/GameArchiveView.tsx	Renders Game Chronicle data preparation, local title search, multi-label genre / platform filters, year grouping, selected year modal state, sorting, and selected game archive details.
+src/components/archive/ArchiveTimeline.tsx	Renders the large horizontal year cabinet timeline with filtered counts and cover previews.
+src/components/archive/ArchiveYearModal.tsx	Renders the selected year exhibition modal, selected-year game card grid, close behavior, and selected game handoff.
+src/components/archive/ArchiveYearDrawer.tsx	Legacy active-year drawer component retained on disk but no longer rendered by the current Game Chronicle view.
+src/components/archive/ArchiveDossier.tsx	Renders the modal dossier panel, showing either selected-year overview stats or selected game details.
+src/components/globe/GameGlobe2D.tsx	Legacy SVG 2.5D planet map component retained on disk but not exposed by the current main UI.
 src/components/globe/GameGlobe.tsx	Renders the default real 3D earth scene.
 src/components/globe/GameMarkers.tsx	Renders game cover markers on the globe.
 src/components/globe/CountryLayer.tsx	Handles country boundaries, hover, and click interaction.
@@ -125,20 +140,34 @@ Top-level state should include:
 * `yearRange`
 * `coverSize`
 * `viewMode`
-* `globeMode`
+* `mainViewMode` (`hub`, `earth`, or `archive`)
 * auto rotate enabled or disabled
 
 Do not introduce Zustand or Redux in the first MVP unless state becomes difficult to maintain.
 
 Rendering Strategy
 
-The current MVP uses a dual-mode globe renderer:
+The current MVP uses a landing hub plus a real 3D globe renderer and a separate archive view:
 
-* `GameGlobe` is the default first-screen mode and keeps the real WebGL 3D globe as the main experience.
-* `GameGlobe2D` remains available as a fallback mode.
-* `GameEarthApp` owns the render-mode switch so selected country, selected game, hovered game, filters, cover size, and marker view mode persist when switching between 2.5D and 3D.
+* `LandingHub` is the default first-screen experience and presents Earth Explorer and Game Chronicle as independent product entrances.
+* `GameGlobe` keeps the real WebGL 3D globe as the Earth Explorer experience.
+* `GameArchiveView` is selected through `GameEarthApp` main view mode and provides the Game Chronicle surface for generated global game records.
+* `GameGlobe2D` remains on disk as a legacy component, but `GameEarthApp` no longer imports or renders it and the UI no longer exposes a 2.5D / 3D switch.
+* `GameEarthApp` owns the main view switch so selected game state can carry between Earth and Archive. Earth-specific year range, cover size, and marker view controls are shown only in Earth mode.
 
-Fallback 2.5D globe behavior:
+Game Chronicle behavior:
+
+* `GameArchiveView` receives `Game[]`, `selectedGameId`, and `onSelectGame` from `GameEarthApp`.
+* The component keeps search, selected genre filters, selected platform filters, and sort mode as local state.
+* Genre and platform filter options are built by splitting each game's `genres` and `platforms` arrays into individual tags. If a legacy tag string contains `/`, it is split before counting and filtering.
+* Multi-select genre and platform filters use OR logic inside each filter category. When no genre or no platform is selected, that category does not filter the list.
+* Filtered games are grouped by valid `releaseYear`, with invalid years placed under `Unknown Year`; year groups render as a large horizontal year cabinet timeline with filtered counts and 3-5 cover previews.
+* The main Game Chronicle page does not render full game card lists. Clicking a year opens `ArchiveYearModal`, which shows only that year's game cards and a right-side dossier panel.
+* If no game is selected inside the year modal, `ArchiveDossier` shows selected-year overview stats: record count, average rating, top genres, top platforms, and a prompt to choose a card. If a game is selected, it shows the selected game cover, year, rating, genres, platforms, and description.
+* `year-desc` is the default sort mode. `rating-desc` sorts each year group by rating descending.
+* Game covers render with regular `<img loading="lazy">` to avoid Next remote image domain configuration for RAWG URLs.
+
+Legacy 2.5D globe behavior:
 
 * `GameGlobe2D` renders a large circular / hemispheric SVG planet stage with deep blue-purple sci-fi styling, star texture, scanline overlay, and grid paths.
 * It loads `public/data/mock-countries.geojson` and converts the 10 mock country polygons into SVG paths through `src/lib/geo.ts`.
@@ -186,6 +215,8 @@ RAWG is integrated as a build-time / local generation source, not as a browser r
 
 * `scripts/rawg-seeds.mjs` stores a manually curated country-to-representative-game seed list.
 * `scripts/fetch-rawg-games.mjs` reads `RAWG_API_KEY` from `.env.local` or the shell environment.
+* `scripts/fetch-rawg-games.mjs` configures an `undici` `ProxyAgent` through `setGlobalDispatcher` when `HTTPS_PROXY`, `HTTP_PROXY`, or `ALL_PROXY` is present. This keeps proxy configuration in the shell environment instead of hard-coding local network settings.
+* RAWG script errors are printed with structured fields: error name, error message, cause message, HTTP status when available, and the first 300 characters of any response body. RAWG API keys in request URLs are redacted before output.
 * The script fetches RAWG game details, maps them into the existing `Game` type, and overwrites `src/data/games.generated.ts`.
 * `src/data/games.ts` remains the only frontend data import path and exports the generated local module.
 * `.env.local` is ignored by Git, so the RAWG API key is not bundled or committed.
@@ -199,17 +230,17 @@ src/lib/filterGames.ts
         ↓
 GameEarthApp state
         ↓
-GameGlobe / RightPanel / BottomControls
+GameGlobe / RightPanel / BottomControls / GameArchiveView
 
 Current interaction flow:
 
 * `CountryPanel` emits searchable country overview selection to `GameEarthApp`.
-* `GameGlobe2D` emits country selection and game selection to `GameEarthApp`.
 * `CountryLayer` emits 3D country selection to `GameEarthApp`.
 * `GameMarkers` emits game hover and game selection to `GameEarthApp`.
 * `CountryDetailPanel` emits game selection, game clear, and clear-country actions to `GameEarthApp`.
 * `BottomControls` emits year range, cover size, and view mode updates to `GameEarthApp`.
-* `GameGlobe2D` and `GameGlobe` receive year-filtered games and current state, and emit country selection plus game hover / selection.
+* `GameArchiveView` emits selected game updates to `GameEarthApp` and keeps archive search / filter / sort state local.
+* `GameGlobe` receives year-filtered games and current earth state, and emits country selection plus game hover / selection.
 
 Statistics flow:
 

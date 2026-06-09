@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+  <defs>
+    <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence baseFrequency="0.55" numOctaves="3" seed="17" type="fractalNoise"/>
+      <feColorMatrix type="matrix" values="0.45 0 0 0 0.25 0 0.34 0 0 0.18 0 0 0.18 0 0.09 0 0 0 0.26 0"/>
+    </filter>
+  </defs>
+  <rect width="220" height="220" fill="#c9ae78"/>
+  <rect width="220" height="220" filter="url(#paper)" opacity="0.72"/>
+  <g fill="none" opacity="0.24" stroke="#6d3f20">
+    <path d="M0 37h220M0 91h220M0 147h220M0 201h220"/>
+    <path d="M28 0v220M164 0v220"/>
+  </g>
+  <g fill="#5c3218" opacity="0.12">
+    <circle cx="40" cy="48" r="2"/>
+    <circle cx="174" cy="86" r="1.4"/>
+    <circle cx="103" cy="162" r="1.8"/>
+    <circle cx="190" cy="196" r="1.2"/>
+  </g>
+</svg>

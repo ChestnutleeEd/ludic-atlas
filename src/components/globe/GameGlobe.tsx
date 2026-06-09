@@ -41,8 +41,6 @@ type GameGlobeProps = {
   hoveredGameId: string | null;
   viewMode: ViewMode;
   coverSize: number;
-  globeMode: "globe2d" | "globe3d";
-  onGlobeModeChange: (mode: "globe2d" | "globe3d") => void;
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
   onHoverGame: (gameId: string | null) => void;
@@ -56,8 +54,6 @@ export function GameGlobe({
   hoveredGameId,
   viewMode,
   coverSize,
-  globeMode,
-  onGlobeModeChange,
   onSelectCountry,
   onSelectGame,
   onHoverGame
@@ -370,22 +366,6 @@ export function GameGlobe({
             </p>
           </div>
           <div className="grid gap-2 md:w-[31rem]">
-            <div className="globe-mode-toggle">
-              <button
-                className={globeMode === "globe2d" ? "is-active" : ""}
-                onClick={() => onGlobeModeChange("globe2d")}
-                type="button"
-              >
-                2.5D 星球地图
-              </button>
-              <button
-                className={globeMode === "globe3d" ? "is-active" : ""}
-                onClick={() => onGlobeModeChange("globe3d")}
-                type="button"
-              >
-                真实 3D 地球
-              </button>
-            </div>
             <dl className="grid grid-cols-2 gap-2 text-xs">
               <div className="stat-tile p-2">
                 <dt className="text-cyan-50/50">当前国家</dt>

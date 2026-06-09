@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs>
+    <linearGradient id="wood-base" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#1a0d08"/>
+      <stop offset="0.38" stop-color="#3a2114"/>
+      <stop offset="0.72" stop-color="#24120b"/>
+      <stop offset="1" stop-color="#4a2a18"/>
+    </linearGradient>
+    <filter id="soften">
+      <feTurbulence baseFrequency="0.018 0.16" numOctaves="3" seed="11" type="fractalNoise"/>
+      <feColorMatrix type="matrix" values="0.6 0 0 0 0.04 0 0.32 0 0 0.015 0 0 0.16 0 0.005 0 0 0 0.42 0"/>
+      <feBlend in2="SourceGraphic" mode="screen"/>
+    </filter>
+  </defs>
+  <rect width="240" height="160" fill="url(#wood-base)"/>
+  <g filter="url(#soften)" opacity="0.72">
+    <path d="M0 24c34-11 48 12 82 1 31-10 52-4 82 5 33 10 50-18 76-3v15c-27-13-45 13-77 4-31-9-50-16-81-5-33 11-49-12-82-1z" fill="#7b4a26"/>
+    <path d="M0 72c27 9 44-8 72-7 41 2 54 20 96 8 27-8 44-3 72 11v17c-27-13-45-18-73-10-41 12-55-7-96-8-28-1-44 17-71 8z" fill="#4f2d19"/>
+    <path d="M0 122c33-18 55 5 90-3 35-9 49-23 88-7 24 10 39 8 62-5v17c-24 12-39 16-63 6-38-16-54-1-88 7-35 8-56-15-89 3z" fill="#8a552c"/>
+  </g>
+  <g opacity="0.25">
+    <path d="M18 0v160M76 0v160M133 0v160M196 0v160" stroke="#110704" stroke-width="2"/>
+    <path d="M20 0v160M78 0v160M135 0v160M198 0v160" stroke="#6e4122" stroke-width="1"/>
+  </g>
+</svg>

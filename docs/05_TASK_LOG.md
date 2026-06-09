@@ -965,3 +965,41 @@ The README now presents the project as a public bilingual GitHub artifact and re
 ### Next Step
 
 Run typecheck, lint, and build, then commit and push the safe tracked project scope to GitHub.
+
+## 2026-06-06 - RAWG Data Script Proxy Support
+
+### Goal
+
+Fix `npm run data:rawg` network failures caused by Node fetch not automatically using local proxy environment variables, and improve RAWG script error diagnostics.
+
+### Files Changed
+
+- `scripts/fetch-rawg-games.mjs`: added `undici` `ProxyAgent` / `setGlobalDispatcher` support for `HTTPS_PROXY`, `HTTP_PROXY`, and `ALL_PROXY`; added structured error output with redacted RAWG API key URLs.
+- `package.json`: added `undici` as a runtime dependency for the local RAWG data script.
+- `package-lock.json`: recorded the installed `undici` dependency.
+- `README.md`: documented proxy environment variables before running `npm run data:rawg`.
+- `docs/03_ARCHITECTURE.md`: documented proxy-aware RAWG script transport and structured error output.
+- `docs/05_TASK_LOG.md`: appended this task record.
+
+### Implementation Summary
+
+The RAWG generation script now reads proxy configuration from the shell environment and installs a global undici dispatcher before making any RAWG request. Network and HTTP failures now print error name, error message, cause message, HTTP status, response body preview, and a redacted request URL when available.
+
+### Documentation Updated
+
+- `README.md`
+- `docs/03_ARCHITECTURE.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `npm run typecheck`.
+- Passed `npm run lint`.
+- Passed `npm run build`.
+- Ran `npm run data:rawg` with a shell-provided fake `RAWG_API_KEY` and `HTTPS_PROXY` / `HTTP_PROXY` / `ALL_PROXY` set to `http://127.0.0.1:7890`, so `.env.local` was not read.
+- Verified the script reports the selected proxy variable, structured error fields, a nested cause message, no HTTP status when no response is received, no response body when unavailable, and a request URL with the RAWG key redacted.
+- Full RAWG data generation with a real key was not run because this task must not read `.env.local` or expose the API key.
+
+### Next Step
+
+Run `HTTPS_PROXY=http://127.0.0.1:7890 HTTP_PROXY=http://127.0.0.1:7890 ALL_PROXY=http://127.0.0.1:7890 npm run data:rawg` locally with a valid RAWG API key configured in the shell or `.env.local`.

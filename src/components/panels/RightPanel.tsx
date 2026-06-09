@@ -1,5 +1,6 @@
 import { CountryPanel } from "@/components/panels/CountryPanel";
 import { CountryDetailPanel } from "@/components/panels/CountryDetailPanel";
+import { GlobalGameGallery } from "@/components/panels/GlobalGameGallery";
 import type { Country, Game, YearRange } from "@/types/game";
 
 type RightPanelProps = {
@@ -40,12 +41,21 @@ export function RightPanel({
           onSelectGame={onSelectGame}
         />
       ) : (
-        <CountryPanel
-          countries={countries}
-          games={games}
-          selectedCountryCode={selectedCountryCode}
-          onSelectCountry={onSelectCountry}
-        />
+        <>
+          <CountryPanel
+            countries={countries}
+            games={games}
+            selectedCountryCode={selectedCountryCode}
+            onSelectCountry={onSelectCountry}
+          />
+          {games.length > 0 ? (
+            <GlobalGameGallery
+              games={games}
+              selectedGameId={selectedGameId}
+              onSelectGame={onSelectGame}
+            />
+          ) : null}
+        </>
       )}
     </aside>
   );
