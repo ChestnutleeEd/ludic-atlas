@@ -84,7 +84,7 @@ A user drags a year slider to explore games from different periods.
 
 ### Scenario 5: Browse the game chronology
 
-A user opens Game Chronicle / 游戏编年馆 and browses the generated global game list through a large horizontal 2010-2026 year cabinet timeline, title search, genre filters, platform filters, and rating. Clicking a year opens a Year Exhibition / 年份展柜 modal for that year's games and dossier details.
+A user opens Game Chronicle / 游戏编年馆 and browses the generated global game list through an immersive archive hall, sticky collection index, scroll-narrative year cabinets, title search, genre filters, platform filters, and rating sort. Clicking a year opens a large Year Dossier / 年份档案抽屉 for that year's games and dossier details.
 
 ### Scenario 6: Choose an exploration mode
 
@@ -124,7 +124,7 @@ The first version should include:
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 
-Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. It groups filtered games by `releaseYear`, shows a large horizontal year cabinet timeline with year counts and cover previews, supports title search, multi-select genre / platform OR filters, year-desc and rating-desc sorting, opens the selected year in a museum-style Year Exhibition modal, and shows either a year overview or selected-game museum dossier card.
+Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. It groups filtered games by `releaseYear`, shows scroll-narrative year cabinets with year counts and cover previews, supports title search, multi-select genre / platform OR filters, year-desc and rating-desc sorting, opens the selected year in a museum-style Year Dossier drawer, and shows a year overview plus the selected-game museum dossier card.
 
 ## MVP Data Fields
 

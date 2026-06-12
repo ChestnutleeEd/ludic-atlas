@@ -3,6 +3,8 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "motion/react";
 import { ArchiveDossier } from "@/components/archive/ArchiveDossier";
 import {
   getGameDisplayTitle,
@@ -30,18 +32,32 @@ function formatRating(rating: number) {
   return Number.isFinite(rating) ? rating.toFixed(1) : "0.0";
 }
 
+function getCoverFallbackLabel(title: string) {
+  return title.trim().charAt(0).toUpperCase() || "No Cover";
+}
+
 export function ArchiveYearModal({
   group,
   selectedGameId,
   onClose,
   onSelectGame
 }: ArchiveYearModalProps) {
+  const featuredGame = useMemo(
+    () => [...group.games].sort((a, b) => b.rating - a.rating)[0] ?? null,
+    [group.games]
+  );
   const selectedGame = useMemo(
-    () => group.games.find((game) => game.id === selectedGameId) ?? null,
-    [group.games, selectedGameId]
+    () =>
+      group.games.find((game) => game.id === selectedGameId) ??
+      featuredGame,
+    [featuredGame, group.games, selectedGameId]
   );
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onClose();
@@ -50,12 +66,18 @@ export function ArchiveYearModal({
 
     window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [onClose]);
 
-  return (
-    <div
+  const modal = (
+    <motion.div
       className="chronicle-year-modal"
+      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           onClose();
@@ -63,17 +85,21 @@ export function ArchiveYearModal({
       }}
       role="presentation"
     >
-      <section
+      <motion.section
         aria-label={`${group.year ?? "Unknown Year"} 年份展柜`}
-        className="chronicle-year-modal-panel"
+        aria-modal="true"
+        className="chronicle-year-modal-panel chronicle-year-drawer-panel"
+        exit={{ opacity: 0, x: 80, rotateY: -4 }}
+        initial={{ opacity: 0, x: 110, rotateY: -6 }}
+        animate={{ opacity: 1, x: 0, rotateY: 0 }}
+        transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
         role="dialog"
       >
         <header className="chronicle-modal-header">
           <span className="brass-drawer-handle" aria-hidden="true" />
           <div>
-            <p className="archive-brass-label archive-kicker">Year Exhibition</p>
+            <p className="archive-brass-label archive-kicker">年份档案抽屉</p>
             <h3>
-              Year Exhibition · {group.year ?? "Unknown Year"} /{" "}
               {group.year ?? "Unknown Year"} 年馆藏
             </h3>
           </div>
@@ -87,36 +113,54 @@ export function ArchiveYearModal({
             onClick={onClose}
             type="button"
           >
-            Close
+            关闭
           </button>
         </header>
 
         <div className="chronicle-modal-body">
+          <section className="chronicle-year-exhibit-hero">
+            <div>
+              <p className="archive-brass-label archive-kicker">年度展陈</p>
+              <h4>{group.year ?? "Unknown Year"} · 时光展柜</h4>
+              <p>
+                默认聚焦该年份评分最高的馆藏作品。选择封面卡片可切换右侧游戏档案。
+              </p>
+            </div>
+            <div className="chronicle-year-exhibit-stat">
+              <span>{group.games.length}</span>
+              <strong>馆藏作品</strong>
+            </div>
+          </section>
           <div className="chronicle-exhibition-grid">
-            {group.games.map((game) => (
+            {group.games.map((game, index) => (
               <ArchiveExhibitionCard
                 game={game}
                 isSelected={game.id === selectedGame?.id}
                 key={game.id}
                 onSelectGame={onSelectGame}
+                index={index}
               />
             ))}
           </div>
 
           <ArchiveDossier group={group} selectedGame={selectedGame} />
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
+
+  return createPortal(modal, document.body);
 }
 
 function ArchiveExhibitionCard({
   game,
   isSelected,
+  index,
   onSelectGame
 }: {
   game: Game;
   isSelected: boolean;
+  index: number;
   onSelectGame: (gameId: string | null) => void;
 }) {
   const title = getGameDisplayTitle(game);
@@ -125,22 +169,31 @@ function ArchiveExhibitionCard({
   const platforms = splitArchiveTags(game.platforms).slice(0, 2);
 
   return (
-    <button
+    <motion.button
       className={`chronicle-display-card ${isSelected ? "is-selected" : ""}`}
+      initial={{ opacity: 0, y: 22 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.025, 0.28), duration: 0.32 }}
       onClick={() => onSelectGame(game.id)}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.985 }}
       type="button"
     >
-      {isSelected ? <span className="archive-selected-chip">On Display</span> : null}
+      {isSelected ? <span className="archive-selected-chip">展陈中</span> : null}
       <span className="archive-cover-frame chronicle-card-cover">
-        <span className="archive-cover-fallback">{title}</span>
+        <span className="archive-cover-fallback">
+          {getCoverFallbackLabel(title)}
+        </span>
         {game.coverImage ? (
           <img
             alt={`${title} 封面`}
+            height={500}
             loading="lazy"
             onError={(event) => {
               event.currentTarget.style.display = "none";
             }}
             src={game.coverImage}
+            width={400}
           />
         ) : null}
       </span>
@@ -158,6 +211,6 @@ function ArchiveExhibitionCard({
           {platforms.length > 0 ? platforms.join(" / ") : "平台未知"}
         </span>
       </span>
-    </button>
+    </motion.button>
   );
 }

@@ -10,6 +10,8 @@ The first MVP should use:
 - React 19.2.7
 - ESLint 9.39.4
 - `react-globe.gl` + Three.js for real interactive 3D earth rendering
+- `motion` for lightweight UI state transitions, hover motion, layout animation, and archive drawer entry / exit
+- `gsap` for Game Chronicle scene-level entry choreography and scroll-reveal sequencing
 - `undici` for RAWG data script proxy-aware fetch transport
 - SVG + CSS transforms remain available only in the legacy 2.5D earth component
 - Local generated / mock data
@@ -88,6 +90,7 @@ Data generation files:
 
 ```txt
 scripts/fetch-rawg-games.mjs
+scripts/cache-rawg-covers.mjs
 scripts/rawg-seeds.mjs
 ```
 
@@ -99,9 +102,9 @@ src/app/layout.tsx	App Router root layout, page metadata, and favicon metadata.
 src/app/globals.css	Global Tailwind import and base visual tokens.
 src/components/GameEarthApp.tsx	Main product shell. Owns top-level UI state and layout.
 src/components/home/LandingHub.tsx	Renders the Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrance cards.
-src/components/archive/GameArchiveView.tsx	Renders Game Chronicle data preparation, local title search, multi-label genre / platform filters, year grouping, selected year modal state, sorting, and selected game archive details.
-src/components/archive/ArchiveTimeline.tsx	Renders the large horizontal year cabinet timeline with filtered counts and cover previews.
-src/components/archive/ArchiveYearModal.tsx	Renders the selected year exhibition modal, selected-year game card grid, close behavior, and selected game handoff.
+src/components/archive/GameArchiveView.tsx	Renders Game Chronicle data preparation, local title search, multi-label genre / platform filters, year grouping, selected year drawer state, sorting, immersive archive hero, sticky collection index, and selected game archive details.
+src/components/archive/ArchiveTimeline.tsx	Renders the scroll-narrative year cabinet exhibition with filtered counts, average rating, top genre, and cover previews.
+src/components/archive/ArchiveYearModal.tsx	Renders the selected year dossier drawer, selected-year game card grid, close behavior, body scroll lock, and selected game handoff.
 src/components/archive/ArchiveYearDrawer.tsx	Legacy active-year drawer component retained on disk but no longer rendered by the current Game Chronicle view.
 src/components/archive/ArchiveDossier.tsx	Renders the modal dossier panel, showing either selected-year overview stats or selected game details.
 src/components/globe/GameGlobe2D.tsx	Legacy SVG 2.5D planet map component retained on disk but not exposed by the current main UI.
@@ -120,6 +123,7 @@ src/components/controls/ViewModeToggle.tsx	Switches marker display mode.
 src/data/games.ts	Stable frontend game data export.
 src/data/games.generated.ts	Generated local static game data. Overwritten by `npm run data:rawg`.
 src/data/games.mock.ts	Stable original mock game data fallback.
+scripts/cache-rawg-covers.mjs	Downloads generated RAWG cover URLs into `public/covers/rawg/` and rewrites `coverImage` to local static paths.
 src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
 src/lib/stats.ts	Pure statistics functions.
@@ -161,11 +165,14 @@ Game Chronicle behavior:
 * The component keeps search, selected genre filters, selected platform filters, and sort mode as local state.
 * Genre and platform filter options are built by splitting each game's `genres` and `platforms` arrays into individual tags. If a legacy tag string contains `/`, it is split before counting and filtering.
 * Multi-select genre and platform filters use OR logic inside each filter category. When no genre or no platform is selected, that category does not filter the list.
-* Filtered games are grouped by valid `releaseYear`, with invalid years placed under `Unknown Year`; year groups render as a large horizontal year cabinet timeline with filtered counts and 3-5 cover previews.
-* The main Game Chronicle page does not render full game card lists. Clicking a year opens `ArchiveYearModal`, which shows only that year's game cards and a right-side dossier panel.
-* If no game is selected inside the year modal, `ArchiveDossier` shows selected-year overview stats: record count, average rating, top genres, top platforms, and a prompt to choose a card. If a game is selected, it shows the selected game cover, year, rating, genres, platforms, and description.
+* Filtered games are grouped by valid `releaseYear`, with invalid years placed under `Unknown Year`; year groups render as a scroll-narrative year cabinet exhibition with filtered counts, average rating, top genre, and 3-5 cover previews.
+* The Game Chronicle page uses `public/images/archive/archive-hall-bg-v1.png` as an immersive archive hall background. Interactive text, filters, year cabinets, and drawer content remain DOM / CSS rather than baked into the generated image.
+* `GameArchiveView` uses GSAP only for scene-level page entry and year cabinet scroll reveal. It avoids controlling the same transforms that `motion` controls for hover and drawer interactions.
+* The main Game Chronicle page does not render full game card lists. Clicking a year opens `ArchiveYearModal`, which behaves as a right-side dossier drawer and locks background body scroll while open.
+* `ArchiveYearModal` defaults the focused game to the selected year's highest-rated game when the user has not selected a specific game card.
+* `ArchiveDossier` always shows selected-year overview stats: record count, average rating, top genres, and top platforms. When a game is selected, it also shows the selected game cover, archive id, year, country / region, rating, developer, publisher, genres, platforms, and description. Missing descriptions use a designed empty archive state and do not fabricate copy.
 * `year-desc` is the default sort mode. `rating-desc` sorts each year group by rating descending.
-* Game covers render with regular `<img loading="lazy">` to avoid Next remote image domain configuration for RAWG URLs.
+* Game covers render with regular `<img loading="lazy">`. After `npm run data:covers`, generated RAWG covers are local `/covers/rawg/...` static paths instead of remote `media.rawg.io` URLs.
 
 Legacy 2.5D globe behavior:
 
@@ -218,9 +225,11 @@ RAWG is integrated as a build-time / local generation source, not as a browser r
 * `scripts/fetch-rawg-games.mjs` configures an `undici` `ProxyAgent` through `setGlobalDispatcher` when `HTTPS_PROXY`, `HTTP_PROXY`, or `ALL_PROXY` is present. This keeps proxy configuration in the shell environment instead of hard-coding local network settings.
 * RAWG script errors are printed with structured fields: error name, error message, cause message, HTTP status when available, and the first 300 characters of any response body. RAWG API keys in request URLs are redacted before output.
 * The script fetches RAWG game details, maps them into the existing `Game` type, and overwrites `src/data/games.generated.ts`.
+* `scripts/cache-rawg-covers.mjs` reads `src/data/games.generated.ts`, downloads remote `coverImage` URLs into `public/covers/rawg/`, skips existing non-empty cover files, and rewrites successful records to `/covers/rawg/...`.
+* The cover cache script uses shell proxy variables through `undici.ProxyAgent`, does not read `.env.local`, does not require a RAWG API key, and keeps failed cover URLs unchanged.
 * `src/data/games.ts` remains the only frontend data import path and exports the generated local module.
 * `.env.local` is ignored by Git, so the RAWG API key is not bundled or committed.
-* The frontend may render RAWG remote `background_image` URLs as `coverImage`, but components must not call RAWG APIs directly.
+* The frontend should prefer cached local RAWG cover paths as `coverImage`; components must not call RAWG APIs directly.
 
 Data Flow
 

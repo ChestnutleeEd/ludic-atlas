@@ -63,8 +63,8 @@ If the task involves product scope, read:
 | `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
 | `src/lib/`                 | Filtering, statistics, country mapping, utility functions |
 | `src/types/`               | TypeScript data types                                     |
-| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, and future game cover images under `public/covers/` |
-| `scripts/`                 | Local data generation scripts, including RAWG static data generation |
+| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, and future game cover images under `public/covers/` |
+| `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
 | `docs/`                    | Project planning and architecture documents               |
 
 ## Project Setup Files
@@ -128,8 +128,10 @@ http://localhost:3000
 | Stable mock game fallback | `src/data/games.mock.ts` |
 | RAWG seed list       | `scripts/rawg-seeds.mjs`          |
 | RAWG generation script | `scripts/fetch-rawg-games.mjs`   |
+| RAWG cover cache script | `scripts/cache-rawg-covers.mjs` |
 | Mock country data    | `src/data/countries.ts`           |
 | Future cover assets  | `public/covers/README.md`         |
+| Cached RAWG cover assets | `public/covers/rawg/`         |
 | Browser favicon      | `public/favicon.svg`              |
 | Game Chronicle wood texture | `public/textures/archive-wood.svg` |
 | Game Chronicle noise texture | `public/textures/archive-noise.svg` |
@@ -137,6 +139,7 @@ http://localhost:3000
 | Game Chronicle walnut texture | `public/textures/walnut-wood.svg` |
 | Game Chronicle paper texture | `public/textures/archive-paper.svg` |
 | Game Chronicle brass texture | `public/textures/brass-noise.svg` |
+| Game Chronicle generated archive hall background | `public/images/archive/archive-hall-bg-v1.png` |
 | MVP country border data | `public/data/mock-countries.geojson` |
 | Lightweight world country border data | `public/data/world-countries-lite.geojson` |
 | Full source country border data | `public/data/countries.geojson` |
@@ -155,8 +158,8 @@ http://localhost:3000
 | Main product shell        | `src/components/GameEarthApp.tsx`              |
 | Landing hub               | `src/components/home/LandingHub.tsx`           |
 | Game Chronicle view       | `src/components/archive/GameArchiveView.tsx`   |
-| Archive timeline          | `src/components/archive/ArchiveTimeline.tsx`   |
-| Archive year exhibition modal | `src/components/archive/ArchiveYearModal.tsx` |
+| Archive scroll exhibition timeline | `src/components/archive/ArchiveTimeline.tsx`   |
+| Archive year dossier drawer | `src/components/archive/ArchiveYearModal.tsx` |
 | Archive active year drawer | `src/components/archive/ArchiveYearDrawer.tsx` |
 | Archive dossier panel     | `src/components/archive/ArchiveDossier.tsx`    |
 | Legacy 2.5D earth map view | `src/components/globe/GameGlobe2D.tsx`        |
@@ -174,6 +177,7 @@ http://localhost:3000
 | View mode toggle          | `src/components/controls/ViewModeToggle.tsx`   |
 | Game data export          | `src/data/games.ts`                            |
 | Generated RAWG game data  | `src/data/games.generated.ts`                  |
+| RAWG cover cache script   | `scripts/cache-rawg-covers.mjs`                |
 | Stable mock game fallback | `src/data/games.mock.ts`                       |
 | Country mock data         | `src/data/countries.ts`                        |
 | Data types                | `src/types/game.ts`                            |

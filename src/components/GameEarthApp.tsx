@@ -85,10 +85,20 @@ export function GameEarthApp() {
   }
 
   return (
-    <main className="game-earth-shell min-h-screen overflow-x-hidden px-5 py-5 text-slate-100 md:px-8">
+    <main
+      className={`game-earth-shell min-h-screen overflow-x-hidden text-slate-100 ${
+        mainViewMode === "archive" ? "p-0" : "px-5 py-5 md:px-8"
+      }`}
+    >
       <div className="deep-space-backdrop pointer-events-none fixed inset-0" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(245,250,255,0.08),transparent_28%),radial-gradient(circle_at_76%_16%,rgba(125,245,255,0.055),transparent_26%),radial-gradient(circle_at_52%_88%,rgba(245,250,255,0.045),transparent_34%)]" />
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-40px)] max-w-7xl flex-col gap-4">
+      <div
+        className={`relative z-10 mx-auto flex flex-col gap-4 ${
+          mainViewMode === "archive"
+            ? "min-h-screen w-full max-w-none"
+            : "min-h-[calc(100vh-40px)] max-w-7xl"
+        }`}
+      >
         {mainViewMode === "hub" ? (
           <LandingHub
             totalGames={totalStats.totalGames}
@@ -101,6 +111,7 @@ export function GameEarthApp() {
           />
         ) : (
           <>
+        {mainViewMode === "earth" ? (
         <header className="glass-panel relative overflow-hidden p-4">
           <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan-200/80 to-transparent" />
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -113,14 +124,10 @@ export function GameEarthApp() {
                 返回游戏星图
               </button>
               <h1 className="text-3xl font-semibold tracking-normal text-sky-50 drop-shadow-[0_0_22px_rgba(0,240,255,0.42)] md:text-5xl">
-                {mainViewMode === "earth"
-                  ? "Earth Explorer / 地球探索"
-                  : "Game Chronicle / 游戏编年馆"}
+                Earth Explorer / 地球探索
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-cyan-50/70">
-                {mainViewMode === "earth"
-                  ? "在 3D 地球上按国家与地区探索全球代表性游戏。"
-                  : "沿着年代线索浏览全球高分游戏馆藏。"}
+                在 3D 地球上按国家与地区探索全球代表性游戏。
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-sm md:w-[32rem]">
@@ -145,6 +152,7 @@ export function GameEarthApp() {
             </div>
           </div>
         </header>
+        ) : null}
 
         {mainViewMode === "earth" ? (
           <section className="grid flex-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -176,6 +184,7 @@ export function GameEarthApp() {
         ) : (
           <GameArchiveView
             games={games}
+            onBackToHub={() => setMainViewMode("hub")}
             selectedGameId={selectedGameId}
             onSelectGame={setSelectedGameId}
           />

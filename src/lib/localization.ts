@@ -55,7 +55,13 @@ export function getGameDisplayTitle(game: Game) {
 }
 
 export function getGameSecondaryTitle(game: Game) {
-  return game.titleZh ? game.title : null;
+  if (!game.titleZh) {
+    return null;
+  }
+
+  return game.titleZh.trim().toLowerCase() === game.title.trim().toLowerCase()
+    ? null
+    : game.title;
 }
 
 export function getGenreLabel(genre: string) {

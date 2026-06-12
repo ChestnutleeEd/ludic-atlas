@@ -2450,6 +2450,467 @@ select {
   transform: translateY(-3px);
 }
 
+.game-chronicle-shell.archive-shell {
+  width: 100%;
+  min-height: calc(100vh - 40px);
+  animation: none;
+  border-radius: 0;
+}
+
+.game-chronicle-shell .archive-layout {
+  min-height: calc(100vh - 40px);
+  padding: clamp(14px, 2vw, 28px);
+}
+
+.chrono-archive-vintage .archive-back-button {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 12px;
+  border: 1px solid rgba(255, 238, 185, 0.46);
+  background:
+    linear-gradient(135deg, rgba(225, 189, 105, 0.94), rgba(115, 68, 27, 0.88)),
+    url("/textures/brass-noise.svg");
+  background-size:
+    auto,
+    180px 120px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 214, 0.28),
+    0 8px 18px rgba(0, 0, 0, 0.28);
+  padding: 8px 11px;
+  color: #241006;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.chrono-archive-vintage .archive-back-button:hover,
+.chrono-archive-vintage .archive-back-button:focus-visible {
+  border-color: rgba(255, 248, 218, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 214, 0.34),
+    0 10px 24px rgba(0, 0, 0, 0.34),
+    0 0 18px rgba(225, 189, 105, 0.16);
+  transform: translateY(-1px);
+}
+
+.chrono-archive-vintage .archive-terminal-controls {
+  grid-template-columns: minmax(220px, 1fr) minmax(170px, 220px);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.chrono-archive-vintage .archive-field > span {
+  color: rgba(255, 240, 204, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.chrono-archive-vintage .archive-field input,
+.chrono-archive-vintage .archive-field select {
+  min-height: 46px;
+  border-color: rgba(200, 148, 69, 0.48);
+  background:
+    linear-gradient(180deg, rgba(218, 196, 145, 0.96), rgba(154, 120, 72, 0.92)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.42),
+    inset 0 -10px 20px rgba(64, 30, 12, 0.12),
+    0 8px 18px rgba(0, 0, 0, 0.18);
+  color: #241006;
+}
+
+.chrono-archive-vintage .archive-field input::placeholder {
+  color: rgba(41, 23, 14, 0.48);
+}
+
+.chrono-archive-vintage .archive-field input:focus,
+.chrono-archive-vintage .archive-field select:focus {
+  border-color: rgba(255, 238, 185, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.48),
+    0 0 0 1px rgba(225, 189, 105, 0.22),
+    0 0 22px rgba(225, 189, 105, 0.16);
+}
+
+.chrono-archive-vintage .archive-filter-grid {
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.chrono-archive-vintage .archive-filter-panel {
+  overflow: hidden;
+  border-color: rgba(200, 148, 69, 0.38);
+  background:
+    linear-gradient(135deg, rgba(46, 19, 9, 0.9), rgba(18, 7, 4, 0.9)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    420px 289px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 185, 0.12),
+    0 14px 32px rgba(0, 0, 0, 0.24);
+  padding: 14px;
+}
+
+.chrono-archive-vintage .archive-filter-heading {
+  border-bottom: 1px solid rgba(225, 189, 105, 0.16);
+  padding-bottom: 10px;
+}
+
+.chrono-archive-vintage .archive-filter-heading span {
+  border: 1px solid rgba(225, 189, 105, 0.2);
+  background: rgba(20, 8, 4, 0.42);
+  padding: 4px 7px;
+  color: rgba(255, 240, 204, 0.52);
+}
+
+.chrono-archive-vintage .archive-tag-list {
+  max-height: 154px;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 4px 4px 6px;
+}
+
+.chrono-archive-vintage .archive-tag-button {
+  position: relative;
+  min-height: 32px;
+  border-radius: 2px 2px 0 0;
+  padding: 8px 11px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.42),
+    0 5px 10px rgba(0, 0, 0, 0.24);
+}
+
+.chrono-archive-vintage .archive-tag-button::after {
+  position: absolute;
+  right: 8px;
+  bottom: 3px;
+  left: 8px;
+  height: 1px;
+  content: "";
+  background: rgba(65, 35, 17, 0.18);
+}
+
+.chrono-archive-vintage .archive-tag-button:hover,
+.chrono-archive-vintage .archive-tag-button:focus-visible {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.48),
+    0 8px 18px rgba(0, 0, 0, 0.26),
+    0 0 18px rgba(225, 189, 105, 0.16);
+}
+
+.chrono-archive-vintage .archive-tag-button.is-active {
+  transform: translateY(-5px);
+}
+
+.chrono-archive-vintage .chronicle-thumb {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(216, 192, 139, 0.94), rgba(154, 114, 62, 0.94)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+}
+
+.chrono-archive-vintage .chronicle-thumb-fallback,
+.chrono-archive-vintage .archive-cover-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, rgba(218, 196, 145, 0.96), rgba(154, 120, 72, 0.92)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+  color: rgba(41, 23, 14, 0.72);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.chrono-archive-vintage .archive-cover-fallback {
+  z-index: 0;
+  padding: 12px;
+  text-align: center;
+}
+
+.chrono-archive-vintage .archive-dossier-cover .archive-cover-fallback {
+  font-size: 42px;
+}
+
+.chrono-archive-vintage .chronicle-thumb img,
+.chrono-archive-vintage .chronicle-card-cover img,
+.chrono-archive-vintage .archive-dossier-cover img {
+  position: relative;
+  z-index: 1;
+}
+
+.chrono-archive-vintage .chronicle-year-modal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  padding: clamp(10px, 2vw, 24px);
+  animation: chronicle-overlay-fade 180ms ease-out both;
+}
+
+.chrono-archive-vintage .chronicle-year-modal-panel {
+  display: flex;
+  width: min(96vw, 1500px);
+  height: min(90vh, 900px);
+  max-height: none;
+  flex-direction: column;
+  animation: chronicle-modal-scale 220ms ease-out both;
+}
+
+.chrono-archive-vintage .chronicle-modal-header {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.chrono-archive-vintage .chronicle-modal-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  min-height: 0;
+  flex: 1 1 auto;
+  max-height: none;
+  overflow: hidden;
+}
+
+.chrono-archive-vintage .chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  align-content: start;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.chrono-archive-vintage .chronicle-display-card {
+  display: flex;
+  height: max-content;
+  min-height: 438px;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.chrono-archive-vintage .chronicle-card-cover {
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 5;
+}
+
+.chrono-archive-vintage .chronicle-card-label {
+  flex: 0 0 auto;
+  min-height: 154px;
+  overflow: visible;
+}
+
+.chrono-archive-vintage .chronicle-card-label strong {
+  -webkit-line-clamp: 3;
+}
+
+.chrono-archive-vintage .chronicle-card-label em {
+  display: block;
+  white-space: nowrap;
+}
+
+.chrono-archive-vintage .chronicle-card-tags {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.chrono-archive-vintage .chronicle-card-meta {
+  min-height: 22px;
+}
+
+.chrono-archive-vintage .chronicle-modal-dossier {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body .chronicle-year-modal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  padding: clamp(10px, 2vw, 24px);
+  animation: chronicle-overlay-fade 180ms ease-out both;
+}
+
+body .chronicle-year-modal-panel {
+  display: flex;
+  width: min(96vw, 1500px);
+  height: min(90vh, 900px);
+  max-height: none;
+  flex-direction: column;
+  animation: chronicle-modal-scale 220ms ease-out both;
+}
+
+body .chronicle-modal-header {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+body .chronicle-modal-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  min-height: 0;
+  flex: 1 1 auto;
+  max-height: none;
+  overflow: hidden;
+}
+
+body .chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  align-content: start;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body .chronicle-display-card {
+  display: flex;
+  height: max-content;
+  min-height: 438px;
+  min-width: 0;
+  flex-direction: column;
+}
+
+body .chronicle-card-cover {
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 5;
+}
+
+body .chronicle-card-label {
+  flex: 0 0 auto;
+  min-height: 154px;
+  overflow: visible;
+}
+
+body .chronicle-card-label strong {
+  -webkit-line-clamp: 3;
+}
+
+body .chronicle-card-label em {
+  display: block;
+  white-space: nowrap;
+}
+
+body .chronicle-card-tags {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+body .chronicle-card-meta {
+  min-height: 22px;
+}
+
+body .chronicle-modal-dossier {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@keyframes chronicle-overlay-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes chronicle-modal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  body .chronicle-year-modal-panel,
+  .chrono-archive-vintage .chronicle-year-modal-panel {
+    width: min(96vw, 1500px);
+    height: min(90vh, 900px);
+    max-height: none;
+  }
+
+  body .chronicle-modal-body,
+  .chrono-archive-vintage .chronicle-modal-body {
+    min-height: 0;
+    max-height: none;
+  }
+
+  .chrono-archive-vintage .archive-terminal-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  body .chronicle-modal-header,
+  .chrono-archive-vintage .chronicle-modal-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  body .chronicle-modal-header .brass-drawer-handle,
+  body .chronicle-modal-count,
+  .chrono-archive-vintage .chronicle-modal-header .brass-drawer-handle,
+  .chrono-archive-vintage .chronicle-modal-count {
+    display: none;
+  }
+
+  body .chronicle-modal-body,
+  .chrono-archive-vintage .chronicle-modal-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  body .chronicle-exhibition-grid,
+  body .chronicle-modal-dossier,
+  .chrono-archive-vintage .chronicle-exhibition-grid,
+  .chrono-archive-vintage .chronicle-modal-dossier {
+    overflow-y: visible;
+  }
+
+  body .chronicle-display-card,
+  .chrono-archive-vintage .chronicle-display-card {
+    min-height: 410px;
+  }
+
+  body .chronicle-card-label,
+  .chrono-archive-vintage .chronicle-card-label {
+    flex-basis: auto;
+    min-height: 148px;
+  }
+}
+
 .chrono-archive-vintage .archive-clear-button {
   border-color: rgba(225, 189, 105, 0.54);
   background:
@@ -3292,7 +3753,7 @@ select {
 .chronicle-display-card {
   position: relative;
   display: grid;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(138, 86, 39, 0.64);
   background:
     linear-gradient(135deg, rgba(73, 31, 13, 0.9), rgba(24, 9, 4, 0.88)),
@@ -3850,6 +4311,318 @@ select {
   scrollbar-color: rgba(104, 59, 26, 0.54) rgba(209, 181, 119, 0.42);
 }
 
+.game-chronicle-shell.archive-shell {
+  width: 100%;
+  min-height: calc(100vh - 40px);
+  border-radius: 0;
+}
+
+.game-chronicle-shell .archive-layout {
+  min-height: calc(100vh - 40px);
+  padding: clamp(14px, 2vw, 28px);
+}
+
+.archive-back-button {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 12px;
+  border: 1px solid rgba(255, 238, 185, 0.46);
+  background:
+    linear-gradient(135deg, rgba(225, 189, 105, 0.94), rgba(115, 68, 27, 0.88)),
+    url("/textures/brass-noise.svg");
+  background-size:
+    auto,
+    180px 120px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 214, 0.28),
+    0 8px 18px rgba(0, 0, 0, 0.28);
+  padding: 8px 11px;
+  color: #241006;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.archive-back-button:hover,
+.archive-back-button:focus-visible {
+  border-color: rgba(255, 248, 218, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 214, 0.34),
+    0 10px 24px rgba(0, 0, 0, 0.34),
+    0 0 18px rgba(225, 189, 105, 0.16);
+  transform: translateY(-1px);
+}
+
+.chrono-archive-vintage .archive-terminal-controls {
+  grid-template-columns: minmax(220px, 1fr) minmax(170px, 220px);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.chrono-archive-vintage .archive-field > span {
+  color: rgba(255, 240, 204, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.chrono-archive-vintage .archive-field input,
+.chrono-archive-vintage .archive-field select {
+  min-height: 46px;
+  border-color: rgba(200, 148, 69, 0.48);
+  background:
+    linear-gradient(180deg, rgba(218, 196, 145, 0.96), rgba(154, 120, 72, 0.92)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.42),
+    inset 0 -10px 20px rgba(64, 30, 12, 0.12),
+    0 8px 18px rgba(0, 0, 0, 0.18);
+  color: #241006;
+}
+
+.chrono-archive-vintage .archive-field input::placeholder {
+  color: rgba(41, 23, 14, 0.48);
+}
+
+.chrono-archive-vintage .archive-field input:focus,
+.chrono-archive-vintage .archive-field select:focus {
+  border-color: rgba(255, 238, 185, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.48),
+    0 0 0 1px rgba(225, 189, 105, 0.22),
+    0 0 22px rgba(225, 189, 105, 0.16);
+}
+
+.chrono-archive-vintage .archive-filter-grid {
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.chrono-archive-vintage .archive-filter-panel {
+  overflow: hidden;
+  border-color: rgba(200, 148, 69, 0.38);
+  background:
+    linear-gradient(135deg, rgba(46, 19, 9, 0.9), rgba(18, 7, 4, 0.9)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    420px 289px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 185, 0.12),
+    0 14px 32px rgba(0, 0, 0, 0.24);
+  padding: 14px;
+}
+
+.chrono-archive-vintage .archive-filter-heading {
+  border-bottom: 1px solid rgba(225, 189, 105, 0.16);
+  padding-bottom: 10px;
+}
+
+.chrono-archive-vintage .archive-filter-heading span {
+  border: 1px solid rgba(225, 189, 105, 0.2);
+  background: rgba(20, 8, 4, 0.42);
+  padding: 4px 7px;
+  color: rgba(255, 240, 204, 0.52);
+}
+
+.chrono-archive-vintage .archive-tag-list {
+  max-height: 154px;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 4px 4px 6px;
+}
+
+.chrono-archive-vintage .archive-tag-button {
+  position: relative;
+  min-height: 32px;
+  border-radius: 2px 2px 0 0;
+  padding: 8px 11px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.42),
+    0 5px 10px rgba(0, 0, 0, 0.24);
+}
+
+.chrono-archive-vintage .archive-tag-button::after {
+  position: absolute;
+  right: 8px;
+  bottom: 3px;
+  left: 8px;
+  height: 1px;
+  content: "";
+  background: rgba(65, 35, 17, 0.18);
+}
+
+.chrono-archive-vintage .archive-tag-button:hover,
+.chrono-archive-vintage .archive-tag-button:focus-visible {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.48),
+    0 8px 18px rgba(0, 0, 0, 0.26),
+    0 0 18px rgba(225, 189, 105, 0.16);
+}
+
+.chrono-archive-vintage .archive-tag-button.is-active {
+  transform: translateY(-5px);
+}
+
+.chronicle-thumb {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(216, 192, 139, 0.94), rgba(154, 114, 62, 0.94)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+}
+
+.chronicle-thumb-fallback,
+.archive-cover-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, rgba(218, 196, 145, 0.96), rgba(154, 120, 72, 0.92)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+  color: rgba(41, 23, 14, 0.72);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.archive-cover-fallback {
+  z-index: 0;
+  padding: 12px;
+  text-align: center;
+}
+
+.archive-dossier-cover .archive-cover-fallback {
+  font-size: 42px;
+}
+
+.chronicle-thumb img,
+.chronicle-card-cover img,
+.archive-dossier-cover img {
+  position: relative;
+  z-index: 1;
+}
+
+.chronicle-year-modal {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  padding: clamp(10px, 2vw, 24px);
+  animation: chronicle-overlay-fade 180ms ease-out both;
+}
+
+.chronicle-year-modal-panel {
+  display: flex;
+  width: min(96vw, 1500px);
+  height: min(90vh, 900px);
+  max-height: none;
+  flex-direction: column;
+  animation: chronicle-modal-scale 220ms ease-out both;
+}
+
+.chronicle-modal-header {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.chronicle-modal-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  min-height: 0;
+  flex: 1 1 auto;
+  max-height: none;
+  overflow: hidden;
+}
+
+.chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  align-content: start;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.chronicle-display-card {
+  min-width: 0;
+  grid-template-rows: auto minmax(154px, max-content);
+  align-content: start;
+}
+
+.chronicle-card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+.chronicle-card-label {
+  min-height: 154px;
+  overflow: visible;
+}
+
+.chronicle-card-label strong {
+  -webkit-line-clamp: 3;
+}
+
+.chronicle-card-label em {
+  display: block;
+  white-space: nowrap;
+}
+
+.chronicle-card-tags {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.chronicle-card-meta {
+  min-height: 22px;
+}
+
+.chronicle-modal-dossier {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@keyframes chronicle-overlay-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes chronicle-modal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 900px) {
   .hub-portal-grid,
   .hub-collection-strip {
@@ -3875,12 +4648,47 @@ select {
   }
 
   .chronicle-year-modal-panel {
-    width: calc(100vw - 24px);
-    max-height: calc(100vh - 24px);
+    width: min(96vw, 1500px);
+    height: min(90vh, 900px);
+    max-height: none;
   }
 
   .chronicle-modal-body {
-    max-height: calc(100vh - 170px);
+    min-height: 0;
+    max-height: none;
+  }
+
+  .chrono-archive-vintage .archive-terminal-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .chronicle-modal-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .chronicle-modal-header .brass-drawer-handle,
+  .chronicle-modal-count {
+    display: none;
+  }
+
+  .chronicle-modal-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .chronicle-exhibition-grid,
+  .chronicle-modal-dossier {
+    overflow-y: visible;
+  }
+
+  .chronicle-display-card {
+    grid-template-rows: auto minmax(148px, max-content);
+  }
+
+  .chronicle-card-label {
+    min-height: 148px;
   }
 }
 
@@ -4121,4 +4929,784 @@ select {
 
 .game-earth-shell input[type="range"] {
   accent-color: #f4f7f8;
+}
+
+/* Game Chronicle redesign: immersive archive exhibition. */
+.archive-redesign {
+  --archive-bg: #090402;
+  --archive-wood: #2b1208;
+  --archive-wood-soft: rgba(71, 31, 13, 0.78);
+  --archive-brass: #d5a95a;
+  --archive-brass-soft: rgba(213, 169, 90, 0.26);
+  --archive-paper: #d8bd7b;
+  --archive-paper-dark: #9f7540;
+  --archive-ink: #241006;
+  --archive-glass: rgba(10, 16, 16, 0.62);
+  --archive-cyan: #76f0f5;
+  --archive-line: rgba(226, 184, 98, 0.28);
+  width: 100%;
+  min-height: 100vh;
+  border: 0;
+  background: var(--archive-bg);
+  color: #fff2cf;
+  box-shadow: none;
+}
+
+.archive-redesign .archive-cinematic-bg {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(4, 2, 1, 0.62) 0%, rgba(4, 2, 1, 0.18) 38%, rgba(4, 2, 1, 0.18) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.66) 100%),
+    url("/images/archive/archive-hall-bg-v1.png");
+  background-position:
+    center top,
+    center top,
+    center top;
+  background-repeat: no-repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% auto;
+  opacity: 0.98;
+}
+
+.archive-redesign .archive-wood-wash {
+  z-index: 2;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(213, 169, 90, 0.08), transparent 30%),
+    radial-gradient(circle at 72% 42%, rgba(118, 240, 245, 0.08), transparent 24%),
+    linear-gradient(180deg, transparent 0%, rgba(11, 4, 2, 0.22) 64%, rgba(8, 3, 1, 0.58) 100%);
+  opacity: 0.7;
+}
+
+.archive-redesign .archive-spotlight {
+  z-index: 3;
+  background:
+    radial-gradient(circle at 24% 22%, rgba(255, 226, 164, 0.24), transparent 20%),
+    radial-gradient(circle at 68% 64%, rgba(118, 240, 245, 0.12), transparent 28%),
+    linear-gradient(100deg, rgba(0, 0, 0, 0.3), transparent 40%, rgba(0, 0, 0, 0.18));
+  mix-blend-mode: screen;
+  opacity: 0.78;
+}
+
+.archive-redesign .archive-star-grid {
+  z-index: 4;
+  background-image:
+    url("/textures/archive-noise.svg"),
+    repeating-linear-gradient(180deg, rgba(255, 232, 181, 0.035) 0, rgba(255, 232, 181, 0.035) 1px, transparent 1px, transparent 18px),
+    linear-gradient(90deg, transparent, rgba(118, 240, 245, 0.08), transparent);
+  background-size:
+    180px 180px,
+    auto,
+    auto;
+  opacity: 0.08;
+}
+
+.archive-redesign .archive-scanlines {
+  z-index: 5;
+  opacity: 0.12;
+}
+
+.archive-redesign .archive-layout {
+  position: relative;
+  width: min(100%, 1760px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 48px);
+}
+
+.archive-hero-panel {
+  display: grid;
+  min-height: min(78vh, 780px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: end;
+  padding: clamp(22px, 4vw, 62px) 0 clamp(22px, 5vw, 78px);
+}
+
+.archive-hero-copy {
+  max-width: 820px;
+}
+
+.archive-redesign .archive-back-button,
+.archive-redesign .archive-clear-button,
+body .chronicle-modal-close {
+  border: 1px solid rgba(255, 236, 174, 0.54);
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, rgba(226, 184, 98, 0.96), rgba(111, 64, 26, 0.94)),
+    url("/textures/brass-noise.svg");
+  background-size:
+    auto,
+    180px 120px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.32),
+    0 10px 22px rgba(0, 0, 0, 0.28);
+  color: #201006;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  touch-action: manipulation;
+}
+
+.archive-redesign .archive-back-button {
+  margin-bottom: 18px;
+  padding: 9px 12px;
+}
+
+.archive-redesign .archive-back-button:hover,
+.archive-redesign .archive-back-button:focus-visible,
+.archive-redesign .archive-clear-button:hover,
+.archive-redesign .archive-clear-button:focus-visible,
+body .chronicle-modal-close:hover,
+body .chronicle-modal-close:focus-visible {
+  border-color: rgba(255, 249, 220, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.42),
+    0 14px 30px rgba(0, 0, 0, 0.36),
+    0 0 24px rgba(226, 184, 98, 0.18);
+}
+
+.archive-redesign .archive-brass-label {
+  border-color: rgba(255, 238, 185, 0.48);
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, rgba(226, 184, 98, 0.92), rgba(112, 64, 25, 0.86)),
+    url("/textures/brass-noise.svg");
+  background-size:
+    auto,
+    180px 120px;
+  color: #231007;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.archive-redesign .archive-hero-copy h1 {
+  max-width: 760px;
+  margin: 16px 0 0;
+  color: #fff1c8;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(46px, 8vw, 112px);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.92;
+  text-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.46),
+    0 0 36px rgba(226, 184, 98, 0.2);
+  text-wrap: balance;
+}
+
+.archive-redesign .archive-hero-copy p:not(.archive-kicker) {
+  max-width: 620px;
+  margin: 22px 0 0;
+  color: rgba(255, 241, 202, 0.82);
+  font-size: clamp(16px, 2vw, 22px);
+  line-height: 1.7;
+}
+
+.archive-redesign .archive-hero-metrics {
+  align-self: end;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.archive-redesign .archive-metrics div {
+  border-color: rgba(226, 184, 98, 0.4);
+  background:
+    linear-gradient(135deg, rgba(45, 18, 8, 0.78), rgba(10, 4, 2, 0.6)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    420px 289px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 241, 202, 0.08),
+    0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+.archive-redesign .archive-metrics dd {
+  color: #ffe7a4;
+}
+
+.archive-index-dock {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  overflow: hidden;
+  margin: 0 0 clamp(26px, 5vw, 72px);
+  border: 1px solid rgba(226, 184, 98, 0.38);
+  background:
+    linear-gradient(135deg, rgba(43, 17, 8, 0.92), rgba(9, 4, 2, 0.86)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    460px 316px;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 241, 202, 0.1);
+  padding: clamp(14px, 2vw, 22px);
+  backdrop-filter: blur(14px);
+}
+
+.archive-index-dock::before {
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  content: "";
+  border: 1px solid rgba(226, 184, 98, 0.16);
+  background:
+    linear-gradient(90deg, rgba(226, 184, 98, 0.06), transparent 20%, transparent 80%, rgba(118, 240, 245, 0.05)),
+    repeating-linear-gradient(90deg, rgba(255, 241, 202, 0.025) 0, rgba(255, 241, 202, 0.025) 1px, transparent 1px, transparent 46px);
+}
+
+.archive-index-heading,
+.archive-redesign .archive-terminal-controls,
+.archive-redesign .archive-filter-grid,
+.archive-redesign .archive-clear-button {
+  position: relative;
+  z-index: 1;
+}
+
+.archive-index-heading {
+  display: flex;
+  gap: 20px;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.archive-index-heading h2,
+.chronicle-main-stage-heading h2 {
+  margin: 10px 0 0;
+  color: #fff1c8;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(26px, 3.2vw, 48px);
+  line-height: 1;
+}
+
+.archive-index-heading p:not(.archive-kicker),
+.chronicle-main-stage-heading p {
+  max-width: 440px;
+  margin: 0;
+  color: rgba(255, 241, 202, 0.7);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.archive-redesign .archive-terminal-controls {
+  grid-template-columns: minmax(220px, 1fr) minmax(160px, 220px);
+  margin-top: 0;
+}
+
+.archive-redesign .archive-field {
+  color: rgba(255, 241, 202, 0.72);
+}
+
+.archive-redesign .archive-field input,
+.archive-redesign .archive-field select {
+  min-height: 46px;
+  border-color: rgba(226, 184, 98, 0.48);
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(221, 198, 144, 0.96), rgba(154, 116, 66, 0.94)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+  color: #241006;
+}
+
+.archive-redesign .archive-filter-panel {
+  border-color: rgba(226, 184, 98, 0.34);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(22, 8, 4, 0.78), rgba(5, 2, 1, 0.62)),
+    linear-gradient(90deg, rgba(118, 240, 245, 0.06), transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 241, 202, 0.06);
+}
+
+.archive-redesign .archive-filter-heading h3 {
+  color: #ffe8b5;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: 17px;
+}
+
+.archive-redesign .archive-tag-list {
+  max-height: 118px;
+  scrollbar-color: rgba(226, 184, 98, 0.62) rgba(22, 8, 4, 0.62);
+}
+
+.archive-redesign .archive-tag-button {
+  min-height: 34px;
+  border-color: rgba(110, 62, 25, 0.68);
+  border-radius: 2px 2px 0 0;
+  background:
+    linear-gradient(180deg, rgba(222, 199, 145, 0.96), rgba(157, 116, 62, 0.94)),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    220px 220px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 249, 220, 0.38),
+    0 6px 14px rgba(0, 0, 0, 0.24);
+  color: #241006;
+  font-weight: 800;
+}
+
+.archive-redesign .archive-tag-button.is-active {
+  border-color: rgba(255, 236, 174, 0.92);
+  background:
+    linear-gradient(180deg, rgba(226, 184, 98, 0.98), rgba(118, 69, 29, 0.96)),
+    url("/textures/brass-noise.svg");
+  color: #1e0e05;
+  transform: translateY(-4px);
+}
+
+.archive-filter-empty {
+  margin: 0;
+  color: rgba(255, 241, 202, 0.58);
+  font-size: 13px;
+}
+
+.archive-redesign .chronicle-main-stage {
+  min-height: 0;
+  border-color: rgba(226, 184, 98, 0.34);
+  background:
+    linear-gradient(180deg, rgba(29, 11, 5, 0.72), rgba(8, 3, 1, 0.72)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    560px 385px;
+}
+
+.archive-redesign .chronicle-main-stage::before {
+  inset: 16px;
+}
+
+.archive-redesign .chronicle-timeline {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: clamp(12px, 2vw, 28px) 0 0;
+}
+
+.chronicle-year-story {
+  position: relative;
+}
+
+.chronicle-story-line {
+  position: absolute;
+  top: 42px;
+  bottom: 42px;
+  left: clamp(18px, 4vw, 54px);
+  width: 2px;
+  background:
+    linear-gradient(180deg, transparent, rgba(226, 184, 98, 0.7), rgba(118, 240, 245, 0.38), transparent);
+  box-shadow: 0 0 26px rgba(226, 184, 98, 0.22);
+}
+
+.chronicle-story-track {
+  display: grid;
+  min-width: 0;
+  gap: clamp(18px, 3vw, 36px);
+}
+
+.archive-redesign .chronicle-year-node {
+  width: min(100%, 1180px);
+  min-height: 0;
+  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr) auto;
+  gap: clamp(14px, 2vw, 28px);
+  align-items: stretch;
+  margin-left: clamp(34px, 7vw, 92px);
+  border-color: rgba(151, 92, 38, 0.68);
+  background:
+    linear-gradient(135deg, rgba(72, 31, 13, 0.92), rgba(18, 7, 3, 0.9)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    420px 289px;
+  padding: clamp(14px, 2vw, 22px);
+  text-align: left;
+}
+
+.archive-redesign .chronicle-year-node:nth-child(even) {
+  margin-left: clamp(56px, 12vw, 180px);
+}
+
+.archive-redesign .chronicle-year-node::after {
+  display: none;
+}
+
+.archive-redesign .chronicle-year-node::before {
+  inset: 10px;
+  border-color: rgba(226, 184, 98, 0.15);
+}
+
+.chronicle-era-marker {
+  position: absolute;
+  top: 50%;
+  left: calc(clamp(34px, 7vw, 92px) * -1);
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 236, 174, 0.82);
+  border-radius: 999px;
+  background: #d5a95a;
+  box-shadow:
+    0 0 0 8px rgba(213, 169, 90, 0.12),
+    0 0 24px rgba(118, 240, 245, 0.18);
+  transform: translate(-50%, -50%);
+}
+
+.archive-redesign .chronicle-year-plaque {
+  width: 100%;
+  align-self: stretch;
+}
+
+.archive-redesign .chronicle-year-plaque span {
+  color: rgba(36, 16, 6, 0.7);
+  font-size: 11px;
+}
+
+.archive-redesign .chronicle-year-plaque strong {
+  font-size: clamp(42px, 7vw, 84px);
+}
+
+.chronicle-year-summary {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  border: 1px solid rgba(226, 184, 98, 0.24);
+  background:
+    linear-gradient(135deg, rgba(5, 9, 9, 0.58), rgba(0, 0, 0, 0.36)),
+    linear-gradient(90deg, rgba(118, 240, 245, 0.08), transparent);
+  padding: 14px;
+}
+
+.chronicle-year-summary strong {
+  color: #fff0c8;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(20px, 3vw, 34px);
+  line-height: 1.1;
+}
+
+.chronicle-year-summary span {
+  color: rgba(255, 241, 202, 0.72);
+  font-size: 13px;
+}
+
+.archive-redesign .chronicle-year-count {
+  position: absolute;
+  right: 18px;
+  top: 16px;
+}
+
+.archive-redesign .drawer-preview-stack {
+  grid-column: 1 / -1;
+  min-height: 150px;
+  border-color: rgba(226, 184, 98, 0.24);
+  background:
+    linear-gradient(180deg, rgba(9, 4, 2, 0.32), rgba(0, 0, 0, 0.3)),
+    radial-gradient(circle at 50% 0%, rgba(255, 238, 185, 0.12), transparent 34%);
+}
+
+.archive-redesign .chronicle-thumb {
+  width: clamp(58px, 8vw, 94px);
+  height: clamp(86px, 12vw, 138px);
+}
+
+.archive-redesign .chronicle-thumb + .chronicle-thumb {
+  margin-left: clamp(-38px, -3vw, -20px);
+}
+
+.archive-redesign .chronicle-year-open-label {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  color: rgba(118, 240, 245, 0.78);
+}
+
+body .chronicle-year-modal {
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 68% 48%, rgba(226, 184, 98, 0.18), transparent 28%),
+    radial-gradient(circle at 72% 54%, rgba(118, 240, 245, 0.11), transparent 24%),
+    rgba(0, 0, 0, 0.78);
+  padding: 0;
+  overscroll-behavior: contain;
+  perspective: 1600px;
+}
+
+body .chronicle-year-drawer-panel {
+  width: min(82vw, 1280px);
+  height: 100vh;
+  max-height: none;
+  overflow: hidden;
+  border-width: 0 0 0 1px;
+  border-color: rgba(226, 184, 98, 0.52);
+  background:
+    linear-gradient(135deg, rgba(54, 22, 10, 0.99), rgba(12, 5, 2, 0.98)),
+    url("/textures/walnut-wood.svg");
+  background-size:
+    auto,
+    560px 385px;
+  box-shadow:
+    -34px 0 120px rgba(0, 0, 0, 0.82),
+    inset 1px 0 0 rgba(255, 241, 202, 0.14),
+    inset 14px 0 34px rgba(0, 0, 0, 0.24);
+  transform-origin: right center;
+}
+
+body .chronicle-modal-header {
+  min-height: 104px;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+}
+
+body .chronicle-modal-header h3 {
+  color: #fff1c8;
+}
+
+body .chronicle-modal-body {
+  display: grid;
+  height: calc(100vh - 104px);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px;
+  scrollbar-color: rgba(226, 184, 98, 0.62) rgba(22, 8, 4, 0.62);
+}
+
+.chronicle-year-exhibit-hero {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+  border: 1px solid rgba(226, 184, 98, 0.34);
+  background:
+    linear-gradient(135deg, rgba(20, 8, 4, 0.78), rgba(2, 1, 0, 0.56)),
+    linear-gradient(90deg, rgba(118, 240, 245, 0.08), transparent);
+  padding: 16px;
+}
+
+.chronicle-year-exhibit-hero h4 {
+  margin: 10px 0 0;
+  color: #fff1c8;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(28px, 4vw, 54px);
+  line-height: 1;
+}
+
+.chronicle-year-exhibit-hero p:not(.archive-kicker) {
+  max-width: 620px;
+  margin: 12px 0 0;
+  color: rgba(255, 241, 202, 0.72);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.chronicle-year-exhibit-stat {
+  min-width: 122px;
+  border: 1px solid rgba(111, 62, 25, 0.62);
+  background:
+    linear-gradient(180deg, rgba(222, 199, 145, 0.96), rgba(157, 116, 62, 0.94)),
+    url("/textures/archive-paper.svg");
+  padding: 12px;
+  color: #241006;
+  text-align: center;
+}
+
+.chronicle-year-exhibit-stat span {
+  display: block;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.chronicle-year-exhibit-stat strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+body .chronicle-exhibition-grid {
+  min-height: 0;
+  overflow-y: visible;
+  border-color: rgba(226, 184, 98, 0.3);
+  background:
+    linear-gradient(180deg, rgba(12, 5, 2, 0.62), rgba(4, 2, 1, 0.58)),
+    radial-gradient(circle at 50% 0%, rgba(255, 238, 185, 0.08), transparent 34%);
+  overscroll-behavior: contain;
+}
+
+body .chronicle-modal-dossier {
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+body .chronicle-display-card {
+  min-height: 0;
+  border-color: rgba(151, 92, 38, 0.64);
+}
+
+body .chronicle-card-label {
+  min-height: 0;
+}
+
+.archive-dossier-year-summary {
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(91, 51, 22, 0.24);
+  padding-bottom: 18px;
+}
+
+.archive-description-empty {
+  display: grid;
+  gap: 8px;
+  place-items: center;
+  min-height: 150px;
+  border: 1px dashed rgba(91, 51, 22, 0.34);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(91, 51, 22, 0.16), transparent 36%),
+    repeating-linear-gradient(135deg, rgba(91, 51, 22, 0.08) 0, rgba(91, 51, 22, 0.08) 1px, transparent 1px, transparent 12px);
+  padding: 18px;
+  text-align: center;
+}
+
+.archive-description-empty span {
+  width: 54px;
+  height: 18px;
+  border: 1px solid rgba(91, 51, 22, 0.34);
+  background: rgba(91, 51, 22, 0.1);
+}
+
+.archive-description-empty strong {
+  color: #241006;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: 20px;
+}
+
+.archive-description-empty em {
+  max-width: 240px;
+  color: rgba(41, 23, 14, 0.62);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+@media (max-width: 980px) {
+  .archive-hero-panel {
+    min-height: 70vh;
+    grid-template-columns: 1fr;
+  }
+
+  .archive-redesign .archive-hero-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .archive-index-heading,
+  .chronicle-main-stage-heading {
+    display: grid;
+  }
+
+  .archive-redesign .chronicle-year-node,
+  .archive-redesign .chronicle-year-node:nth-child(even) {
+    grid-template-columns: 1fr;
+    margin-left: 34px;
+  }
+
+  .archive-redesign .chronicle-year-count,
+  .archive-redesign .chronicle-year-open-label {
+    position: relative;
+    inset: auto;
+  }
+
+  body .chronicle-year-drawer-panel {
+    width: 100vw;
+  }
+
+  body .chronicle-modal-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    align-content: start;
+  }
+
+  body .chronicle-modal-dossier {
+    position: relative;
+    grid-column: 1;
+    grid-row: auto;
+    max-height: none;
+  }
+
+  body .chronicle-exhibition-grid {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .archive-redesign .archive-layout {
+    padding: 14px;
+  }
+
+  .archive-redesign .archive-hero-copy h1 {
+    font-size: clamp(40px, 15vw, 68px);
+  }
+
+  .archive-redesign .archive-hero-metrics,
+  .archive-redesign .archive-terminal-controls,
+  .archive-redesign .archive-filter-grid,
+  .chronicle-year-exhibit-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-index-dock {
+    position: relative;
+  }
+
+  .chronicle-story-line {
+    left: 18px;
+  }
+
+  body .chronicle-modal-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  body .chronicle-modal-header .brass-drawer-handle,
+  body .chronicle-modal-count {
+    display: none;
+  }
+
+  body .chronicle-modal-body {
+    height: calc(100vh - 112px);
+    padding: 12px;
+  }
+
+  body .chronicle-exhibition-grid {
+    min-height: 360px;
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+
+  body .chronicle-modal-dossier {
+    max-height: 64vh;
+    min-height: 420px;
+    overflow-y: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-redesign [data-archive-intro],
+  .archive-redesign [data-year-node] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
