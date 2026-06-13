@@ -1,65 +1,70 @@
 # Ludic Atlas / 游戏星图
 
-Ludic Atlas is a game culture exploration project with two entrances: Earth Explorer for 3D globe exploration and Game Chronicle for timeline archive browsing.
+Ludic Atlas / 游戏星图 is a Next.js + TypeScript game culture atlas. It is not just a game list: it is a visual game culture map that lets people explore games through space and time.
 
-游戏星图是一个全球游戏文化探索项目，包含 3D 地球探索和游戏编年馆两个入口。
+游戏星图是一个“游戏文化地图 / 游戏地球 / Ludic Atlas”式的网站。用户可以从首页进入 3D 游戏地球，按国家或地区发现代表性游戏，也可以进入 Game Chronicle / 游戏编年馆，通过时间线浏览游戏档案。
 
-## Preview / 项目预览
+## Screenshots / Preview
 
 ![Ludic Atlas Preview](docs/assets/preview.png)
 
-## Overview / 项目简介
+## Features
 
-中文：
+- Home / Hub: Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances.
+- Game Earth / 3D Globe: interactive 3D globe, country outlines, country focus, and game cover markers.
+- Game Chronicle Archive / 游戏编年馆: timeline-based archive browsing, year drawers, filters, and game dossiers.
+- Country / region game views: country list, country detail panel, representative games, ratings, genres, platforms, and developers.
+- Game details: cover image, developer, publisher, release year, platforms, rating, and description.
+- Year and display controls: release-year filtering and cover-size controls for globe exploration.
+- RAWG data workflow: local static RAWG data generation, local cover cache, and reviewed country inference data.
 
-游戏星图提供两个入口：用户可以在 Earth Explorer 中按国家和地区浏览代表性游戏，也可以在 Game Chronicle / 游戏编年馆中沿时间轴查看高分游戏馆藏，查看游戏封面、评分、类型、发行年份、开发商、发行商和简介。
+## Tech Stack
 
-English:
-
-Ludic Atlas is an interactive game culture exploration project. Users can discover representative games by country or region on a 3D globe, or browse a time-based game archive with cover images, ratings, genres, release years, developers, publishers, and descriptions.
-
-## Features / 核心功能
-
-- Ludic Atlas landing hub / 游戏星图总入口
-- 真实 3D 地球视图 / Real 3D globe view
-- Game Chronicle 横向时间轴与年份抽屉 / Game Chronicle horizontal timeline and year drawer
-- 国家边界展示 / Country border rendering
-- 国家搜索与快速跳转 / Country search and quick navigation
-- 按国家浏览代表性游戏 / Representative games by country or region
-- 游戏封面与详情展示 / Game cover and detail display
-- 年份筛选 / Release year filtering
-- 右侧国家详情面板 / Right-side country detail panel
-- RAWG 本地静态数据生成管线 / Local static RAWG data generation pipeline
-- 中文优先、英文辅助的信息展示 / Chinese-first UI copy with English support
-
-## Tech Stack / 技术栈
-
-- Next.js
+- Next.js App Router
+- React
 - TypeScript
 - Tailwind CSS
-- React
-- react-globe.gl
 - three.js
-- RAWG API data generation script
+- react-globe.gl
+- GSAP and Motion for selected interface animation
+- RAWG API scripts for local data generation
 
-## Project Structure / 项目结构
+## Data Pipeline / 数据来源与处理
 
-- `src/app/`: Next.js App Router page entry, root layout, and global styles.
-- `src/components/`: Main product shell and shared UI components.
-- `src/components/globe/`: 3D globe, country layer, marker layer, tooltip, and fallback map view.
-- `src/components/panels/`: Country list, country detail, right panel, and game detail card.
-- `src/components/controls/`: Year filter, cover size control, and view mode controls.
-- `src/data/`: Country data, generated game data entrypoint, and stable mock fallback data.
-- `src/lib/`: Filtering, statistics, localization, search, and geographic helpers.
-- `src/types/`: Shared TypeScript data types.
-- `scripts/`: Local RAWG seed list and static data generation script.
-- `docs/`: Project planning, architecture, schema, task log, and README preview assets.
+本项目的数据不是官方结论，也不应被理解为完整、权威的国家游戏产业排名。当前数据主要用于文化展示、课程实践和作品集原型。
 
-## Getting Started / 本地运行
+Current data is assembled from public game metadata, RAWG records, developer / publisher information, local cover caching, and local country inference workflows. The country or region mapping is based primarily on the developer or studio associated with a game. Some records may remain unknown or require manual review.
 
-Install dependencies and start the development server:
+Browser pages do not call RAWG directly. RAWG data is generated locally into static TypeScript data, and cover images can be cached under `public/covers/rawg/`.
 
 ```bash
+npm run data:rawg
+npm run data:covers
+npm run data:apply-countries
+```
+
+Use `.env.local` for local API keys only:
+
+```bash
+RAWG_API_KEY=your_rawg_api_key
+```
+
+`.env.local` is ignored by Git. Do not commit API keys, tokens, `.env` files, `.next/`, `node_modules/`, temporary files, or generated build output.
+
+## Local Development
+
+### macOS
+
+Install Node.js LTS and npm first. Recommended options:
+
+- Install from [nodejs.org](https://nodejs.org/)
+- Or use a version manager such as `nvm`
+
+Clone and run:
+
+```bash
+git clone https://github.com/ChestnutleeEd/ludic-atlas.git
+cd ludic-atlas
 npm install
 npm run dev
 ```
@@ -70,99 +75,90 @@ Open:
 http://localhost:3000
 ```
 
-## RAWG Data Pipeline / RAWG 数据生成
+### Windows
 
-中文：
+Use PowerShell or the VS Code Terminal. Install Node.js LTS from [nodejs.org](https://nodejs.org/) first.
 
-本项目不会在浏览器端直接请求 RAWG API。数据通过本地脚本生成静态数据文件。
+Clone and run:
 
-English:
-
-This project does not call the RAWG API from the browser. RAWG data is generated locally into a static TypeScript data file.
-
-Create a local environment file:
-
-```bash
-touch .env.local
+```powershell
+git clone https://github.com/ChestnutleeEd/ludic-atlas.git
+cd ludic-atlas
+npm install
+npm run dev
 ```
 
-Add your RAWG API key:
+Open:
 
-```bash
-RAWG_API_KEY=your_rawg_api_key
+```text
+http://localhost:3000
 ```
 
-Generate static game data:
+## Quick Start / 快捷打开方式
+
+The project includes a friendly local start alias:
 
 ```bash
-npm run data:rawg
+npm run start:local
 ```
 
-Cache RAWG cover images locally:
+It starts the same Next.js development server as `npm run dev`. To keep the command stable on macOS and Windows, it does not force-open a browser automatically. After the server starts, open:
 
-```bash
-npm run data:covers
+```text
+http://localhost:3000
 ```
 
-If RAWG API cannot be reached directly from your local network, set proxy environment variables before running the script:
+## Project Structure
 
-```bash
-export HTTPS_PROXY=http://127.0.0.1:7890
-export HTTP_PROXY=http://127.0.0.1:7890
-export ALL_PROXY=http://127.0.0.1:7890
-npm run data:rawg
+```text
+src/app/                  Next.js App Router pages, root layout, global styles
+src/components/home/      Ludic Atlas landing hub
+src/components/globe/     3D globe, country layer, cover markers, tooltip
+src/components/archive/   Game Chronicle archive and timeline components
+src/components/panels/    Country list, country detail, global gallery, game detail
+src/components/controls/  Year slider, cover size slider, view controls
+src/data/                 Country data, generated RAWG game data, mock fallback data
+src/lib/                  Filtering, statistics, localization, geo helpers, search
+src/types/                Shared TypeScript types
+scripts/                  RAWG fetch, cover cache, country inference scripts
+public/covers/rawg/       Git-tracked local RAWG cover cache
+docs/                     Project docs, schema, architecture, preview assets
 ```
 
-Notes:
-
-- `.env.local` is ignored by Git and should not be committed.
-- API keys must not be written into source code, documentation, or generated build output.
-- Generated game data is written to `src/data/games.generated.ts`.
-- Cached RAWG covers are written to `public/covers/rawg/`, and generated `coverImage` values are rewritten to `/covers/rawg/...`.
-- The RAWG script reads `HTTPS_PROXY`, `HTTP_PROXY`, or `ALL_PROXY` through `undici` when a local proxy is needed.
-- The RAWG cover cache script also supports proxy environment variables, but does not read `.env.local` and does not require a RAWG API key.
-
-## Data Source & Attribution / 数据来源与署名
-
-- Game metadata and cover images can be generated from RAWG API.
-- This project uses RAWG data for personal, educational, and portfolio purposes.
-- Please follow RAWG API Terms of Use when using generated data.
-
-中文：
-
-本项目的部分游戏数据和封面图可通过 RAWG API 生成，仅用于个人学习、作品集展示和非商业用途。使用时请遵守 RAWG API 使用条款。
-
-## Scripts / 常用命令
+## Scripts
 
 ```bash
 npm run dev
-npm run build
+npm run start:local
 npm run lint
+npm run build
 npm run typecheck
 npm run data:rawg
+npm run data:covers
+npm run data:apply-countries
 ```
 
-## Current Status / 当前状态
+## Inspiration / 灵感来源
 
-- 当前是 MVP / prototype。
-- 3D 地球和国家探索功能已经具备。
-- 数据生成管线已具备。
-- 后续仍需继续优化 3D 性能、封面资源、国家交互和视觉细节。
+The Earth Explorer interaction references the broad functional idea of Movie Globe: exploring media through a world map, geographic grouping, cover markers, hover previews, and detail panels. Ludic Atlas adapts that idea for global game culture rather than film.
+
+游戏地球部分的概念灵感部分来自小红书博主「麻省理工 Rui同学」关于用 AI 体验世界人文的内容方向。本项目仅作为个人学习与课程/作品集实践，不代表该博主参与、授权或背书本项目。
+
+The Game Earth concept was partly inspired by the Xiaohongshu creator "麻省理工 Rui同学" and their content direction around using AI to explore global humanities. This project is a personal learning / portfolio project and does not imply participation, authorization, or endorsement by the creator.
 
 ## Roadmap / 后续计划
 
-- 优化 3D 地球性能 / Improve 3D globe performance
-- 增强国家 hover 与选中效果 / Enhance country hover and selected states
-- 增加更多国家和游戏数据 / Add more countries and representative games
-- 优化游戏封面展示 / Improve game cover presentation
-- 增加国家详情大面板 / Add a larger country detail panel
-- 提升移动端体验 / Improve mobile experience
-- 后续可考虑 IGDB 或其他更高质量封面源 / Consider IGDB or other higher-quality cover sources later
+- Improve 3D globe performance and mobile interaction.
+- Expand reviewed country / region game data.
+- Improve local cover quality and fallback behavior.
+- Add stronger country inference review tooling.
+- Refine Game Chronicle browsing, filtering, and dossier views.
+- Add more project screenshots and deployment notes.
 
-## Repository / 仓库地址
+## Repository
 
-[https://github.com/ChestnutleeEd/game-earth](https://github.com/ChestnutleeEd/game-earth)
+[https://github.com/ChestnutleeEd/ludic-atlas](https://github.com/ChestnutleeEd/ludic-atlas)
 
-## License / 许可证
+## License
 
 No license has been selected yet.
