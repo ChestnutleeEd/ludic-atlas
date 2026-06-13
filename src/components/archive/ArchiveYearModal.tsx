@@ -167,14 +167,19 @@ function ArchiveExhibitionCard({
   const secondaryTitle = getGameSecondaryTitle(game);
   const genres = splitArchiveTags(game.genres).slice(0, 2);
   const platforms = splitArchiveTags(game.platforms).slice(0, 2);
+  const genreLabel =
+    genres.length > 0 ? genres.map(getGenreLabel).join(" / ") : "类型未知";
+  const platformLabel = platforms.length > 0 ? platforms.join(" / ") : "平台未知";
 
   return (
     <motion.button
       className={`chronicle-display-card ${isSelected ? "is-selected" : ""}`}
+      aria-label={`查看 ${title} 档案`}
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.025, 0.28), duration: 0.32 }}
       onClick={() => onSelectGame(game.id)}
+      title={title}
       whileHover={{ y: -4 }}
       whileTap={{ scale: 0.985 }}
       type="button"
@@ -198,17 +203,22 @@ function ArchiveExhibitionCard({
         ) : null}
       </span>
       <span className="chronicle-card-label">
-        <strong>{title}</strong>
-        {secondaryTitle ? <em>{secondaryTitle}</em> : null}
+        <strong title={title}>{title}</strong>
+        {secondaryTitle ? <em title={secondaryTitle}>{secondaryTitle}</em> : null}
         <span className="chronicle-card-meta">
           <span>{game.releaseYear || "年份未知"}</span>
           <span>评分 {formatRating(game.rating)}</span>
         </span>
-        <span className="chronicle-card-tags">
-          {genres.length > 0 ? genres.map(getGenreLabel).join(" / ") : "类型未知"}
+        <span className="chronicle-card-tags chronicle-card-genre" title={genreLabel}>
+          <small>类型</small>
+          <span>{genreLabel}</span>
         </span>
-        <span className="chronicle-card-tags">
-          {platforms.length > 0 ? platforms.join(" / ") : "平台未知"}
+        <span
+          className="chronicle-card-tags chronicle-card-platform"
+          title={platformLabel}
+        >
+          <small>平台</small>
+          <span>{platformLabel}</span>
         </span>
       </span>
     </motion.button>

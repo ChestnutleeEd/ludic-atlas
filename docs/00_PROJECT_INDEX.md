@@ -63,7 +63,7 @@ If the task involves product scope, read:
 | `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
 | `src/lib/`                 | Filtering, statistics, country mapping, utility functions |
 | `src/types/`               | TypeScript data types                                     |
-| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, and future game cover images under `public/covers/` |
+| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, the shared fallback cover at `public/covers/fallback-game-cover.svg`, and future game cover images under `public/covers/` |
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
 | `docs/`                    | Project planning and architecture documents               |
 
@@ -129,9 +129,11 @@ http://localhost:3000
 | RAWG seed list       | `scripts/rawg-seeds.mjs`          |
 | RAWG generation script | `scripts/fetch-rawg-games.mjs`   |
 | RAWG cover cache script | `scripts/cache-rawg-covers.mjs` |
+| Country inference apply script | `scripts/apply-country-inference.mjs` |
 | Mock country data    | `src/data/countries.ts`           |
 | Future cover assets  | `public/covers/README.md`         |
 | Cached RAWG cover assets | `public/covers/rawg/`         |
+| Fallback game cover  | `public/covers/fallback-game-cover.svg` |
 | Browser favicon      | `public/favicon.svg`              |
 | Game Chronicle wood texture | `public/textures/archive-wood.svg` |
 | Game Chronicle noise texture | `public/textures/archive-noise.svg` |
@@ -145,6 +147,7 @@ http://localhost:3000
 | Full source country border data | `public/data/countries.geojson` |
 | README preview image | `docs/assets/preview.png` |
 | Shared types         | `src/types/game.ts`               |
+| Game cover helper    | `src/lib/gameCover.ts`            |
 | Filtering logic      | `src/lib/filterGames.ts`          |
 | Statistics logic     | `src/lib/stats.ts`                |
 

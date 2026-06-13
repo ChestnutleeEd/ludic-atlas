@@ -1,5 +1,10 @@
-import { GameDetailCard } from "@/components/panels/GameDetailCard";
+/* eslint-disable @next/next/no-img-element */
+
 import { filterGamesByCountry } from "@/lib/filterGames";
+import {
+  FALLBACK_GAME_COVER_IMAGE,
+  getGameCoverImage
+} from "@/lib/gameCover";
 import {
   getCountryDisplayName,
   getGameDisplayTitle,
@@ -13,7 +18,6 @@ import type { Country, Game, YearRange } from "@/types/game";
 type CountryDetailPanelProps = {
   country: Country | null;
   games: Game[];
-  selectedGame: Game | null;
   selectedGameId: string | null;
   yearRange: YearRange;
   onClearCountry: () => void;
@@ -23,7 +27,6 @@ type CountryDetailPanelProps = {
 export function CountryDetailPanel({
   country,
   games,
-  selectedGame,
   selectedGameId,
   yearRange,
   onClearCountry,
@@ -108,6 +111,8 @@ export function CountryDetailPanel({
             {countryGames.map((game) => {
               const secondaryTitle = getGameSecondaryTitle(game);
               const isSelected = game.id === selectedGameId;
+              const title = getGameDisplayTitle(game);
+              const coverImage = getGameCoverImage(game);
 
               return (
                 <button
@@ -117,11 +122,25 @@ export function CountryDetailPanel({
                   type="button"
                 >
                   <span className="country-game-cover">
-                    <span>{getGameDisplayTitle(game)}</span>
+                    <img
+                      alt=""
+                      loading="lazy"
+                      onError={(event) => {
+                        if (
+                          !event.currentTarget.src.endsWith(
+                            FALLBACK_GAME_COVER_IMAGE
+                          )
+                        ) {
+                          event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
+                        }
+                      }}
+                      src={coverImage}
+                    />
+                    <span>{title}</span>
                     <strong>{game.releaseYear}</strong>
                   </span>
                   <span className="country-game-card-copy">
-                    <strong>{getGameDisplayTitle(game)}</strong>
+                    <strong>{title}</strong>
                     {secondaryTitle ? <em>{secondaryTitle}</em> : null}
                     <span>
                       {game.releaseYear} / 评分 {game.rating.toFixed(1)}
@@ -135,15 +154,7 @@ export function CountryDetailPanel({
       </div>
 
       <div className="country-detail-game-dock">
-        {selectedGame ? (
-          <GameDetailCard
-            game={selectedGame}
-            key={selectedGame.id}
-            onClose={() => onSelectGame(null)}
-          />
-        ) : (
-          <p>点击游戏封面查看简介。</p>
-        )}
+        <p>点击游戏封面查看简介。</p>
       </div>
     </section>
   );

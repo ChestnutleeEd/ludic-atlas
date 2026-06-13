@@ -470,6 +470,10 @@ select {
   pointer-events: auto !important;
 }
 
+.real-globe-stage .scene-container > div:last-child .globe-country-marker {
+  pointer-events: none !important;
+}
+
 .globe-country-tooltip {
   border: 1px solid rgba(245, 250, 255, 0.42);
   background: rgba(0, 0, 0, 0.88);
@@ -629,12 +633,45 @@ select {
   scrollbar-width: thin;
 }
 
+.right-panel-content {
+  min-height: 100%;
+  transition:
+    filter 160ms ease,
+    opacity 160ms ease;
+}
+
+.right-panel-shell.is-game-detail-open .right-panel-content {
+  opacity: 0.34;
+  filter: blur(1.5px) saturate(0.78);
+  pointer-events: none;
+  user-select: none;
+}
+
+.game-detail-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  align-items: start;
+  overflow-y: auto;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.82)),
+    radial-gradient(circle at 50% 16%, rgba(125, 245, 255, 0.14), transparent 36%);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.game-detail-layer-card {
+  min-width: 0;
+}
+
 .country-detail-shell {
   display: flex;
   min-height: calc(100vh - 214px);
   flex-direction: column;
   gap: 14px;
   border: 1px solid rgba(245, 250, 255, 0.16);
+  border-radius: 8px;
   background:
     linear-gradient(180deg, rgba(6, 8, 9, 0.9), rgba(0, 0, 0, 0.8)),
     repeating-linear-gradient(
@@ -666,6 +703,7 @@ select {
 
 .country-detail-header {
   border: 1px solid rgba(245, 250, 255, 0.18);
+  border-radius: 7px;
   background:
     radial-gradient(circle at 14% 0%, rgba(245, 250, 255, 0.1), transparent 34%),
     linear-gradient(135deg, rgba(12, 16, 17, 0.92), rgba(0, 0, 0, 0.74));
@@ -767,6 +805,7 @@ select {
   min-width: 0;
   min-height: 118px;
   border: 1px solid rgba(245, 250, 255, 0.14);
+  border-radius: 7px;
   background: rgba(0, 0, 0, 0.68);
   padding: 8px;
   color: #f4f7f8;
@@ -794,6 +833,7 @@ select {
   flex-direction: column;
   justify-content: flex-end;
   border: 1px solid rgba(245, 250, 255, 0.28);
+  border-radius: 7px;
   background:
     radial-gradient(circle at 22% 13%, rgba(255, 255, 255, 0.28), transparent 22%),
     linear-gradient(145deg, rgba(245, 250, 255, 0.15), rgba(52, 76, 80, 0.28) 34%, rgba(8, 10, 11, 0.96) 75%, #000000);
@@ -805,6 +845,20 @@ select {
   min-height: 100px;
 }
 
+.country-game-cover img,
+.game-detail-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.country-game-cover img[src$="fallback-game-cover.svg"],
+.game-detail-cover img[src$="fallback-game-cover.svg"] {
+  object-fit: cover;
+}
+
 .country-game-cover::before,
 .game-detail-cover::before {
   position: absolute;
@@ -812,6 +866,7 @@ select {
   pointer-events: none;
   content: "";
   background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.03), rgba(2, 6, 23, 0.18) 36%, rgba(2, 6, 23, 0.92) 100%),
     linear-gradient(90deg, transparent, rgba(207, 250, 254, 0.1), transparent),
     repeating-linear-gradient(
       180deg,
@@ -911,8 +966,10 @@ select {
 
 .game-detail-card {
   border: 1px solid rgba(207, 250, 254, 0.36);
+  border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(8, 13, 14, 0.96), rgba(0, 0, 0, 0.92)),
+    radial-gradient(circle at 18% 0%, rgba(125, 245, 255, 0.14), transparent 28%),
+    linear-gradient(135deg, rgba(8, 13, 14, 0.98), rgba(0, 0, 0, 0.94)),
     repeating-linear-gradient(
       180deg,
       rgba(245, 250, 255, 0.035) 0,
@@ -927,15 +984,24 @@ select {
   padding: 11px;
 }
 
+.game-detail-layer .game-detail-card {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.72),
+    0 0 44px rgba(0, 240, 255, 0.16),
+    inset 0 1px 0 rgba(245, 250, 255, 0.1);
+}
+
 .game-detail-card-header {
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  gap: 12px;
   align-items: start;
 }
 
 .game-detail-card .game-detail-cover {
-  min-height: 104px;
+  min-height: 122px;
   padding: 8px;
 }
 
@@ -968,17 +1034,23 @@ select {
 }
 
 .game-detail-close {
-  border: 1px solid rgba(245, 250, 255, 0.2);
-  background: rgba(0, 0, 0, 0.74);
-  padding: 6px 8px;
-  color: rgba(245, 250, 255, 0.72);
+  border: 1px solid rgba(207, 250, 254, 0.28);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.58);
+  padding: 7px 10px;
+  color: rgba(245, 250, 255, 0.78);
   font-size: 11px;
   line-height: 1;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
 }
 
 .game-detail-close:hover,
 .game-detail-close:focus-visible {
   border-color: rgba(207, 250, 254, 0.76);
+  background: rgba(0, 240, 255, 0.1);
   color: #ffffff;
 }
 
@@ -4777,11 +4849,29 @@ body .chronicle-modal-dossier {
   box-shadow:
     0 14px 34px rgba(0, 0, 0, 0.68),
     inset 0 1px 0 rgba(245, 250, 255, 0.12);
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.globe-game-cover-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.globe-game-cover-image.is-fallback {
+  object-fit: cover;
 }
 
 .globe-game-marker.is-country-selected .globe-game-cover,
 .globe-game-marker.is-selected .globe-game-cover {
   border-color: rgba(245, 250, 255, 0.94);
+  transform: scale(1.04);
   box-shadow:
     0 0 34px rgba(245, 250, 255, 0.34),
     0 0 78px rgba(125, 245, 255, 0.16),
@@ -4794,7 +4884,7 @@ body .chronicle-modal-dossier {
   pointer-events: none;
   content: "";
   border-radius: inherit;
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.04), rgba(2, 6, 23, 0.24) 38%, rgba(2, 6, 23, 0.92) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 22%, transparent 72%, rgba(2, 6, 23, 0.18));
 }
 
 .globe-game-cover-shine {
@@ -4804,6 +4894,23 @@ body .chronicle-modal-dossier {
   pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.26), transparent);
   transform: rotate(-18deg);
+}
+
+.globe-game-rating-badge {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 3;
+  border: 1px solid rgba(245, 250, 255, 0.48);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.66);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.58);
+  padding: 3px 5px;
+  color: rgba(245, 250, 255, 0.92);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  backdrop-filter: blur(8px);
 }
 
 .globe-game-cover-copy {
@@ -4944,6 +5051,11 @@ body .chronicle-modal-dossier {
   --archive-glass: rgba(10, 16, 16, 0.62);
   --archive-cyan: #76f0f5;
   --archive-line: rgba(226, 184, 98, 0.28);
+  --archive-sage: #8b9d83;
+  --archive-clay: #b08b6e;
+  --archive-terracotta: #c66b3d;
+  --archive-moss: #606c38;
+  --archive-sand: #e8dcc7;
   width: 100%;
   min-height: 100vh;
   border: 0;
@@ -5031,18 +5143,18 @@ body .chronicle-modal-dossier {
 .archive-redesign .archive-back-button,
 .archive-redesign .archive-clear-button,
 body .chronicle-modal-close {
-  border: 1px solid rgba(255, 236, 174, 0.54);
-  border-radius: 2px;
+  border: 1px solid rgba(232, 220, 199, 0.34);
+  border-radius: 18px;
   background:
-    linear-gradient(135deg, rgba(226, 184, 98, 0.96), rgba(111, 64, 26, 0.94)),
-    url("/textures/brass-noise.svg");
+    linear-gradient(135deg, rgba(176, 139, 110, 0.96), rgba(96, 108, 56, 0.9)),
+    url("/textures/archive-noise.svg");
   background-size:
     auto,
-    180px 120px;
+    180px 180px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 248, 218, 0.32),
-    0 10px 22px rgba(0, 0, 0, 0.28);
-  color: #201006;
+    inset 0 1px 0 rgba(232, 220, 199, 0.28),
+    0 12px 28px rgba(0, 0, 0, 0.24);
+  color: #f8ead4;
   font-size: 12px;
   font-weight: 800;
   line-height: 1;
@@ -5060,23 +5172,27 @@ body .chronicle-modal-close {
 .archive-redesign .archive-clear-button:focus-visible,
 body .chronicle-modal-close:hover,
 body .chronicle-modal-close:focus-visible {
-  border-color: rgba(255, 249, 220, 0.92);
+  border-color: rgba(232, 220, 199, 0.8);
   box-shadow:
-    inset 0 1px 0 rgba(255, 248, 218, 0.42),
+    inset 0 1px 0 rgba(232, 220, 199, 0.38),
     0 14px 30px rgba(0, 0, 0, 0.36),
-    0 0 24px rgba(226, 184, 98, 0.18);
+    0 0 24px rgba(139, 157, 131, 0.2);
 }
 
 .archive-redesign .archive-brass-label {
-  border-color: rgba(255, 238, 185, 0.48);
-  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border: 1px solid rgba(232, 220, 199, 0.36);
+  border-radius: 999px;
   background:
-    linear-gradient(135deg, rgba(226, 184, 98, 0.92), rgba(112, 64, 25, 0.86)),
-    url("/textures/brass-noise.svg");
+    linear-gradient(135deg, rgba(232, 220, 199, 0.18), rgba(139, 157, 131, 0.22)),
+    rgba(43, 17, 8, 0.5);
   background-size:
     auto,
     180px 120px;
-  color: #231007;
+  padding: 8px 12px;
+  color: #f7e8c9;
   letter-spacing: 0;
   text-transform: none;
 }
@@ -5314,13 +5430,15 @@ body .chronicle-modal-close:focus-visible {
 .archive-redesign .chronicle-year-node {
   width: min(100%, 1180px);
   min-height: 0;
-  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr) auto;
-  gap: clamp(14px, 2vw, 28px);
+  grid-template-columns: minmax(190px, 250px) minmax(0, 1fr) auto;
+  gap: clamp(16px, 2.3vw, 30px);
   align-items: stretch;
   margin-left: clamp(34px, 7vw, 92px);
-  border-color: rgba(151, 92, 38, 0.68);
+  overflow: hidden;
+  border-color: rgba(176, 139, 110, 0.54);
+  border-radius: 22px;
   background:
-    linear-gradient(135deg, rgba(72, 31, 13, 0.92), rgba(18, 7, 3, 0.9)),
+    linear-gradient(135deg, rgba(72, 31, 13, 0.88), rgba(18, 7, 3, 0.92)),
     url("/textures/walnut-wood.svg");
   background-size:
     auto,
@@ -5339,7 +5457,8 @@ body .chronicle-modal-close:focus-visible {
 
 .archive-redesign .chronicle-year-node::before {
   inset: 10px;
-  border-color: rgba(226, 184, 98, 0.15);
+  border-color: rgba(232, 220, 199, 0.12);
+  border-radius: 16px;
 }
 
 .chronicle-era-marker {
@@ -5358,17 +5477,46 @@ body .chronicle-modal-close:focus-visible {
 }
 
 .archive-redesign .chronicle-year-plaque {
+  position: relative;
+  z-index: 1;
+  display: grid;
   width: 100%;
+  min-width: 0;
   align-self: stretch;
+  align-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(232, 220, 199, 0.32);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(232, 220, 199, 0.94), rgba(176, 139, 110, 0.92)),
+    url("/textures/archive-noise.svg");
+  background-size:
+    auto,
+    180px 180px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 218, 0.28),
+    0 14px 30px rgba(0, 0, 0, 0.22);
+  padding: clamp(14px, 1.6vw, 20px);
+  color: #241006;
 }
 
 .archive-redesign .chronicle-year-plaque span {
   color: rgba(36, 16, 6, 0.7);
   font-size: 11px;
+  font-weight: 800;
 }
 
 .archive-redesign .chronicle-year-plaque strong {
-  font-size: clamp(42px, 7vw, 84px);
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(52px, 5.6vw, 80px);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.9;
+  text-overflow: clip;
+  white-space: nowrap;
 }
 
 .chronicle-year-summary {
@@ -5377,7 +5525,8 @@ body .chronicle-modal-close:focus-visible {
   display: grid;
   align-content: center;
   gap: 8px;
-  border: 1px solid rgba(226, 184, 98, 0.24);
+  border: 1px solid rgba(232, 220, 199, 0.16);
+  border-radius: 18px;
   background:
     linear-gradient(135deg, rgba(5, 9, 9, 0.58), rgba(0, 0, 0, 0.36)),
     linear-gradient(90deg, rgba(118, 240, 245, 0.08), transparent);
@@ -5400,31 +5549,62 @@ body .chronicle-modal-close:focus-visible {
   position: absolute;
   right: 18px;
   top: 16px;
+  border: 1px solid rgba(232, 220, 199, 0.34);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(232, 220, 199, 0.92), rgba(176, 139, 110, 0.86)),
+    url("/textures/archive-noise.svg");
+  background-size:
+    auto,
+    180px 180px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24);
+  color: #241006;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 8px 12px;
 }
 
 .archive-redesign .drawer-preview-stack {
   grid-column: 1 / -1;
-  min-height: 150px;
-  border-color: rgba(226, 184, 98, 0.24);
+  display: grid;
+  gap: clamp(6px, 0.8vw, 10px);
+  align-items: end;
+  min-height: 172px;
+  overflow: hidden;
+  border-color: rgba(232, 220, 199, 0.16);
+  border-radius: 18px;
   background:
     linear-gradient(180deg, rgba(9, 4, 2, 0.32), rgba(0, 0, 0, 0.3)),
     radial-gradient(circle at 50% 0%, rgba(255, 238, 185, 0.12), transparent 34%);
+  padding: clamp(14px, 1.8vw, 22px);
+  padding-right: clamp(132px, 12vw, 168px);
 }
 
 .archive-redesign .chronicle-thumb {
-  width: clamp(58px, 8vw, 94px);
-  height: clamp(86px, 12vw, 138px);
+  justify-self: center;
+  width: min(100%, 86px);
+  height: auto;
+  aspect-ratio: 2 / 3;
+  border-width: 1px;
+  border-radius: 10px;
+  outline-color: rgba(232, 220, 199, 0.24);
 }
 
 .archive-redesign .chronicle-thumb + .chronicle-thumb {
-  margin-left: clamp(-38px, -3vw, -20px);
+  margin-left: 0;
 }
 
 .archive-redesign .chronicle-year-open-label {
   position: absolute;
   right: 18px;
   bottom: 16px;
-  color: rgba(118, 240, 245, 0.78);
+  border: 1px solid rgba(118, 240, 245, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 16, 16, 0.52);
+  color: rgba(194, 255, 247, 0.9);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 8px 12px;
 }
 
 body .chronicle-year-modal {
@@ -5623,10 +5803,18 @@ body .chronicle-card-label {
     margin-left: 34px;
   }
 
+  .archive-redesign .chronicle-year-plaque strong {
+    font-size: clamp(48px, 18vw, 78px);
+  }
+
   .archive-redesign .chronicle-year-count,
   .archive-redesign .chronicle-year-open-label {
     position: relative;
     inset: auto;
+  }
+
+  .archive-redesign .drawer-preview-stack {
+    padding-right: clamp(14px, 1.8vw, 22px);
   }
 
   body .chronicle-year-drawer-panel {
@@ -5708,5 +5896,974 @@ body .chronicle-card-label {
   .archive-redesign [data-year-node] {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* Game Chronicle polish: museum-grade archive cards and year drawer. */
+.archive-redesign {
+  --archive-bg: #06090b;
+  --archive-panel: rgba(8, 13, 15, 0.82);
+  --archive-panel-strong: rgba(11, 18, 20, 0.94);
+  --archive-brass: #c9a45e;
+  --archive-brass-soft: rgba(201, 164, 94, 0.22);
+  --archive-cyan: #77e6ee;
+  --archive-cyan-soft: rgba(119, 230, 238, 0.16);
+  --archive-cream: #f4e7c6;
+  --archive-muted: rgba(244, 231, 198, 0.68);
+  --archive-line: rgba(244, 231, 198, 0.16);
+  --archive-line-strong: rgba(201, 164, 94, 0.34);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(119, 230, 238, 0.1), transparent 28%),
+    radial-gradient(circle at 20% 18%, rgba(201, 164, 94, 0.14), transparent 24%),
+    linear-gradient(180deg, #091012 0%, #050708 48%, #030404 100%);
+  color: var(--archive-cream);
+}
+
+.archive-redesign .archive-cinematic-bg {
+  background:
+    linear-gradient(90deg, rgba(3, 5, 6, 0.9) 0%, rgba(3, 5, 6, 0.48) 45%, rgba(3, 5, 6, 0.72) 100%),
+    linear-gradient(180deg, rgba(2, 4, 5, 0.2), rgba(2, 4, 5, 0.88) 100%),
+    url("/images/archive/archive-hall-bg-v1.png");
+  opacity: 0.78;
+}
+
+.archive-redesign .archive-wood-wash {
+  background:
+    radial-gradient(circle at 24% 20%, rgba(201, 164, 94, 0.12), transparent 30%),
+    radial-gradient(circle at 76% 36%, rgba(119, 230, 238, 0.1), transparent 26%),
+    linear-gradient(180deg, transparent 0%, rgba(3, 6, 7, 0.5) 62%, rgba(3, 4, 4, 0.86) 100%);
+}
+
+.archive-redesign .archive-spotlight {
+  background:
+    radial-gradient(circle at 23% 23%, rgba(244, 231, 198, 0.18), transparent 21%),
+    radial-gradient(circle at 68% 58%, rgba(119, 230, 238, 0.13), transparent 30%),
+    linear-gradient(100deg, rgba(0, 0, 0, 0.42), transparent 42%, rgba(0, 0, 0, 0.28));
+}
+
+.archive-hero-panel {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
+}
+
+.archive-redesign .archive-brass-label,
+body .archive-brass-label {
+  border-color: rgba(201, 164, 94, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(201, 164, 94, 0.14), rgba(119, 230, 238, 0.07)),
+    rgba(7, 13, 15, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.12),
+    0 0 22px rgba(119, 230, 238, 0.04);
+  color: rgba(244, 231, 198, 0.88);
+}
+
+.archive-redesign .archive-hero-copy h1,
+.archive-index-heading h2,
+.chronicle-main-stage-heading h2,
+body .chronicle-modal-header h3,
+.chronicle-year-exhibit-hero h4 {
+  color: #fff2cf;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.65),
+    0 0 34px rgba(119, 230, 238, 0.08);
+}
+
+.archive-index-dock,
+.archive-redesign .chronicle-main-stage,
+body .chronicle-year-drawer-panel {
+  border-color: var(--archive-line-strong);
+  background:
+    linear-gradient(135deg, rgba(9, 15, 17, 0.94), rgba(3, 6, 7, 0.9)),
+    radial-gradient(circle at 100% 0%, rgba(119, 230, 238, 0.08), transparent 34%),
+    url("/textures/archive-noise.svg");
+  background-size:
+    auto,
+    auto,
+    180px 180px;
+}
+
+.archive-redesign .archive-metrics div,
+.archive-redesign .archive-filter-panel,
+.chronicle-year-exhibit-hero,
+body .chronicle-exhibition-grid {
+  border-color: var(--archive-line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(12, 20, 22, 0.78), rgba(4, 8, 9, 0.7)),
+    linear-gradient(90deg, rgba(119, 230, 238, 0.07), transparent 54%);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.08),
+    0 18px 54px rgba(0, 0, 0, 0.3);
+}
+
+.archive-redesign .archive-metrics dd,
+.chronicle-modal-count span,
+.chronicle-year-exhibit-stat span {
+  color: #f2d58f;
+}
+
+.archive-redesign .archive-back-button,
+.archive-redesign .archive-clear-button,
+body .chronicle-modal-close {
+  border-color: rgba(201, 164, 94, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(16, 26, 29, 0.92), rgba(8, 13, 15, 0.86)),
+    linear-gradient(90deg, rgba(201, 164, 94, 0.14), rgba(119, 230, 238, 0.08));
+  color: rgba(244, 231, 198, 0.92);
+}
+
+.archive-redesign .archive-field input,
+.archive-redesign .archive-field select,
+.archive-redesign .archive-tag-button {
+  border-color: rgba(201, 164, 94, 0.32);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(17, 28, 31, 0.94), rgba(8, 14, 16, 0.94)),
+    url("/textures/archive-noise.svg");
+  background-size:
+    auto,
+    160px 160px;
+  color: var(--archive-cream);
+}
+
+.archive-redesign .archive-tag-button {
+  box-shadow: inset 0 1px 0 rgba(244, 231, 198, 0.08);
+  font-weight: 700;
+}
+
+.archive-redesign .archive-tag-button:hover,
+.archive-redesign .archive-tag-button:focus-visible,
+.archive-redesign .archive-tag-button.is-active {
+  border-color: rgba(119, 230, 238, 0.62);
+  background:
+    linear-gradient(135deg, rgba(119, 230, 238, 0.16), rgba(201, 164, 94, 0.14)),
+    rgba(9, 16, 18, 0.92);
+  color: #f8f6e6;
+  transform: translateY(-1px);
+}
+
+body .chronicle-modal-header {
+  min-height: 108px;
+  border-bottom-color: var(--archive-line-strong, rgba(201, 164, 94, 0.34));
+  background:
+    linear-gradient(135deg, rgba(10, 17, 19, 0.98), rgba(4, 7, 8, 0.96)),
+    linear-gradient(90deg, rgba(201, 164, 94, 0.12), transparent 46%, rgba(119, 230, 238, 0.08));
+}
+
+body .chronicle-modal-header .brass-drawer-handle {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border: 1px solid rgba(201, 164, 94, 0.52);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(201, 164, 94, 0.16), rgba(119, 230, 238, 0.08)),
+    rgba(7, 13, 15, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.14),
+    0 0 0 1px rgba(119, 230, 238, 0.08),
+    0 16px 38px rgba(0, 0, 0, 0.3);
+}
+
+body .chronicle-modal-header .brass-drawer-handle::before,
+body .chronicle-modal-header .brass-drawer-handle::after {
+  position: absolute;
+  content: "";
+}
+
+body .chronicle-modal-header .brass-drawer-handle::before {
+  inset: 13px 12px 15px;
+  border: 1px solid rgba(244, 231, 198, 0.24);
+  border-top: 5px solid rgba(201, 164, 94, 0.52);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(244, 231, 198, 0.08), rgba(119, 230, 238, 0.05));
+}
+
+body .chronicle-modal-header .brass-drawer-handle::after {
+  left: 20px;
+  right: 20px;
+  top: 34px;
+  height: 7px;
+  border: 1px solid rgba(119, 230, 238, 0.32);
+  border-radius: 999px;
+  background: rgba(201, 164, 94, 0.18);
+  box-shadow: 0 0 16px rgba(119, 230, 238, 0.16);
+}
+
+body .chronicle-modal-count,
+.chronicle-year-exhibit-stat {
+  border-color: rgba(201, 164, 94, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(201, 164, 94, 0.18), rgba(119, 230, 238, 0.08)),
+    rgba(8, 14, 16, 0.82);
+  color: var(--archive-cream, #f4e7c6);
+  box-shadow: inset 0 1px 0 rgba(244, 231, 198, 0.1);
+}
+
+body .chronicle-modal-body {
+  gap: 18px;
+  padding: 18px;
+}
+
+body .chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+  gap: 16px;
+  padding: 16px;
+}
+
+body .chronicle-display-card {
+  position: relative;
+  display: grid;
+  height: 100%;
+  min-height: 438px;
+  grid-template-rows: 236px minmax(154px, 1fr);
+  gap: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(244, 231, 198, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(16, 25, 28, 0.92), rgba(6, 10, 12, 0.94)),
+    radial-gradient(circle at 50% 0%, rgba(201, 164, 94, 0.12), transparent 34%);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.08),
+    0 16px 42px rgba(0, 0, 0, 0.28);
+  padding: 12px;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+body .chronicle-display-card:hover,
+body .chronicle-display-card:focus-visible {
+  border-color: rgba(119, 230, 238, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.1),
+    0 20px 54px rgba(0, 0, 0, 0.4),
+    0 0 26px rgba(119, 230, 238, 0.1);
+}
+
+body .chronicle-display-card.is-selected {
+  border-color: rgba(201, 164, 94, 0.74);
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 164, 94, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.44),
+    0 0 30px rgba(201, 164, 94, 0.14);
+}
+
+body .archive-selected-chip {
+  top: 18px;
+  right: 18px;
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(201, 164, 94, 0.92), rgba(119, 230, 238, 0.34));
+  color: #071012;
+}
+
+body .chronicle-card-cover {
+  width: 100%;
+  height: 236px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid rgba(244, 231, 198, 0.14);
+  border-radius: 7px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(119, 230, 238, 0.14), transparent 34%),
+    linear-gradient(145deg, rgba(20, 31, 34, 0.96), rgba(5, 9, 10, 0.96));
+}
+
+body .chronicle-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+body .chronicle-display-card:hover .chronicle-card-cover img,
+body .chronicle-display-card:focus-visible .chronicle-card-cover img {
+  filter: saturate(1.08) contrast(1.04);
+  transform: scale(1.035);
+}
+
+body .chronicle-card-label {
+  display: grid;
+  min-height: 154px;
+  grid-template-rows: minmax(66px, auto) minmax(0, auto) auto auto auto;
+  gap: 7px;
+  border: 1px solid rgba(244, 231, 198, 0.12);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(244, 231, 198, 0.07), rgba(244, 231, 198, 0.035)),
+    rgba(8, 14, 16, 0.72);
+  padding: 11px;
+  color: var(--archive-cream, #f4e7c6);
+}
+
+body .chronicle-card-label strong,
+body .chronicle-card-label em {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+body .chronicle-card-label strong {
+  min-height: 66px;
+  color: #fff4d2;
+  font-size: 15px;
+  line-height: 1.34;
+  -webkit-line-clamp: 3;
+}
+
+body .chronicle-card-label em {
+  min-height: 18px;
+  color: rgba(244, 231, 198, 0.56);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.35;
+  -webkit-line-clamp: 1;
+}
+
+body .chronicle-card-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: auto;
+}
+
+body .chronicle-card-meta span {
+  min-height: 28px;
+  border: 1px solid rgba(119, 230, 238, 0.18);
+  border-radius: 6px;
+  background: rgba(119, 230, 238, 0.06);
+  color: rgba(221, 253, 255, 0.9);
+  font-size: 11px;
+}
+
+body .chronicle-card-tags {
+  display: -webkit-box;
+  min-height: 17px;
+  overflow: hidden;
+  color: rgba(244, 231, 198, 0.62);
+  font-size: 11px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+body .chronicle-modal-dossier {
+  border: 1px solid rgba(201, 164, 94, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(236, 222, 190, 0.96), rgba(199, 179, 133, 0.94)),
+    url("/textures/archive-paper.svg");
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 18px 54px rgba(0, 0, 0, 0.34);
+}
+
+body .archive-dossier-cover {
+  border-radius: 8px;
+}
+
+body .archive-description-empty {
+  border-radius: 8px;
+}
+
+@media (max-width: 980px) {
+  body .chronicle-exhibition-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  }
+
+  body .chronicle-display-card {
+    min-height: 414px;
+    grid-template-rows: 216px minmax(154px, 1fr);
+  }
+
+  body .chronicle-card-cover {
+    height: 216px;
+  }
+}
+
+@media (max-width: 640px) {
+  body .chronicle-modal-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  body .chronicle-exhibition-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 58vh;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  body .chronicle-display-card {
+    min-height: 344px;
+    grid-template-rows: 168px minmax(142px, 1fr);
+    padding: 9px;
+  }
+
+  body .chronicle-card-cover {
+    height: 168px;
+  }
+
+  body .chronicle-card-label {
+    min-height: 142px;
+    grid-template-rows: minmax(58px, auto) minmax(0, auto) auto auto auto;
+    padding: 9px;
+  }
+
+  body .chronicle-card-label strong {
+    min-height: 58px;
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+  }
+
+  body .chronicle-card-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Stable high-specificity overrides for portal-mounted year drawers. */
+body .chronicle-year-modal .chronicle-modal-header .brass-drawer-handle {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border: 1px solid rgba(201, 164, 94, 0.52);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(201, 164, 94, 0.16), rgba(119, 230, 238, 0.08)),
+    rgba(7, 13, 15, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.14),
+    0 0 0 1px rgba(119, 230, 238, 0.08),
+    0 16px 38px rgba(0, 0, 0, 0.3);
+}
+
+body .chronicle-year-modal .chronicle-modal-count,
+body .chronicle-year-modal .chronicle-year-exhibit-stat {
+  border-color: rgba(201, 164, 94, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(201, 164, 94, 0.18), rgba(119, 230, 238, 0.08)),
+    rgba(8, 14, 16, 0.82);
+  color: #f4e7c6;
+  box-shadow: inset 0 1px 0 rgba(244, 231, 198, 0.1);
+}
+
+body .chronicle-year-modal .chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+  gap: 16px;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+body .chronicle-year-modal .chronicle-display-card {
+  display: grid;
+  height: 100%;
+  min-height: 438px;
+  grid-template-rows: 236px minmax(154px, 1fr);
+  gap: 12px;
+  overflow: hidden;
+  border-color: rgba(244, 231, 198, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(16, 25, 28, 0.92), rgba(6, 10, 12, 0.94)),
+    radial-gradient(circle at 50% 0%, rgba(201, 164, 94, 0.12), transparent 34%);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.08),
+    0 16px 42px rgba(0, 0, 0, 0.28);
+  padding: 12px;
+}
+
+body .chronicle-year-modal .chronicle-card-cover {
+  width: 100%;
+  height: 236px;
+  aspect-ratio: auto;
+  border-radius: 7px;
+}
+
+body .chronicle-year-modal .chronicle-card-label {
+  display: grid;
+  min-height: 154px;
+  grid-template-rows: minmax(66px, auto) minmax(0, auto) auto auto auto;
+  gap: 7px;
+  border: 1px solid rgba(244, 231, 198, 0.12);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(244, 231, 198, 0.07), rgba(244, 231, 198, 0.035)),
+    rgba(8, 14, 16, 0.72);
+  padding: 11px;
+  color: #f4e7c6;
+}
+
+body .chronicle-year-modal .chronicle-card-label strong {
+  display: -webkit-box;
+  min-height: 66px;
+  overflow: hidden;
+  color: #fff4d2;
+  font-size: 15px;
+  line-height: 1.34;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+body .chronicle-year-modal .chronicle-card-label em {
+  display: -webkit-box;
+  min-height: 18px;
+  overflow: hidden;
+  color: rgba(244, 231, 198, 0.56);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.35;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+body .chronicle-year-modal .chronicle-card-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: auto;
+}
+
+body .chronicle-year-modal .chronicle-card-tags {
+  display: -webkit-box;
+  min-height: 17px;
+  overflow: hidden;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+@media (max-width: 980px) {
+  body .chronicle-year-modal .chronicle-exhibition-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  }
+
+  body .chronicle-year-modal .chronicle-display-card {
+    min-height: 414px;
+    grid-template-rows: 216px minmax(154px, 1fr);
+  }
+
+  body .chronicle-year-modal .chronicle-card-cover {
+    height: 216px;
+  }
+}
+
+@media (max-width: 640px) {
+  body .chronicle-year-modal .chronicle-exhibition-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  body .chronicle-year-modal .chronicle-display-card {
+    min-height: 344px;
+    grid-template-rows: 168px minmax(142px, 1fr);
+    padding: 9px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-cover {
+    height: 168px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-label {
+    min-height: 142px;
+    grid-template-rows: minmax(58px, auto) minmax(0, auto) auto auto auto;
+    padding: 9px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-label strong {
+    min-height: 58px;
+    font-size: 13px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Archive drawer refinement: readable card data rows and dossier spacing. */
+body .chronicle-year-modal {
+  background:
+    radial-gradient(circle at 72% 22%, rgba(112, 220, 228, 0.1), transparent 30%),
+    radial-gradient(circle at 44% 46%, rgba(191, 154, 88, 0.12), transparent 34%),
+    rgba(0, 0, 0, 0.82);
+}
+
+body .chronicle-year-modal .chronicle-year-drawer-panel {
+  border-color: rgba(232, 220, 199, 0.14);
+  background:
+    linear-gradient(135deg, rgba(8, 14, 16, 0.99), rgba(3, 6, 7, 0.98)),
+    radial-gradient(circle at 0% 0%, rgba(191, 154, 88, 0.12), transparent 34%),
+    radial-gradient(circle at 100% 28%, rgba(112, 220, 228, 0.09), transparent 30%),
+    url("/textures/archive-noise.svg");
+  background-size:
+    auto,
+    auto,
+    auto,
+    180px 180px;
+  box-shadow:
+    -34px 0 120px rgba(0, 0, 0, 0.82),
+    inset 1px 0 0 rgba(244, 231, 198, 0.08);
+}
+
+body .chronicle-year-modal .chronicle-modal-header {
+  border-bottom-color: rgba(232, 220, 199, 0.13);
+  background:
+    linear-gradient(135deg, rgba(12, 21, 24, 0.96), rgba(5, 9, 11, 0.94)),
+    linear-gradient(90deg, rgba(191, 154, 88, 0.1), transparent 52%, rgba(112, 220, 228, 0.08));
+}
+
+body .chronicle-year-modal .chronicle-modal-close {
+  border-color: rgba(232, 220, 199, 0.22);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(232, 220, 199, 0.08), rgba(112, 220, 228, 0.06)),
+    rgba(9, 16, 18, 0.86);
+  color: rgba(244, 231, 198, 0.92);
+}
+
+body .chronicle-year-modal .chronicle-modal-close:hover,
+body .chronicle-year-modal .chronicle-modal-close:focus-visible {
+  border-color: rgba(112, 220, 228, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.1),
+    0 0 24px rgba(112, 220, 228, 0.12);
+}
+
+body .chronicle-year-modal .chronicle-modal-count,
+body .chronicle-year-modal .chronicle-year-exhibit-stat {
+  border-color: rgba(232, 220, 199, 0.18);
+  background:
+    linear-gradient(145deg, rgba(191, 154, 88, 0.14), rgba(112, 220, 228, 0.08)),
+    rgba(10, 18, 20, 0.78);
+}
+
+body .chronicle-year-modal .chronicle-modal-count span,
+body .chronicle-year-modal .chronicle-year-exhibit-stat span {
+  color: #d9bd7b;
+}
+
+body .chronicle-year-modal .chronicle-year-exhibit-hero {
+  grid-column: 1;
+  border-color: rgba(232, 220, 199, 0.13);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(14, 24, 27, 0.82), rgba(6, 10, 12, 0.76)),
+    radial-gradient(circle at 100% 0%, rgba(112, 220, 228, 0.1), transparent 34%);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.08),
+    0 18px 54px rgba(0, 0, 0, 0.24);
+  padding: 20px;
+}
+
+body .chronicle-year-modal .chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(198px, 1fr));
+  gap: 18px;
+  border-color: rgba(232, 220, 199, 0.11);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(8, 14, 16, 0.74), rgba(3, 6, 7, 0.68)),
+    radial-gradient(circle at 50% 0%, rgba(191, 154, 88, 0.08), transparent 36%);
+  padding: 18px;
+}
+
+body .chronicle-year-modal .chronicle-display-card {
+  min-height: 506px;
+  grid-template-rows: 238px minmax(216px, 1fr);
+  gap: 12px;
+  border-color: rgba(232, 220, 199, 0.12);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(15, 25, 28, 0.94), rgba(6, 10, 12, 0.96)),
+    radial-gradient(circle at 50% 0%, rgba(191, 154, 88, 0.11), transparent 34%);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.08),
+    0 18px 44px rgba(0, 0, 0, 0.26);
+  padding: 12px;
+}
+
+body .chronicle-year-modal .chronicle-display-card:hover,
+body .chronicle-year-modal .chronicle-display-card:focus-visible {
+  border-color: rgba(112, 220, 228, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 231, 198, 0.1),
+    0 20px 56px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(112, 220, 228, 0.1);
+}
+
+body .chronicle-year-modal .chronicle-display-card.is-selected {
+  border-color: rgba(217, 189, 123, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 189, 123, 0.18),
+    0 22px 62px rgba(0, 0, 0, 0.42),
+    0 0 26px rgba(217, 189, 123, 0.14);
+}
+
+body .chronicle-year-modal .chronicle-card-cover {
+  height: 238px;
+  border-color: rgba(232, 220, 199, 0.12);
+  border-radius: 13px;
+}
+
+body .chronicle-year-modal .chronicle-card-label {
+  display: flex;
+  min-height: 216px;
+  flex-direction: column;
+  gap: 9px;
+  border-color: rgba(232, 220, 199, 0.1);
+  border-radius: 13px;
+  background:
+    linear-gradient(180deg, rgba(244, 231, 198, 0.06), rgba(244, 231, 198, 0.025)),
+    rgba(7, 13, 15, 0.78);
+  padding: 12px;
+}
+
+body .chronicle-year-modal .chronicle-card-label strong {
+  flex: 0 0 61px;
+  min-height: 61px;
+  color: #fff1cf;
+  font-size: 15px;
+  line-height: 1.35;
+  -webkit-line-clamp: 3;
+}
+
+body .chronicle-year-modal .chronicle-card-label em {
+  flex: 0 0 17px;
+  min-height: 17px;
+  color: rgba(244, 231, 198, 0.56);
+}
+
+body .chronicle-year-modal .chronicle-card-meta {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+}
+
+body .chronicle-year-modal .chronicle-card-meta span {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-color: rgba(112, 220, 228, 0.18);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(112, 220, 228, 0.1), rgba(191, 154, 88, 0.07)),
+    rgba(8, 15, 17, 0.7);
+  color: rgba(224, 251, 252, 0.9);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+body .chronicle-year-modal .chronicle-card-tags {
+  display: grid;
+  min-height: 34px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  overflow: hidden;
+  color: rgba(244, 231, 198, 0.68);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+body .chronicle-year-modal .chronicle-card-tags small {
+  display: inline-flex;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(232, 220, 199, 0.1);
+  border-radius: 999px;
+  background: rgba(244, 231, 198, 0.05);
+  color: rgba(217, 189, 123, 0.86);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+body .chronicle-year-modal .chronicle-card-tags span {
+  display: -webkit-box;
+  overflow: hidden;
+  min-width: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+body .chronicle-year-modal .chronicle-card-platform {
+  min-height: 32px;
+}
+
+body .chronicle-year-modal .archive-selected-chip {
+  border: 1px solid rgba(255, 239, 190, 0.34);
+  background:
+    linear-gradient(135deg, rgba(217, 189, 123, 0.95), rgba(112, 220, 228, 0.24));
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.26);
+}
+
+body .chronicle-year-modal .chronicle-modal-dossier {
+  display: block;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  max-height: calc(100vh - 144px);
+  padding: 22px;
+  border-color: rgba(81, 59, 27, 0.24);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(232, 222, 195, 0.98), rgba(201, 184, 140, 0.96)),
+    radial-gradient(circle at 100% 0%, rgba(112, 220, 228, 0.08), transparent 32%),
+    url("/textures/archive-paper.svg");
+  background-size:
+    auto,
+    auto,
+    220px 220px;
+}
+
+body .chronicle-year-modal .chronicle-modal-dossier > * {
+  position: relative;
+  z-index: 1;
+}
+
+body .chronicle-year-modal .archive-paper-dossier::before {
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+body .chronicle-year-modal .archive-dossier-tab {
+  top: 14px;
+  right: 16px;
+  left: auto;
+  width: 54px;
+  height: 10px;
+  opacity: 0.36;
+  pointer-events: none;
+}
+
+body .chronicle-year-modal .archive-dossier-year-summary {
+  margin: 0 0 22px;
+  border-bottom: 1px solid rgba(65, 44, 19, 0.18);
+  padding: 0 0 20px;
+}
+
+body .chronicle-year-modal .archive-dossier-year-summary .archive-brass-label,
+body .chronicle-year-modal .chronicle-modal-dossier > .archive-brass-label {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 14px;
+  border-color: rgba(83, 59, 25, 0.24);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(109, 79, 34, 0.12), rgba(14, 65, 70, 0.08)),
+    rgba(255, 255, 255, 0.18);
+  color: rgba(41, 29, 15, 0.76);
+  box-shadow: none;
+}
+
+body .chronicle-year-modal .archive-dossier h3 {
+  margin: 0 0 14px;
+  color: #2d1c0d;
+  line-height: 1.12;
+}
+
+body .chronicle-year-modal .archive-dossier-year-summary h3 {
+  margin: 0 0 16px;
+}
+
+body .chronicle-year-modal .archive-dossier-cover {
+  margin: 4px 0 16px;
+  border-radius: 14px;
+}
+
+body .chronicle-year-modal .archive-dossier-grid {
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+body .chronicle-year-modal .archive-dossier-grid div,
+body .chronicle-year-modal .archive-dossier-section {
+  border-radius: 12px;
+}
+
+body .chronicle-year-modal .archive-dossier-section {
+  margin-top: 10px;
+}
+
+@media (max-width: 980px) {
+  body .chronicle-year-modal .chronicle-year-exhibit-hero,
+  body .chronicle-year-modal .chronicle-modal-dossier {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  body .chronicle-year-modal .chronicle-exhibition-grid {
+    grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+  }
+
+  body .chronicle-year-modal .chronicle-display-card {
+    min-height: 484px;
+    grid-template-rows: 218px minmax(214px, 1fr);
+  }
+
+  body .chronicle-year-modal .chronicle-card-cover {
+    height: 218px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-label {
+    min-height: 214px;
+  }
+}
+
+@media (max-width: 640px) {
+  body .chronicle-year-modal .chronicle-exhibition-grid {
+    grid-template-columns: 1fr;
+    max-height: 60vh;
+  }
+
+  body .chronicle-year-modal .chronicle-display-card {
+    min-height: 486px;
+    grid-template-rows: 214px minmax(220px, 1fr);
+  }
+
+  body .chronicle-year-modal .chronicle-card-cover {
+    height: 214px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-label {
+    min-height: 220px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body .chronicle-year-modal .chronicle-modal-dossier {
+    height: max-content !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow-y: visible !important;
+    padding: 18px;
+  }
+
+  html body .chronicle-year-modal .chronicle-year-drawer-panel .chronicle-modal-body .chronicle-modal-dossier {
+    height: max-content !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
   }
 }

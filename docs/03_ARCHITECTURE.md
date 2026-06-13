@@ -128,6 +128,7 @@ src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
 src/lib/stats.ts	Pure statistics functions.
 src/lib/geo.ts	Geographic coordinate and marker position helpers.
+src/lib/gameCover.ts	Normalizes game cover fields and provides the shared fallback cover image path.
 src/types/game.ts	Shared TypeScript types.
 
 State Management Strategy
@@ -195,7 +196,9 @@ Current 3D globe behavior:
 * `src/lib/geo.ts` maps GeoJSON `ISO3166-1-Alpha-2` values to project country codes, with Alpha-3 / name fallback keys for non-mock countries and a small name fallback for records like France where this GeoJSON source uses `-99`.
 * `src/lib/geo.ts` also owns globe camera view helpers: a global point of view and per-country focus points for Europe, East Asia, North America, and other mock regions.
 * `src/lib/geo.ts` samples a controlled dot matrix inside the 10 mock country polygons. The 3D globe uses those points to make mock countries easier to spot without turning all game data into heavy HTML markers.
-* `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as HTML labels only when a mock country is hovered or selected. With no selected country, the globe shows one representative cover marker per mock country; after country selection, it shows that country's current-year game markers.
+* `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as non-interactive HTML labels only when a mock country is hovered or selected. With no selected country, the globe shows one representative cover marker per mock country; after country selection, it shows up to 12 top-rated current-year game markers for that country.
+* Game cover lookup is centralized in `src/lib/gameCover.ts`. Earth markers and country detail cards prefer real RAWG / local cover paths and fall back to `public/covers/fallback-game-cover.svg` when a cover field is missing or an image load fails.
+* Earth cover markers keep the cover image clear. They do not render title / year text on top of the image; full game metadata is available through marker tooltip and the right panel game detail layer.
 * Marker size responds to `coverSize`; view mode changes marker presentation while keeping the same local mock data source.
 * `GameTooltip` still provides the React tooltip component for reusable UI and now also provides escaped HTML tooltip markup for globe HTML markers.
 * `src/app/globals.css` provides the black / white sci-fi visual system, globe stage styling, country tooltip styling, dot / border styling, and globe HTML marker styling.
@@ -210,7 +213,8 @@ Real 3D Globe performance strategy:
 * Polygon altitude, opacity, curvature resolution, and transition duration are kept low to reduce hover and drag overhead. Hover / selected states brighten only the matching country dots and border; ocean / blank hover does not recolor the globe.
 * Atmosphere and graticules are disabled in the current MVP to prioritize interaction smoothness.
 * Globe HTML country labels are disabled by default. They appear only for hovered / selected mock countries and are hidden during drag / zoom.
-* With no selected country, `GameGlobe` shows only one representative game marker per mock country. After a country is selected, the globe shows only that country's current-year game markers and hides other countries' games.
+* With no selected country, `GameGlobe` shows only one representative game marker per mock country. After a country is selected, the globe shows only that country's top-rated current-year game markers, capped at 12, and hides other countries' games.
+* Marker positions use a deterministic country-center distribution helper in `src/lib/geo.ts`. The helper uses a golden-angle spiral, a stable hash from `countryCode + gameId`, and country-specific latitude / longitude spread profiles so large countries such as the United States, Canada, China, Brazil, Australia, and Russia can spread wider while smaller or narrow countries stay tighter.
 * During drag / zoom interaction, `GameGlobe` hides country labels and downgrades cover-card markers into lightweight dots, then restores the needed card / label layer about 200ms after interaction ends.
 * Polygon hover uses per-feature country keys. Ocean / blank hover clears the hovered country state instead of applying a broad globe highlight. Non-mock country clicks only highlight the globe polygon; mock country clicks still update the right panel.
 * Missing cover images are not requested by default, so mock cover paths do not create repeated 404 requests during globe rendering.
@@ -250,6 +254,7 @@ Current interaction flow:
 * `BottomControls` emits year range, cover size, and view mode updates to `GameEarthApp`.
 * `GameArchiveView` emits selected game updates to `GameEarthApp` and keeps archive search / filter / sort state local.
 * `GameGlobe` receives year-filtered games and current earth state, and emits country selection plus game hover / selection.
+* `RightPanel` owns the Earth-side game detail layer. When `selectedGame` is set, the base country / gallery content is marked inert and visually dimmed, the right panel stops background scrolling, and Escape closes the detail layer.
 
 Statistics flow:
 

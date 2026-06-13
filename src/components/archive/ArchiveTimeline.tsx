@@ -98,7 +98,7 @@ export function ArchiveTimeline({
               type="button"
             >
               <span className="chronicle-era-marker" aria-hidden="true" />
-              <span className="chronicle-year-plaque brass-plaque">
+              <span className="chronicle-year-plaque">
                 <span>年份档案柜</span>
                 <strong>{group.year ?? "Unknown"}</strong>
               </span>
@@ -109,7 +109,12 @@ export function ArchiveTimeline({
               <span className="chronicle-year-count">
                 {group.games.length} 份馆藏记录
               </span>
-              <span className="chronicle-year-covers drawer-preview-stack">
+              <span
+                className="chronicle-year-covers drawer-preview-stack"
+                style={{
+                  gridTemplateColumns: `repeat(${group.previewGames.length}, minmax(0, 1fr))`
+                }}
+              >
                 {group.previewGames.map((game) => (
                   <span className="chronicle-thumb" key={game.id}>
                     <span className="chronicle-thumb-fallback">
@@ -130,9 +135,7 @@ export function ArchiveTimeline({
                   </span>
                 ))}
               </span>
-              <span className="chronicle-year-open-label">
-                打开大型档案抽屉
-              </span>
+              <span className="chronicle-year-open-label">打开档案抽屉</span>
             </motion.button>
           );
         })}

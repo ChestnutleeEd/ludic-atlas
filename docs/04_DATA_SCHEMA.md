@@ -31,6 +31,9 @@ export type Game = {
   titleZh: string;
   countryCode: string;
   countryName: string;
+  countrySource?: "developer" | "publisher" | "title" | "unknown";
+  countryConfidence?: "high" | "medium" | "low" | "unknown";
+  countryReason?: string;
   developer: string;
   publisher: string;
   releaseYear: number;
@@ -38,6 +41,12 @@ export type Game = {
   platforms: string[];
   rating: number;
   coverImage: string;
+  background_image?: string;
+  backgroundImage?: string;
+  cover?: string;
+  coverUrl?: string;
+  fallbackCoverImage?: string;
+  image?: string;
   description: string;
 };
 ```
@@ -102,7 +111,7 @@ export const countries = [
 ];
 ```
 
-Current mock data includes ten countries / regions:
+Current country data includes the original MVP countries / regions plus generated-data country inference countries:
 
 - Japan
 - United States
@@ -111,6 +120,13 @@ Current mock data includes ten countries / regions:
 - Poland
 - Sweden
 - Finland
+- Belgium
+- Germany
+- Netherlands
+- Denmark
+- New Zealand
+- Ukraine
+- Czech Republic
 - France
 - Canada
 - United Kingdom
@@ -139,6 +155,12 @@ Generation command:
 
 ```bash
 npm run data:rawg
+```
+
+RAWG cover cache command:
+
+```bash
+npm run data:covers
 ```
 
 Batch generation mode:
@@ -220,10 +242,44 @@ RAWG field mapping:
 | `genres` | RAWG `genres[].name`, falling back to `Unknown` |
 | `platforms` | RAWG `platforms[].platform.name`, falling back to `Unknown` |
 | `rating` | RAWG 0-5 rating converted to the existing 0-10 display scale |
-| `coverImage` | RAWG `background_image` remote URL |
+| `coverImage` | RAWG `background_image` remote URL after `npm run data:rawg`; cached `/covers/rawg/...` static path after `npm run data:covers` |
 | `description` | Batch: short generated RAWG / Metacritic / release summary. Seed: RAWG `description_raw`, falling back to a short generated sentence |
 
 The checked-in default `games.generated.ts` may point to `mockGames` so the app remains runnable before a RAWG API key is configured. Running `RAWG_FETCH_MODE=batch npm run data:rawg` overwrites it with static generated RAWG records. Non-batch mode preserves the legacy manually maintained seed flow.
+
+Country inference preview files can be applied to generated RAWG records with:
+
+```bash
+npm run data:apply-countries
+```
+
+Dry-run mode:
+
+```bash
+APPLY_COUNTRIES_DRY_RUN=true npm run data:apply-countries
+```
+
+The apply script reads `data/country-inference-preview.json`, updates only `confidence: "high"` records in `src/data/games.generated.ts`, writes `countryCode` and `countryName`, and preserves `UNKNOWN` / `Global` for unknown, low-confidence, or review records. It also writes optional provenance fields `countrySource`, `countryConfidence`, and `countryReason`.
+
+After RAWG records are generated, run:
+
+```bash
+npm run data:covers
+```
+
+This downloads remote RAWG cover URLs into:
+
+```text
+public/covers/rawg/
+```
+
+and rewrites successful generated records to local static paths such as:
+
+```text
+/covers/rawg/super-mario-odyssey.jpg
+```
+
+The cover cache script does not read `.env.local`, does not require a RAWG API key, uses shell proxy environment variables when present, skips existing non-empty files, and leaves failed downloads as their original remote URLs.
 
 ## Stable Mock Data
 
@@ -268,7 +324,13 @@ Country coverage:
 
 ### Cover Image Usage
 
-For mock fallback data, `coverImage` is a future-ready static asset path. For RAWG generated data, `coverImage` is the remote RAWG `background_image` URL.
+For mock fallback data, `coverImage` is a future-ready static asset path. For RAWG generated data, `coverImage` initially comes from the remote RAWG `background_image` URL, then should be rewritten to `/covers/rawg/...` by `npm run data:covers`.
+
+Runtime cover lookup is centralized in `src/lib/gameCover.ts`. Components should call `getGameCoverImage(game)` instead of directly reading raw cover fields. The lookup order is:
+
+```text
+coverImage -> background_image -> backgroundImage -> coverUrl -> cover -> image -> fallbackCoverImage -> /covers/fallback-game-cover.svg
+```
 
 Path format:
 
@@ -284,12 +346,12 @@ public/covers/{game-id}.jpg
 
 Rendering rules:
 
-* If `coverImage` points to an existing local static image, marker and detail card components display that image.
-* If the image path is missing in `public/` or fails to load, the UI falls back to a blue-purple gradient cover placeholder.
+* If any supported cover field points to an existing local static image or valid remote RAWG image, marker and detail card components display that image.
+* If the image path is missing in `public/` or fails to load, the UI falls back to `public/covers/fallback-game-cover.svg` plus the existing title / year overlay.
 * The fallback cover displays the Chinese-first game title, release year, and rating where the available marker size allows.
 * Every mock game should use `/covers/{game-id}.jpg`, where `{game-id}` exactly matches the `id` field.
-* RAWG generated records may use remote `background_image` URLs.
-* Do not download RAWG images into the repository in the current MVP.
+* RAWG generated records should use `/covers/rawg/{safe-game-id}.{ext}` after local cover caching.
+* RAWG cached cover files under `public/covers/rawg/` are intended to be committed so the app does not depend on slow remote image loads at runtime.
 * If a remote image fails to load, existing fallback cover UI should keep the page usable.
 
 ## Derived Statistics

@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "data:rawg": "node scripts/fetch-rawg-games.mjs",
+    "data:covers": "node scripts/cache-rawg-covers.mjs",
+    "data:enrich": "node scripts/enrich-rawg-details.mjs",
+    "data:apply-countries": "node scripts/apply-country-inference.mjs",
+    "data:infer-countries:dry": "node scripts/infer-game-countries-with-ollama.mjs",
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"

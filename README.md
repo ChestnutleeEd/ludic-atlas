@@ -98,6 +98,12 @@ Generate static game data:
 npm run data:rawg
 ```
 
+Cache RAWG cover images locally:
+
+```bash
+npm run data:covers
+```
+
 If RAWG API cannot be reached directly from your local network, set proxy environment variables before running the script:
 
 ```bash
@@ -112,7 +118,9 @@ Notes:
 - `.env.local` is ignored by Git and should not be committed.
 - API keys must not be written into source code, documentation, or generated build output.
 - Generated game data is written to `src/data/games.generated.ts`.
+- Cached RAWG covers are written to `public/covers/rawg/`, and generated `coverImage` values are rewritten to `/covers/rawg/...`.
 - The RAWG script reads `HTTPS_PROXY`, `HTTP_PROXY`, or `ALL_PROXY` through `undici` when a local proxy is needed.
+- The RAWG cover cache script also supports proxy environment variables, but does not read `.env.local` and does not require a RAWG API key.
 
 ## Data Source & Attribution / 数据来源与署名
 

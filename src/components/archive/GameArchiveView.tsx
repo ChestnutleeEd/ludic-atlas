@@ -152,7 +152,7 @@ export function GameArchiveView({
         const previewGames = [
           ...groupGames.filter((game) => game.coverImage).sort(sortByRating),
           ...groupGames.filter((game) => !game.coverImage).sort(sortByRating)
-        ].slice(0, 5);
+        ].slice(0, 12);
 
         return {
           games: sortedGames,

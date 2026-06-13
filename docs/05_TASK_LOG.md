@@ -48,6 +48,70 @@ Example:
 
 Briefly state the recommended next step.
 
+## 2026-06-13 - Game Chronicle Archive Visual Polish
+
+### Goal
+
+Refine the Game Chronicle / 年度馆藏 drawer UI with equal-height exhibition cards, a less intrusive year-drawer icon, and a more modern dark museum visual system.
+
+### Files Changed
+
+- `src/components/archive/ArchiveYearModal.tsx`: added full-title accessibility attributes to exhibition cards so clamped titles remain available.
+- `src/app/globals.css`: added focused Game Chronicle polish styles for page background, archive panels, modal header, equal-height card grid, fixed cover ratio, title clamps, metadata alignment, hover, selected, and fallback states.
+- `docs/02_FEATURE_MAP.md`: documented the equal-height drawer card system and updated visual responsibility notes.
+- `docs/05_TASK_LOG.md`: appended this task record.
+
+### Implementation Summary
+
+The selected-year drawer now uses a uniform card grid with fixed cover aspect ratio, three-line title clamp, stable metadata rows, and full title access through `title` / `aria-label`. The modal header drawer mark was redesigned from a large solid brass block into a translucent archive badge with thin borders and a subtle handle detail. The archive surface now leans into a darker museum palette with restrained brass and cyan accents, glassy panels, thin borders, noise texture, and softer hover / selected states.
+
+### Documentation Updated
+
+- `docs/02_FEATURE_MAP.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `npm run lint` with one existing warning in `scripts/infer-game-countries-with-ollama.mjs` for an unused `cache` variable.
+- Passed `npm run build`.
+- Checked `http://localhost:3000` in browser: entered Game Chronicle, opened `2010 年馆藏`, verified 45 equal-height cards, selected state, title clamp / full title access, modal header badge, and 390px narrow viewport layout.
+
+### Next Step
+
+Continue with smaller visual passes for archive timeline density and dossier typography after the core drawer card system settles.
+
+## 2026-06-13 - Game Chronicle Drawer Readability Pass
+
+### Goal
+
+Fix metadata overlap inside selected-year game cards, stabilize right-side dossier section titles, and continue refining the archive drawer visual system.
+
+### Files Changed
+
+- `src/components/archive/ArchiveYearModal.tsx`: added explicit genre / platform row classes and full row titles for card metadata.
+- `src/app/globals.css`: refined the selected-year drawer palette, card layout, card metadata rows, right-side dossier grid placement, mobile dossier sizing, hover states, selected states, and panel spacing.
+- `docs/02_FEATURE_MAP.md`: updated Game Chronicle notes for separate metadata rows and stable dossier spacing.
+- `docs/05_TASK_LOG.md`: appended this task record.
+
+### Implementation Summary
+
+Exhibition cards now keep title, secondary title, year / rating badges, genre, and platform in normal flex / grid document flow. Genre and platform rows have their own labelled areas and clamps, preventing overlap with badges. The desktop dossier starts at the top of the drawer and spans the drawer rows; mobile lets the dossier grow with its content so section headings stay inside the panel instead of being clipped by an internal scroll box. The visual treatment was cleaned toward dark glass, thin warm-brass borders, muted cyan light, and softer selected / hover states.
+
+### Documentation Updated
+
+- `docs/02_FEATURE_MAP.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `npm run lint` with one existing warning in `scripts/infer-game-countries-with-ollama.mjs` for an unused `cache` variable.
+- Passed `npm run build`.
+- Verified production build at `http://localhost:3001`: opened `2010 年馆藏`, checked 45 cards, selected state, first six desktop cards including long titles, 390px mobile layout, card metadata overlap, right-side `年度概览` and `游戏档案卡` title containment, and horizontal overflow.
+
+### Next Step
+
+Consider extracting archive drawer style primitives into component-level class constants if the archive surface continues to grow.
+
 ## 2026-06-04 - Project Setup
 
 ### Goal
@@ -1003,3 +1067,93 @@ The RAWG generation script now reads proxy configuration from the shell environm
 ### Next Step
 
 Run `HTTPS_PROXY=http://127.0.0.1:7890 HTTP_PROXY=http://127.0.0.1:7890 ALL_PROXY=http://127.0.0.1:7890 npm run data:rawg` locally with a valid RAWG API key configured in the shell or `.env.local`.
+
+## 2026-06-13 - 3D Earth Marker Covers and Performance
+
+### Goal
+
+Connect real game covers to Earth Explorer markers and detail cards, reduce heavy marker counts, and distribute same-country markers more naturally.
+
+### Files Changed
+
+- `src/lib/gameCover.ts`: added centralized cover field lookup and shared fallback path.
+- `public/covers/fallback-game-cover.svg`: added the unified fallback cover image.
+- `src/types/game.ts`: documented optional cover aliases accepted by runtime cover lookup.
+- `src/lib/geo.ts`: added deterministic country-aware globe marker distribution.
+- `src/components/globe/GameMarkers.tsx`: capped representative markers by country, sorted by rating, loaded real covers, and added image-error fallback.
+- `src/components/globe/GameGlobe.tsx`: enabled marker cover loading and simplified visible marker derivation.
+- `src/components/panels/CountryDetailPanel.tsx`: displayed real / fallback cover images in the selected-country cover wall.
+- `src/components/panels/GameDetailCard.tsx`: displayed real / fallback cover images in the selected game detail card.
+- `src/app/globals.css`: added object-fit cover image rules for Earth markers and right-panel cards.
+- `docs/00_PROJECT_INDEX.md`: recorded the new cover helper and fallback asset.
+- `docs/02_FEATURE_MAP.md`: updated 3D Earth, marker, country detail, and game detail mappings.
+- `docs/03_ARCHITECTURE.md`: documented marker cap, fallback cover flow, and deterministic distribution.
+- `docs/04_DATA_SCHEMA.md`: documented optional cover aliases and cover lookup order.
+
+### Implementation Summary
+
+Earth marker rendering now builds only representative marker data: one top-rated game per country in global view and up to 12 top-rated games for the selected country. Marker coordinates use a deterministic golden-angle distribution around each country center with country-specific spread profiles. Earth markers, country cover wall cards, and selected game detail cards use the same cover lookup and fall back to `public/covers/fallback-game-cover.svg` when a field is missing or image loading fails.
+
+### Documentation Updated
+
+- `docs/00_PROJECT_INDEX.md`
+- `docs/02_FEATURE_MAP.md`
+- `docs/03_ARCHITECTURE.md`
+- `docs/04_DATA_SCHEMA.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `npm run typecheck`.
+- Passed `npm run lint` with one pre-existing warning in `scripts/infer-game-countries-with-ollama.mjs`.
+- Passed `npm run build`.
+- Verified the existing local dev server at `http://localhost:3000` with Playwright and system Chrome.
+- Confirmed global Earth view renders 15 representative cover markers for countries with games.
+- Confirmed selecting the United States limits globe markers to 12 despite 170 matching games.
+- Confirmed marker cover images and selected game detail cover images load with non-zero natural width and no failed requests.
+
+### Next Step
+
+Tune country spread profiles further after visual review on more screen sizes if a specific country still feels too dense.
+
+## 2026-06-13 - 3D Earth Marker and Detail Layer Polish
+
+### Goal
+
+Clean up Earth game cover markers, make game detail a blocking top layer, and replace prism-like country points with smaller circular points.
+
+### Files Changed
+
+- `src/components/globe/GameMarkers.tsx`: removed title / year / metadata overlays from cover markers and kept only a compact rating badge.
+- `src/components/globe/CountryLayer.tsx`: reduced point altitude / radius and increased point resolution so country samples read as small circular dots.
+- `src/components/panels/RightPanel.tsx`: added the Earth-side game detail dialog layer, inert background content, Escape close, and backdrop click close.
+- `src/components/panels/CountryDetailPanel.tsx`: removed the inline selected-game card from the country scroll layer.
+- `src/app/globals.css`: added clean marker cover styling, right-panel modal/backdrop styling, refined game detail card styling, and non-interactive country labels so they do not block game marker clicks.
+- `docs/02_FEATURE_MAP.md`: updated game marker and right-panel behavior notes.
+- `docs/03_ARCHITECTURE.md`: documented clean cover markers and the right-side game detail layer.
+- `docs/05_TASK_LOG.md`: appended this task record.
+
+### Implementation Summary
+
+Earth cover markers now show the cover image without large text overlays. Full game data stays available in hover tooltip and the right-side detail layer. The right panel now treats a selected game as a modal state: background country content is marked inert, pointer events are disabled, the panel stops background scrolling, and Escape closes the detail. Country dot-matrix samples use low-altitude small circular points instead of triangular prism-like points.
+
+### Documentation Updated
+
+- `docs/02_FEATURE_MAP.md`
+- `docs/03_ARCHITECTURE.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `npm run lint` with one pre-existing warning in `scripts/infer-game-countries-with-ollama.mjs`.
+- Passed `npm run build`.
+- Verified Earth view with Playwright and system Chrome at `http://localhost:3000`.
+- Confirmed selected United States marker count stays at 12.
+- Confirmed globe cover marker title overlay count is 0 and rating badge count is 12.
+- Confirmed country labels no longer intercept game marker clicks.
+- Confirmed opening a game detail sets background content to `inert`, disables pointer events, hides right-panel background scrolling, blocks background clicks, and Escape closes the detail layer.
+- Captured `output/playwright/earth-detail-layer.png` for visual review.
+
+### Next Step
+
+Review the Earth view visually on mobile width and tune detail-layer height if needed.

@@ -220,12 +220,22 @@ export function GameGlobe({
     () => buildCountryDotMatrix(countryFeatures, countries),
     [countries, countryFeatures]
   );
+  const gameCountryCodes = useMemo(
+    () =>
+      new Set(
+        games
+          .map((game) => game.countryCode)
+          .filter((countryCode) => countryCode !== "UNKNOWN")
+      ),
+    [games]
+  );
   const countryLayerProps = useMemo(
     () =>
       getCountryLayerProps({
         countries,
         countryDots,
         countryFeatures,
+        gameCountryCodes,
         hoveredCountryCode,
         selectedCountryCode: activeCountryCode,
         onHoverCountry: handleHoverCountry,
@@ -235,6 +245,7 @@ export function GameGlobe({
       countries,
       countryDots,
       countryFeatures,
+      gameCountryCodes,
       hoveredCountryCode,
       activeCountryCode,
       handleHoverCountry,
@@ -275,38 +286,11 @@ export function GameGlobe({
     [countries, hoveredCountryCode, isGlobeInteracting, selectedCountryCode]
   );
   const visibleGameMarkers = useMemo(() => {
-    if (selectedCountryCode) {
-      return gameMarkers
-        .filter((marker) => marker.game.countryCode === selectedCountryCode)
-        .map((marker) => ({
-          ...marker,
-          markerStyle: isGlobeInteracting ? "dot" as const : "card" as const
-        }));
-    }
-
-    const representativeMarkers = new Map<string, GlobeHtmlMarker>();
-
-    for (const marker of gameMarkers) {
-      if (marker.kind !== "game") {
-        continue;
-      }
-
-      const currentMarker = representativeMarkers.get(marker.game.countryCode);
-
-      if (
-        !currentMarker ||
-        (currentMarker.kind === "game" &&
-          marker.game.rating > currentMarker.game.rating)
-      ) {
-        representativeMarkers.set(marker.game.countryCode, {
-          ...marker,
-          markerStyle: isGlobeInteracting ? "dot" : "card"
-        });
-      }
-    }
-
-    return [...representativeMarkers.values()];
-  }, [gameMarkers, isGlobeInteracting, selectedCountryCode]);
+    return gameMarkers.map((marker) => ({
+      ...marker,
+      markerStyle: isGlobeInteracting ? "dot" as const : "card" as const
+    }));
+  }, [gameMarkers, isGlobeInteracting]);
   const globeHtmlMarkers = useMemo<GlobeHtmlMarker[]>(
     () => [...countryMarkers, ...visibleGameMarkers],
     [countryMarkers, visibleGameMarkers]
@@ -315,6 +299,7 @@ export function GameGlobe({
     () =>
       createGameMarkerElement({
         coverSize,
+        loadCoverImages: true,
         renderCoverMarkers: !isGlobeInteracting,
         onHoverCountry: handleHoverCountry,
         onHoverGame,

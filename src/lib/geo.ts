@@ -118,6 +118,48 @@ export function getClusteredGlobeCoordinates(
   };
 }
 
+export function getDistributedGlobeCoordinates({
+  country,
+  gameId,
+  index,
+  total
+}: {
+  country: Country;
+  gameId: string;
+  index: number;
+  total: number;
+}): GlobeCoordinates {
+  if (total <= 1) {
+    return {
+      lat: country.latitude,
+      lng: country.longitude
+    };
+  }
+
+  const profile = countryMarkerSpreadProfiles[country.code] ?? {
+    latRadius: 3.4,
+    lngRadius: 4.2
+  };
+  const stableSeed = hashString(`${country.code}:${gameId}`);
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const angle = index * goldenAngle + (stableSeed % 360) * (Math.PI / 180);
+  const normalizedStep = (index + 0.5) / Math.max(total, 1);
+  const radiusScale = Math.sqrt(normalizedStep);
+  const jitter = ((stableSeed % 97) / 97 - 0.5) * 0.18;
+
+  return {
+    lat: clamp(
+      country.latitude + Math.sin(angle) * profile.latRadius * (radiusScale + jitter),
+      -70,
+      78
+    ),
+    lng: wrapLongitude(
+      country.longitude +
+        Math.cos(angle) * profile.lngRadius * (radiusScale + jitter)
+    )
+  };
+}
+
 export function projectLatLngToGlobe2D(
   latitude: number,
   longitude: number
@@ -427,6 +469,16 @@ function getDeterministicJitter(countryCode: string, index: number) {
   };
 }
 
+function hashString(value: string) {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+
+  return hash;
+}
+
 function polygonToPath(polygon: unknown) {
   if (!Array.isArray(polygon)) {
     return "";
@@ -504,6 +556,23 @@ const countryDotTargetCounts: Record<string, number> = {
   PL: 44,
   SE: 62,
   US: 138
+};
+
+const countryMarkerSpreadProfiles: Record<
+  string,
+  { latRadius: number; lngRadius: number }
+> = {
+  AU: { latRadius: 7.2, lngRadius: 9.4 },
+  BR: { latRadius: 7.6, lngRadius: 8.2 },
+  CA: { latRadius: 8.2, lngRadius: 12.6 },
+  CN: { latRadius: 7.0, lngRadius: 8.8 },
+  DE: { latRadius: 1.5, lngRadius: 1.9 },
+  FR: { latRadius: 1.8, lngRadius: 2.2 },
+  GB: { latRadius: 2.0, lngRadius: 1.2 },
+  JP: { latRadius: 2.4, lngRadius: 1.5 },
+  KR: { latRadius: 1.1, lngRadius: 1.0 },
+  RU: { latRadius: 8.6, lngRadius: 14.0 },
+  US: { latRadius: 6.8, lngRadius: 10.6 }
 };
 
 const countryFocusOverrides: Record<string, Partial<GlobePointOfView>> = {
