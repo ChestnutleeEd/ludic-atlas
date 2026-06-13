@@ -47,7 +47,8 @@ If the task involves product scope, read:
 | `docs/04_DATA_SCHEMA.md`   | Game, country, genre, and filter data structures   |
 | `docs/05_TASK_LOG.md`      | Iteration log and major change history             |
 | `docs/06_CODEX_RULES.md`   | Detailed execution rules for Codex                 |
-| `docs/assets/preview.png`  | README project preview image for GitHub            |
+| `docs/assets/preview.png`  | Legacy README project preview image for GitHub     |
+| `docs/assets/readme/`      | Current README preview screenshots                 |
 
 ## Current Core Directories
 
@@ -145,7 +146,8 @@ http://localhost:3000
 | MVP country border data | `public/data/mock-countries.geojson` |
 | Lightweight world country border data | `public/data/world-countries-lite.geojson` |
 | Full source country border data | `public/data/countries.geojson` |
-| README preview image | `docs/assets/preview.png` |
+| Legacy README preview image | `docs/assets/preview.png` |
+| Current README screenshots | `docs/assets/readme/` |
 | Shared types         | `src/types/game.ts`               |
 | Game cover helper    | `src/lib/gameCover.ts`            |
 | Filtering logic      | `src/lib/filterGames.ts`          |

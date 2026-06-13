@@ -1000,7 +1000,7 @@ Run the RAWG generation command with a real `RAWG_API_KEY`, review generated cou
 
 ### Goal
 
-Prepare Game Earth for publishing to the GitHub repository `https://github.com/ChestnutleeEd/game-earth.git` with a complete bilingual README and a project preview image.
+Prepare Game Earth for publishing to the GitHub repository `https://github.com/ChestnutleeEd/ludic-atlas.git` with a complete bilingual README and a project preview image.
 
 ### Files Changed
 

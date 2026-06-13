@@ -1,9 +1,10 @@
 {
-  "name": "game-earth",
+  "name": "ludic-atlas",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "start:local": "next dev",
     "data:rawg": "node scripts/fetch-rawg-games.mjs",
     "data:covers": "node scripts/cache-rawg-covers.mjs",
     "data:enrich": "node scripts/enrich-rawg-details.mjs",
