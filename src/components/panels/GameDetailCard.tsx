@@ -1,5 +1,11 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
+import {
+  FALLBACK_GAME_COVER_IMAGE,
+  getGameCoverImage
+} from "@/lib/gameCover";
 import {
   getGameDisplayTitle,
   getGameSecondaryTitle,
@@ -14,16 +20,28 @@ type GameDetailCardProps = {
 
 export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
   const secondaryTitle = getGameSecondaryTitle(game);
+  const title = getGameDisplayTitle(game);
+  const coverImage = getGameCoverImage(game);
 
   return (
     <article className="game-detail-card">
       <div className="game-detail-card-header">
         <div className="game-detail-cover" aria-hidden="true">
-          <span>{getGameDisplayTitle(game)}</span>
+          <img
+            alt=""
+            loading="lazy"
+            onError={(event) => {
+              if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
+                event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
+              }
+            }}
+            src={coverImage}
+          />
+          <span>{title}</span>
           <strong>{game.releaseYear}</strong>
         </div>
         <div className="min-w-0">
-          <h3>{getGameDisplayTitle(game)}</h3>
+          <h3>{title}</h3>
           {secondaryTitle ? <p>{secondaryTitle}</p> : null}
           <span>评分 {game.rating.toFixed(1)}</span>
         </div>

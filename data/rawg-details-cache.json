@@ -1,0 +1,1898 @@
+{
+  "super-mario-galaxy-2": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "super-mario-odyssey": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "the-legend-of-zelda-breath-of-the-wild": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "baldurs-gate-3": {
+    "developer": "Larian Studios",
+    "publisher": "Larian Studios"
+  },
+  "the-legend-of-zelda-breath-of-the-wild-sequel": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "half-life-2-update": {
+    "developer": "Valve Software",
+    "publisher": "Unknown"
+  },
+  "divinity-original-sin-2": {
+    "developer": "Larian Studios",
+    "publisher": "Larian Studios"
+  },
+  "red-dead-redemption-2": {
+    "developer": "Rockstar Games",
+    "publisher": "Rockstar Games"
+  },
+  "grand-theft-auto-iv-complete-edition": {
+    "developer": "Rockstar Toronto",
+    "publisher": "Rockstar Games"
+  },
+  "portal-2": {
+    "developer": "Valve Software",
+    "publisher": "Electronic Arts"
+  },
+  "the-last-of-us-remastered": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "red-dead-redemption": {
+    "developer": "Rockstar North",
+    "publisher": "Rockstar Games"
+  },
+  "the-last-of-us": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "xcom-2-war-of-the-chosen": {
+    "developer": "Firaxis",
+    "publisher": "2K Games"
+  },
+  "elden-ring": {
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "the-legend-of-zelda-ocarina-of-time-3d": {
+    "developer": "Unknown",
+    "publisher": "Nintendo"
+  },
+  "the-elder-scrolls-v-skyrim-legendary-edition": {
+    "developer": "Bethesda Game Studios",
+    "publisher": "Bethesda Softworks"
+  },
+  "bioshock-infinite": {
+    "developer": "Aspyr Media",
+    "publisher": "2K Games"
+  },
+  "batman-arkham-city-2": {
+    "developer": "Rocksteady Studios",
+    "publisher": "Warner Bros. Interactive"
+  },
+  "the-elder-scrolls-v-skyrim": {
+    "developer": "Bethesda Game Studios",
+    "publisher": "Bethesda Softworks"
+  },
+  "divinity-original-sin-enhanced-edition": {
+    "developer": "Larian Studios",
+    "publisher": "Focus Home Interactive"
+  },
+  "divinity-original-sin-ii-definitive-edition": {
+    "developer": "Larian Studios",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "mass-effect-2": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "persona-5-royal": {
+    "developer": "Atlus",
+    "publisher": "SEGA"
+  },
+  "starcraft-ii-wings-of-liberty": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "god-of-war-2": {
+    "developer": "Santa Monica Studio",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "cut-the-rope": {
+    "developer": "ZeptoLab",
+    "publisher": "Chillingo"
+  },
+  "half-life-alyx": {
+    "developer": "Valve Software",
+    "publisher": "Valve"
+  },
+  "the-last-of-us-part-2": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "hades-2018": {
+    "developer": "Supergiant Games",
+    "publisher": "Supergiant Games"
+  },
+  "super-mario-3d-world": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "uncharted-4-a-thiefs-end": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "persona-5": {
+    "developer": "Atlus",
+    "publisher": "Deep Silver"
+  },
+  "starcraft-2": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "super-smash-bros-ultimate": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "the-legend-of-zelda-skyward-sword": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "uncharted-3-drakes-deception": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "demons-souls-remake": {
+    "developer": "Bluepoint Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "god-of-war-iii": {
+    "developer": "SCE Studios Santa Monica",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "the-walking-dead": {
+    "developer": "Telltale Games",
+    "publisher": "Telltale Games"
+  },
+  "prune": {
+    "developer": "Joel McDonald",
+    "publisher": "Joel McDonald"
+  },
+  "out-of-the-park-baseball-17": {
+    "developer": "Out of the Park Developments",
+    "publisher": "Out of the Park Developments"
+  },
+  "threes": {
+    "developer": "Greg Wohlwend",
+    "publisher": "Sirvo"
+  },
+  "mario-kart-8-deluxe": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "okami-hd-da-shen-jue-jing-ban": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "fire-emblem-awakening": {
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo"
+  },
+  "galactic-civilizations-ii-ultimate-edition": {
+    "developer": "Stardock Entertainment",
+    "publisher": "Stardock Entertainment"
+  },
+  "undertale": {
+    "developer": "8-4",
+    "publisher": "8-4"
+  },
+  "rock-band-3": {
+    "developer": "Harmonix Music Systems",
+    "publisher": "Electronic Arts"
+  },
+  "bloodborne": {
+    "developer": "FromSoftware",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "a-monsters-expedition": {
+    "developer": "Draknek & Friends",
+    "publisher": "Draknek"
+  },
+  "the-witcher-3-wild-hunt-blood-and-wine": {
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED"
+  },
+  "bayonetta-2": {
+    "developer": "Platinum Games",
+    "publisher": "Nintendo"
+  },
+  "the-witcher-3-game-of-the-year": {
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED"
+  },
+  "altos-adventure": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Snowman"
+  },
+  "grand-theft-auto-v": {
+    "developer": "Rockstar North",
+    "publisher": "Rockstar Games"
+  },
+  "journey": {
+    "developer": "thatgamecompany",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "the-witcher-3-wild-hunt": {
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED"
+  },
+  "dragon-quest-xi": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "disco-elysium": {
+    "developer": "ZA/UM",
+    "publisher": "Unknown"
+  },
+  "gears-of-war-3": {
+    "developer": "Epic Games",
+    "publisher": "Microsoft Studios"
+  },
+  "tumblestone": {
+    "developer": "The Quantum Astrophysicists Guild",
+    "publisher": "The Quantum Astrophysicists Guild"
+  },
+  "death-road-to-canada": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Rocketcat Games"
+  },
+  "fez": {
+    "developer": "POLYTRON",
+    "publisher": "Microsoft Studios"
+  },
+  "the-legend-of-zelda-a-link-between-worlds": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "nier-automata-game-of-the-yorha-edition": {
+    "developer": "Platinum Games",
+    "publisher": "Square Enix"
+  },
+  "mark-of-the-ninja": {
+    "developer": "Klei Entertainment",
+    "publisher": "Microsoft Studios"
+  },
+  "resident-evil-2-2019": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "asphalt-8-airborne": {
+    "developer": "Gameloft",
+    "publisher": "Gameloft"
+  },
+  "badland-2": {
+    "developer": "Frogmind",
+    "publisher": "Frogmind Oy"
+  },
+  "shadow-of-the-colossus-2018": {
+    "developer": "SCE Japan Studio",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "shadow-of-the-colossus": {
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Unknown"
+  },
+  "deus-ex-human-revolution-directors-cut": {
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix"
+  },
+  "dark-souls-ii": {
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "batman-arkham-city-goty": {
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive"
+  },
+  "cinco-paus": {
+    "developer": "Michael Brough",
+    "publisher": "Michael Brough"
+  },
+  "dragon-quest-xi-s-echoes-of-an-elusive-age-definit": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "rez-infinite": {
+    "developer": "Monstars",
+    "publisher": "Enhance Games"
+  },
+  "batman-aa-goty": {
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix"
+  },
+  "ori-and-the-will-of-the-wisps": {
+    "developer": "Moon Studios",
+    "publisher": "Microsoft Studios"
+  },
+  "celeste": {
+    "developer": "Matt Makes Games",
+    "publisher": "Matt Makes Games"
+  },
+  "metal-gear-solid-v-the-phantom-pain": {
+    "developer": "Kojima Productions",
+    "publisher": "Konami"
+  },
+  "shovel-knight-treasure-trove": {
+    "developer": "Yacht Club Games",
+    "publisher": "Yacht Club Games"
+  },
+  "forza-motorsport-4": {
+    "developer": "Turn 10 Studios",
+    "publisher": "Microsoft Studios"
+  },
+  "halo-reach": {
+    "developer": "Bungie",
+    "publisher": "Microsoft Studios"
+  },
+  "overwatch": {
+    "developer": "Unknown",
+    "publisher": "Activision Blizzard"
+  },
+  "tadpole-treble": {
+    "developer": "BitFinity",
+    "publisher": "BitFinity, Sunken Treasure Games"
+  },
+  "dishonored": {
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks"
+  },
+  "tetris-effect": {
+    "developer": "Enhance Games",
+    "publisher": "Unknown"
+  },
+  "n-nplusplus": {
+    "developer": "Metanet Software",
+    "publisher": "Metanet Software"
+  },
+  "microsoft-flight-simulator": {
+    "developer": "Asobo Studio",
+    "publisher": "Microsoft Studios"
+  },
+  "wheres-my-water": {
+    "developer": "Disney",
+    "publisher": "Disney Interactive"
+  },
+  "nba-2k17": {
+    "developer": "2K",
+    "publisher": "2K Games"
+  },
+  "jetpack-joyride": {
+    "developer": "Big Ant Studios",
+    "publisher": "Halfbrick"
+  },
+  "n-o-v-a-2-near-orbit-vanguard-alliance": {
+    "developer": "Gameloft",
+    "publisher": "Gameloft"
+  },
+  "the-world-ends-with-you-solo-remix-for-ipad": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "the-witcher-3-wild-hunt-hearts-of-stone": {
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED"
+  },
+  "total-war-shogun-2": {
+    "developer": "Feral Interactive",
+    "publisher": "SEGA"
+  },
+  "dota-2": {
+    "developer": "Valve Software",
+    "publisher": "Valve"
+  },
+  "sea-of-stars-2": {
+    "developer": "Sabotage Studio",
+    "publisher": "Unknown"
+  },
+  "the-legend-of-zelda-the-wind-waker-hd": {
+    "developer": "Unknown",
+    "publisher": "Nintendo"
+  },
+  "shadows-die-twice": {
+    "developer": "FromSoftware",
+    "publisher": "FromSoftware"
+  },
+  "mlb-11-the-show": {
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "odin-sphere-leifthrasir": {
+    "developer": "Atlus U.S.A",
+    "publisher": "Atlus"
+  },
+  "spelunky-2": {
+    "developer": "BlitWorks",
+    "publisher": "Mossmouth"
+  },
+  "mass-effect-3": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "world-of-warcraft-cataclysm": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "civilization-v": {
+    "developer": "Aspyr Media",
+    "publisher": "2K Games"
+  },
+  "animal-crossing-2019": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "beat-saber": {
+    "developer": "Hyperbolic Magnetism",
+    "publisher": "Oculus Studios"
+  },
+  "brothers-a-tale-of-two-sons-2": {
+    "developer": "Starbreeze Studios",
+    "publisher": "505 Games"
+  },
+  "diablo-iv": {
+    "developer": "Activision Blizzard",
+    "publisher": "Activision Blizzard"
+  },
+  "the-room-three": {
+    "developer": "Fireproof Games",
+    "publisher": "Fireproof Games"
+  },
+  "into-the-breach": {
+    "developer": "Subset Games",
+    "publisher": "Subset Games"
+  },
+  "nierautomata-become-as-gods-edition": {
+    "developer": "Platinum Games",
+    "publisher": "Square Enix"
+  },
+  "modern-combat-2-black-pegasus": {
+    "developer": "Gameloft",
+    "publisher": "Gameloft"
+  },
+  "pushmo": {
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo"
+  },
+  "metal-gear-solid-hd-collection": {
+    "developer": "Konami Digital Entertainment",
+    "publisher": "Konami"
+  },
+  "forza-horizon-4": {
+    "developer": "Playground Games",
+    "publisher": "Microsoft Studios"
+  },
+  "tetris-effect-connected": {
+    "developer": "Monstars",
+    "publisher": "Enhance"
+  },
+  "hearthstone": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "the-stanley-parable-ultra-deluxe": {
+    "developer": "Crows Crows Crows",
+    "publisher": "Crows Crows Crows"
+  },
+  "stephens-sausage-roll": {
+    "developer": "increpare games",
+    "publisher": "increpare games"
+  },
+  "spelunky": {
+    "developer": "Mossmouth",
+    "publisher": "Microsoft Studios"
+  },
+  "super-mario-3d-land": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "astro-bot-rescue-mission": {
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "disco-elysium-final-cut": {
+    "developer": "ZA/UM",
+    "publisher": "Unknown"
+  },
+  "frost-a-dream-odyssey": {
+    "developer": "Broken Rules",
+    "publisher": "kunabi brother"
+  },
+  "framed-2": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Loveshack Entertainment"
+  },
+  "eloh": {
+    "developer": "Broken Rules",
+    "publisher": "Broken Rules"
+  },
+  "monster-hunter-world-iceborne": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "chained-echoes": {
+    "developer": "Matthias Linda",
+    "publisher": "Deck13"
+  },
+  "dicey-dungeons": {
+    "developer": "Terry Cavanagh",
+    "publisher": "Terry Cavanagh"
+  },
+  "nex-machina": {
+    "developer": "Housemarque",
+    "publisher": "Housemarque"
+  },
+  "xenoblade-chronicles-definitive-edition": {
+    "developer": "Unknown",
+    "publisher": "Nintendo"
+  },
+  "league-of-legends-wild-rift": {
+    "developer": "Riot Games",
+    "publisher": "Riot Games"
+  },
+  "mirrors-edge-mobile": {
+    "developer": "Iron Monkey",
+    "publisher": "Electronic Arts"
+  },
+  "super-street-fighter-iv-3d-edition": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "dark-souls-artorias-of-the-abyss": {
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "pillars-of-eternity": {
+    "developer": "Obsidian Entertainment",
+    "publisher": "Paradox Interactive"
+  },
+  "dreams": {
+    "developer": "Media Molecule",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "gravity-circuit": {
+    "developer": "Domesticated Ants",
+    "publisher": "Plug In Digital"
+  },
+  "fire-emblem-three-houses": {
+    "developer": "Koei Tecmo",
+    "publisher": "Nintendo"
+  },
+  "monument-valley": {
+    "developer": "ustwo games",
+    "publisher": "ustwo games"
+  },
+  "star-control-kessari-quadrant": {
+    "developer": "Legend Entertainment",
+    "publisher": "Stardock Entertainment"
+  },
+  "stardew-valley": {
+    "developer": "Chucklefish",
+    "publisher": "Chucklefish"
+  },
+  "f1-2017": {
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive"
+  },
+  "motorsport-manager-mobile-2": {
+    "developer": "Playsport Games",
+    "publisher": "Playsport Games"
+  },
+  "infinity-blade-ii": {
+    "developer": "Epic Games",
+    "publisher": "Chair Entertainment Group"
+  },
+  "rise-of-nations-extended-edition": {
+    "developer": "Big Huge Games",
+    "publisher": "Microsoft Studios"
+  },
+  "lone-echo": {
+    "developer": "Ready At Dawn",
+    "publisher": "Oculus Studios"
+  },
+  "chicory-a-colorful-tale": {
+    "developer": "Finji",
+    "publisher": "Greg Lobanov"
+  },
+  "super-mario-3d-world-bowsers-fury": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "the-legend-of-zelda-majoras-mask-3d": {
+    "developer": "Unknown",
+    "publisher": "Nintendo"
+  },
+  "dark-souls-iii": {
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "persona-4-golden": {
+    "developer": "Atlus",
+    "publisher": "SEGA"
+  },
+  "cuphead-the-delicious-last-course": {
+    "developer": "Studio MDHR",
+    "publisher": "StudioMDHR Entertainment"
+  },
+  "metal-gear-solid-peace-walker": {
+    "developer": "Kojima Productions",
+    "publisher": "Konami"
+  },
+  "xcom-enemy-unknown": {
+    "developer": "Feral Interactive",
+    "publisher": "2K Games"
+  },
+  "rayman-legends": {
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "monster-hunter-world-2": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "horizon-zero-dawn": {
+    "developer": "Guerrilla Games",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "xenoblade-chronicles": {
+    "developer": "Monolith Soft",
+    "publisher": "Nintendo"
+  },
+  "mortal-kombat-11-ultimate": {
+    "developer": "NetherRealm Studios",
+    "publisher": "Warner Bros. Interactive"
+  },
+  "dark-souls": {
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "deus-ex-human-revolution": {
+    "developer": "Eidos Montreal",
+    "publisher": "Square Enix"
+  },
+  "what-remains-of-edith-finch": {
+    "developer": "Annapurna Interactive",
+    "publisher": "Annapurna Interactive"
+  },
+  "mark-of-the-ninja-remastered": {
+    "developer": "Klei Entertainment",
+    "publisher": "Klei Entertainment"
+  },
+  "destiny-the-taken-king": {
+    "developer": "Bungie",
+    "publisher": "Activision Blizzard"
+  },
+  "borderlands-2": {
+    "developer": "Aspyr Media",
+    "publisher": "2K Games"
+  },
+  "the-last-of-us-left-behind-stand-alone": {
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Unknown"
+  },
+  "fire-emblem-fates-revelation": {
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo"
+  },
+  "littlebigplanet-ps-vita": {
+    "developer": "Double Eleven",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "diablo-iii-ultimate-evil-edition": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "thirty-flights-of-loving": {
+    "developer": "Blendo Games",
+    "publisher": "Blendo Games"
+  },
+  "mario-kart-8": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "card-thief": {
+    "developer": "Arnold Rauers",
+    "publisher": "Arnold Rauers"
+  },
+  "steamworld-dig-2": {
+    "developer": "Image & Form",
+    "publisher": "Image & Form"
+  },
+  "legends-of-runeterra": {
+    "developer": "Riot Games",
+    "publisher": "Riot Games"
+  },
+  "far-cry-3": {
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "return-of-the-obra-dinn": {
+    "developer": "Lucas Pope",
+    "publisher": "3909"
+  },
+  "the-room-two": {
+    "developer": "Fireproof Games",
+    "publisher": "Fireproof Games"
+  },
+  "devil-may-cry-5": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "hollow-knight": {
+    "developer": "Team Cherry",
+    "publisher": "Team Cherry"
+  },
+  "deathloop-2": {
+    "developer": "Arkane Studios",
+    "publisher": "Bethesda Softworks"
+  },
+  "forza-horizon-3": {
+    "developer": "Playground Games",
+    "publisher": "Microsoft Studios"
+  },
+  "rise-of-the-tomb-raider-20-year-celebration": {
+    "developer": "Crystal Dynamics",
+    "publisher": "Square Enix"
+  },
+  "guacamelee-gold-edition": {
+    "developer": "Unknown",
+    "publisher": "DrinkBox Studios"
+  },
+  "starraft-ii-legacy-of-the-void": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "altos-odyssey": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Snowman"
+  },
+  "psychonauts-2": {
+    "developer": "Double Fine Productions",
+    "publisher": "Xbox Game Studios"
+  },
+  "night-in-the-woods": {
+    "developer": "Finji",
+    "publisher": "Finji"
+  },
+  "super-smash-bros": {
+    "developer": "Bandai Namco Entertainment",
+    "publisher": "Nintendo"
+  },
+  "injustice-2": {
+    "developer": "Warner Bros. Interactive",
+    "publisher": "Warner Bros. Interactive"
+  },
+  "it-takes-two-2": {
+    "developer": "Hazelight",
+    "publisher": "Electronic Arts"
+  },
+  "assassins-creed-brotherhood-2": {
+    "developer": "Ubisoft Montreal",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "civilization-vi": {
+    "developer": "Aspyr Media",
+    "publisher": "2K Games"
+  },
+  "ratchet-clank-rift-apart": {
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "her-story": {
+    "developer": "Sam Barlow",
+    "publisher": "Sam Barlow"
+  },
+  "tony-hawks-pro-skater-12": {
+    "developer": "Vicarious Visions",
+    "publisher": "Activision Blizzard"
+  },
+  "owlboy": {
+    "developer": "D-Pad Studio",
+    "publisher": "D-Pad Studio"
+  },
+  "metroid-samus-returns": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "bioshock-2": {
+    "developer": "Feral Interactive",
+    "publisher": "2K Games"
+  },
+  "ori-and-the-blind-forest": {
+    "developer": "Moon Studios",
+    "publisher": "Microsoft Studios"
+  },
+  "diablo-3": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "f1-2020": {
+    "developer": "Codemasters",
+    "publisher": "Codemasters"
+  },
+  "metro-redux": {
+    "developer": "Deep Silver",
+    "publisher": "Deep Silver"
+  },
+  "the-witcher-2-assassins-of-kings-enhanced-edition": {
+    "developer": "CD PROJEKT RED",
+    "publisher": "1C-SoftClub"
+  },
+  "pikmin-4": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "torchlight-ii": {
+    "developer": "Runic Games",
+    "publisher": "Perfect World Entertainment"
+  },
+  "dragon-age-origins-ultimate-edition": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "west-of-loathing": {
+    "developer": "Asymmetric",
+    "publisher": "Asymmetric"
+  },
+  "the-last-of-us-left-behind": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "grindstone-2": {
+    "developer": "Capybara Games",
+    "publisher": "Capybara Games"
+  },
+  "battlefield-1": {
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts"
+  },
+  "ori-and-the-blind-forest-definitive-edition": {
+    "developer": "Moon Studios",
+    "publisher": "Microsoft Studios"
+  },
+  "mass-effect-legendary-edition": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "final-fantasy-xvi": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "dead-cells": {
+    "developer": "Plug In Digital",
+    "publisher": "Plug In Digital"
+  },
+  "the-stanley-parable": {
+    "developer": "Galactic Cafe",
+    "publisher": "Galactic Cafe"
+  },
+  "nhl-11": {
+    "developer": "Electronic Arts Canada",
+    "publisher": "Electronic Arts"
+  },
+  "the-witcher-2-assassins-of-kings": {
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED"
+  },
+  "space-marshals-2": {
+    "developer": "Pixelbite",
+    "publisher": "Pixelbite"
+  },
+  "final-fantasy-xiv-stormblood": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "world-of-warcraft-legion": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "asgards-wrath": {
+    "developer": "Sanzaru Games",
+    "publisher": "Oculus Studios"
+  },
+  "dead-space-mobile": {
+    "developer": "Iron Monkey",
+    "publisher": "Electronic Arts"
+  },
+  "super-smash-bros-for-nintendo-3ds": {
+    "developer": "Bandai Namco Entertainment",
+    "publisher": "Nintendo"
+  },
+  "rayman-jungle-run": {
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "forza-horizon-3-hot-wheels": {
+    "developer": "Playground Games",
+    "publisher": "Microsoft Studios"
+  },
+  "super-mario-maker-2": {
+    "developer": "Unknown",
+    "publisher": "Nintendo"
+  },
+  "there-is-no-game-wd": {
+    "developer": "Draw Me A Pixel",
+    "publisher": "Draw Me A Pixel"
+  },
+  "animal-crossing-new-leaf": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "rogue-legacy-2": {
+    "developer": "Cellar Door Games",
+    "publisher": "Cellar Door Games"
+  },
+  "xcom-2": {
+    "developer": "Feral Interactive",
+    "publisher": "2K Games"
+  },
+  "pokemon-y": {
+    "developer": "Game Freak",
+    "publisher": "Nintendo"
+  },
+  "kerbal-space-program": {
+    "developer": "Squad",
+    "publisher": "Private Division"
+  },
+  "limbo": {
+    "developer": "Double Eleven",
+    "publisher": "Microsoft Studios"
+  },
+  "super-hexagon": {
+    "developer": "Terry Cavanagh",
+    "publisher": "Terry Cavanagh"
+  },
+  "starfield": {
+    "developer": "Bethesda Game Studios",
+    "publisher": "Bethesda Softworks"
+  },
+  "nioh": {
+    "developer": "Team NINJA",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "neon-white": {
+    "developer": "Ben Esposito",
+    "publisher": "Annapurna Interactive"
+  },
+  "nba-2k11": {
+    "developer": "Visual Concepts",
+    "publisher": "2K Sports"
+  },
+  "dirt-3": {
+    "developer": "Codemasters",
+    "publisher": "Codemasters"
+  },
+  "towerfall": {
+    "developer": "Matt Makes Games",
+    "publisher": "Matt Makes Games"
+  },
+  "orcs-must-die-unchained": {
+    "developer": "Robot Entertainment",
+    "publisher": "Robot Entertainment"
+  },
+  "monster-hunter-rise": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "f1-2019": {
+    "developer": "Codemasters",
+    "publisher": "Codemasters"
+  },
+  "astral-chain": {
+    "developer": "Platinum Games",
+    "publisher": "Nintendo"
+  },
+  "pokemon-sun": {
+    "developer": "Game Freak",
+    "publisher": "Nintendo"
+  },
+  "diablo-iii-reaper-of-souls": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "divinity-original-sin": {
+    "developer": "Larian Studios",
+    "publisher": "Larian Studios"
+  },
+  "cuphead": {
+    "developer": "Studio MDHR",
+    "publisher": "StudioMDHR Entertainment"
+  },
+  "blueprint-3d-hd": {
+    "developer": "FDG Mobile Games GbR",
+    "publisher": "FDG Mobile Games GbR"
+  },
+  "infinity-blade": {
+    "developer": "Epic Games",
+    "publisher": "Chair Entertainment Group"
+  },
+  "gotta-protectors": {
+    "developer": "8-4",
+    "publisher": "Ancient"
+  },
+  "sins-of-a-solar-empire-trinity": {
+    "developer": "Stardock Entertainment",
+    "publisher": "Stardock Entertainment"
+  },
+  "wasteland-2-directors-cut": {
+    "developer": "InXile Entertainment",
+    "publisher": "Deep Silver"
+  },
+  "angry-birds-rio": {
+    "developer": "Rovio Mobile",
+    "publisher": "Rovio Entertainment"
+  },
+  "vignettes": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Armel Jestin"
+  },
+  "shadowrun-dragonfall-dc": {
+    "developer": "Harebrained Schemes",
+    "publisher": "Paradox Interactive"
+  },
+  "pokemon-heartgold-version": {
+    "developer": "Unknown",
+    "publisher": "Nintendo"
+  },
+  "max-payne-3": {
+    "developer": "Rockstar Games",
+    "publisher": "Rockstar Games"
+  },
+  "super-meat-boy": {
+    "developer": "NVIDIA Lightspeed Studios",
+    "publisher": "Microsoft Studios"
+  },
+  "marvels-spider-man": {
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "year-walk": {
+    "developer": "Simogo",
+    "publisher": "Simogo"
+  },
+  "hex-shards-of-fate": {
+    "developer": "Hex Entertainment",
+    "publisher": "Hex Entertainment"
+  },
+  "tearaway": {
+    "developer": "Media Molecule",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "cut-the-rope-magic": {
+    "developer": "ZeptoLab",
+    "publisher": "ZeptoLab UK"
+  },
+  "dying-light-the-following-enhanced-edition": {
+    "developer": "Techland",
+    "publisher": "Techland Publishing"
+  },
+  "plants-vs-zombies-goty-edition": {
+    "developer": "PopCap Games",
+    "publisher": "Electronic Arts"
+  },
+  "fire-emblem-fates-conquest": {
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo"
+  },
+  "world-of-warcraft-warlords-of-draenor": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "rimworld": {
+    "developer": "Ludeon Studios",
+    "publisher": "Ludeon Studios"
+  },
+  "hellblade-senuas-sacrifice-vr-edition": {
+    "developer": "Ninja Theory",
+    "publisher": "Ninja Theory"
+  },
+  "oddworld-new-n-tasty": {
+    "developer": "Oddworld Inhabitants",
+    "publisher": "Oddworld Inhabitants"
+  },
+  "sunless-skies": {
+    "developer": "Failbetter Games",
+    "publisher": "Failbetter Games"
+  },
+  "battlefield-bad-company-2": {
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts"
+  },
+  "the-legend-of-zelda-links-awakening": {
+    "developer": "Grezzo",
+    "publisher": "Nintendo"
+  },
+  "the-swapper": {
+    "developer": "Curve Digital",
+    "publisher": "Curve Digital"
+  },
+  "europa-universalis-iv": {
+    "developer": "Paradox Development Studio",
+    "publisher": "Paradox Interactive"
+  },
+  "the-witness": {
+    "developer": "NVIDIA Lightspeed Studios",
+    "publisher": "Thekla"
+  },
+  "final-fantasy-xii-the-zodiac-age": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "titanfall-2": {
+    "developer": "Respawn Entertainment",
+    "publisher": "Electronic Arts"
+  },
+  "inside": {
+    "developer": "Playdead",
+    "publisher": "Playdead"
+  },
+  "miracle-merchant": {
+    "developer": "Arnold Rauers",
+    "publisher": "Arnold Rauers"
+  },
+  "forza-motorsport-6": {
+    "developer": "Turn 10 Studios",
+    "publisher": "Microsoft Studios"
+  },
+  "sin-punishment-star-successor": {
+    "developer": "TREASURE Co.",
+    "publisher": "Nintendo"
+  },
+  "pistol-whip": {
+    "developer": "Cloudhead Games",
+    "publisher": "Cloudhead Games"
+  },
+  "crypt-of-the-necrodancer": {
+    "developer": "Brace Yourself Games",
+    "publisher": "Klei Entertainment"
+  },
+  "pokemon-black-version": {
+    "developer": "Game Freak",
+    "publisher": "Nintendo"
+  },
+  "red-dead-redemption-undead-nightmare": {
+    "developer": "Rockstar North",
+    "publisher": "Rockstar Games"
+  },
+  "monkey-island-2-se": {
+    "developer": "LucasArts Entertainment",
+    "publisher": "Disney Interactive"
+  },
+  "dead-space-2": {
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts"
+  },
+  "final-fantasy-vii-remake": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "pikmin-3": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "ncaa-football-11": {
+    "developer": "Electronic Arts Tiburon",
+    "publisher": "Electronic Arts"
+  },
+  "tribes-ascend": {
+    "developer": "Hi-Rez Studios",
+    "publisher": "Hi-Rez Studios"
+  },
+  "f1-2016": {
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive"
+  },
+  "out-of-the-park-baseball-18": {
+    "developer": "Out of the Park Developments",
+    "publisher": "Out of the Park Developments"
+  },
+  "battlefield-bad-company-2-vietnam-2": {
+    "developer": "Electronic Arts DICE",
+    "publisher": "Electronic Arts"
+  },
+  "synth-riders": {
+    "developer": "Retrowave VR",
+    "publisher": "Kluge Interactive"
+  },
+  "florence": {
+    "developer": "Annapurna Interactive",
+    "publisher": "Annapurna Interactive"
+  },
+  "overcooked-all-you-can-eat": {
+    "developer": "Team17 Digital",
+    "publisher": "Team17 Digital"
+  },
+  "luigis-mansion-3": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "kingdom-hearts-hd-1525-remix": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "rayman-origins": {
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "assassins-creed-2-deluxe-edition": {
+    "developer": "Ubisoft Montreal",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "monster-train": {
+    "developer": "Good Shepherd Entertainment",
+    "publisher": "Good Shepherd Entertainment"
+  },
+  "wolfenstein-2-the-new-colossus": {
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks"
+  },
+  "dragon-ball-fighterz": {
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "dirt-rally": {
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive"
+  },
+  "blazblue-calamity-trigger-2": {
+    "developer": "Arc System Works",
+    "publisher": "H2 Interactive Co"
+  },
+  "inscryption": {
+    "developer": "Daniel Mullins Games",
+    "publisher": "Devolver Digital"
+  },
+  "dragon-age-inquisition": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "shovel-knight-plague-of-shadows": {
+    "developer": "Yacht Club Games",
+    "publisher": "Yacht Club Games"
+  },
+  "game-dev-story": {
+    "developer": "SNK",
+    "publisher": "Kairosoft"
+  },
+  "total-war-shogun-2-fall-of-the-samurai": {
+    "developer": "Feral Interactive",
+    "publisher": "SEGA"
+  },
+  "paradigm": {
+    "developer": "Jacob Janerka",
+    "publisher": "Jacob Janerka"
+  },
+  "nba-2k16": {
+    "developer": "2K",
+    "publisher": "2K Games"
+  },
+  "until-you-fall": {
+    "developer": "Schell Games",
+    "publisher": "Schell Games"
+  },
+  "bayonetta-3": {
+    "developer": "Platinum Games",
+    "publisher": "Nintendo"
+  },
+  "picross-3d-round-2-2": {
+    "developer": "Jupiter",
+    "publisher": "Nintendo"
+  },
+  "iconoclasts": {
+    "developer": "Joakim Sandberg",
+    "publisher": "Bifrost Entertainment"
+  },
+  "call-of-duty-modern-warfare-remastered": {
+    "developer": "Raven Software",
+    "publisher": "Activision Blizzard"
+  },
+  "bug-princess": {
+    "developer": "CAVE Interactive CO.,LTD.",
+    "publisher": "Plug In Digital"
+  },
+  "devotion-2": {
+    "developer": "RedCandleGames",
+    "publisher": "Winking Skywalker"
+  },
+  "fifa-14": {
+    "developer": "Electronic Arts Canada",
+    "publisher": "Electronic Arts"
+  },
+  "fire-emblem-fates-birthright": {
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo"
+  },
+  "guacamelee-super-turbo-championship-edition": {
+    "developer": "DrinkBox Studios",
+    "publisher": "DrinkBox Studios"
+  },
+  "rise-of-the-tomb-raider": {
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix"
+  },
+  "crusader-kings-iii": {
+    "developer": "Paradox Developement Studios",
+    "publisher": "Paradox Interactive"
+  },
+  "nierautomata": {
+    "developer": "Platinum Games",
+    "publisher": "Square Enix"
+  },
+  "slay-the-spire": {
+    "developer": "Humble Bundle",
+    "publisher": "Humble Bundle"
+  },
+  "monster-slayers": {
+    "developer": "Digerati Distribution",
+    "publisher": "Digerati"
+  },
+  "devil-may-cry-5-special-edition": {
+    "developer": "Capcom U.S.A",
+    "publisher": "Capcom"
+  },
+  "mass-effect-2-lair-of-the-shadow-brokee": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "monster-hunter-4-ultimate": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "mass-effect-3-citadel": {
+    "developer": "BioWare",
+    "publisher": "Electronic Arts"
+  },
+  "clash-royale": {
+    "developer": "Supercell",
+    "publisher": "Supercell Oy"
+  },
+  "teenage-mutant-ninja-turtles-shredders-revenge": {
+    "developer": "Tribute Games",
+    "publisher": "DotEmu"
+  },
+  "god-of-war-ghost-of-sparta": {
+    "developer": "Ready at Dawn Studios",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "black-mesa": {
+    "developer": "Crowbar Collective",
+    "publisher": "Crowbar Collective"
+  },
+  "zero-escape-the-nonary-games": {
+    "developer": "Spike Chunsoft",
+    "publisher": "Spike Chunsoft Co"
+  },
+  "tunic": {
+    "developer": "ISOMETRICORP Games",
+    "publisher": "Finji"
+  },
+  "horizon-zero-dawn-2": {
+    "developer": "Guerrilla Games",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "marvels-spider-man-miles-morales": {
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "the-room-old-sins": {
+    "developer": "Fireproof Games",
+    "publisher": "Fireproof Games"
+  },
+  "dishonored-2": {
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks"
+  },
+  "xenoblade-chronicles-3d": {
+    "developer": "Monolith Soft",
+    "publisher": "Nintendo"
+  },
+  "nhl-12": {
+    "developer": "Electronic Arts Canada",
+    "publisher": "Electronic Arts"
+  },
+  "the-last-friend": {
+    "developer": "The Stonebot Studio",
+    "publisher": "Ludus Games"
+  },
+  "football-manager-2013": {
+    "developer": "Unknown",
+    "publisher": "SEGA"
+  },
+  "final-fantasy-xiv-heavensward": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "steinsgate-elite": {
+    "developer": "MAGES",
+    "publisher": "Spike Chunsoft"
+  },
+  "rayman-fiesta-run": {
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment"
+  },
+  "skate": {
+    "developer": "Electronic Arts Vancouver",
+    "publisher": "Electronic Arts"
+  },
+  "ender-lilies-quietus-of-the-knights": {
+    "developer": "Live Wire",
+    "publisher": "Binary Haze Interactive"
+  },
+  "total-war-warhammer-ii": {
+    "developer": "Creative Assembly",
+    "publisher": "SEGA"
+  },
+  "nioh-2-the-complete-edition": {
+    "developer": "Team NINJA",
+    "publisher": "Koei Tecmo Games"
+  },
+  "oxygen-not-included": {
+    "developer": "Klei Entertainment",
+    "publisher": "Klei Entertainment"
+  },
+  "guacamelee": {
+    "developer": "DrinkBox Studios",
+    "publisher": "DrinkBox Studios"
+  },
+  "heroes-of-the-storm": {
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment"
+  },
+  "bastion": {
+    "developer": "Warner Bros. Interactive",
+    "publisher": "Warner Bros. Interactive"
+  },
+  "astebreed": {
+    "developer": "ACTIVE GAMING MEDIA",
+    "publisher": "AGM PLAYISM"
+  },
+  "doom-eternal": {
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks"
+  },
+  "voez": {
+    "developer": "Rayark International",
+    "publisher": "Flyhigh Works"
+  },
+  "typeshift": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Zach Gage"
+  },
+  "football-manager-2019": {
+    "developer": "Sports Interactive",
+    "publisher": "SEGA"
+  },
+  "kirbys-epic-yarn": {
+    "developer": "Good-Feel",
+    "publisher": "Nintendo"
+  },
+  "project-cars-2": {
+    "developer": "Slightly Mad Studios",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "gone-home": {
+    "developer": "The Fullbright Company",
+    "publisher": "Annapurna Interactive"
+  },
+  "saints-row-iv": {
+    "developer": "Volition",
+    "publisher": "Deep Silver"
+  },
+  "baba-is-you": {
+    "developer": "Hempuli Oy",
+    "publisher": "Hempuli Oy"
+  },
+  "horn": {
+    "developer": "Phosphor Games Studio",
+    "publisher": "Phosphor Games"
+  },
+  "13-sentinels-aegis-rim": {
+    "developer": "VanillaWare",
+    "publisher": "Atlus"
+  },
+  "pony-island": {
+    "developer": "Daniel Mullins Games",
+    "publisher": "Daniel Mullins Games"
+  },
+  "forza-horizon-2": {
+    "developer": "Sumo Digital",
+    "publisher": "Microsoft Studios"
+  },
+  "wheres-my-mickey": {
+    "developer": "Disney",
+    "publisher": "Disney Interactive"
+  },
+  "tomb-raider-goty": {
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix"
+  },
+  "need-for-speed-hot-pursuit-2": {
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts"
+  },
+  "xcom-enemy-within": {
+    "developer": "2K",
+    "publisher": "2K Games"
+  },
+  "battlefield-3": {
+    "developer": "Electronic Arts DICE",
+    "publisher": "Electronic Arts"
+  },
+  "the-binding-of-isaac-rebirth": {
+    "developer": "Nicalis",
+    "publisher": "Nicalis"
+  },
+  "total-war-warhammer": {
+    "developer": "Feral Interactive",
+    "publisher": "SEGA"
+  },
+  "day-of-the-tentacle-remastered": {
+    "developer": "Double Fine Productions",
+    "publisher": "Double Fine Productions"
+  },
+  "path-of-exile": {
+    "developer": "Grinding Gear Games",
+    "publisher": "Grinding Gear Games"
+  },
+  "returnal": {
+    "developer": "Housemarque",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "tomb-raider": {
+    "developer": "Crystal Dynamics",
+    "publisher": "Square Enix"
+  },
+  "halo-4": {
+    "developer": "343 Industries",
+    "publisher": "Microsoft Studios"
+  },
+  "rocket-league": {
+    "developer": "Psyonix",
+    "publisher": "Psyonix"
+  },
+  "resident-evil-4-vr": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "eiyuu-densetsu-zero-no-kiseki": {
+    "developer": "Nihon Falcom",
+    "publisher": "Kadokawa Shoten"
+  },
+  "tatsunoko-vs-capcom-ultimate-all-stars": {
+    "developer": "Eighting",
+    "publisher": "Capcom"
+  },
+  "chime-sharp": {
+    "developer": "Twistplay",
+    "publisher": "Chilled Mouse"
+  },
+  "falcon-40": {
+    "developer": "MicroProse Software",
+    "publisher": "Retroism"
+  },
+  "guacamelee-2": {
+    "developer": "DrinkBox Studios",
+    "publisher": "DrinkBox Studios"
+  },
+  "monster-boy-and-the-cursed-kingdom": {
+    "developer": "FDG Entertainment GmbH & Co.KG",
+    "publisher": "FDG Entertainment"
+  },
+  "framed": {
+    "developer": "Noodlecake Studios",
+    "publisher": "Loveshack Entertainment"
+  },
+  "tiny-wings": {
+    "developer": "Andreas Illiger",
+    "publisher": "Andreas Illiger"
+  },
+  "resident-evil-9-requiem": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "the-last-of-us-part-ii-remastered": {
+    "developer": "Naughty Dog",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "dispatch-2": {
+    "developer": "AdHoc Studio",
+    "publisher": "AdHoc Studio"
+  },
+  "mewgenics": {
+    "developer": "Edmund McMillen",
+    "publisher": "Edmund McMillen"
+  },
+  "007-first-light": {
+    "developer": "IO Interactive",
+    "publisher": "IO Interactive"
+  },
+  "elden-ring-shadow-of-the-erdtree": {
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "clair-obscur-expedition-33": {
+    "developer": "Sundial Interactive",
+    "publisher": "Kepler Interactive"
+  },
+  "silent-hill-2-remake": {
+    "developer": "Bloober Team",
+    "publisher": "Konami"
+  },
+  "split-fiction": {
+    "developer": "Hazelight",
+    "publisher": "Electronic Arts"
+  },
+  "pragmata": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "donkey-kong-bananza": {
+    "developer": "Unknown",
+    "publisher": "Unknown"
+  },
+  "horizon-zero-dawn-remastered": {
+    "developer": "Guerrilla Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "1000xresist": {
+    "developer": "sunset visitor",
+    "publisher": "Fellow Traveller"
+  },
+  "kingdom-come-deliverance-ii": {
+    "developer": "Warhorse Studios",
+    "publisher": "Deep Silver"
+  },
+  "persona-3-reload": {
+    "developer": "Atlus",
+    "publisher": "SEGA"
+  },
+  "hollow-knight-silksong": {
+    "developer": "Team Cherry",
+    "publisher": "Team Cherry"
+  },
+  "astro-bot": {
+    "developer": "ASOBI",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "doom-the-dark-ages": {
+    "developer": "id Software",
+    "publisher": "Bethesda Softworks"
+  },
+  "unicorn-overlord": {
+    "developer": "VanillaWare",
+    "publisher": "SEGA"
+  },
+  "nine-sols": {
+    "developer": "RedCandleGames",
+    "publisher": "RedCandleGames"
+  },
+  "hades-ii": {
+    "developer": "Supergiant Games",
+    "publisher": "Supergiant Games"
+  },
+  "death-stranding-2": {
+    "developer": "Kojima Productions",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "neva-2": {
+    "developer": "Nomada Studio",
+    "publisher": "Devolver Digital"
+  },
+  "the-legend-of-zelda-echoes-of-wisdom": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "portal-revolution": {
+    "developer": "Unknown",
+    "publisher": "Unknown"
+  },
+  "the-alters": {
+    "developer": "11 Bit Studios",
+    "publisher": "11 bit studios"
+  },
+  "ball-x-pit": {
+    "developer": "Kenny Sun",
+    "publisher": "Devolver Digital"
+  },
+  "black-myth-wu-kong": {
+    "developer": "Game Science",
+    "publisher": "Game Science"
+  },
+  "final-fantasy-vii-rebirth": {
+    "developer": "Square Enix",
+    "publisher": "Square Enix"
+  },
+  "satisfactory": {
+    "developer": "Coffee Stain Studios",
+    "publisher": "Coffee Stain Studios"
+  },
+  "helldivers-ii": {
+    "developer": "Arrowhead Game Studios",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "indiana-jones-and-the-great-circle": {
+    "developer": "Machine Games",
+    "publisher": "Bethesda Softworks"
+  },
+  "rhythm-doctor": {
+    "developer": "7th Beat Games",
+    "publisher": "indienova"
+  },
+  "animal-well": {
+    "developer": "Shared Memory",
+    "publisher": "Shared Memory"
+  },
+  "balatro": {
+    "developer": "LocalThunk",
+    "publisher": "PlayStack"
+  },
+  "reanimal": {
+    "developer": "Tarsier Studios",
+    "publisher": "THQ Nordic"
+  },
+  "black-myth-wukong": {
+    "developer": "Game Science",
+    "publisher": "Game Science"
+  },
+  "helldivers-2": {
+    "developer": "Arrowhead Game Studios",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "felvidek": {
+    "developer": "Jozef Pavelka",
+    "publisher": "Jozef Pavelka"
+  },
+  "thank-goodness-youre-here": {
+    "developer": "Coal Supper",
+    "publisher": "Panic"
+  },
+  "lies-of-p-overture": {
+    "developer": "Round8 Studio",
+    "publisher": "NEOWIZ"
+  },
+  "metaphor-refantazio": {
+    "developer": "Atlus",
+    "publisher": "SEGA"
+  },
+  "project-eve-tba": {
+    "developer": "SHIFT UP",
+    "publisher": "PlayStation Publishing"
+  },
+  "sword-of-the-sea": {
+    "developer": "Giant Squid",
+    "publisher": "Giant Squid"
+  },
+  "like-a-dragon-infinite-wealth": {
+    "developer": "Ryu ga Gotoku Studio",
+    "publisher": "SEGA"
+  },
+  "mouthwashing": {
+    "developer": "Wrong Organ",
+    "publisher": "CRITICAL REFLEX"
+  },
+  "mixtape": {
+    "developer": "Unknown",
+    "publisher": "Unknown"
+  },
+  "mario-kart-world": {
+    "developer": "Nintendo",
+    "publisher": "Nintendo"
+  },
+  "battlefield-6-2": {
+    "developer": "Battlefield Studios",
+    "publisher": "Electronic Arts"
+  },
+  "monster-hunter-wilds": {
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "tiny-bunny": {
+    "developer": "RUzura Interactive",
+    "publisher": "Mars People Games"
+  },
+  "warhammer-40000-space-marine-ii": {
+    "developer": "Saber Interactive",
+    "publisher": "Focus Home Interactive"
+  },
+  "miside": {
+    "developer": "AIHASTO",
+    "publisher": "IndieArk"
+  },
+  "ghost-of-yotei": {
+    "developer": "Sucker Punch Productions",
+    "publisher": "Sony Computer Entertainment"
+  },
+  "peak-3": {
+    "developer": "Unknown",
+    "publisher": "Landfall"
+  },
+  "snufkin-melody-of-moominvalley": {
+    "developer": "Hyper Games",
+    "publisher": "Raw Fury"
+  },
+  "no-im-not-a-human": {
+    "developer": "Trioskaz",
+    "publisher": "CRITICAL REFLEX"
+  },
+  "shin-megami-tensei-v": {
+    "developer": "Atlus",
+    "publisher": "Atlus"
+  },
+  "crypt-custodian": {
+    "developer": "Kyle Thompson",
+    "publisher": "H2 Interactive Co"
+  },
+  "blue-prince": {
+    "developer": "Dogubomb",
+    "publisher": "Raw Fury"
+  },
+  "marvels-spider-man-2-pc-port": {
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "anomalous-coffee-machine": {
+    "developer": "HoruBrain Interactive",
+    "publisher": "Hexapede Engine"
+  },
+  "frostpunk-2": {
+    "developer": "11 Bit Studios",
+    "publisher": "11 bit studios"
+  },
+  "wuthering-waves": {
+    "developer": "KURO GAMES",
+    "publisher": "KURO GAMES"
+  },
+  "ninja-gaiden-4": {
+    "developer": "Platinum Games",
+    "publisher": "Xbox Game Studios"
+  },
+  "crime-scene-cleaner": {
+    "developer": "Grippens Castle",
+    "publisher": "Grippens Castle"
+  },
+  "until-dawn-2": {
+    "developer": "Ballistic Moon",
+    "publisher": "PlayStation PC"
+  },
+  "alan-wake-2-night-springs": {
+    "developer": "Unknown",
+    "publisher": "Unknown"
+  },
+  "manor-lords": {
+    "developer": "Slavic Magic",
+    "publisher": "Hooded Horse"
+  },
+  "abiotic-factor": {
+    "developer": "Deep Field Games",
+    "publisher": "PlayStack"
+  },
+  "megabonk": {
+    "developer": "vedinad",
+    "publisher": "vedinad"
+  },
+  "tekken-8": {
+    "developer": "Bandai Namco Entertainment",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "ninja-gaiden-ragebound": {
+    "developer": "The Game Kitchen",
+    "publisher": "DotEmu"
+  },
+  "ai-limit": {
+    "developer": "Unknown",
+    "publisher": "Sony Interactive Entertainment"
+  }
+}

@@ -13,6 +13,9 @@ export type Game = {
   titleZh: string;
   countryCode: string;
   countryName: string;
+  countrySource?: "developer" | "publisher" | "title" | "unknown";
+  countryConfidence?: "high" | "medium" | "low" | "unknown";
+  countryReason?: string;
   developer: string;
   publisher: string;
   releaseYear: number;
@@ -20,6 +23,12 @@ export type Game = {
   platforms: string[];
   rating: number;
   coverImage: string;
+  background_image?: string;
+  backgroundImage?: string;
+  cover?: string;
+  coverUrl?: string;
+  fallbackCoverImage?: string;
+  image?: string;
   description: string;
 };
 

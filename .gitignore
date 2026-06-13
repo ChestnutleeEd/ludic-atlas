@@ -24,3 +24,18 @@ transcript_raw.txt
 *.MOV
 *.m4v
 *.M4V
+
+# Codex / local agent artifacts
+.agents/
+.playwright-cli/
+skills-lock.json
+
+# Local visual test outputs
+output/
+
+# Local backup files
+*_副本.ts
+*副本*
+
+# Large local RAWG cover cache
+public/covers/rawg/

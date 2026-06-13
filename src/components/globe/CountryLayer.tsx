@@ -13,6 +13,7 @@ type CountryLayerOptions = {
   countries: Country[];
   countryDots: CountryDotPoint[];
   countryFeatures: CountryGeoJsonFeature[];
+  gameCountryCodes: Set<string>;
   hoveredCountryCode: string | null;
   selectedCountryCode: string | null;
   onHoverCountry: (countryCode: string | null) => void;
@@ -23,6 +24,7 @@ export function getCountryLayerProps({
   countries,
   countryDots,
   countryFeatures,
+  gameCountryCodes,
   hoveredCountryCode,
   selectedCountryCode,
   onHoverCountry,
@@ -63,19 +65,21 @@ export function getCountryLayerProps({
   return {
     pointsData: countryDots,
     pointAltitude: (point) =>
-      (point as CountryDotPoint).countryCode === selectedCountryCode ? 0.012 : 0.007,
+      (point as CountryDotPoint).countryCode === selectedCountryCode ? 0.0025 : 0.0012,
     pointColor: (point) => {
       const countryCode = (point as CountryDotPoint).countryCode;
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(245, 250, 255, 0.98)";
+        return "rgba(245, 250, 255, 0.96)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(190, 245, 255, 0.94)";
+        return "rgba(190, 245, 255, 0.86)";
       }
 
-      return "rgba(220, 225, 230, 0.46)";
+      return gameCountryCodes.has(countryCode)
+        ? "rgba(190, 245, 255, 0.42)"
+        : "rgba(220, 225, 230, 0.28)";
     },
     pointLabel: (point) => {
       const country = countryByCode.get((point as CountryDotPoint).countryCode);
@@ -90,16 +94,16 @@ export function getCountryLayerProps({
       const countryCode = (point as CountryDotPoint).countryCode;
 
       if (countryCode === selectedCountryCode) {
-        return 0.14;
+        return 0.052;
       }
 
       if (countryCode === hoveredCountryCode) {
-        return 0.12;
+        return 0.048;
       }
 
-      return 0.075;
+      return gameCountryCodes.has(countryCode) ? 0.036 : 0.028;
     },
-    pointResolution: 3,
+    pointResolution: 12,
     pointsMerge: false,
     pointsTransitionDuration: 0,
     onPointClick: (point) => {
@@ -139,7 +143,7 @@ export function getCountryLayerProps({
         return "rgba(190, 245, 255, 0.045)";
       }
 
-      if (countryCode && supportedCountryCodes.has(countryCode)) {
+      if (countryCode && gameCountryCodes.has(countryCode)) {
         return "rgba(230, 236, 242, 0.016)";
       }
 
@@ -170,7 +174,7 @@ export function getCountryLayerProps({
         return "rgba(190, 245, 255, 0.94)";
       }
 
-      if (countryCode && supportedCountryCodes.has(countryCode)) {
+      if (countryCode && gameCountryCodes.has(countryCode)) {
         return "rgba(225, 231, 238, 0.68)";
       }
 

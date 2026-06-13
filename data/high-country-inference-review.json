@@ -1,0 +1,3090 @@
+[
+  {
+    "title": "007 First Light",
+    "developer": "IO Interactive",
+    "publisher": "IO Interactive",
+    "country": "DK/Denmark",
+    "basis": "developer",
+    "reason": "IO Interactive is a well-known game developer based in Denmark."
+  },
+  {
+    "title": "13 Sentinels: Aegis Rim",
+    "developer": "VanillaWare",
+    "publisher": "Atlus",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "VanillaWare is a well-known Japanese game development studio, primarily based in Japan."
+  },
+  {
+    "title": "AI Limit",
+    "developer": "Unknown",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Sony Interactive Entertainment is headquartered in the United States."
+  },
+  {
+    "title": "Alto's Adventure",
+    "developer": "Noodlecake Studios",
+    "publisher": "Snowman",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Noodlecake Studios is a well-known US-based game development studio, with headquarters in the United States."
+  },
+  {
+    "title": "Alto's Odyssey",
+    "developer": "Noodlecake Studios",
+    "publisher": "Snowman",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Noodlecake Studios is a well-known US-based game development studio, with headquarters in the United States."
+  },
+  {
+    "title": "Angry Birds Rio",
+    "developer": "Rovio Mobile",
+    "publisher": "Rovio Entertainment",
+    "country": "FI/Finland",
+    "basis": "developer",
+    "reason": "Rovio Mobile is a subsidiary of Rovio Entertainment, which is headquartered in Finland."
+  },
+  {
+    "title": "Animal Crossing: New Horizons",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Animal Crossing: New Leaf",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Asgard's Wrath",
+    "developer": "Sanzaru Games",
+    "publisher": "Oculus Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Sanzaru Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Asphalt 8: Airborne",
+    "developer": "Gameloft",
+    "publisher": "Gameloft",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Gameloft is a well-known game development company headquartered in France."
+  },
+  {
+    "title": "Assassin's Creed 2 Deluxe Edition",
+    "developer": "Ubisoft Montreal",
+    "publisher": "Ubisoft Entertainment",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Ubisoft Montreal is a studio located in Montreal, Quebec, Canada."
+  },
+  {
+    "title": "Assassin’s Creed Brotherhood",
+    "developer": "Ubisoft Montreal",
+    "publisher": "Ubisoft Entertainment",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Ubisoft Montreal is a studio located in Montreal, Quebec, Canada."
+  },
+  {
+    "title": "Astebreed",
+    "developer": "ACTIVE GAMING MEDIA",
+    "publisher": "AGM PLAYISM",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "ACTIVE GAMING MEDIA is based in the United States."
+  },
+  {
+    "title": "Astral Chain",
+    "developer": "Platinum Games",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Astro Bot",
+    "developer": "ASOBI",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Sony Interactive Entertainment is headquartered in the United States."
+  },
+  {
+    "title": "Astro Bot Rescue Mission",
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Sony Interactive Entertainment is a subsidiary of Sony Group, which is headquartered in Japan."
+  },
+  {
+    "title": "Baba Is You",
+    "developer": "Hempuli Oy",
+    "publisher": "Hempuli Oy",
+    "country": "FI/Finland",
+    "basis": "developer",
+    "reason": "Hempuli Oy is a well-known Finnish game development company based in Finland."
+  },
+  {
+    "title": "BADLAND 2",
+    "developer": "Frogmind",
+    "publisher": "Frogmind Oy",
+    "country": "FI/Finland",
+    "basis": "publisher",
+    "reason": "Frogmind Oy is a Finnish company, as indicated by the \"Oy\" suffix which denotes a Finnish limited liability company."
+  },
+  {
+    "title": "Baldur's Gate III",
+    "developer": "Larian Studios",
+    "publisher": "Larian Studios",
+    "country": "BE/Belgium",
+    "basis": "developer",
+    "reason": "Larian Studios is a well-known Belgian game development studio based in Leuven, Belgium."
+  },
+  {
+    "title": "Ball x Pit",
+    "developer": "Kenny Sun",
+    "publisher": "Devolver Digital",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Devolver Digital is a well-known publisher based in the United States."
+  },
+  {
+    "title": "Bastion",
+    "developer": "Warner Bros. Interactive",
+    "publisher": "Warner Bros. Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Warner Bros. Interactive is a subsidiary of Warner Bros., which is headquartered in the United States."
+  },
+  {
+    "title": "Batman: Arkham Asylum Game of the Year Edition",
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British developer based in the United Kingdom."
+  },
+  {
+    "title": "Batman: Arkham City",
+    "developer": "Rocksteady Studios",
+    "publisher": "Warner Bros. Interactive",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Rocksteady Studios is headquartered in the United Kingdom."
+  },
+  {
+    "title": "Batman: Arkham City - Game of the Year Edition",
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British game development and publishing company based in the United Kingdom."
+  },
+  {
+    "title": "Battlefield 1",
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts is a well-known company headquartered in the United States."
+  },
+  {
+    "title": "Battlefield 3",
+    "developer": "Electronic Arts DICE",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts DICE is a subsidiary of Electronic Arts, which is headquartered in the United States."
+  },
+  {
+    "title": "Battlefield 6",
+    "developer": "Battlefield Studios",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Battlefield Studios is a well-known developer based in the United States."
+  },
+  {
+    "title": "Battlefield: Bad Company 2",
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts is a well-known company headquartered in the United States."
+  },
+  {
+    "title": "Battlefield: Bad Company 2 - Vietnam",
+    "developer": "Electronic Arts DICE",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts DICE is a subsidiary of Electronic Arts, which is headquartered in the United States."
+  },
+  {
+    "title": "Bayonetta 2",
+    "developer": "Platinum Games",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Bayonetta 3",
+    "developer": "Platinum Games",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Beat Saber",
+    "developer": "Hyperbolic Magnetism",
+    "publisher": "Oculus Studios",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Oculus Studios is a subsidiary of Meta Platforms, Inc., which is headquartered in the United States. The developer 'Hyperbolic Magnetism' is not a well-known studio, so the publisher's location is used."
+  },
+  {
+    "title": "BioShock 2",
+    "developer": "Feral Interactive",
+    "publisher": "2K Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB)."
+  },
+  {
+    "title": "BioShock Infinite",
+    "developer": "Aspyr Media",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Aspyr Media is a well-known American company headquartered in California, United States."
+  },
+  {
+    "title": "Black Mesa",
+    "developer": "Crowbar Collective",
+    "publisher": "Crowbar Collective",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Crowbar Collective is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "BlazBlue Calamity Trigger",
+    "developer": "Arc System Works",
+    "publisher": "H2 Interactive Co",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Arc System Works is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Bloodborne",
+    "developer": "FromSoftware",
+    "publisher": "Sony Computer Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "FromSoftware is a well-known Japanese developer with headquarters in Japan."
+  },
+  {
+    "title": "Borderlands 2",
+    "developer": "Aspyr Media",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Aspyr Media is a well-known American company headquartered in California, United States."
+  },
+  {
+    "title": "Brothers: A Tale of Two Sons",
+    "developer": "Starbreeze Studios",
+    "publisher": "505 Games",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Starbreeze Studios is a well-established Swedish game development studio headquartered in Stockholm, Sweden."
+  },
+  {
+    "title": "Bug Princess",
+    "developer": "CAVE Interactive CO.,LTD.",
+    "publisher": "Plug In Digital",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "CAVE Interactive CO.,LTD. is a well-known Japanese developer based in Japan."
+  },
+  {
+    "title": "Call of Duty: Modern Warfare Remastered",
+    "developer": "Raven Software",
+    "publisher": "Activision Blizzard",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Raven Software is a subsidiary of Activision Blizzard, which is headquartered in the United States. Raven Software's development studios are located in the US (e.g., Wisconsin and California)."
+  },
+  {
+    "title": "Chained Echoes",
+    "developer": "Matthias Linda",
+    "publisher": "Deck13",
+    "country": "DE/Germany",
+    "basis": "publisher",
+    "reason": "Deck13 is a well-known German game publisher based in Hamburg, Germany. The developer 'Matthias Linda' is not a widely recognized studio, so the publisher's location is used."
+  },
+  {
+    "title": "Clash Royale",
+    "developer": "Supercell",
+    "publisher": "Supercell Oy",
+    "country": "FI/Finland",
+    "basis": "developer",
+    "reason": "Supercell is a well-known Finnish game development company headquartered in Helsinki, Finland."
+  },
+  {
+    "title": "Crusader Kings III",
+    "developer": "Paradox Developement Studios",
+    "publisher": "Paradox Interactive",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Paradox Development Studios is the developer, and it is known to be based in Sweden."
+  },
+  {
+    "title": "Crypt of the NecroDancer",
+    "developer": "Brace Yourself Games",
+    "publisher": "Klei Entertainment",
+    "country": "CA/Canada",
+    "basis": "publisher",
+    "reason": "Klei Entertainment is a Canadian publisher based in Vancouver, Canada. Since the developer (Brace Yourself Games) is not well-known, the publisher's headquarters location is used."
+  },
+  {
+    "title": "Cuphead",
+    "developer": "Studio MDHR",
+    "publisher": "StudioMDHR Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Studio MDHR is a well-known developer based in the United States (San Francisco, California). The publisher (StudioMDHR Entertainment) is not required for determination since the developer's headquarters are established."
+  },
+  {
+    "title": "Cuphead: The Delicious Last Course",
+    "developer": "Studio MDHR",
+    "publisher": "StudioMDHR Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Studio MDHR is a well-known developer based in the United States (San Francisco, California). The publisher (StudioMDHR Entertainment) is not required for determination since the developer's headquarters are established."
+  },
+  {
+    "title": "Cut the Rope",
+    "developer": "ZeptoLab",
+    "publisher": "Chillingo",
+    "country": "UA/Ukraine",
+    "basis": "developer",
+    "reason": "ZeptoLab is a well-known Ukrainian game development studio, based in Kyiv, Ukraine."
+  },
+  {
+    "title": "Cut the Rope: Magic",
+    "developer": "ZeptoLab",
+    "publisher": "ZeptoLab UK",
+    "country": "GB/United Kingdom",
+    "basis": "publisher",
+    "reason": "ZeptoLab UK is the publisher, and the developer (ZeptoLab) is not well-known enough to determine its headquarters location with certainty. The publisher's name includes 'UK', indicating the country is the United Kingdom (GB)."
+  },
+  {
+    "title": "Dark Souls",
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and while the developer listed is a US subsidiary, the parent company Bandai Namco Entertainment is based in Japan."
+  },
+  {
+    "title": "Dark Souls II",
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and while the developer listed is a US subsidiary, the parent company Bandai Namco Entertainment is based in Japan."
+  },
+  {
+    "title": "Dark Souls III",
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and while the developer listed is a US subsidiary, the parent company Bandai Namco Entertainment is based in Japan."
+  },
+  {
+    "title": "Dark Souls: Artorias of the Abyss",
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "FromSoftware is a well-known Japanese developer based in Fukuoka, Japan."
+  },
+  {
+    "title": "Day of the Tentacle Remastered",
+    "developer": "Double Fine Productions",
+    "publisher": "Double Fine Productions",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Double Fine Productions is a well-known American game development studio based in the United States."
+  },
+  {
+    "title": "Dead Space 2",
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts is a well-known company headquartered in the United States."
+  },
+  {
+    "title": "Dead Space Mobile",
+    "developer": "Iron Monkey",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Iron Monkey is not a well-known developer, so the publisher Electronic Arts' headquarters location in the United States is used."
+  },
+  {
+    "title": "Death Stranding 2: On The Beach",
+    "developer": "Kojima Productions",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Kojima Productions is a well-known Japanese game developer, and its headquarters are located in Japan."
+  },
+  {
+    "title": "Deathloop",
+    "developer": "Arkane Studios",
+    "publisher": "Bethesda Softworks",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Arkane Studios is a well-known developer headquartered in Lyon, France."
+  },
+  {
+    "title": "Demon's Souls (2020)",
+    "developer": "Bluepoint Games",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bluepoint Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Destiny: The Taken King",
+    "developer": "Bungie",
+    "publisher": "Activision Blizzard",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bungie is a well-known developer based in the United States."
+  },
+  {
+    "title": "Deus Ex: Human Revolution",
+    "developer": "Eidos Montreal",
+    "publisher": "Square Enix",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Eidos Montreal is headquartered in Montreal, Quebec, Canada."
+  },
+  {
+    "title": "Deus Ex: Human Revolution - Director's Cut",
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British developer based in the United Kingdom."
+  },
+  {
+    "title": "Devil May Cry 5",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Devil May Cry 5 Special Edition",
+    "developer": "Capcom U.S.A",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer, and while the developer is listed as 'Capcom U.S.A.', the parent company Capcom is based in Japan."
+  },
+  {
+    "title": "Diablo III",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "Diablo III: Reaper of Souls",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "Diablo III: Ultimate Evil Edition",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "Diablo IV",
+    "developer": "Activision Blizzard",
+    "publisher": "Activision Blizzard",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Activision Blizzard is a well-known American game company headquartered in the United States."
+  },
+  {
+    "title": "Dicey Dungeons",
+    "developer": "Terry Cavanagh",
+    "publisher": "Terry Cavanagh",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Terry Cavanagh is a well-known American indie game developer, primarily associated with the United States."
+  },
+  {
+    "title": "DiRT 3",
+    "developer": "Codemasters",
+    "publisher": "Codemasters",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Codemasters is a well-established British game development company headquartered in the United Kingdom."
+  },
+  {
+    "title": "DiRT Rally",
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British game development and publishing company based in the United Kingdom."
+  },
+  {
+    "title": "Dishonored",
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Softworks is headquartered in Bethesda, Maryland, United States."
+  },
+  {
+    "title": "Dishonored 2",
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Softworks is headquartered in Bethesda, Maryland, United States."
+  },
+  {
+    "title": "Divinity: Original Sin",
+    "developer": "Larian Studios",
+    "publisher": "Larian Studios",
+    "country": "BE/Belgium",
+    "basis": "developer",
+    "reason": "Larian Studios is a well-known Belgian game development studio based in Leuven, Belgium."
+  },
+  {
+    "title": "Divinity: Original Sin - Enhanced Edition",
+    "developer": "Larian Studios",
+    "publisher": "Focus Home Interactive",
+    "country": "BE/Belgium",
+    "basis": "developer",
+    "reason": "Larian Studios is a well-known Belgian game development studio, primarily based in Belgium."
+  },
+  {
+    "title": "Divinity: Original Sin 2",
+    "developer": "Larian Studios",
+    "publisher": "Larian Studios",
+    "country": "BE/Belgium",
+    "basis": "developer",
+    "reason": "Larian Studios is a well-known Belgian game development studio based in Leuven, Belgium."
+  },
+  {
+    "title": "Divinity: Original Sin 2 - Definitive Edition",
+    "developer": "Larian Studios",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "BE/Belgium",
+    "basis": "developer",
+    "reason": "Larian Studios is a well-known Belgian game development studio based in Belgium."
+  },
+  {
+    "title": "DOOM Eternal",
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Softworks is headquartered in Bethesda, Maryland, United States."
+  },
+  {
+    "title": "Doom: The Dark Ages",
+    "developer": "id Software",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "id Software is a well-known developer based in the United States."
+  },
+  {
+    "title": "Dota 2",
+    "developer": "Valve Software",
+    "publisher": "Valve",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Valve Software is a well-known US-based company headquartered in Bellevue, Washington."
+  },
+  {
+    "title": "Dragon Age: Inquisition",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "Dragon Age: Origins - Ultimate Edition",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "DRAGON BALL FighterZ",
+    "developer": "BANDAI NAMCO Entertainment America",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and while the developer listed is a US subsidiary, the parent company Bandai Namco Entertainment is based in Japan."
+  },
+  {
+    "title": "DRAGON QUEST XI S: Echoes of an Elusive Age - Definitive Edition",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "DRAGON QUEST XI: Echoes of an Elusive Age",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Dreams",
+    "developer": "Media Molecule",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Media Molecule is a well-known UK-based developer with its headquarters in the United Kingdom. While Sony Interactive Entertainment is based in Japan, the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Dying Light: The Following - Enhanced Edition",
+    "developer": "Techland",
+    "publisher": "Techland Publishing",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "Techland is a well-known Polish game development studio headquartered in Poland."
+  },
+  {
+    "title": "Eiyuu Densetsu: Zero no Kiseki",
+    "developer": "Nihon Falcom",
+    "publisher": "Kadokawa Shoten",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nihon Falcom is a well-known Japanese game developer based in Japan."
+  },
+  {
+    "title": "Elden Ring",
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "FromSoftware is a well-known Japanese developer based in Fukuoka, Japan."
+  },
+  {
+    "title": "Elden Ring: Shadow of the Erdtree",
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "FromSoftware is a well-known Japanese developer based in Fukuoka, Japan."
+  },
+  {
+    "title": "Europa Universalis IV",
+    "developer": "Paradox Development Studio",
+    "publisher": "Paradox Interactive",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Paradox Development Studio is a well-known Swedish game development studio, and its headquarters are located in Sweden."
+  },
+  {
+    "title": "F1 2016",
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British game development and publishing company based in the United Kingdom."
+  },
+  {
+    "title": "F1 2017",
+    "developer": "Feral Interactive",
+    "publisher": "Feral Interactive",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British game development and publishing company based in the United Kingdom."
+  },
+  {
+    "title": "F1 2019",
+    "developer": "Codemasters",
+    "publisher": "Codemasters",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Codemasters is a well-established British game development company headquartered in the United Kingdom."
+  },
+  {
+    "title": "F1 2020",
+    "developer": "Codemasters",
+    "publisher": "Codemasters",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Codemasters is a well-established British game development company headquartered in the United Kingdom."
+  },
+  {
+    "title": "Falcon 4.0",
+    "developer": "MicroProse Software",
+    "publisher": "Retroism",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "MicroProse Software is a well-known American game developer, and its headquarters are located in the United States."
+  },
+  {
+    "title": "Far Cry 3",
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Ubisoft is a well-known French game developer with headquarters in Paris, France."
+  },
+  {
+    "title": "FEZ",
+    "developer": "POLYTRON",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "POLYTRON is not a well-known developer, so the publisher Microsoft Studios' headquarters location in the United States is used."
+  },
+  {
+    "title": "FIFA 14",
+    "developer": "Electronic Arts Canada",
+    "publisher": "Electronic Arts",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Electronic Arts Canada is a subsidiary of Electronic Arts, and its headquarters are located in Canada."
+  },
+  {
+    "title": "Final Fantasy VII",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Final Fantasy VII Rebirth",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Final Fantasy XII: The Zodiac Age",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Final Fantasy XIV: Heavensward",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Final Fantasy XIV: Stormblood",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Final Fantasy XVI",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Fire Emblem Awakening",
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Intelligent Systems is a well-known Japanese game development studio headquartered in Kyoto, Japan. The publisher (Nintendo) is also Japanese, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Fire Emblem Fates: Birthright",
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Intelligent Systems is a well-known Japanese game development studio headquartered in Kyoto, Japan. The publisher (Nintendo) is also Japanese, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Fire Emblem Fates: Conquest",
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Intelligent Systems is a well-known Japanese game development studio headquartered in Kyoto, Japan. The publisher (Nintendo) is also Japanese, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Fire Emblem Fates: Revelation",
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Intelligent Systems is a well-known Japanese game development studio headquartered in Kyoto, Japan. The publisher (Nintendo) is also Japanese, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Fire Emblem: Three Houses",
+    "developer": "Koei Tecmo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Koei Tecmo is a Japanese company headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Football Manager 2013",
+    "developer": "Unknown",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "SEGA is a well-known Japanese publisher based in Japan."
+  },
+  {
+    "title": "Football Manager 2019",
+    "developer": "Sports Interactive",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Sports Interactive is a well-known developer based in the United Kingdom, but the developer's headquarters location is not explicitly provided in the rules. However, the publisher, SEGA, is a well-established Japanese company, and since the developer is not well-known, the publisher's location is used."
+  },
+  {
+    "title": "Forza Horizon 2",
+    "developer": "Sumo Digital",
+    "publisher": "Microsoft Studios",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Sumo Digital is a well-known game developer based in the United Kingdom."
+  },
+  {
+    "title": "Forza Horizon 3",
+    "developer": "Playground Games",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Playground Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Forza Horizon 3 Hot Wheels",
+    "developer": "Playground Games",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Playground Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Forza Horizon 4",
+    "developer": "Playground Games",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Playground Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Forza Motorsport 4",
+    "developer": "Turn 10 Studios",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Turn 10 Studios is a well-known developer based in the United States, specifically in Redmond, Washington. Microsoft Studios, as the publisher, is also headquartered in the United States."
+  },
+  {
+    "title": "Forza Motorsport 6",
+    "developer": "Turn 10 Studios",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Turn 10 Studios is a well-known developer based in the United States, specifically in Redmond, Washington. Microsoft Studios, as the publisher, is also headquartered in the United States."
+  },
+  {
+    "title": "Frostpunk 2",
+    "developer": "11 Bit Studios",
+    "publisher": "11 bit studios",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "11 Bit Studios is a well-known Polish game development studio based in Poland."
+  },
+  {
+    "title": "Galactic Civilizations II: Ultimate Edition",
+    "developer": "Stardock Entertainment",
+    "publisher": "Stardock Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Stardock Entertainment is a well-known American game development company headquartered in the United States."
+  },
+  {
+    "title": "Game Dev Story",
+    "developer": "SNK",
+    "publisher": "Kairosoft",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "SNK is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Gears of War 3",
+    "developer": "Epic Games",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Epic Games is a well-known developer headquartered in the United States."
+  },
+  {
+    "title": "Ghost of Yotei",
+    "developer": "Sucker Punch Productions",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Sucker Punch Productions is a well-known game developer based in the United States."
+  },
+  {
+    "title": "God of War (2018)",
+    "developer": "Santa Monica Studio",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Santa Monica Studio is a well-known developer based in Santa Monica, California, United States. The publisher's location (Sony Interactive Entertainment in Japan) is not used here because the developer's headquarters are established and known."
+  },
+  {
+    "title": "God of War III",
+    "developer": "SCE Studios Santa Monica",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "SCE Studios Santa Monica is a well-known Sony studio based in Santa Monica, California, USA. While Sony Computer Entertainment (publisher) is headquartered in Japan, the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "God of War: Ghost of Sparta",
+    "developer": "Ready at Dawn Studios",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Ready at Dawn Studios is a well-known developer based in the United States."
+  },
+  {
+    "title": "Gone Home",
+    "developer": "The Fullbright Company",
+    "publisher": "Annapurna Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "The Fullbright Company is a well-known developer based in the United States."
+  },
+  {
+    "title": "Grand Theft Auto IV: Complete Edition",
+    "developer": "Rockstar Toronto",
+    "publisher": "Rockstar Games",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Rockstar Toronto is a studio located in Toronto, Canada, as part of the Rockstar Games umbrella."
+  },
+  {
+    "title": "Grand Theft Auto V",
+    "developer": "Rockstar North",
+    "publisher": "Rockstar Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Rockstar North, the developer, is headquartered in the United Kingdom (Newcastle upon Tyne)."
+  },
+  {
+    "title": "Grindstone",
+    "developer": "Capybara Games",
+    "publisher": "Capybara Games",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Capybara Games is a Canadian game development studio based in Vancouver, British Columbia. The company is well-known for its indie games and has no significant ties to other countries."
+  },
+  {
+    "title": "Guacamelee!",
+    "developer": "DrinkBox Studios",
+    "publisher": "DrinkBox Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "DrinkBox Studios is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Guacamelee! 2",
+    "developer": "DrinkBox Studios",
+    "publisher": "DrinkBox Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "DrinkBox Studios is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Guacamelee! Gold Edition",
+    "developer": "Unknown",
+    "publisher": "DrinkBox Studios",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "DrinkBox Studios is a well-known American game development studio based in the United States."
+  },
+  {
+    "title": "Guacamelee! Super Turbo Championship Edition",
+    "developer": "DrinkBox Studios",
+    "publisher": "DrinkBox Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "DrinkBox Studios is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Hades",
+    "developer": "Supergiant Games",
+    "publisher": "Supergiant Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Supergiant Games is a well-known American game development studio based in the United States."
+  },
+  {
+    "title": "Hades II",
+    "developer": "Supergiant Games",
+    "publisher": "Supergiant Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Supergiant Games is a well-known American game development studio based in the United States."
+  },
+  {
+    "title": "Half-Life 2: Update",
+    "developer": "Valve Software",
+    "publisher": "Unknown",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Valve Software is a well-known company headquartered in the United States."
+  },
+  {
+    "title": "Half-Life: Alyx",
+    "developer": "Valve Software",
+    "publisher": "Valve",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Valve Software is a well-known US-based company headquartered in Bellevue, Washington."
+  },
+  {
+    "title": "Halo 4",
+    "developer": "343 Industries",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "343 Industries is a well-known developer based in the United States."
+  },
+  {
+    "title": "Halo: Reach",
+    "developer": "Bungie",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bungie is a well-known developer based in the United States."
+  },
+  {
+    "title": "Hearthstone",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "Hellblade: Senua's Sacrifice VR Edition",
+    "developer": "Ninja Theory",
+    "publisher": "Ninja Theory",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Ninja Theory is a British game development studio headquartered in the United Kingdom."
+  },
+  {
+    "title": "HELLDIVERS 2",
+    "developer": "Arrowhead Game Studios",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Arrowhead Game Studios is based in the United States."
+  },
+  {
+    "title": "Helldivers II",
+    "developer": "Arrowhead Game Studios",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Arrowhead Game Studios is based in the United States."
+  },
+  {
+    "title": "Heroes of the Storm",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "Horizon Forbidden West",
+    "developer": "Guerrilla Games",
+    "publisher": "Sony Computer Entertainment",
+    "country": "NL/Netherlands",
+    "basis": "developer",
+    "reason": "Guerrilla Games is a well-known studio headquartered in the Netherlands."
+  },
+  {
+    "title": "Horizon Zero Dawn",
+    "developer": "Guerrilla Games",
+    "publisher": "Sony Computer Entertainment",
+    "country": "NL/Netherlands",
+    "basis": "developer",
+    "reason": "Guerrilla Games is a well-known studio headquartered in the Netherlands."
+  },
+  {
+    "title": "Horizon Zero Dawn Remastered",
+    "developer": "Guerrilla Games",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "NL/Netherlands",
+    "basis": "developer",
+    "reason": "Guerrilla Games is a well-known developer based in the Netherlands."
+  },
+  {
+    "title": "Iconoclasts",
+    "developer": "Joakim Sandberg",
+    "publisher": "Bifrost Entertainment",
+    "country": "SE/Sweden",
+    "basis": "publisher",
+    "reason": "Bifrost Entertainment is a Swedish publisher based in Stockholm, Sweden. The developer 'Joakim Sandberg' is not a well-known company, so the publisher's location is used."
+  },
+  {
+    "title": "Indiana Jones and the Great Circle",
+    "developer": "Machine Games",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Machine Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Infinity Blade",
+    "developer": "Epic Games",
+    "publisher": "Chair Entertainment Group",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Epic Games is a well-known developer headquartered in the United States."
+  },
+  {
+    "title": "Infinity Blade II",
+    "developer": "Epic Games",
+    "publisher": "Chair Entertainment Group",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Epic Games is a well-known developer headquartered in the United States."
+  },
+  {
+    "title": "Injustice 2",
+    "developer": "Warner Bros. Interactive",
+    "publisher": "Warner Bros. Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Warner Bros. Interactive is a subsidiary of Warner Bros., which is headquartered in the United States."
+  },
+  {
+    "title": "Inscryption",
+    "developer": "Daniel Mullins Games",
+    "publisher": "Devolver Digital",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Devolver Digital is a well-known publisher headquartered in the United States. The developer 'Daniel Mullins Games' is not a widely recognized studio, so the publisher's location is used."
+  },
+  {
+    "title": "INSIDE",
+    "developer": "Playdead",
+    "publisher": "Playdead",
+    "country": "DK/Denmark",
+    "basis": "developer",
+    "reason": "Playdead is a well-known Danish game development studio based in Copenhagen, Denmark."
+  },
+  {
+    "title": "Into the Breach",
+    "developer": "Subset Games",
+    "publisher": "Subset Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Subset Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "It Takes Two",
+    "developer": "Hazelight",
+    "publisher": "Electronic Arts",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Hazelight Studios is a well-known Swedish game development studio based in Stockholm, Sweden."
+  },
+  {
+    "title": "Jetpack Joyride",
+    "developer": "Big Ant Studios",
+    "publisher": "Halfbrick",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Big Ant Studios is a well-known British game development studio based in the United Kingdom."
+  },
+  {
+    "title": "Journey",
+    "developer": "thatgamecompany",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "thatgamecompany is a well-known US-based developer headquartered in Los Angeles, California."
+  },
+  {
+    "title": "Kerbal Space Program",
+    "developer": "Squad",
+    "publisher": "Private Division",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Squad is a UK-based game development studio, headquartered in Newcastle upon Tyne, United Kingdom (GB)."
+  },
+  {
+    "title": "Kingdom Come: Deliverance II",
+    "developer": "Warhorse Studios",
+    "publisher": "Deep Silver",
+    "country": "CZ/Czech Republic",
+    "basis": "developer",
+    "reason": "Warhorse Studios is based in the Czech Republic."
+  },
+  {
+    "title": "KINGDOM HEARTS HD 1.5 +2.5 ReMIX",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Kirby's Epic Yarn",
+    "developer": "Good-Feel",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Good-Feel is a Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "League of Legends: Wild Rift",
+    "developer": "Riot Games",
+    "publisher": "Riot Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Riot Games is a well-known developer headquartered in the United States."
+  },
+  {
+    "title": "Legends of Runeterra",
+    "developer": "Riot Games",
+    "publisher": "Riot Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Riot Games is a well-known developer headquartered in the United States."
+  },
+  {
+    "title": "Lies of P: Overture",
+    "developer": "Round8 Studio",
+    "publisher": "NEOWIZ",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "NEOWIZ is a well-known publisher based in the United States."
+  },
+  {
+    "title": "Like a Dragon: Infinite Wealth",
+    "developer": "Ryu ga Gotoku Studio",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Ryu ga Gotoku Studio is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Limbo",
+    "developer": "Double Eleven",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Double Eleven is not a well-known developer, so the publisher Microsoft Studios is used. Microsoft Studios is headquartered in the United States."
+  },
+  {
+    "title": "LittleBigPlanet (PS Vita)",
+    "developer": "Double Eleven",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Sony Interactive Entertainment is headquartered in Japan (Tokyo), and the developer (Double Eleven) is not a well-known studio."
+  },
+  {
+    "title": "Lone Echo",
+    "developer": "Ready At Dawn",
+    "publisher": "Oculus Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Ready At Dawn is a well-known game development studio based in the United States. Their headquarters are located in California, and they are primarily associated with US-based operations."
+  },
+  {
+    "title": "Luigi's Mansion 3",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Mario Kart 8",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Mario Kart 8 Deluxe",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Mario Kart World",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Mark of the Ninja",
+    "developer": "Klei Entertainment",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Klei Entertainment is a well-known developer headquartered in the United States."
+  },
+  {
+    "title": "Mark of the Ninja: Remastered",
+    "developer": "Klei Entertainment",
+    "publisher": "Klei Entertainment",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Klei Entertainment is a well-known Canadian game development studio headquartered in Vancouver, British Columbia."
+  },
+  {
+    "title": "Marvel's Spider-Man",
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Insomniac Games is a well-known developer based in the United States (specifically Burbank, California). The publisher (Sony Interactive Entertainment) is Japanese, but the developer's headquarters location takes precedence per the rules."
+  },
+  {
+    "title": "Marvel's Spider-Man 2 PC Port",
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Insomniac Games is a well-known developer based in the United States (specifically Burbank, California). The publisher (Sony Interactive Entertainment) is Japanese, but the developer's headquarters location takes precedence per the rules."
+  },
+  {
+    "title": "Marvel's Spider-Man: Miles Morales",
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Insomniac Games is a well-known developer based in the United States (specifically Burbank, California). The publisher (Sony Interactive Entertainment) is Japanese, but the developer's headquarters location takes precedence per the rules."
+  },
+  {
+    "title": "Mass Effect 2",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "Mass Effect 2: Lair of the Shadow Broker",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "Mass Effect 3",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "Mass Effect 3: Citadel",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "Mass Effect: Legendary Edition",
+    "developer": "BioWare",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  {
+    "title": "Max Payne 3",
+    "developer": "Rockstar Games",
+    "publisher": "Rockstar Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Rockstar Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "METAL GEAR SOLID HD EDITION",
+    "developer": "Konami Digital Entertainment",
+    "publisher": "Konami",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Konami Digital Entertainment is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Metal Gear Solid V: The Phantom Pain",
+    "developer": "Kojima Productions",
+    "publisher": "Konami",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Kojima Productions is a well-known Japanese developer headquartered in Japan."
+  },
+  {
+    "title": "Metal Gear Solid: Peace Walker",
+    "developer": "Kojima Productions",
+    "publisher": "Konami",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Kojima Productions is a well-known Japanese developer headquartered in Japan."
+  },
+  {
+    "title": "Metaphor: ReFantazio",
+    "developer": "Atlus",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Atlus is a well-established Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Metro 2033 Redux",
+    "developer": "Deep Silver",
+    "publisher": "Deep Silver",
+    "country": "DE/Germany",
+    "basis": "developer",
+    "reason": "Deep Silver is a well-known German game publisher and developer, headquartered in Germany."
+  },
+  {
+    "title": "Metroid: Samus Returns",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Mewgenics",
+    "developer": "Edmund McMillen",
+    "publisher": "Edmund McMillen",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Edmund McMillen is a well-known independent game developer based in the United States."
+  },
+  {
+    "title": "Microsoft Flight Simulator 2020",
+    "developer": "Asobo Studio",
+    "publisher": "Microsoft Studios",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Asobo Studio is a well-known French game development studio based in France."
+  },
+  {
+    "title": "Mirror's Edge (Mobile)",
+    "developer": "Iron Monkey",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Iron Monkey is not a well-known developer, so the publisher Electronic Arts' headquarters location in the United States is used."
+  },
+  {
+    "title": "MLB 11 The Show",
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Sony Computer Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Sony Interactive Entertainment and Sony Computer Entertainment are both subsidiaries of Sony Group, which is headquartered in Tokyo, Japan. Both companies are well-established as Japanese entities."
+  },
+  {
+    "title": "Modern Combat 2: Black Pegasus",
+    "developer": "Gameloft",
+    "publisher": "Gameloft",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Gameloft is a well-known game development company headquartered in France."
+  },
+  {
+    "title": "Monkey Island 2 Special Edition: LeChuck’s Revenge",
+    "developer": "LucasArts Entertainment",
+    "publisher": "Disney Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "LucasArts Entertainment is a well-known developer based in the United States. Its headquarters were located in California, and the company was acquired by Disney in 2012 but retained its U.S. operations."
+  },
+  {
+    "title": "Monster Boy and the Cursed Kingdom",
+    "developer": "FDG Entertainment GmbH & Co.KG",
+    "publisher": "FDG Entertainment",
+    "country": "DE/Germany",
+    "basis": "developer",
+    "reason": "FDG Entertainment GmbH & Co.KG is a German company, as indicated by the 'GmbH & Co.KG' legal structure, which is common in Germany."
+  },
+  {
+    "title": "Monster Hunter 4 Ultimate",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Monster Hunter Rise",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Monster Hunter Wilds",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Monster Hunter World: Iceborne",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Monster Hunter: World",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Monster Train",
+    "developer": "Good Shepherd Entertainment",
+    "publisher": "Good Shepherd Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Good Shepherd Entertainment is a well-known American game development company based in the United States."
+  },
+  {
+    "title": "Monument Valley",
+    "developer": "ustwo games",
+    "publisher": "ustwo games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "ustwo games is a well-known studio based in the United Kingdom (London). Both developer and publisher are the same entity, so the location is determined by the developer's headquarters."
+  },
+  {
+    "title": "Mortal Kombat 11 Ultimate",
+    "developer": "NetherRealm Studios",
+    "publisher": "Warner Bros. Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "NetherRealm Studios is a well-known developer based in the United States, specifically in Chicago, Illinois. As a subsidiary of Warner Bros. Interactive, its headquarters location aligns with the U.S. location of the parent company."
+  },
+  {
+    "title": "N.O.V.A. 2: Near Orbit Vanguard Alliance",
+    "developer": "Gameloft",
+    "publisher": "Gameloft",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Gameloft is a well-known game development company headquartered in France."
+  },
+  {
+    "title": "N++ (NPLUSPLUS)",
+    "developer": "Metanet Software",
+    "publisher": "Metanet Software",
+    "country": "NZ/New Zealand",
+    "basis": "developer",
+    "reason": "Metanet Software is a well-established New Zealand-based game development studio known for titles like Bomberman and Bomberman R."
+  },
+  {
+    "title": "NBA 2K11",
+    "developer": "Visual Concepts",
+    "publisher": "2K Sports",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Visual Concepts is a well-known developer based in the United States, specifically in New York, New York. As a subsidiary of 2K Games (owned by Take-Two Interactive), its headquarters location is firmly established in the US."
+  },
+  {
+    "title": "NBA 2K16",
+    "developer": "2K",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "2K is a well-known US-based company headquartered in New York City. 2K Games, as a subsidiary of 2K, shares the same headquarters location."
+  },
+  {
+    "title": "NBA 2K17",
+    "developer": "2K",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "2K is a well-known US-based company headquartered in New York City. 2K Games, as a subsidiary of 2K, shares the same headquarters location."
+  },
+  {
+    "title": "NCAA Football 11",
+    "developer": "Electronic Arts Tiburon",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts Tiburon is a studio under Electronic Arts (EA), which is headquartered in the United States. The developer's parent company's location is used as the primary development country."
+  },
+  {
+    "title": "Need For Speed: Hot Pursuit",
+    "developer": "Electronic Arts",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts is a well-known company headquartered in the United States."
+  },
+  {
+    "title": "Neva",
+    "developer": "Nomada Studio",
+    "publisher": "Devolver Digital",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Devolver Digital is a well-known publisher based in the United States."
+  },
+  {
+    "title": "Nex Machina",
+    "developer": "Housemarque",
+    "publisher": "Housemarque",
+    "country": "FI/Finland",
+    "basis": "developer",
+    "reason": "Housemarque is a well-known Finnish game development studio based in Espoo, Finland."
+  },
+  {
+    "title": "NHL 11",
+    "developer": "Electronic Arts Canada",
+    "publisher": "Electronic Arts",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Electronic Arts Canada is a subsidiary of Electronic Arts, and its headquarters are located in Canada."
+  },
+  {
+    "title": "NHL 12",
+    "developer": "Electronic Arts Canada",
+    "publisher": "Electronic Arts",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Electronic Arts Canada is a subsidiary of Electronic Arts, and its headquarters are located in Canada."
+  },
+  {
+    "title": "NieR:Automata",
+    "developer": "Platinum Games",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "NieR:Automata BECOME AS GODS Edition",
+    "developer": "Platinum Games",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "NieR:Automata Game of the YoRHa Edition",
+    "developer": "Platinum Games",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Night in the Woods",
+    "developer": "Finji",
+    "publisher": "Finji",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Finji is a well-known indie game developer based in the United States."
+  },
+  {
+    "title": "Ninja Gaiden 4",
+    "developer": "Platinum Games",
+    "publisher": "Xbox Game Studios",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Platinum Games is a well-known Japanese game development studio, based in Tokyo, Japan."
+  },
+  {
+    "title": "Nioh",
+    "developer": "Team NINJA",
+    "publisher": "Sony Computer Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Team NINJA is a well-known Japanese developer based in Japan."
+  },
+  {
+    "title": "Nioh 2 – The Complete Edition",
+    "developer": "Team NINJA",
+    "publisher": "Koei Tecmo Games",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Team NINJA is a well-known Japanese developer, and its headquarters are located in Japan."
+  },
+  {
+    "title": "Oddworld: New 'n' Tasty",
+    "developer": "Oddworld Inhabitants",
+    "publisher": "Oddworld Inhabitants",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Oddworld Inhabitants is a well-known game development studio based in the United Kingdom (specifically Brighton, England). Both developer and publisher are the same entity, so the headquarters location of the developer determines the country."
+  },
+  {
+    "title": "Odin Sphere Leifthrasir",
+    "developer": "Atlus U.S.A",
+    "publisher": "Atlus",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Atlus U.S.A. is a subsidiary of Atlus, headquartered in the United States, and is the listed developer."
+  },
+  {
+    "title": "OKAMI HD",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Ori and the Blind Forest",
+    "developer": "Moon Studios",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Moon Studios is a well-known developer based in the United States."
+  },
+  {
+    "title": "Ori and the Blind Forest: Definitive Edition",
+    "developer": "Moon Studios",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Moon Studios is a well-known developer based in the United States."
+  },
+  {
+    "title": "Ori and the Will of the Wisps",
+    "developer": "Moon Studios",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Moon Studios is a well-known developer based in the United States."
+  },
+  {
+    "title": "Out of the Park Baseball 17",
+    "developer": "Out of the Park Developments",
+    "publisher": "Out of the Park Developments",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Out of the Park Developments is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Out of the Park Baseball 18",
+    "developer": "Out of the Park Developments",
+    "publisher": "Out of the Park Developments",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Out of the Park Developments is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Overcooked! All You Can Eat",
+    "developer": "Team17 Digital",
+    "publisher": "Team17 Digital",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Team17 Digital is a well-known British game publisher headquartered in the United Kingdom."
+  },
+  {
+    "title": "Overwatch",
+    "developer": "Unknown",
+    "publisher": "Activision Blizzard",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Activision Blizzard is a well-known publisher headquartered in the United States. Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "Oxygen Not Included",
+    "developer": "Klei Entertainment",
+    "publisher": "Klei Entertainment",
+    "country": "CA/Canada",
+    "basis": "developer",
+    "reason": "Klei Entertainment is a well-known Canadian game development studio headquartered in Vancouver, British Columbia."
+  },
+  {
+    "title": "Path of Exile",
+    "developer": "Grinding Gear Games",
+    "publisher": "Grinding Gear Games",
+    "country": "NZ/New Zealand",
+    "basis": "developer",
+    "reason": "Grinding Gear Games is based in New Zealand."
+  },
+  {
+    "title": "Persona 3 Reload",
+    "developer": "Atlus",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Atlus is a well-established Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Persona 4 Golden",
+    "developer": "Atlus",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Atlus is a well-established Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Persona 5",
+    "developer": "Atlus",
+    "publisher": "Deep Silver",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Atlus is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Persona 5 Royal",
+    "developer": "Atlus",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Atlus is a well-established Japanese developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Picross 3D: Round 2",
+    "developer": "Jupiter",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Jupiter is a well-known Japanese developer, and its headquarters are located in Japan."
+  },
+  {
+    "title": "Pikmin 3",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Pikmin 4",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Pillars of Eternity",
+    "developer": "Obsidian Entertainment",
+    "publisher": "Paradox Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Obsidian Entertainment is a well-known developer based in the United States."
+  },
+  {
+    "title": "Pistol Whip",
+    "developer": "Cloudhead Games",
+    "publisher": "Cloudhead Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Cloudhead Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Plants vs. Zombies GOTY Edition",
+    "developer": "PopCap Games",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "PopCap Games is a well-known US-based developer headquartered in Seattle, Washington. Electronic Arts (publisher) is also based in the US, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Pokémon Black, White",
+    "developer": "Game Freak",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Game Freak is a well-known Japanese developer based in Japan."
+  },
+  {
+    "title": "Pokémon HeartGold, SoulSilver",
+    "developer": "Unknown",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "Pokémon Sun, Moon",
+    "developer": "Game Freak",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Game Freak is a well-known Japanese developer based in Japan."
+  },
+  {
+    "title": "Pokémon X, Y",
+    "developer": "Game Freak",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Game Freak is a well-known Japanese developer based in Japan."
+  },
+  {
+    "title": "Portal 2",
+    "developer": "Valve Software",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Valve Software is a well-known US-based company headquartered in Bellevue, Washington. The developer's location takes precedence over the publisher's location per the rules."
+  },
+  {
+    "title": "Pragmata",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Project CARS 2",
+    "developer": "Slightly Mad Studios",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Slightly Mad Studios is a well-known developer based in the United Kingdom, but the publisher, Bandai Namco Entertainment, is a Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Psychonauts 2",
+    "developer": "Double Fine Productions",
+    "publisher": "Xbox Game Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Double Fine Productions is a well-known American game development studio based in the United States. Xbox Game Studios, while part of Microsoft (also US-based), is not the primary determinant here as the developer's location is explicitly known."
+  },
+  {
+    "title": "Pushmo",
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Intelligent Systems is a well-known Japanese game development studio headquartered in Kyoto, Japan. The publisher (Nintendo) is also Japanese, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Ratchet & Clank: Rift Apart",
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Insomniac Games is a well-known developer based in the United States (specifically Burbank, California). The publisher (Sony Interactive Entertainment) is Japanese, but the developer's headquarters location takes precedence per the rules."
+  },
+  {
+    "title": "Rayman Fiesta Run",
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Ubisoft is a well-known French game developer with headquarters in Paris, France."
+  },
+  {
+    "title": "Rayman Jungle Run",
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Ubisoft is a well-known French game developer with headquarters in Paris, France."
+  },
+  {
+    "title": "Rayman Legends",
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Ubisoft is a well-known French game developer with headquarters in Paris, France."
+  },
+  {
+    "title": "Rayman Origins",
+    "developer": "Ubisoft",
+    "publisher": "Ubisoft Entertainment",
+    "country": "FR/France",
+    "basis": "developer",
+    "reason": "Ubisoft is a well-known French game developer with headquarters in Paris, France."
+  },
+  {
+    "title": "Reanimal",
+    "developer": "Tarsier Studios",
+    "publisher": "THQ Nordic",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Tarsier Studios is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Red Dead Redemption",
+    "developer": "Rockstar North",
+    "publisher": "Rockstar Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Rockstar North, the developer, is headquartered in the United Kingdom (Newcastle upon Tyne)."
+  },
+  {
+    "title": "Red Dead Redemption 2",
+    "developer": "Rockstar Games",
+    "publisher": "Rockstar Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Rockstar Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Red Dead Redemption: Undead Nightmare",
+    "developer": "Rockstar North",
+    "publisher": "Rockstar Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Rockstar North, the developer, is headquartered in the United Kingdom (Newcastle upon Tyne)."
+  },
+  {
+    "title": "Resident Evil 2",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Resident Evil 4 (VR)",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Resident Evil 9: Requiem",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Returnal",
+    "developer": "Housemarque",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Housemarque is a well-known game developer based in the United States."
+  },
+  {
+    "title": "RimWorld",
+    "developer": "Ludeon Studios",
+    "publisher": "Ludeon Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Ludeon Studios is a well-known game development company headquartered in the United States."
+  },
+  {
+    "title": "Rise of Nations: Extended Edition",
+    "developer": "Big Huge Games",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Big Huge Games is a well-known US-based developer headquartered in Salt Lake City, Utah."
+  },
+  {
+    "title": "Rise of the Tomb Raider",
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British developer based in the United Kingdom."
+  },
+  {
+    "title": "Rise of the Tomb Raider: 20 Year Celebration",
+    "developer": "Crystal Dynamics",
+    "publisher": "Square Enix",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Crystal Dynamics is a well-known UK-based developer with headquarters in London, UK (GB). The publisher Square Enix is Japanese (JP), but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Rock Band 3",
+    "developer": "Harmonix Music Systems",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Harmonix Music Systems is a well-known US-based developer headquartered in San Francisco, California. Electronic Arts (publisher) is also US-based, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Rocket League",
+    "developer": "Psyonix",
+    "publisher": "Psyonix",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Psyonix is a well-known game developer based in the United States."
+  },
+  {
+    "title": "Rogue Legacy 2",
+    "developer": "Cellar Door Games",
+    "publisher": "Cellar Door Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Cellar Door Games is a well-known American game development studio based in the United States."
+  },
+  {
+    "title": "Saints Row IV",
+    "developer": "Volition",
+    "publisher": "Deep Silver",
+    "country": "DE/Germany",
+    "basis": "publisher",
+    "reason": "Deep Silver is a well-known publisher based in Germany."
+  },
+  {
+    "title": "Satisfactory",
+    "developer": "Coffee Stain Studios",
+    "publisher": "Coffee Stain Studios",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Coffee Stain Studios is a well-known game developer based in Sweden."
+  },
+  {
+    "title": "Sekiro: Shadows Die Twice",
+    "developer": "FromSoftware",
+    "publisher": "FromSoftware",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "FromSoftware is a well-known Japanese game development studio headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Shadow of the Colossus  (2018)",
+    "developer": "SCE Japan Studio",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "SCE Japan Studio is a subsidiary of Sony Computer Entertainment, which is headquartered in Japan. Sony Interactive Entertainment is part of the broader Sony Group, also based in Japan."
+  },
+  {
+    "title": "Shadow of the Colossus (2011)",
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Unknown",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Sony Interactive Entertainment is a subsidiary of Sony Group, which is headquartered in Japan. The developer's headquarters location is used as the primary determinant."
+  },
+  {
+    "title": "Shadowrun: Dragonfall - Director's Cut",
+    "developer": "Harebrained Schemes",
+    "publisher": "Paradox Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Harebrained Schemes is a well-established American game development studio based in San Francisco, California."
+  },
+  {
+    "title": "Shin Megami Tensei V: Vengeance",
+    "developer": "Atlus",
+    "publisher": "Atlus",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Atlus is a well-known Japanese game developer based in Tokyo, Japan."
+  },
+  {
+    "title": "Shovel Knight: Plague of Shadows",
+    "developer": "Yacht Club Games",
+    "publisher": "Yacht Club Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Yacht Club Games is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Shovel Knight: Treasure Trove",
+    "developer": "Yacht Club Games",
+    "publisher": "Yacht Club Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Yacht Club Games is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Sid Meier's Civilization V",
+    "developer": "Aspyr Media",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Aspyr Media is a well-known American company headquartered in California, United States."
+  },
+  {
+    "title": "Sid Meier’s Civilization VI",
+    "developer": "Aspyr Media",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Aspyr Media is a well-known American company headquartered in California, United States."
+  },
+  {
+    "title": "Silent Hill 2",
+    "developer": "Bloober Team",
+    "publisher": "Konami",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "Bloober Team is a well-known Polish game development studio based in Poland."
+  },
+  {
+    "title": "Sin & Punishment: Star Successor",
+    "developer": "TREASURE Co.",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "TREASURE Co. is a Japanese video game developer based in Tokyo, Japan. The developer's headquarters location takes precedence per the rules."
+  },
+  {
+    "title": "Sins of a Solar Empire: Trinity",
+    "developer": "Stardock Entertainment",
+    "publisher": "Stardock Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Stardock Entertainment is a well-known American game development company headquartered in the United States."
+  },
+  {
+    "title": "skate.",
+    "developer": "Electronic Arts Vancouver",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Electronic Arts Vancouver is a subsidiary of Electronic Arts, which is headquartered in the United States."
+  },
+  {
+    "title": "Slay the Spire",
+    "developer": "Humble Bundle",
+    "publisher": "Humble Bundle",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Humble Bundle is headquartered in the United States."
+  },
+  {
+    "title": "Spelunky",
+    "developer": "Mossmouth",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Mossmouth is not a well-known developer, so the publisher Microsoft Studios' headquarters in the United States is used."
+  },
+  {
+    "title": "Split Fiction",
+    "developer": "Hazelight",
+    "publisher": "Electronic Arts",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Hazelight Studios is a well-known Swedish game development studio based in Stockholm, Sweden."
+  },
+  {
+    "title": "Star Control: Kessari Quadrant",
+    "developer": "Legend Entertainment",
+    "publisher": "Stardock Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Legend Entertainment is not well-known, so the publisher Stardock Entertainment's headquarters location in the United States is used."
+  },
+  {
+    "title": "StarCraft II",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "StarCraft II: Wings of Liberty",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "Stardew Valley",
+    "developer": "Chucklefish",
+    "publisher": "Chucklefish",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Chucklefish is a well-known British game development studio based in the United Kingdom."
+  },
+  {
+    "title": "Starfield",
+    "developer": "Bethesda Game Studios",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Game Studios is a well-known developer headquartered in Maryland, United States. The publisher Bethesda Softworks is also based in the US, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "StarСraft II: Legacy of the Void",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "STEINS;GATE ELITE",
+    "developer": "MAGES",
+    "publisher": "Spike Chunsoft",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "MAGES is a well-known Japanese developer, and its headquarters are located in Japan."
+  },
+  {
+    "title": "Stellar Blade",
+    "developer": "SHIFT UP",
+    "publisher": "PlayStation Publishing",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "PlayStation Publishing is a subsidiary of Sony Interactive Entertainment, which is headquartered in the United States."
+  },
+  {
+    "title": "Stephen's Sausage Roll",
+    "developer": "increpare games",
+    "publisher": "increpare games",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "increpare games is a well-known Japanese game development studio, primarily based in Japan."
+  },
+  {
+    "title": "Sunless Skies",
+    "developer": "Failbetter Games",
+    "publisher": "Failbetter Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Failbetter Games is a well-known British game development studio headquartered in the United Kingdom."
+  },
+  {
+    "title": "Super Hexagon",
+    "developer": "Terry Cavanagh",
+    "publisher": "Terry Cavanagh",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Terry Cavanagh is a well-known American indie game developer, primarily associated with the United States."
+  },
+  {
+    "title": "Super Mario 3D Land",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Super Mario 3D World",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Super Mario 3D World + Bowser’s Fury",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Super Mario Galaxy 2",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Super Mario Maker 2",
+    "developer": "Unknown",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "Super Mario Odyssey",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Super Meat Boy",
+    "developer": "NVIDIA Lightspeed Studios",
+    "publisher": "Microsoft Studios",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "NVIDIA Lightspeed Studios is not a well-known developer, so the publisher Microsoft Studios (headquartered in the United States) is used to determine the country."
+  },
+  {
+    "title": "Super Smash Bros. for Nintendo 3DS",
+    "developer": "Bandai Namco Entertainment",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a Japanese company headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Super Smash Bros. Ultimate",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "Super Smash Bros. Wii U",
+    "developer": "Bandai Namco Entertainment",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a Japanese company headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Super Street Fighter IV: 3D Edition",
+    "developer": "Capcom",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Sword of the Sea",
+    "developer": "Giant Squid",
+    "publisher": "Giant Squid",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Giant Squid is a well-known developer based in the United States."
+  },
+  {
+    "title": "Tatsunoko VS. Capcom: Ultimate All Stars",
+    "developer": "Eighting",
+    "publisher": "Capcom",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Eighting is a Japanese developer known for its work on games like 'Minecraft' and 'The Legend of Zelda: Breath of the Wild', and its headquarters are located in Japan."
+  },
+  {
+    "title": "Tearaway",
+    "developer": "Media Molecule",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Media Molecule is a well-known UK-based developer with its headquarters in the United Kingdom. While Sony Interactive Entertainment is based in Japan, the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Teenage Mutant Ninja Turtles: Shredder's Revenge",
+    "developer": "Tribute Games",
+    "publisher": "DotEmu",
+    "country": "FR/France",
+    "basis": "publisher",
+    "reason": "DotEmu is a well-known French publisher, and Tribute Games is not a widely recognized developer, so the publisher's headquarters location in France (FR) is used."
+  },
+  {
+    "title": "Tekken 8",
+    "developer": "Bandai Namco Entertainment",
+    "publisher": "Bandai Namco Entertainment",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and its headquarters are located in Japan."
+  },
+  {
+    "title": "The Alters",
+    "developer": "11 Bit Studios",
+    "publisher": "11 bit studios",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "11 Bit Studios is a well-known Polish game development studio based in Poland."
+  },
+  {
+    "title": "The Binding of Isaac: Rebirth",
+    "developer": "Nicalis",
+    "publisher": "Nicalis",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Nicalis is a well-known game developer based in the United States."
+  },
+  {
+    "title": "The Elder Scrolls V: Skyrim",
+    "developer": "Bethesda Game Studios",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Game Studios is a well-known developer headquartered in Maryland, United States. The publisher Bethesda Softworks is also based in the US, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "The Elder Scrolls V: Skyrim Legendary Edition",
+    "developer": "Bethesda Game Studios",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Game Studios is a well-known developer headquartered in Maryland, United States. The publisher Bethesda Softworks is also based in the US, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "The Last Of Us",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known US-based developer headquartered in Santa Monica, California. The publisher (Sony Computer Entertainment) is based in Japan, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "The Last of Us Part II",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known developer based in the United States."
+  },
+  {
+    "title": "The Last of Us Part II Remastered",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Interactive Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known developer based in the United States."
+  },
+  {
+    "title": "The Last Of Us Remastered",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known US-based developer headquartered in Santa Monica, California. The publisher (Sony Computer Entertainment) is based in Japan, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "The Last of Us: Left Behind",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known US-based developer headquartered in Santa Monica, California. The publisher (Sony Computer Entertainment) is based in Japan, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "The Last of Us: Left Behind Stand Alone",
+    "developer": "Sony Interactive Entertainment",
+    "publisher": "Unknown",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Sony Interactive Entertainment is a subsidiary of Sony Group, which is headquartered in Japan. The developer's headquarters location is used as the primary determinant."
+  },
+  {
+    "title": "The Legend of Zelda: A Link Between Worlds",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "The Legend of Zelda: Breath of the Wild",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "The Legend of Zelda: Echoes of Wisdom",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "The Legend of Zelda: Link's Awakening (2019)",
+    "developer": "Grezzo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Grezzo is a well-known Japanese game development studio based in Japan."
+  },
+  {
+    "title": "The Legend of Zelda: Majora's Mask 3D",
+    "developer": "Unknown",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "The Legend of Zelda: Ocarina of Time 3D",
+    "developer": "Unknown",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "The Legend of Zelda: Skyward Sword",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "The Legend of Zelda: Tears of the Kingdom",
+    "developer": "Nintendo",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  {
+    "title": "The Legend of Zelda: The Wind Waker HD",
+    "developer": "Unknown",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "The Room 4: Old Sins",
+    "developer": "Fireproof Games",
+    "publisher": "Fireproof Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Fireproof Games is a well-known developer based in the United States, known for titles like 'The Lord of the Rings: War in the North' and 'The Lord of the Rings: The Battle for Middle-earth II'."
+  },
+  {
+    "title": "The Room Three",
+    "developer": "Fireproof Games",
+    "publisher": "Fireproof Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Fireproof Games is a well-known developer based in the United States, known for titles like 'The Lord of the Rings: War in the North' and 'The Lord of the Rings: The Battle for Middle-earth II'."
+  },
+  {
+    "title": "The Room Two",
+    "developer": "Fireproof Games",
+    "publisher": "Fireproof Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Fireproof Games is a well-known developer based in the United States, known for titles like 'The Lord of the Rings: War in the North' and 'The Lord of the Rings: The Battle for Middle-earth II'."
+  },
+  {
+    "title": "The Swapper",
+    "developer": "Curve Digital",
+    "publisher": "Curve Digital",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Curve Digital is a well-known British game development company based in the United Kingdom."
+  },
+  {
+    "title": "The Walking Dead: Season 1",
+    "developer": "Telltale Games",
+    "publisher": "Telltale Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Telltale Games is a well-known American game development studio headquartered in San Francisco, California."
+  },
+  {
+    "title": "The Witcher 2: Assassins of Kings",
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "CD PROJEKT RED is a well-known Polish game development company headquartered in Warsaw, Poland."
+  },
+  {
+    "title": "The Witcher 2: Assassins of Kings Enhanced Edition",
+    "developer": "CD PROJEKT RED",
+    "publisher": "1C-SoftClub",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "CD PROJEKT RED is a well-known Polish developer with headquarters in Poland."
+  },
+  {
+    "title": "The Witcher 3 Wild Hunt - Complete Edition",
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "CD PROJEKT RED is a well-known Polish game development company headquartered in Warsaw, Poland."
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt",
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "CD PROJEKT RED is a well-known Polish game development company headquartered in Warsaw, Poland."
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt – Blood and Wine",
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "CD PROJEKT RED is a well-known Polish game development company headquartered in Warsaw, Poland."
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt – Hearts of Stone",
+    "developer": "CD PROJEKT RED",
+    "publisher": "CD PROJEKT RED",
+    "country": "PL/Poland",
+    "basis": "developer",
+    "reason": "CD PROJEKT RED is a well-known Polish game development company headquartered in Warsaw, Poland."
+  },
+  {
+    "title": "The World Ends with You: Solo Remix",
+    "developer": "Square Enix",
+    "publisher": "Square Enix",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  {
+    "title": "Thirty Flights of Loving",
+    "developer": "Blendo Games",
+    "publisher": "Blendo Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Blendo Games is a well-known UK-based developer, established in the United Kingdom."
+  },
+  {
+    "title": "Titanfall 2",
+    "developer": "Respawn Entertainment",
+    "publisher": "Electronic Arts",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Respawn Entertainment is a well-known US-based developer headquartered in Austin, Texas. The developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Tomb Raider",
+    "developer": "Crystal Dynamics",
+    "publisher": "Square Enix",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Crystal Dynamics is a well-known UK-based developer with headquarters in London, UK (GB). The publisher Square Enix is Japanese (JP), but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Tomb Raider: Definitive Edition",
+    "developer": "Feral Interactive",
+    "publisher": "Square Enix",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known British developer based in the United Kingdom."
+  },
+  {
+    "title": "Tony Hawk's Pro Skater 1 + 2",
+    "developer": "Vicarious Visions",
+    "publisher": "Activision Blizzard",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Vicarious Visions is a well-known American developer based in the United States."
+  },
+  {
+    "title": "Torchlight II",
+    "developer": "Runic Games",
+    "publisher": "Perfect World Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Runic Games is a well-known developer based in the United States."
+  },
+  {
+    "title": "Total War: SHOGUN 2",
+    "developer": "Feral Interactive",
+    "publisher": "SEGA",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB). The publisher SEGA's location is not used here because the developer's headquarters are established and known."
+  },
+  {
+    "title": "Total War: Shogun 2 - Fall of the Samurai",
+    "developer": "Feral Interactive",
+    "publisher": "SEGA",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB). The publisher SEGA's location is not used here because the developer's headquarters are established and known."
+  },
+  {
+    "title": "Total War: WARHAMMER",
+    "developer": "Feral Interactive",
+    "publisher": "SEGA",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB). The publisher SEGA's location is not used here because the developer's headquarters are established and known."
+  },
+  {
+    "title": "Total War: WARHAMMER II",
+    "developer": "Creative Assembly",
+    "publisher": "SEGA",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Creative Assembly is a well-known British game development studio, based in the United Kingdom."
+  },
+  {
+    "title": "Tribes: Ascend",
+    "developer": "Hi-Rez Studios",
+    "publisher": "Hi-Rez Studios",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Hi-Rez Studios is a well-known game development company headquartered in the United States."
+  },
+  {
+    "title": "TypeShift",
+    "developer": "Noodlecake Studios",
+    "publisher": "Zach Gage",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Noodlecake Studios is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Uncharted 3: Drake's Deception",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known US-based developer headquartered in Santa Monica, California. The publisher (Sony Computer Entertainment) is based in Japan, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Uncharted 4: A Thief’s End",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Computer Entertainment",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Naughty Dog is a well-known US-based developer headquartered in Santa Monica, California. The publisher (Sony Computer Entertainment) is based in Japan, but the developer's location takes precedence per the rules."
+  },
+  {
+    "title": "Unicorn Overlord",
+    "developer": "VanillaWare",
+    "publisher": "SEGA",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "VanillaWare is a Japanese developer known for its work on games like 'The Legend of Heroes: Trails of Cold Steel' series."
+  },
+  {
+    "title": "Until Dawn (Remake)",
+    "developer": "Ballistic Moon",
+    "publisher": "PlayStation PC",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "PlayStation PC is a publishing label under Sony Interactive Entertainment, which is headquartered in the United States."
+  },
+  {
+    "title": "Until You Fall",
+    "developer": "Schell Games",
+    "publisher": "Schell Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Schell Games is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Warhammer 40,000: Space Marine II",
+    "developer": "Saber Interactive",
+    "publisher": "Focus Home Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Saber Interactive is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Wasteland 2: Director's Cut",
+    "developer": "InXile Entertainment",
+    "publisher": "Deep Silver",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "InXile Entertainment is a well-known developer based in the United States (San Diego, California). The publisher, Deep Silver, is a subsidiary of THQ Germany, but the developer's headquarters location takes precedence per the rules."
+  },
+  {
+    "title": "West of Loathing",
+    "developer": "Asymmetric",
+    "publisher": "Asymmetric",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Asymmetric Games is a well-known game development studio based in the United States."
+  },
+  {
+    "title": "Where's My Mickey?",
+    "developer": "Disney",
+    "publisher": "Disney Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Disney is a well-known company headquartered in the United States (Walt Disney Company, Burbank, California). Disney Interactive, as a subsidiary, operates under Disney's headquarters location."
+  },
+  {
+    "title": "Where's My Water?",
+    "developer": "Disney",
+    "publisher": "Disney Interactive",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Disney is a well-known company headquartered in the United States (Walt Disney Company, Burbank, California). Disney Interactive, as a subsidiary, operates under Disney's headquarters location."
+  },
+  {
+    "title": "Wolfenstein II: The New Colossus",
+    "developer": "Bethesda Softworks",
+    "publisher": "Bethesda Softworks",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Bethesda Softworks is headquartered in Bethesda, Maryland, United States."
+  },
+  {
+    "title": "World of Warcraft: Cataclysm",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "World of Warcraft: Legion",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "World of Warcraft: Warlords of Draenor",
+    "developer": "Unknown",
+    "publisher": "Blizzard Entertainment",
+    "country": "US/United States",
+    "basis": "publisher",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  {
+    "title": "XCOM 2",
+    "developer": "Feral Interactive",
+    "publisher": "2K Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB)."
+  },
+  {
+    "title": "XCOM 2: War of the Chosen",
+    "developer": "Firaxis",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "Firaxis Games is a well-known American developer based in the United States."
+  },
+  {
+    "title": "XCOM: Enemy Unknown",
+    "developer": "Feral Interactive",
+    "publisher": "2K Games",
+    "country": "GB/United Kingdom",
+    "basis": "developer",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB)."
+  },
+  {
+    "title": "XCOM: Enemy Within",
+    "developer": "2K",
+    "publisher": "2K Games",
+    "country": "US/United States",
+    "basis": "developer",
+    "reason": "2K is a well-known US-based company headquartered in New York City. 2K Games, as a subsidiary of 2K, shares the same headquarters location."
+  },
+  {
+    "title": "Xenoblade Chronicles",
+    "developer": "Monolith Soft",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Monolith Soft, the developer, is headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Xenoblade Chronicles 3D",
+    "developer": "Monolith Soft",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Monolith Soft, the developer, is headquartered in Tokyo, Japan."
+  },
+  {
+    "title": "Xenoblade Chronicles: Definitive Edition",
+    "developer": "Unknown",
+    "publisher": "Nintendo",
+    "country": "JP/Japan",
+    "basis": "publisher",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  {
+    "title": "Year Walk",
+    "developer": "Simogo",
+    "publisher": "Simogo",
+    "country": "SE/Sweden",
+    "basis": "developer",
+    "reason": "Simogo is a well-known Swedish game development studio based in Stockholm, Sweden."
+  },
+  {
+    "title": "Zero Escape: The Nonary Games",
+    "developer": "Spike Chunsoft",
+    "publisher": "Spike Chunsoft Co",
+    "country": "JP/Japan",
+    "basis": "developer",
+    "reason": "Spike Chunsoft is a well-known Japanese game developer based in Japan."
+  }
+]

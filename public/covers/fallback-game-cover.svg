@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="960" viewBox="0 0 720 960" role="img" aria-label="Game cover fallback">
+  <defs>
+    <linearGradient id="cover-bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f8fbff" stop-opacity="0.22"/>
+      <stop offset="0.28" stop-color="#6ee7f9" stop-opacity="0.2"/>
+      <stop offset="0.58" stop-color="#111827"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <radialGradient id="scan" cx="32%" cy="18%" r="68%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.38"/>
+      <stop offset="0.34" stop-color="#8ff6ff" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse">
+      <path d="M54 0H0v54" fill="none" stroke="#d9fbff" stroke-opacity="0.08" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="720" height="960" fill="#020506"/>
+  <rect width="720" height="960" fill="url(#cover-bg)"/>
+  <rect width="720" height="960" fill="url(#scan)"/>
+  <rect width="720" height="960" fill="url(#grid)"/>
+  <path d="M96 650c96-162 193-243 291-243s177 81 237 243" fill="none" stroke="#e8feff" stroke-opacity="0.28" stroke-width="10"/>
+  <path d="M128 690h464M174 738h368M236 786h244" stroke="#e8feff" stroke-opacity="0.22" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="360" cy="300" r="112" fill="none" stroke="#f8fbff" stroke-opacity="0.28" stroke-width="10"/>
+  <circle cx="360" cy="300" r="44" fill="#effcff" fill-opacity="0.2"/>
+  <rect x="44" y="44" width="632" height="872" fill="none" stroke="#f8fbff" stroke-opacity="0.22" stroke-width="4"/>
+</svg>

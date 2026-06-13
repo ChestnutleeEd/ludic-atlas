@@ -27,6 +27,10 @@ function formatRating(rating: number) {
   return Number.isFinite(rating) ? rating.toFixed(1) : "0.0";
 }
 
+function getCoverFallbackLabel(title: string) {
+  return title.trim().charAt(0).toUpperCase() || "No Cover";
+}
+
 export function ArchiveYearDrawer({
   group,
   selectedGameId,
@@ -87,15 +91,19 @@ function ArchiveDisplayCard({
     >
       {isSelected ? <span className="archive-selected-chip">On Display</span> : null}
       <span className="archive-cover-frame chronicle-card-cover">
-        <span className="archive-cover-fallback">{title}</span>
+        <span className="archive-cover-fallback">
+          {getCoverFallbackLabel(title)}
+        </span>
         {game.coverImage ? (
           <img
             alt={`${title} 封面`}
+            height={500}
             loading="lazy"
             onError={(event) => {
               event.currentTarget.style.display = "none";
             }}
             src={game.coverImage}
+            width={400}
           />
         ) : null}
       </span>

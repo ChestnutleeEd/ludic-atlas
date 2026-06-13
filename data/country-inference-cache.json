@@ -1,0 +1,2102 @@
+{
+  "Nintendo|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan."
+  },
+  "Larian Studios|Larian Studios": {
+    "countryCode": "BE",
+    "countryName": "Belgium",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Larian Studios is a well-known Belgian game development studio based in Leuven, Belgium."
+  },
+  "Valve Software|Unknown": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Valve Software is a well-known company headquartered in the United States."
+  },
+  "Rockstar Games|Rockstar Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Rockstar Games is a well-known developer based in the United States."
+  },
+  "Rockstar Toronto|Rockstar Games": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Rockstar Toronto is a studio located in Toronto, Canada, as part of the Rockstar Games umbrella."
+  },
+  "Valve Software|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Valve Software is a well-known US-based company headquartered in Bellevue, Washington. The developer's location takes precedence over the publisher's location per the rules."
+  },
+  "Naughty Dog|Sony Computer Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Naughty Dog is a well-known US-based developer headquartered in Santa Monica, California. The publisher (Sony Computer Entertainment) is based in Japan, but the developer's location takes precedence per the rules."
+  },
+  "Firaxis|2K Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Firaxis Games is a well-known American developer based in the United States."
+  },
+  "FromSoftware|Bandai Namco Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "FromSoftware is a well-known Japanese developer based in Fukuoka, Japan."
+  },
+  "Unknown|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Nintendo is a well-known Japanese company headquartered in Japan (JP). Since the developer is unknown, the publisher's location is used."
+  },
+  "Bethesda Game Studios|Bethesda Softworks": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bethesda Game Studios is a well-known developer headquartered in Maryland, United States. The publisher Bethesda Softworks is also based in the US, but the developer's location takes precedence per the rules."
+  },
+  "Aspyr Media|2K Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Aspyr Media is a well-known American company headquartered in California, United States."
+  },
+  "Rocksteady Studios|Warner Bros. Interactive": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Rocksteady Studios is headquartered in the United Kingdom."
+  },
+  "Larian Studios|Bandai Namco Entertainment": {
+    "countryCode": "BE",
+    "countryName": "Belgium",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Larian Studios is a well-known Belgian game development studio based in Belgium."
+  },
+  "Larian Studios|Focus Home Interactive": {
+    "countryCode": "BE",
+    "countryName": "Belgium",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Larian Studios is a well-known Belgian game development studio, primarily based in Belgium."
+  },
+  "Atlus|SEGA": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Atlus is a well-established Japanese developer based in Tokyo, Japan."
+  },
+  "BioWare|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "BioWare is a well-known developer based in the United States."
+  },
+  "Santa Monica Studio|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Santa Monica Studio is a well-known developer based in Santa Monica, California, United States. The publisher's location (Sony Interactive Entertainment in Japan) is not used here because the developer's headquarters are established and known."
+  },
+  "Unknown|Blizzard Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Blizzard Entertainment is headquartered in the United States (specifically Irvine, California), and is a well-established, widely-known game publisher."
+  },
+  "Rockstar North|Rockstar Games": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Rockstar North, the developer, is headquartered in the United Kingdom (Newcastle upon Tyne)."
+  },
+  "Valve Software|Valve": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Valve Software is a well-known US-based company headquartered in Bellevue, Washington."
+  },
+  "ZeptoLab|Chillingo": {
+    "countryCode": "UA",
+    "countryName": "Ukraine",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "ZeptoLab is a well-known Ukrainian game development studio, based in Kyiv, Ukraine."
+  },
+  "Naughty Dog|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Naughty Dog is a well-known developer based in the United States."
+  },
+  "Supergiant Games|Supergiant Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Supergiant Games is a well-known American game development studio based in the United States."
+  },
+  "Atlus|Deep Silver": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Atlus is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  "SCE Studios Santa Monica|Sony Computer Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "SCE Studios Santa Monica is a well-known Sony studio based in Santa Monica, California, USA. While Sony Computer Entertainment (publisher) is headquartered in Japan, the developer's location takes precedence per the rules."
+  },
+  "Telltale Games|Telltale Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Telltale Games is a well-known American game development studio headquartered in San Francisco, California."
+  },
+  "Joel McDonald|Joel McDonald": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher 'Joel McDonald' are not recognized as well-known game companies, and no headquarters information is available."
+  },
+  "Out of the Park Developments|Out of the Park Developments": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Out of the Park Developments is a well-known game development studio based in the United States."
+  },
+  "Greg Wohlwend|Sirvo": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Greg Wohlwend' and publisher 'Sirvo' are not well-known entities with established headquarters locations."
+  },
+  "Intelligent Systems|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Intelligent Systems is a well-known Japanese game development studio headquartered in Kyoto, Japan. The publisher (Nintendo) is also Japanese, but the developer's location takes precedence per the rules."
+  },
+  "Capcom|Capcom": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Capcom is a well-known Japanese game developer headquartered in Tokyo, Japan."
+  },
+  "8-4|8-4": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher '8-4' are not well-known entities in the game industry, and no established headquarters or country association can be determined."
+  },
+  "Stardock Entertainment|Stardock Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Stardock Entertainment is a well-known American game development company headquartered in the United States."
+  },
+  "FromSoftware|Sony Computer Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "FromSoftware is a well-known Japanese developer with headquarters in Japan."
+  },
+  "Harmonix Music Systems|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Harmonix Music Systems is a well-known US-based developer headquartered in San Francisco, California. Electronic Arts (publisher) is also US-based, but the developer's location takes precedence per the rules."
+  },
+  "CD PROJEKT RED|CD PROJEKT RED": {
+    "countryCode": "PL",
+    "countryName": "Poland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "CD PROJEKT RED is a well-known Polish game development company headquartered in Warsaw, Poland."
+  },
+  "Draknek & Friends|Draknek": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Draknek & Friends and Draknek are not well-known game companies with established headquarters locations. No reliable information is available to determine their country of origin."
+  },
+  "Platinum Games|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  "thatgamecompany|Sony Computer Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "thatgamecompany is a well-known US-based developer headquartered in Los Angeles, California."
+  },
+  "Square Enix|Square Enix": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Square Enix is a Japanese company headquartered in Tokyo, Japan. Both developer and publisher are the same entity, confirming the location."
+  },
+  "ZA/UM|Unknown": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'ZA/UM' is not well-known, and the publisher is unknown. No established facts about the company's headquarters location are available."
+  },
+  "Epic Games|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Epic Games is a well-known developer headquartered in the United States."
+  },
+  "The Quantum Astrophysicists Guild|The Quantum Astrophysicists Guild": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer/publisher 'The Quantum Astrophysicists Guild' is not a well-known or established game company in the industry. No reliable headquarters information is available."
+  },
+  "POLYTRON|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "POLYTRON is not a well-known developer, so the publisher Microsoft Studios' headquarters location in the United States is used."
+  },
+  "Platinum Games|Square Enix": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Platinum Games is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  "Klei Entertainment|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Klei Entertainment is a well-known developer headquartered in the United States."
+  },
+  "Gameloft|Gameloft": {
+    "countryCode": "FR",
+    "countryName": "France",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Gameloft is a well-known game development company headquartered in France."
+  },
+  "Frogmind|Frogmind Oy": {
+    "countryCode": "FI",
+    "countryName": "Finland",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Frogmind Oy is a Finnish company, as indicated by the \"Oy\" suffix which denotes a Finnish limited liability company."
+  },
+  "Sony Interactive Entertainment|Unknown": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sony Interactive Entertainment is a subsidiary of Sony Group, which is headquartered in Japan. The developer's headquarters location is used as the primary determinant."
+  },
+  "SCE Japan Studio|Sony Interactive Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "SCE Japan Studio is a subsidiary of Sony Computer Entertainment, which is headquartered in Japan. Sony Interactive Entertainment is part of the broader Sony Group, also based in Japan."
+  },
+  "Feral Interactive|Square Enix": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Feral Interactive is a well-known British developer based in the United Kingdom."
+  },
+  "Feral Interactive|Feral Interactive": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Feral Interactive is a well-known British game development and publishing company based in the United Kingdom."
+  },
+  "Michael Brough|Michael Brough": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Michael Brough is not a well-known game development company with a publicly established headquarters. The developer and publisher are the same individual, and there is no widely-known information about their location."
+  },
+  "Monstars|Enhance Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Monstars' and publisher 'Enhance Games' are not well-known entities with established headquarters locations."
+  },
+  "Moon Studios|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Moon Studios is a well-known developer based in the United States."
+  },
+  "Matt Makes Games|Matt Makes Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Matt Makes Games is not a well-known or established game development company with widely documented headquarters information. The developer and publisher are the same entity, but no reliable public data confirms their country of origin."
+  },
+  "Kojima Productions|Konami": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Kojima Productions is a well-known Japanese developer headquartered in Japan."
+  },
+  "Turn 10 Studios|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Turn 10 Studios is a well-known developer based in the United States, specifically in Redmond, Washington. Microsoft Studios, as the publisher, is also headquartered in the United States."
+  },
+  "Yacht Club Games|Yacht Club Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Yacht Club Games is a well-known game development studio based in the United States."
+  },
+  "Bungie|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bungie is a well-known developer based in the United States."
+  },
+  "Unknown|Activision Blizzard": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Activision Blizzard is a well-known publisher headquartered in the United States. Since the developer is unknown, the publisher's location is used."
+  },
+  "Bethesda Softworks|Bethesda Softworks": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bethesda Softworks is headquartered in Bethesda, Maryland, United States."
+  },
+  "BitFinity|BitFinity, Sunken Treasure Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'BitFinity' and publisher 'BitFinity, Sunken Treasure Games' are not well-known companies with established headquarters locations. No reliable information exists to determine their country of origin."
+  },
+  "Enhance Games|Unknown": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Enhance Games' is not a well-known company, and the publisher is unknown, making it impossible to determine the country of origin based on available information."
+  },
+  "Noodlecake Studios|Snowman": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Noodlecake Studios is a well-known US-based game development studio, with headquarters in the United States."
+  },
+  "Noodlecake Studios|Rocketcat Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Noodlecake Studios and Rocketcat Games are not well-known companies with established headquarters locations."
+  },
+  "Metanet Software|Metanet Software": {
+    "countryCode": "NZ",
+    "countryName": "New Zealand",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Metanet Software is a well-established New Zealand-based game development studio known for titles like Bomberman and Bomberman R."
+  },
+  "Asobo Studio|Microsoft Studios": {
+    "countryCode": "FR",
+    "countryName": "France",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Asobo Studio is a well-known French game development studio based in France."
+  },
+  "Disney|Disney Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Disney is a well-known company headquartered in the United States (Walt Disney Company, Burbank, California). Disney Interactive, as a subsidiary, operates under Disney's headquarters location."
+  },
+  "Big Ant Studios|Halfbrick": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Big Ant Studios is a well-known British game development studio based in the United Kingdom."
+  },
+  "2K|2K Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "2K is a well-known US-based company headquartered in New York City. 2K Games, as a subsidiary of 2K, shares the same headquarters location."
+  },
+  "Feral Interactive|SEGA": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB). The publisher SEGA's location is not used here because the developer's headquarters are established and known."
+  },
+  "Sabotage Studio|Unknown": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Sabotage Studio' is not well-known, and the publisher is unknown, making it impossible to determine the country of origin."
+  },
+  "FromSoftware|FromSoftware": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "FromSoftware is a well-known Japanese game development studio headquartered in Tokyo, Japan."
+  },
+  "Sony Interactive Entertainment|Sony Computer Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sony Interactive Entertainment and Sony Computer Entertainment are both subsidiaries of Sony Group, which is headquartered in Tokyo, Japan. Both companies are well-established as Japanese entities."
+  },
+  "Atlus U.S.A|Atlus": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Atlus U.S.A. is a subsidiary of Atlus, headquartered in the United States, and is the listed developer."
+  },
+  "BlitWorks|Mossmouth": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher are not well-known, and no established headquarters information is available."
+  },
+  "Hyperbolic Magnetism|Oculus Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Oculus Studios is a subsidiary of Meta Platforms, Inc., which is headquartered in the United States. The developer 'Hyperbolic Magnetism' is not a well-known studio, so the publisher's location is used."
+  },
+  "Activision Blizzard|Activision Blizzard": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Activision Blizzard is a well-known American game company headquartered in the United States."
+  },
+  "Starbreeze Studios|505 Games": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Starbreeze Studios is a well-established Swedish game development studio headquartered in Stockholm, Sweden."
+  },
+  "Fireproof Games|Fireproof Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Fireproof Games is a well-known developer based in the United States, known for titles like 'The Lord of the Rings: War in the North' and 'The Lord of the Rings: The Battle for Middle-earth II'."
+  },
+  "Subset Games|Subset Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Subset Games is a well-known developer based in the United States."
+  },
+  "Konami Digital Entertainment|Konami": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Konami Digital Entertainment is a well-known Japanese company headquartered in Japan."
+  },
+  "Monstars|Enhance": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher are not well-known or established companies."
+  },
+  "Crows Crows Crows|Crows Crows Crows": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher 'Crows Crows Crows' are not recognized as well-known game companies in established industry records."
+  },
+  "increpare games|increpare games": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "increpare games is a well-known Japanese game development studio, primarily based in Japan."
+  },
+  "Mossmouth|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Mossmouth is not a well-known developer, so the publisher Microsoft Studios' headquarters in the United States is used."
+  },
+  "Sony Interactive Entertainment|Sony Interactive Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sony Interactive Entertainment is a subsidiary of Sony Group, which is headquartered in Japan."
+  },
+  "Broken Rules|kunabi brother": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Both developer 'Broken Rules' and publisher 'kunabi brother' are not well-known entities in the game industry, and no established headquarters information is available."
+  },
+  "Noodlecake Studios|Loveshack Entertainment": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher are not well-known, and no established headquarters information is available."
+  },
+  "Broken Rules|Broken Rules": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher 'Broken Rules' are not well-known entities with established headquarters locations."
+  },
+  "Matthias Linda|Deck13": {
+    "countryCode": "DE",
+    "countryName": "Germany",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Deck13 is a well-known German game publisher based in Hamburg, Germany. The developer 'Matthias Linda' is not a widely recognized studio, so the publisher's location is used."
+  },
+  "Housemarque|Housemarque": {
+    "countryCode": "FI",
+    "countryName": "Finland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Housemarque is a well-known Finnish game development studio based in Espoo, Finland."
+  },
+  "Terry Cavanagh|Terry Cavanagh": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Terry Cavanagh is a well-known American indie game developer, primarily associated with the United States."
+  },
+  "Riot Games|Riot Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Riot Games is a well-known developer headquartered in the United States."
+  },
+  "Iron Monkey|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Iron Monkey is not a well-known developer, so the publisher Electronic Arts' headquarters location in the United States is used."
+  },
+  "Obsidian Entertainment|Paradox Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Obsidian Entertainment is a well-known developer based in the United States."
+  },
+  "Domesticated Ants|Plug In Digital": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Domesticated Ants' and publisher 'Plug In Digital' are not well-known or widely recognized in the game industry, and no established headquarters information is available."
+  },
+  "Media Molecule|Sony Interactive Entertainment": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Media Molecule is a well-known UK-based developer with its headquarters in the United Kingdom. While Sony Interactive Entertainment is based in Japan, the developer's location takes precedence per the rules."
+  },
+  "Koei Tecmo|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Koei Tecmo is a Japanese company headquartered in Tokyo, Japan."
+  },
+  "ustwo games|ustwo games": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "ustwo games is a well-known studio based in the United Kingdom (London). Both developer and publisher are the same entity, so the location is determined by the developer's headquarters."
+  },
+  "Chucklefish|Chucklefish": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Chucklefish is a well-known British game development studio based in the United Kingdom."
+  },
+  "Legend Entertainment|Stardock Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Legend Entertainment is not well-known, so the publisher Stardock Entertainment's headquarters location in the United States is used."
+  },
+  "Playsport Games|Playsport Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Playsport Games is not a well-known or established game developer/publisher with publicly available headquarters information."
+  },
+  "Epic Games|Chair Entertainment Group": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Epic Games is a well-known developer headquartered in the United States."
+  },
+  "Big Huge Games|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Big Huge Games is a well-known US-based developer headquartered in Salt Lake City, Utah."
+  },
+  "Ready At Dawn|Oculus Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ready At Dawn is a well-known game development studio based in the United States. Their headquarters are located in California, and they are primarily associated with US-based operations."
+  },
+  "Studio MDHR|StudioMDHR Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Studio MDHR is a well-known developer based in the United States (San Francisco, California). The publisher (StudioMDHR Entertainment) is not required for determination since the developer's headquarters are established."
+  },
+  "Feral Interactive|2K Games": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Feral Interactive is a well-known developer based in the United Kingdom (GB)."
+  },
+  "Ubisoft|Ubisoft Entertainment": {
+    "countryCode": "FR",
+    "countryName": "France",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ubisoft is a well-known French game developer with headquarters in Paris, France."
+  },
+  "Finji|Greg Lobanov": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Finji' and publisher 'Greg Lobanov' are not well-known companies, and 'Greg Lobanov' appears to be a person rather than an organization. No established headquarters information is available for either entity."
+  },
+  "Guerrilla Games|Sony Computer Entertainment": {
+    "countryCode": "NL",
+    "countryName": "Netherlands",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Guerrilla Games is a well-known studio headquartered in the Netherlands."
+  },
+  "NetherRealm Studios|Warner Bros. Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "NetherRealm Studios is a well-known developer based in the United States, specifically in Chicago, Illinois. As a subsidiary of Warner Bros. Interactive, its headquarters location aligns with the U.S. location of the parent company."
+  },
+  "Monolith Soft|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Monolith Soft, the developer, is headquartered in Tokyo, Japan."
+  },
+  "Eidos Montreal|Square Enix": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Eidos Montreal is headquartered in Montreal, Quebec, Canada."
+  },
+  "Klei Entertainment|Klei Entertainment": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Klei Entertainment is a well-known Canadian game development studio headquartered in Vancouver, British Columbia."
+  },
+  "Annapurna Interactive|Annapurna Interactive": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Annapurna Interactive is not a well-known developer with established headquarters information. The company is primarily known as a publisher, and no widely-recognized facts about its headquarters location are available."
+  },
+  "Bungie|Activision Blizzard": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bungie is a well-known developer based in the United States."
+  },
+  "Double Eleven|Sony Interactive Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Sony Interactive Entertainment is headquartered in Japan (Tokyo), and the developer (Double Eleven) is not a well-known studio."
+  },
+  "Blendo Games|Blendo Games": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Blendo Games is a well-known UK-based developer, established in the United Kingdom."
+  },
+  "Image & Form|Image & Form": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Image & Form is not a well-known game developer or publisher, and no established headquarters information is available for this entity."
+  },
+  "Arnold Rauers|Arnold Rauers": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Arnold Rauers is not a well-known game developer or publisher in the industry. No established headquarters location or country association could be determined."
+  },
+  "Lucas Pope|3909": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Lucas Pope' is an individual developer, not a company, and publisher '3909' is not a well-known or established game publisher. No reliable headquarters information is available for either entity."
+  },
+  "Team Cherry|Team Cherry": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Team Cherry is not a well-known company with established headquarters information. The developer and publisher are the same, but without confirmed details on their location, the country cannot be determined."
+  },
+  "Arkane Studios|Bethesda Softworks": {
+    "countryCode": "FR",
+    "countryName": "France",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Arkane Studios is a well-known developer headquartered in Lyon, France."
+  },
+  "Crystal Dynamics|Square Enix": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Crystal Dynamics is a well-known UK-based developer with headquarters in London, UK (GB). The publisher Square Enix is Japanese (JP), but the developer's location takes precedence per the rules."
+  },
+  "Unknown|DrinkBox Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "DrinkBox Studios is a well-known American game development studio based in the United States."
+  },
+  "Finji|Finji": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Finji is a well-known indie game developer based in the United States."
+  },
+  "Double Fine Productions|Xbox Game Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Double Fine Productions is a well-known American game development studio based in the United States. Xbox Game Studios, while part of Microsoft (also US-based), is not the primary determinant here as the developer's location is explicitly known."
+  },
+  "Bandai Namco Entertainment|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bandai Namco Entertainment is a Japanese company headquartered in Tokyo, Japan."
+  },
+  "Warner Bros. Interactive|Warner Bros. Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Warner Bros. Interactive is a subsidiary of Warner Bros., which is headquartered in the United States."
+  },
+  "Ubisoft Montreal|Ubisoft Entertainment": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ubisoft Montreal is a studio located in Montreal, Quebec, Canada."
+  },
+  "Hazelight|Electronic Arts": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Hazelight Studios is a well-known Swedish game development studio based in Stockholm, Sweden."
+  },
+  "Insomniac Games|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Insomniac Games is a well-known developer based in the United States (specifically Burbank, California). The publisher (Sony Interactive Entertainment) is Japanese, but the developer's headquarters location takes precedence per the rules."
+  },
+  "Sam Barlow|Sam Barlow": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Sam Barlow is an individual developer, not a company. The rules require using headquarters locations of well-established game companies, not individual creators."
+  },
+  "Vicarious Visions|Activision Blizzard": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Vicarious Visions is a well-known American developer based in the United States."
+  },
+  "D-Pad Studio|D-Pad Studio": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "D-Pad Studio is not a well-known developer/publisher with established headquarters information publicly available."
+  },
+  "Codemasters|Codemasters": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Codemasters is a well-established British game development company headquartered in the United Kingdom."
+  },
+  "Deep Silver|Deep Silver": {
+    "countryCode": "DE",
+    "countryName": "Germany",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Deep Silver is a well-known German game publisher and developer, headquartered in Germany."
+  },
+  "CD PROJEKT RED|1C-SoftClub": {
+    "countryCode": "PL",
+    "countryName": "Poland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "CD PROJEKT RED is a well-known Polish developer with headquarters in Poland."
+  },
+  "Runic Games|Perfect World Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Runic Games is a well-known developer based in the United States."
+  },
+  "Asymmetric|Asymmetric": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Asymmetric Games is a well-known game development studio based in the United States."
+  },
+  "Capybara Games|Capybara Games": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Capybara Games is a Canadian game development studio based in Vancouver, British Columbia. The company is well-known for its indie games and has no significant ties to other countries."
+  },
+  "Electronic Arts|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Electronic Arts is a well-known company headquartered in the United States."
+  },
+  "Plug In Digital|Plug In Digital": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Plug In Digital is not a well-known game developer or publisher with established headquarters information."
+  },
+  "Galactic Cafe|Galactic Cafe": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher 'Galactic Cafe' are not well-known, and no established headquarters information is available."
+  },
+  "Electronic Arts Canada|Electronic Arts": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Electronic Arts Canada is a subsidiary of Electronic Arts, and its headquarters are located in Canada."
+  },
+  "Pixelbite|Pixelbite": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Pixelbite is not a well-known game developer or publisher with established headquarters information. No reliable data exists to determine its country of origin."
+  },
+  "Sanzaru Games|Oculus Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sanzaru Games is a well-known developer based in the United States."
+  },
+  "Draw Me A Pixel|Draw Me A Pixel": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher 'Draw Me A Pixel' are not well-known entities with established headquarters locations."
+  },
+  "Cellar Door Games|Cellar Door Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Cellar Door Games is a well-known American game development studio based in the United States."
+  },
+  "Game Freak|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Game Freak is a well-known Japanese developer based in Japan."
+  },
+  "Double Eleven|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Double Eleven is not a well-known developer, so the publisher Microsoft Studios is used. Microsoft Studios is headquartered in the United States."
+  },
+  "Squad|Private Division": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Squad is a UK-based game development studio, headquartered in Newcastle upon Tyne, United Kingdom (GB)."
+  },
+  "Team NINJA|Sony Computer Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Team NINJA is a well-known Japanese developer based in Japan."
+  },
+  "Visual Concepts|2K Sports": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Visual Concepts is a well-known developer based in the United States, specifically in New York, New York. As a subsidiary of 2K Games (owned by Take-Two Interactive), its headquarters location is firmly established in the US."
+  },
+  "Robot Entertainment|Robot Entertainment": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Robot Entertainment is not a well-known developer/publisher with established headquarters information."
+  },
+  "FDG Mobile Games GbR|FDG Mobile Games GbR": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "FDG Mobile Games GbR is not a well-known game developer/publisher with established headquarters information. The name 'GbR' suggests a German legal structure, but this is not a definitive indicator of headquarters location without explicit confirmation."
+  },
+  "8-4|Ancient": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer '8-4' and publisher 'Ancient' are not well-known entities with established headquarters locations. No widely-known facts about these companies exist to determine their country of origin."
+  },
+  "InXile Entertainment|Deep Silver": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "InXile Entertainment is a well-known developer based in the United States (San Diego, California). The publisher, Deep Silver, is a subsidiary of THQ Germany, but the developer's headquarters location takes precedence per the rules."
+  },
+  "Rovio Mobile|Rovio Entertainment": {
+    "countryCode": "FI",
+    "countryName": "Finland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Rovio Mobile is a subsidiary of Rovio Entertainment, which is headquartered in Finland."
+  },
+  "Harebrained Schemes|Paradox Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Harebrained Schemes is a well-established American game development studio based in San Francisco, California."
+  },
+  "NVIDIA Lightspeed Studios|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "NVIDIA Lightspeed Studios is not a well-known developer, so the publisher Microsoft Studios (headquartered in the United States) is used to determine the country."
+  },
+  "Simogo|Simogo": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Simogo is a well-known Swedish game development studio based in Stockholm, Sweden."
+  },
+  "Hex Entertainment|Hex Entertainment": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Hex Entertainment is not a well-known game developer or publisher with established headquarters information."
+  },
+  "ZeptoLab|ZeptoLab UK": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "ZeptoLab UK is the publisher, and the developer (ZeptoLab) is not well-known enough to determine its headquarters location with certainty. The publisher's name includes 'UK', indicating the country is the United Kingdom (GB)."
+  },
+  "Techland|Techland Publishing": {
+    "countryCode": "PL",
+    "countryName": "Poland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Techland is a well-known Polish game development studio headquartered in Poland."
+  },
+  "PopCap Games|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "PopCap Games is a well-known US-based developer headquartered in Seattle, Washington. Electronic Arts (publisher) is also based in the US, but the developer's location takes precedence per the rules."
+  },
+  "Ludeon Studios|Ludeon Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ludeon Studios is a well-known game development company headquartered in the United States."
+  },
+  "Ninja Theory|Ninja Theory": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ninja Theory is a British game development studio headquartered in the United Kingdom."
+  },
+  "Oddworld Inhabitants|Oddworld Inhabitants": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Oddworld Inhabitants is a well-known game development studio based in the United Kingdom (specifically Brighton, England). Both developer and publisher are the same entity, so the headquarters location of the developer determines the country."
+  },
+  "Failbetter Games|Failbetter Games": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Failbetter Games is a well-known British game development studio headquartered in the United Kingdom."
+  },
+  "Grezzo|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Grezzo is a well-known Japanese game development studio based in Japan."
+  },
+  "Curve Digital|Curve Digital": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Curve Digital is a well-known British game development company based in the United Kingdom."
+  },
+  "Paradox Development Studio|Paradox Interactive": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Paradox Development Studio is a well-known Swedish game development studio, and its headquarters are located in Sweden."
+  },
+  "Respawn Entertainment|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Respawn Entertainment is a well-known US-based developer headquartered in Austin, Texas. The developer's location takes precedence per the rules."
+  },
+  "Playdead|Playdead": {
+    "countryCode": "DK",
+    "countryName": "Denmark",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Playdead is a well-known Danish game development studio based in Copenhagen, Denmark."
+  },
+  "TREASURE Co.|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "TREASURE Co. is a Japanese video game developer based in Tokyo, Japan. The developer's headquarters location takes precedence per the rules."
+  },
+  "Cloudhead Games|Cloudhead Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Cloudhead Games is a well-known developer based in the United States."
+  },
+  "Brace Yourself Games|Klei Entertainment": {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Klei Entertainment is a Canadian publisher based in Vancouver, Canada. Since the developer (Brace Yourself Games) is not well-known, the publisher's headquarters location is used."
+  },
+  "LucasArts Entertainment|Disney Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "LucasArts Entertainment is a well-known developer based in the United States. Its headquarters were located in California, and the company was acquired by Disney in 2012 but retained its U.S. operations."
+  },
+  "Electronic Arts Tiburon|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Electronic Arts Tiburon is a studio under Electronic Arts (EA), which is headquartered in the United States. The developer's parent company's location is used as the primary development country."
+  },
+  "Hi-Rez Studios|Hi-Rez Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Hi-Rez Studios is a well-known game development company headquartered in the United States."
+  },
+  "Retrowave VR|Kluge Interactive": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Retrowave VR' and publisher 'Kluge Interactive' are not well-known entities in the game industry, and no established headquarters information is available."
+  },
+  "Electronic Arts DICE|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Electronic Arts DICE is a subsidiary of Electronic Arts, which is headquartered in the United States."
+  },
+  "Team17 Digital|Team17 Digital": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Team17 Digital is a well-known British game publisher headquartered in the United Kingdom."
+  },
+  "Daniel Mullins Games|Devolver Digital": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Devolver Digital is a well-known publisher headquartered in the United States. The developer 'Daniel Mullins Games' is not a widely recognized studio, so the publisher's location is used."
+  },
+  "Arc System Works|H2 Interactive Co": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Arc System Works is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  "SNK|Kairosoft": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "SNK is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  "Jacob Janerka|Jacob Janerka": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher 'Jacob Janerka' are not well-known game companies, and no established headquarters information is available."
+  },
+  "Schell Games|Schell Games": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Schell Games is a well-known game development studio based in the United States."
+  },
+  "Joakim Sandberg|Bifrost Entertainment": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Bifrost Entertainment is a Swedish publisher based in Stockholm, Sweden. The developer 'Joakim Sandberg' is not a well-known company, so the publisher's location is used."
+  },
+  "CAVE Interactive CO.,LTD.|Plug In Digital": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "CAVE Interactive CO.,LTD. is a well-known Japanese developer based in Japan."
+  },
+  "Raven Software|Activision Blizzard": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Raven Software is a subsidiary of Activision Blizzard, which is headquartered in the United States. Raven Software's development studios are located in the US (e.g., Wisconsin and California)."
+  },
+  "RedCandleGames|Winking Skywalker": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher are not well-known, and no established facts about their headquarters locations are available."
+  },
+  "DrinkBox Studios|DrinkBox Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "DrinkBox Studios is a well-known game development studio based in the United States."
+  },
+  "Humble Bundle|Humble Bundle": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Humble Bundle is headquartered in the United States."
+  },
+  "Digerati Distribution|Digerati": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Digerati Distribution is not a well-known game developer or publisher with established headquarters information. No reliable data exists to determine their country of origin."
+  },
+  "Supercell|Supercell Oy": {
+    "countryCode": "FI",
+    "countryName": "Finland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Supercell is a well-known Finnish game development company headquartered in Helsinki, Finland."
+  },
+  "Tribute Games|DotEmu": {
+    "countryCode": "FR",
+    "countryName": "France",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "DotEmu is a well-known French publisher, and Tribute Games is not a widely recognized developer, so the publisher's headquarters location in France (FR) is used."
+  },
+  "Bluepoint Games|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bluepoint Games is a well-known developer based in the United States."
+  },
+  "BANDAI NAMCO Entertainment America|Bandai Namco Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and while the developer listed is a US subsidiary, the parent company Bandai Namco Entertainment is based in Japan."
+  },
+  "Playground Games|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Playground Games is a well-known developer based in the United States."
+  },
+  "Ben Esposito|Annapurna Interactive": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Ben Esposito is not a well-known game developer, and Annapurna Interactive's headquarters location is not widely known or established."
+  },
+  "Noodlecake Studios|Armel Jestin": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Armel Jestin is not a well-known publisher with a known headquarters location."
+  },
+  "NVIDIA Lightspeed Studios|Thekla": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "NVIDIA Lightspeed Studios is not a well-known developer, and Thekla's headquarters location is not widely known or established."
+  },
+  "Good Shepherd Entertainment|Good Shepherd Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Good Shepherd Entertainment is a well-known American game development company based in the United States."
+  },
+  "Jupiter|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Jupiter is a well-known Japanese developer, and its headquarters are located in Japan."
+  },
+  "Paradox Developement Studios|Paradox Interactive": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Paradox Development Studios is the developer, and it is known to be based in Sweden."
+  },
+  "Capcom U.S.A|Capcom": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Capcom is a well-known Japanese game developer, and while the developer is listed as 'Capcom U.S.A.', the parent company Capcom is based in Japan."
+  },
+  "Ready at Dawn Studios|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ready at Dawn Studios is a well-known developer based in the United States."
+  },
+  "Crowbar Collective|Crowbar Collective": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Crowbar Collective is a well-known game development studio based in the United States."
+  },
+  "Spike Chunsoft|Spike Chunsoft Co": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Spike Chunsoft is a well-known Japanese game developer based in Japan."
+  },
+  "ISOMETRICORP Games|Finji": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer 'ISOMETRICORP Games' is not well-known, and the publisher 'Finji' is also not well-known with established headquarters information."
+  },
+  "The Stonebot Studio|Ludus Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are not well-known, and no widely-established facts about their headquarters locations are available."
+  },
+  "Unknown|SEGA": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "SEGA is a well-known Japanese publisher based in Japan."
+  },
+  "MAGES|Spike Chunsoft": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "MAGES is a well-known Japanese developer, and its headquarters are located in Japan."
+  },
+  "Live Wire|Binary Haze Interactive": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher information is not well-established or widely-known."
+  },
+  "Electronic Arts Vancouver|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Electronic Arts Vancouver is a subsidiary of Electronic Arts, which is headquartered in the United States."
+  },
+  "Team NINJA|Koei Tecmo Games": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Team NINJA is a well-known Japanese developer, and its headquarters are located in Japan."
+  },
+  "Creative Assembly|SEGA": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Creative Assembly is a well-known British game development studio, based in the United Kingdom."
+  },
+  "ACTIVE GAMING MEDIA|AGM PLAYISM": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "ACTIVE GAMING MEDIA is based in the United States."
+  },
+  "Noodlecake Studios|Zach Gage": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Noodlecake Studios is a well-known game development studio based in the United States."
+  },
+  "Rayark International|Flyhigh Works": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Rayark International and Flyhigh Works are not well-known companies with established headquarters locations."
+  },
+  "Sports Interactive|SEGA": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sports Interactive is a well-known developer based in the United Kingdom, but the developer's headquarters location is not explicitly provided in the rules. However, the publisher, SEGA, is a well-established Japanese company, and since the developer is not well-known, the publisher's location is used."
+  },
+  "Good-Feel|Nintendo": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Good-Feel is a Japanese developer based in Tokyo, Japan."
+  },
+  "Slightly Mad Studios|Bandai Namco Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Slightly Mad Studios is a well-known developer based in the United Kingdom, but the publisher, Bandai Namco Entertainment, is a Japanese company headquartered in Japan."
+  },
+  "The Fullbright Company|Annapurna Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "The Fullbright Company is a well-known developer based in the United States."
+  },
+  "Hempuli Oy|Hempuli Oy": {
+    "countryCode": "FI",
+    "countryName": "Finland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Hempuli Oy is a well-known Finnish game development company based in Finland."
+  },
+  "Volition|Deep Silver": {
+    "countryCode": "DE",
+    "countryName": "Germany",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Deep Silver is a well-known publisher based in Germany."
+  },
+  "VanillaWare|Atlus": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "VanillaWare is a well-known Japanese game development studio, primarily based in Japan."
+  },
+  "Phosphor Games Studio|Phosphor Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher 'Phosphor Games Studio' and 'Phosphor Games' are not well-known, and there is no widely-established information about their headquarters location."
+  },
+  "Daniel Mullins Games|Daniel Mullins Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are the same entity, and there is no widely-known information about their headquarters location."
+  },
+  "Sumo Digital|Microsoft Studios": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sumo Digital is a well-known game developer based in the United Kingdom."
+  },
+  "Nicalis|Nicalis": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Nicalis is a well-known game developer based in the United States."
+  },
+  "Double Fine Productions|Double Fine Productions": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Double Fine Productions is a well-known American game development studio based in the United States."
+  },
+  "Grinding Gear Games|Grinding Gear Games": {
+    "countryCode": "NZ",
+    "countryName": "New Zealand",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Grinding Gear Games is based in New Zealand."
+  },
+  "Housemarque|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Housemarque is a well-known game developer based in the United States."
+  },
+  "343 Industries|Microsoft Studios": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "343 Industries is a well-known developer based in the United States."
+  },
+  "Psyonix|Psyonix": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Psyonix is a well-known game developer based in the United States."
+  },
+  "Nihon Falcom|Kadokawa Shoten": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Nihon Falcom is a well-known Japanese game developer based in Japan."
+  },
+  "Eighting|Capcom": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Eighting is a Japanese developer known for its work on games like 'Minecraft' and 'The Legend of Zelda: Breath of the Wild', and its headquarters are located in Japan."
+  },
+  "Twistplay|Chilled Mouse": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher information is not well-established or widely-known."
+  },
+  "MicroProse Software|Retroism": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "MicroProse Software is a well-known American game developer, and its headquarters are located in the United States."
+  },
+  "FDG Entertainment GmbH & Co.KG|FDG Entertainment": {
+    "countryCode": "DE",
+    "countryName": "Germany",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "FDG Entertainment GmbH & Co.KG is a German company, as indicated by the 'GmbH & Co.KG' legal structure, which is common in Germany."
+  },
+  "Andreas Illiger|Andreas Illiger": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are the same entity, and there is no widely-known information about their headquarters location."
+  },
+  "Edmund McMillen|Edmund McMillen": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Edmund McMillen is a well-known independent game developer based in the United States."
+  },
+  "AdHoc Studio|AdHoc Studio": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are the same entity, and there is no widely-known information about AdHoc Studio's headquarters location."
+  },
+  "IO Interactive|IO Interactive": {
+    "countryCode": "DK",
+    "countryName": "Denmark",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "IO Interactive is a well-known game developer based in Denmark."
+  },
+  "Bloober Team|Konami": {
+    "countryCode": "PL",
+    "countryName": "Poland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bloober Team is a well-known Polish game development studio based in Poland."
+  },
+  "Sundial Interactive|Kepler Interactive": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Neither Sundial Interactive nor Kepler Interactive are well-known companies with established headquarters locations."
+  },
+  "Guerrilla Games|Sony Interactive Entertainment": {
+    "countryCode": "NL",
+    "countryName": "Netherlands",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Guerrilla Games is a well-known developer based in the Netherlands."
+  },
+  "sunset visitor|Fellow Traveller": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'sunset visitor' and publisher 'Fellow Traveller' are not well-known companies with established headquarters locations."
+  },
+  "Warhorse Studios|Deep Silver": {
+    "countryCode": "CZ",
+    "countryName": "Czech Republic",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Warhorse Studios is based in the Czech Republic."
+  },
+  "ASOBI|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Sony Interactive Entertainment is headquartered in the United States."
+  },
+  "id Software|Bethesda Softworks": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "id Software is a well-known developer based in the United States."
+  },
+  "VanillaWare|SEGA": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "VanillaWare is a Japanese developer known for its work on games like 'The Legend of Heroes: Trails of Cold Steel' series."
+  },
+  "RedCandleGames|RedCandleGames": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are the same entity, and there is no widely-known information about their headquarters location."
+  },
+  "Kojima Productions|Sony Interactive Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Kojima Productions is a well-known Japanese game developer, and its headquarters are located in Japan."
+  },
+  "Nomada Studio|Devolver Digital": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Devolver Digital is a well-known publisher based in the United States."
+  },
+  "11 Bit Studios|11 bit studios": {
+    "countryCode": "PL",
+    "countryName": "Poland",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "11 Bit Studios is a well-known Polish game development studio based in Poland."
+  },
+  "Kenny Sun|Devolver Digital": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Devolver Digital is a well-known publisher based in the United States."
+  },
+  "Game Science|Game Science": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are the same entity, and there is insufficient well-established information about their headquarters location."
+  },
+  "Coffee Stain Studios|Coffee Stain Studios": {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Coffee Stain Studios is a well-known game developer based in Sweden."
+  },
+  "Machine Games|Bethesda Softworks": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Machine Games is a well-known developer based in the United States."
+  },
+  "Arrowhead Game Studios|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Arrowhead Game Studios is based in the United States."
+  },
+  "7th Beat Games|indienova": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer '7th Beat Games' is not well-known, and the publisher 'indienova' is not a major publisher with a known headquarters location."
+  },
+  "Shared Memory|Shared Memory": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are the same entity, and there is no widely-known information about their headquarters location."
+  },
+  "Tarsier Studios|THQ Nordic": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Tarsier Studios is a well-known game development studio based in the United States."
+  },
+  "LocalThunk|PlayStack": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'LocalThunk' is not well-known, and publisher 'PlayStack' is not a widely recognized or established game publisher with a known headquarters location."
+  },
+  "Coal Supper|Panic": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Coal Supper' and publisher 'Panic' are not well-known companies with established headquarters locations."
+  },
+  "Jozef Pavelka|Jozef Pavelka": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher are both listed as 'Jozef Pavelka', which is not a well-known game company. There is no established information about their headquarters location."
+  },
+  "Round8 Studio|NEOWIZ": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "NEOWIZ is a well-known publisher based in the United States."
+  },
+  "Giant Squid|Giant Squid": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Giant Squid is a well-known developer based in the United States."
+  },
+  "SHIFT UP|PlayStation Publishing": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "PlayStation Publishing is a subsidiary of Sony Interactive Entertainment, which is headquartered in the United States."
+  },
+  "Ryu ga Gotoku Studio|SEGA": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Ryu ga Gotoku Studio is a well-known Japanese developer based in Tokyo, Japan."
+  },
+  "Wrong Organ|CRITICAL REFLEX": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer 'Wrong Organ' and publisher 'CRITICAL REFLEX' are not well-known, and there is no widely-established information about their headquarters locations."
+  },
+  "Battlefield Studios|Electronic Arts": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Battlefield Studios is a well-known developer based in the United States."
+  },
+  "RUzura Interactive|Mars People Games": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "RUzura Interactive and Mars People Games are not well-known companies with established headquarters locations."
+  },
+  "Saber Interactive|Focus Home Interactive": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Saber Interactive is a well-known game development studio based in the United States."
+  },
+  "AIHASTO|IndieArk": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer 'AIHASTO' and publisher 'IndieArk' are not well-known, and there is no widely-established information about their headquarters locations."
+  },
+  "Sucker Punch Productions|Sony Computer Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Sucker Punch Productions is a well-known game developer based in the United States."
+  },
+  "Unknown|Landfall": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer is unknown, and the publisher 'Landfall' is not a well-known or widely recognized game publisher with a known headquarters location."
+  },
+  "Hyper Games|Raw Fury": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Hyper Games and Raw Fury are not well-known companies with established headquarters locations."
+  },
+  "Trioskaz|CRITICAL REFLEX": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer 'Trioskaz' and publisher 'CRITICAL REFLEX' are not well-known, and there is no widely-established information about their headquarters locations."
+  },
+  "Atlus|Atlus": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Atlus is a well-known Japanese game developer based in Tokyo, Japan."
+  },
+  "Kyle Thompson|H2 Interactive Co": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Kyle Thompson' is not a well-known game development company, and the publisher 'H2 Interactive Co' does not have a clearly established headquarters location based on widely-known facts."
+  },
+  "Dogubomb|Raw Fury": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Dogubomb' and publisher 'Raw Fury' are not well-known, and no widely-established headquarters information is available."
+  },
+  "HoruBrain Interactive|Hexapede Engine": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer and publisher information is not well-known or widely recognized in the game industry."
+  },
+  "KURO GAMES|KURO GAMES": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "KURO GAMES is not a well-known developer or publisher with established headquarters information."
+  },
+  "Platinum Games|Xbox Game Studios": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Platinum Games is a well-known Japanese game development studio, based in Tokyo, Japan."
+  },
+  "Grippens Castle|Grippens Castle": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher 'Grippens Castle' are not well-known or recognized in the game industry, and no established headquarters or country association can be determined."
+  },
+  "Ballistic Moon|PlayStation PC": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "PlayStation PC is a publishing label under Sony Interactive Entertainment, which is headquartered in the United States."
+  },
+  "Deep Field Games|PlayStack": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer 'Deep Field Games' and publisher 'PlayStack' are not well-known, and there is no widely-established information about their headquarters locations."
+  },
+  "Slavic Magic|Hooded Horse": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "Developer 'Slavic Magic' and publisher 'Hooded Horse' are not well-known, and no widely-established headquarters information is available."
+  },
+  "vedinad|vedinad": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer and publisher 'vedinad' are not well-known or recognized in the game industry, and no established headquarters or country association can be determined."
+  },
+  "Bandai Namco Entertainment|Bandai Namco Entertainment": {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "basis": "developer",
+    "confidence": "high",
+    "reason": "Bandai Namco Entertainment is a well-known Japanese company, and its headquarters are located in Japan."
+  },
+  "The Game Kitchen|DotEmu": {
+    "countryCode": "UNKNOWN",
+    "countryName": "Unknown",
+    "basis": "unknown",
+    "confidence": "unknown",
+    "reason": "The developer, The Game Kitchen, is not well-known, and the publisher, DotEmu, does not have a widely-established headquarters location associated with a specific country."
+  },
+  "Unknown|Sony Interactive Entertainment": {
+    "countryCode": "US",
+    "countryName": "United States",
+    "basis": "publisher",
+    "confidence": "high",
+    "reason": "Sony Interactive Entertainment is headquartered in the United States."
+  }
+}

@@ -58,6 +58,62 @@ export const countries: Country[] = [
     longitude: 25.7482
   },
   {
+    code: "BE",
+    name: "Belgium",
+    nameZh: "比利时",
+    region: "Western Europe",
+    latitude: 50.5039,
+    longitude: 4.4699
+  },
+  {
+    code: "DE",
+    name: "Germany",
+    nameZh: "德国",
+    region: "Central Europe",
+    latitude: 51.1657,
+    longitude: 10.4515
+  },
+  {
+    code: "NL",
+    name: "Netherlands",
+    nameZh: "荷兰",
+    region: "Western Europe",
+    latitude: 52.1326,
+    longitude: 5.2913
+  },
+  {
+    code: "DK",
+    name: "Denmark",
+    nameZh: "丹麦",
+    region: "Northern Europe",
+    latitude: 56.2639,
+    longitude: 9.5018
+  },
+  {
+    code: "NZ",
+    name: "New Zealand",
+    nameZh: "新西兰",
+    region: "Oceania",
+    latitude: -40.9006,
+    longitude: 174.886
+  },
+  {
+    code: "UA",
+    name: "Ukraine",
+    nameZh: "乌克兰",
+    region: "Eastern Europe",
+    latitude: 48.3794,
+    longitude: 31.1656
+  },
+  {
+    code: "CZ",
+    name: "Czech Republic",
+    nameZh: "捷克",
+    region: "Central Europe",
+    latitude: 49.8175,
+    longitude: 15.473
+  },
+  {
     code: "FR",
     name: "France",
     nameZh: "法国",

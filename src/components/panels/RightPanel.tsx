@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect } from "react";
 import { CountryPanel } from "@/components/panels/CountryPanel";
 import { CountryDetailPanel } from "@/components/panels/CountryDetailPanel";
+import { GameDetailCard } from "@/components/panels/GameDetailCard";
 import { GlobalGameGallery } from "@/components/panels/GlobalGameGallery";
 import type { Country, Game, YearRange } from "@/types/game";
 
@@ -28,35 +32,87 @@ export function RightPanel({
   onClearCountry,
   onSelectGame
 }: RightPanelProps) {
+  const isGameDetailOpen = Boolean(selectedGame);
+
+  useEffect(() => {
+    if (!isGameDetailOpen) {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onSelectGame(null);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isGameDetailOpen, onSelectGame]);
+
   return (
-    <aside className="glass-panel right-panel-shell min-h-[460px] max-h-[calc(100vh-180px)] overflow-y-auto p-4">
-      {selectedCountry ? (
-        <CountryDetailPanel
-          country={selectedCountry}
-          games={games}
-          selectedGame={selectedGame}
-          selectedGameId={selectedGameId}
-          yearRange={yearRange}
-          onClearCountry={onClearCountry}
-          onSelectGame={onSelectGame}
-        />
-      ) : (
-        <>
-          <CountryPanel
-            countries={countries}
+    <aside
+      className={`glass-panel right-panel-shell relative min-h-[460px] max-h-[calc(100vh-180px)] p-4 ${
+        isGameDetailOpen ? "is-game-detail-open overflow-hidden" : "overflow-y-auto"
+      }`}
+    >
+      <div
+        aria-hidden={isGameDetailOpen}
+        className="right-panel-content"
+        inert={isGameDetailOpen ? true : undefined}
+      >
+        {selectedCountry ? (
+          <CountryDetailPanel
+            country={selectedCountry}
             games={games}
-            selectedCountryCode={selectedCountryCode}
-            onSelectCountry={onSelectCountry}
+            selectedGameId={selectedGameId}
+            yearRange={yearRange}
+            onClearCountry={onClearCountry}
+            onSelectGame={onSelectGame}
           />
-          {games.length > 0 ? (
-            <GlobalGameGallery
+        ) : (
+          <>
+            <CountryPanel
+              countries={countries}
               games={games}
-              selectedGameId={selectedGameId}
-              onSelectGame={onSelectGame}
+              selectedCountryCode={selectedCountryCode}
+              onSelectCountry={onSelectCountry}
             />
-          ) : null}
-        </>
-      )}
+            {games.length > 0 ? (
+              <GlobalGameGallery
+                games={games}
+                selectedGameId={selectedGameId}
+                onSelectGame={onSelectGame}
+              />
+            ) : null}
+          </>
+        )}
+      </div>
+
+      {selectedGame ? (
+        <div
+          aria-label={`游戏详情：${selectedGame.titleZh || selectedGame.title}`}
+          aria-modal="true"
+          className="game-detail-layer"
+          role="dialog"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              onSelectGame(null);
+            }
+          }}
+        >
+          <div
+            className="game-detail-layer-card"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <GameDetailCard
+              game={selectedGame}
+              key={selectedGame.id}
+              onClose={() => onSelectGame(null)}
+            />
+          </div>
+        </div>
+      ) : null}
     </aside>
   );
 }
