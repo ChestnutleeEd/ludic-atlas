@@ -62,7 +62,7 @@ If the task involves product scope, read:
 | `src/components/panels/`   | Country list, country detail, game detail panels          |
 | `src/components/controls/` | Bottom controls, year slider, cover size slider           |
 | `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
-| `src/lib/`                 | Filtering, statistics, country mapping, utility functions |
+| `src/lib/`                 | Filtering, statistics, country mapping, region / camera presets, utility functions |
 | `src/types/`               | TypeScript data types                                     |
 | `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, the shared fallback cover at `public/covers/fallback-game-cover.svg`, and future game cover images under `public/covers/` |
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
@@ -130,6 +130,7 @@ http://localhost:3000
 | RAWG seed list       | `scripts/rawg-seeds.mjs`          |
 | RAWG generation script | `scripts/fetch-rawg-games.mjs`   |
 | RAWG cover cache script | `scripts/cache-rawg-covers.mjs` |
+| RAWG cover compression script | `scripts/compress-rawg-covers.mjs` |
 | Country inference apply script | `scripts/apply-country-inference.mjs` |
 | Mock country data    | `src/data/countries.ts`           |
 | Future cover assets  | `public/covers/README.md`         |
@@ -152,6 +153,7 @@ http://localhost:3000
 | Game cover helper    | `src/lib/gameCover.ts`            |
 | Filtering logic      | `src/lib/filterGames.ts`          |
 | Statistics logic     | `src/lib/stats.ts`                |
+| Region / camera mode helpers | `src/lib/regions.ts`          |
 
 ## Current Main Entry Files
 
@@ -183,10 +185,12 @@ http://localhost:3000
 | Game data export          | `src/data/games.ts`                            |
 | Generated RAWG game data  | `src/data/games.generated.ts`                  |
 | RAWG cover cache script   | `scripts/cache-rawg-covers.mjs`                |
+| RAWG cover compression script | `scripts/compress-rawg-covers.mjs`         |
 | Stable mock game fallback | `src/data/games.mock.ts`                       |
 | Country mock data         | `src/data/countries.ts`                        |
 | Data types                | `src/types/game.ts`                            |
 | Filtering logic           | `src/lib/filterGames.ts`                       |
 | Statistics logic          | `src/lib/stats.ts`                             |
 | Geographic helpers        | `src/lib/geo.ts`                               |
+| Region / camera helpers   | `src/lib/regions.ts`                           |
 | Search logic              | `src/lib/search.ts`                            |

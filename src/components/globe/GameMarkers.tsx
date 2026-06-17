@@ -12,7 +12,7 @@ import {
   getGameMarkerLabel,
   getGameSecondaryTitle
 } from "@/lib/localization";
-import type { Country, Game, ViewMode } from "@/types/game";
+import type { Country, Game, RegionId, ViewMode } from "@/types/game";
 
 export type GlobeGameMarker = {
   kind: "game";
@@ -39,6 +39,7 @@ export type GlobeCountryMarker = {
 export type GlobeHtmlMarker = GlobeCountryMarker | GlobeGameMarker;
 
 type BuildGameMarkersOptions = {
+  activeRegionId: RegionId;
   countries: Country[];
   games: Game[];
   hoveredGameId: string | null;
@@ -64,9 +65,11 @@ type CreateGameMarkerElementOptions = {
 };
 
 const GLOBAL_MARKERS_PER_COUNTRY = 1;
+const REGION_MARKERS_PER_COUNTRY = 6;
 const SELECTED_COUNTRY_MARKER_LIMIT = 12;
 
 export function buildGameMarkers({
+  activeRegionId,
   countries,
   games,
   hoveredGameId,
@@ -92,7 +95,9 @@ export function buildGameMarkers({
   }, new Map());
   const markerLimit = selectedCountryCode
     ? SELECTED_COUNTRY_MARKER_LIMIT
-    : GLOBAL_MARKERS_PER_COUNTRY;
+    : activeRegionId === "global"
+      ? GLOBAL_MARKERS_PER_COUNTRY
+      : REGION_MARKERS_PER_COUNTRY;
 
   return [...gamesByCountry.entries()].flatMap<GlobeGameMarker>(
     ([countryCode, countryGames]) => {
@@ -112,12 +117,18 @@ export function buildGameMarkers({
         selectedGameId
       });
       const total = representativeGames.length;
+      const spreadMode = selectedCountryCode
+        ? "country"
+        : activeRegionId === "global"
+          ? "global"
+          : "region";
 
       return representativeGames.map((game, index) => {
         const coordinates = getDistributedGlobeCoordinates({
           country,
           gameId: game.id,
           index,
+          mode: spreadMode,
           total
         });
 
@@ -126,7 +137,7 @@ export function buildGameMarkers({
           game,
           lat: coordinates.lat,
           lng: coordinates.lng,
-          markerStyle: selectedCountryCode ? "card" : "dot",
+          markerStyle: "card",
           selected: game.id === selectedGameId,
           hovered: game.id === hoveredGameId,
           sameCountrySelected: game.countryCode === selectedCountryCode,
@@ -297,7 +308,6 @@ function getCoverMarkerMarkup(
     <span class="globe-game-cover">
       ${coverImageMarkup}
       <span class="globe-game-cover-shine"></span>
-      <span class="globe-game-rating-badge">${marker.game.rating.toFixed(1)}</span>
       ${tooltipMarkup}
     </span>
   `;

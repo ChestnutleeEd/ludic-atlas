@@ -37,8 +37,6 @@ export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
             }}
             src={coverImage}
           />
-          <span>{title}</span>
-          <strong>{game.releaseYear}</strong>
         </div>
         <div className="min-w-0">
           <h3>{title}</h3>

@@ -39,3 +39,6 @@ output/
 
 # Large local RAWG cover cache
 public/covers/rawg/
+
+# Generated local backups
+backups/

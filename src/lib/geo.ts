@@ -1,4 +1,4 @@
-import type { Country } from "@/types/game";
+import type { CameraMode, Country } from "@/types/game";
 
 export type MapPosition = {
   x: number;
@@ -122,11 +122,13 @@ export function getDistributedGlobeCoordinates({
   country,
   gameId,
   index,
+  mode,
   total
 }: {
   country: Country;
   gameId: string;
   index: number;
+  mode: "global" | "region" | "country";
   total: number;
 }): GlobeCoordinates {
   if (total <= 1) {
@@ -136,27 +138,45 @@ export function getDistributedGlobeCoordinates({
     };
   }
 
-  const profile = countryMarkerSpreadProfiles[country.code] ?? {
-    latRadius: 3.4,
-    lngRadius: 4.2
-  };
+  const profile = countryMarkerSpreadProfiles[country.code] ?? defaultCountryMarkerSpreadProfile;
+  const modeScale = markerSpreadModeScales[mode];
+  const countScale = clamp(0.86 + Math.sqrt(total) * 0.1, 0.92, 1.28);
   const stableSeed = hashString(`${country.code}:${gameId}`);
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  const angle = index * goldenAngle + (stableSeed % 360) * (Math.PI / 180);
+  const angle =
+    index * goldenAngle +
+    (stableSeed % 41) * (Math.PI / 180);
   const normalizedStep = (index + 0.5) / Math.max(total, 1);
   const radiusScale = Math.sqrt(normalizedStep);
-  const jitter = ((stableSeed % 97) / 97 - 0.5) * 0.18;
+  const jitter = ((stableSeed % 97) / 97 - 0.5) * 0.08;
+  const radius = profile.base * modeScale * countScale * (radiusScale + jitter);
+  const rawLatOffset = Math.sin(angle) * radius * profile.latScale;
+  const rawLngOffset =
+    (Math.cos(angle) * radius * profile.lngScale) /
+    Math.max(Math.cos((country.latitude * Math.PI) / 180), 0.35);
+  const rotatedOffsets = rotateMarkerOffsets(
+    rawLatOffset,
+    rawLngOffset,
+    profile.rotationDeg ?? 0
+  );
+  const latOffset = clamp(
+    rotatedOffsets.lat,
+    -profile.maxLatOffset,
+    profile.maxLatOffset
+  );
+  const lngOffset = clamp(
+    rotatedOffsets.lng,
+    -profile.maxLngOffset,
+    profile.maxLngOffset
+  );
 
   return {
     lat: clamp(
-      country.latitude + Math.sin(angle) * profile.latRadius * (radiusScale + jitter),
+      country.latitude + latOffset,
       -70,
       78
     ),
-    lng: wrapLongitude(
-      country.longitude +
-        Math.cos(angle) * profile.lngRadius * (radiusScale + jitter)
-    )
+    lng: wrapLongitude(country.longitude + lngOffset)
   };
 }
 
@@ -220,11 +240,18 @@ export function getCountry2DViewBox(country: Country): Globe2DViewBox {
   };
 }
 
-export function getCountryFocusPointOfView(country: Country): GlobePointOfView {
+export function getCountryFocusPointOfView(
+  country: Country,
+  cameraMode: CameraMode = "surface"
+): GlobePointOfView {
   const focus = countryFocusOverrides[country.code];
+  const altitude =
+    cameraMode === "surface"
+      ? focus?.surfaceAltitude ?? 0.68
+      : focus?.overviewAltitude ?? 1.2;
 
   return {
-    altitude: focus?.altitude ?? 0.74,
+    altitude,
     lat: focus?.lat ?? country.latitude,
     lng: focus?.lng ?? country.longitude
   };
@@ -469,6 +496,24 @@ function getDeterministicJitter(countryCode: string, index: number) {
   };
 }
 
+function rotateMarkerOffsets(latOffset: number, lngOffset: number, rotationDeg: number) {
+  if (rotationDeg === 0) {
+    return {
+      lat: latOffset,
+      lng: lngOffset
+    };
+  }
+
+  const rotation = (rotationDeg * Math.PI) / 180;
+  const cos = Math.cos(rotation);
+  const sin = Math.sin(rotation);
+
+  return {
+    lat: latOffset * cos - lngOffset * sin,
+    lng: latOffset * sin + lngOffset * cos
+  };
+}
+
 function hashString(value: string) {
   let hash = 0;
 
@@ -558,34 +603,150 @@ const countryDotTargetCounts: Record<string, number> = {
   US: 138
 };
 
-const countryMarkerSpreadProfiles: Record<
-  string,
-  { latRadius: number; lngRadius: number }
-> = {
-  AU: { latRadius: 7.2, lngRadius: 9.4 },
-  BR: { latRadius: 7.6, lngRadius: 8.2 },
-  CA: { latRadius: 8.2, lngRadius: 12.6 },
-  CN: { latRadius: 7.0, lngRadius: 8.8 },
-  DE: { latRadius: 1.5, lngRadius: 1.9 },
-  FR: { latRadius: 1.8, lngRadius: 2.2 },
-  GB: { latRadius: 2.0, lngRadius: 1.2 },
-  JP: { latRadius: 2.4, lngRadius: 1.5 },
-  KR: { latRadius: 1.1, lngRadius: 1.0 },
-  RU: { latRadius: 8.6, lngRadius: 14.0 },
-  US: { latRadius: 6.8, lngRadius: 10.6 }
+type CountryMarkerSpreadProfile = {
+  base: number;
+  latScale: number;
+  lngScale: number;
+  maxLatOffset: number;
+  maxLngOffset: number;
+  rotationDeg?: number;
 };
 
-const countryFocusOverrides: Record<string, Partial<GlobePointOfView>> = {
-  CA: { altitude: 0.78, lat: 54, lng: -96 },
-  CN: { altitude: 0.64, lat: 34, lng: 104 },
-  FI: { altitude: 0.58, lat: 59, lng: 21 },
-  FR: { altitude: 0.52, lat: 50, lng: 10 },
-  GB: { altitude: 0.56, lat: 53, lng: -2 },
-  JP: { altitude: 0.58, lat: 35, lng: 139 },
-  KR: { altitude: 0.56, lat: 36, lng: 128 },
-  PL: { altitude: 0.52, lat: 52, lng: 17 },
-  SE: { altitude: 0.58, lat: 59, lng: 18 },
-  US: { altitude: 0.78, lat: 39, lng: -96 }
+const markerSpreadModeScales: Record<"global" | "region" | "country", number> = {
+  country: 1,
+  global: 0.34,
+  region: 0.68
+};
+
+const defaultCountryMarkerSpreadProfile: CountryMarkerSpreadProfile = {
+  base: 2.6,
+  latScale: 0.92,
+  lngScale: 0.92,
+  maxLatOffset: 3.1,
+  maxLngOffset: 3.4
+};
+
+const countryMarkerSpreadProfiles: Record<string, CountryMarkerSpreadProfile> = {
+  AU: {
+    base: 6.4,
+    latScale: 0.75,
+    lngScale: 1.2,
+    maxLatOffset: 5.4,
+    maxLngOffset: 9.8
+  },
+  BR: {
+    base: 6.2,
+    latScale: 1,
+    lngScale: 1,
+    maxLatOffset: 7.2,
+    maxLngOffset: 7.8
+  },
+  CA: {
+    base: 8,
+    latScale: 0.65,
+    lngScale: 1.35,
+    maxLatOffset: 6.8,
+    maxLngOffset: 15.5
+  },
+  CN: {
+    base: 6.8,
+    latScale: 0.8,
+    lngScale: 1.15,
+    maxLatOffset: 6.5,
+    maxLngOffset: 10.8
+  },
+  DE: {
+    base: 2,
+    latScale: 1,
+    lngScale: 0.8,
+    maxLatOffset: 2.5,
+    maxLngOffset: 2.5
+  },
+  FR: {
+    base: 2.3,
+    latScale: 1,
+    lngScale: 0.9,
+    maxLatOffset: 2.9,
+    maxLngOffset: 3
+  },
+  GB: {
+    base: 2.4,
+    latScale: 1.3,
+    lngScale: 0.65,
+    maxLatOffset: 3.6,
+    maxLngOffset: 2.1,
+    rotationDeg: -12
+  },
+  IN: {
+    base: 4.2,
+    latScale: 1,
+    lngScale: 0.85,
+    maxLatOffset: 5.2,
+    maxLngOffset: 4.8
+  },
+  IT: {
+    base: 2.5,
+    latScale: 1.35,
+    lngScale: 0.6,
+    maxLatOffset: 3.5,
+    maxLngOffset: 2.2,
+    rotationDeg: 18
+  },
+  JP: {
+    base: 2.8,
+    latScale: 1.45,
+    lngScale: 0.65,
+    maxLatOffset: 4.4,
+    maxLngOffset: 2.9,
+    rotationDeg: -35
+  },
+  KR: {
+    base: 1.8,
+    latScale: 1,
+    lngScale: 0.75,
+    maxLatOffset: 2.2,
+    maxLngOffset: 1.6
+  },
+  RU: {
+    base: 9,
+    latScale: 0.55,
+    lngScale: 1.6,
+    maxLatOffset: 6.4,
+    maxLngOffset: 20
+  },
+  SE: {
+    base: 3.1,
+    latScale: 1.35,
+    lngScale: 0.7,
+    maxLatOffset: 4.2,
+    maxLngOffset: 2.5
+  },
+  US: {
+    base: 7.5,
+    latScale: 0.75,
+    lngScale: 1.25,
+    maxLatOffset: 6.3,
+    maxLngOffset: 13.2
+  }
+};
+
+const countryFocusOverrides: Record<
+  string,
+  Partial<GlobeCoordinates> & {
+    overviewAltitude?: number;
+    surfaceAltitude?: number;
+  }
+> = {
+  CA: { overviewAltitude: 1.3, surfaceAltitude: 0.78, lat: 54, lng: -96 },
+  CN: { overviewAltitude: 1.18, surfaceAltitude: 0.64, lat: 34, lng: 104 },
+  FI: { overviewAltitude: 1.08, surfaceAltitude: 0.58, lat: 59, lng: 21 },
+  FR: { overviewAltitude: 1.06, surfaceAltitude: 0.56, lat: 50, lng: 10 },
+  GB: { overviewAltitude: 1.06, surfaceAltitude: 0.58, lat: 53, lng: -2 },
+  JP: { overviewAltitude: 1.06, surfaceAltitude: 0.56, lat: 35, lng: 139 },
+  KR: { overviewAltitude: 1.04, surfaceAltitude: 0.56, lat: 36, lng: 128 },
+  PL: { overviewAltitude: 1.04, surfaceAltitude: 0.56, lat: 52, lng: 17 },
+  SE: { overviewAltitude: 1.08, surfaceAltitude: 0.58, lat: 59, lng: 18 },
+  US: { overviewAltitude: 1.28, surfaceAltitude: 0.78, lat: 39, lng: -96 }
 };
 
 const country2DFocusOverrides: Record<

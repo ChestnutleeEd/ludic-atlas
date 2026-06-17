@@ -30,16 +30,17 @@ export function YearSlider({
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <label className="block text-sm text-emerald-300" htmlFor="year-min">
+        <label className="block text-sm text-[#F0B65A]" htmlFor="year-min">
           年份筛选
         </label>
-        <span className="text-xs text-emerald-50/60">
+        <span className="text-xs text-[#A99D8B]">
           {yearRange.min}-{yearRange.max}
         </span>
       </div>
-      <div className="mt-2 grid gap-3 border border-emerald-500/30 p-3 text-sm text-emerald-50/70">
+      <div className="atlas-control-box mt-2 grid gap-3 text-sm">
         <input
-          className="w-full accent-emerald-400"
+          aria-label="最小发行年份"
+          className="atlas-range-input w-full"
           id="year-min"
           max={maxYear}
           min={minYear}
@@ -49,7 +50,7 @@ export function YearSlider({
         />
         <input
           aria-label="最大发行年份"
-          className="w-full accent-emerald-400"
+          className="atlas-range-input w-full"
           max={maxYear}
           min={minYear}
           onChange={(event) => updateMax(Number(event.target.value))}

@@ -29,9 +29,11 @@ async function main() {
   const fetchMode = process.env.RAWG_FETCH_MODE?.trim().toLowerCase();
 
   if (fetchMode === "batch") {
+    const shouldMergeExisting = readEnvBoolean("RAWG_MERGE_EXISTING", false);
     const batchOptions = readBatchOptions();
     const recentOptions = readRecentOptions();
     const mainOptions = createMainPoolOptions(batchOptions, recentOptions);
+    const existingGames = shouldMergeExisting ? readExistingGeneratedGames() : [];
     const mainResult = await fetchRawgGamesBatch(apiKey, mainOptions);
     const recentResult = recentOptions.enabled
       ? await fetchRawgRecentGames(apiKey, recentOptions)
@@ -41,13 +43,24 @@ async function main() {
       recentResult.entries,
       batchOptions.maxGames
     );
-    const games = mergedEntries.map((entry) => entry.game);
+    const batchGames = mergedEntries.map((entry) => entry.game);
+    const mergeResult = shouldMergeExisting
+      ? mergeExistingGeneratedGames(existingGames, batchGames)
+      : {
+          games: batchGames,
+          existingLoaded: 0,
+          batchFetched: batchGames.length,
+          existingUpdated: 0,
+          newAppended: 0
+        };
+    const games = mergeResult.games;
 
     writeGeneratedGames(games, {
       mode: "batch",
       filters: batchOptions,
       mainFilters: mainOptions,
-      recent: recentOptions
+      recent: recentOptions,
+      ...(shouldMergeExisting ? { mergeExisting: true } : {})
     });
 
     logBatchSummary({
@@ -58,6 +71,9 @@ async function main() {
       recentResult,
       games
     });
+    if (shouldMergeExisting) {
+      logExistingMergeSummary(mergeResult);
+    }
     console.log(`Generated ${games.length} games at ${outputPath}`);
     return;
   }
@@ -812,6 +828,143 @@ function cleanDescription(description) {
   return String(description).replace(/\s+/g, " ").trim();
 }
 
+function readExistingGeneratedGames() {
+  if (!existsSync(outputPath)) {
+    return [];
+  }
+
+  const source = readFileSync(outputPath, "utf8");
+  const match = source.match(/export const generatedGames:\s*Game\[\]\s*=\s*(\[[\s\S]*\]);?\s*$/);
+
+  if (!match?.[1]) {
+    throw new Error(`Could not parse existing generatedGames array from ${outputPath}.`);
+  }
+
+  const games = JSON.parse(match[1]);
+
+  if (!Array.isArray(games)) {
+    throw new Error(`Existing generatedGames in ${outputPath} is not an array.`);
+  }
+
+  return games;
+}
+
+function mergeExistingGeneratedGames(existingGames, batchGames) {
+  const gamesById = new Map();
+  const batchGamesById = new Map();
+  let existingUpdated = 0;
+  let newAppended = 0;
+
+  for (const game of existingGames) {
+    if (!game?.id || gamesById.has(game.id)) {
+      continue;
+    }
+
+    gamesById.set(game.id, game);
+  }
+
+  for (const game of batchGames) {
+    if (!game?.id || batchGamesById.has(game.id)) {
+      continue;
+    }
+
+    batchGamesById.set(game.id, game);
+  }
+
+  const games = [...gamesById.values()].map((existingGame) => {
+    const batchGame = batchGamesById.get(existingGame.id);
+
+    if (!batchGame) {
+      return existingGame;
+    }
+
+    existingUpdated += 1;
+    return mergeGeneratedGameFields(existingGame, batchGame);
+  });
+
+  for (const batchGame of batchGamesById.values()) {
+    if (gamesById.has(batchGame.id)) {
+      continue;
+    }
+
+    games.push(batchGame);
+    newAppended += 1;
+  }
+
+  return {
+    games,
+    existingLoaded: existingGames.length,
+    batchFetched: batchGamesById.size,
+    existingUpdated,
+    newAppended
+  };
+}
+
+function mergeGeneratedGameFields(existingGame, batchGame) {
+  return {
+    ...existingGame,
+    ...batchGame,
+    titleZh: shouldKeepExistingTitleZh(existingGame) ? existingGame.titleZh : batchGame.titleZh,
+    countryCode: shouldKeepExistingCountryCode(existingGame)
+      ? existingGame.countryCode
+      : batchGame.countryCode,
+    countryName: shouldKeepExistingCountryName(existingGame)
+      ? existingGame.countryName
+      : batchGame.countryName,
+    developer: shouldKeepExistingNamedField(existingGame.developer)
+      ? existingGame.developer
+      : batchGame.developer,
+    publisher: shouldKeepExistingNamedField(existingGame.publisher)
+      ? existingGame.publisher
+      : batchGame.publisher,
+    coverImage: shouldKeepExistingCoverImage(existingGame.coverImage)
+      ? existingGame.coverImage
+      : batchGame.coverImage,
+    description: shouldKeepExistingDescription(existingGame.description)
+      ? existingGame.description
+      : batchGame.description
+  };
+}
+
+function shouldKeepExistingTitleZh(game) {
+  const titleZh = normalizeFieldValue(game.titleZh);
+  const title = normalizeFieldValue(game.title);
+
+  return Boolean(titleZh && titleZh !== title);
+}
+
+function shouldKeepExistingCountryCode(game) {
+  const countryCode = normalizeFieldValue(game.countryCode);
+
+  return Boolean(countryCode && countryCode !== "UNKNOWN");
+}
+
+function shouldKeepExistingCountryName(game) {
+  const countryName = normalizeFieldValue(game.countryName);
+
+  return Boolean(countryName && countryName !== "Global" && countryName !== "Unknown");
+}
+
+function shouldKeepExistingNamedField(value) {
+  const normalized = normalizeFieldValue(value);
+
+  return Boolean(normalized && normalized !== "Unknown");
+}
+
+function shouldKeepExistingCoverImage(value) {
+  return normalizeFieldValue(value).startsWith("/covers/rawg/");
+}
+
+function shouldKeepExistingDescription(value) {
+  const description = normalizeFieldValue(value);
+
+  return Boolean(description && !description.startsWith("RAWG API game record."));
+}
+
+function normalizeFieldValue(value) {
+  return String(value ?? "").trim();
+}
+
 function writeGeneratedGames(games, metadata = {}) {
   const comments = createGeneratedFileComments(metadata);
   const file = `import type { Game } from "@/types/game";
@@ -832,7 +985,8 @@ function createGeneratedFileComments(metadata) {
       "// fetch mode: batch",
       `// classic filters: ${formatClassicFilterParams(metadata.filters)}`,
       `// recent supplement: ${metadata.recent?.enabled ? "enabled" : "disabled"}`,
-      `// recent filters: ${formatRecentParams(metadata.recent)}`
+      `// recent filters: ${formatRecentParams(metadata.recent)}`,
+      ...(metadata.mergeExisting ? ["// merge existing generated data: enabled"] : [])
     ].join("\n");
   }
 
@@ -907,6 +1061,14 @@ function logBatchSummary({
       yearSummary.counts.get(2024) ?? 0
     }; 2025=${yearSummary.counts.get(2025) ?? 0}; 2026=${yearSummary.counts.get(2026) ?? 0}`
   );
+}
+
+function logExistingMergeSummary(mergeResult) {
+  console.log(`Existing games loaded: ${mergeResult.existingLoaded}`);
+  console.log(`New batch games fetched: ${mergeResult.batchFetched}`);
+  console.log(`Existing games updated: ${mergeResult.existingUpdated}`);
+  console.log(`New games appended: ${mergeResult.newAppended}`);
+  console.log(`Final merged games: ${mergeResult.games.length}`);
 }
 
 function summarizeYears(games) {

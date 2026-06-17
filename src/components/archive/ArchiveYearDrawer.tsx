@@ -49,8 +49,8 @@ export function ArchiveYearDrawer({
       <div className="chronicle-drawer-face">
         <span className="wood-drawer-handle" aria-hidden="true" />
         <div className="brass-plaque">
-          <span>Active Drawer</span>
-          <strong>{group.year ?? "Unknown Year"} 年馆藏</strong>
+          <span>ARCHIVE DOSSIER</span>
+          <strong>{group.year ?? "Unknown Year"} / 年度馆藏</strong>
         </div>
         <span className="chronicle-drawer-count">{group.games.length} 款游戏</span>
       </div>
@@ -89,7 +89,7 @@ function ArchiveDisplayCard({
       onClick={() => onSelectGame(game.id)}
       type="button"
     >
-      {isSelected ? <span className="archive-selected-chip">On Display</span> : null}
+      {isSelected ? <span className="archive-selected-chip">展陈中</span> : null}
       <span className="archive-cover-frame chronicle-card-cover">
         <span className="archive-cover-fallback">
           {getCoverFallbackLabel(title)}

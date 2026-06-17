@@ -34,6 +34,18 @@ export type Game = {
 
 export type ViewMode = "countries" | "games";
 
+export type CameraMode = "overview" | "surface";
+
+export type RegionId =
+  | "global"
+  | "europe"
+  | "eastAsia"
+  | "northAmerica"
+  | "latinAmerica"
+  | "middleEast"
+  | "southAsia"
+  | "oceania";
+
 export type YearRange = {
   min: number;
   max: number;

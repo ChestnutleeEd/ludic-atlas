@@ -267,11 +267,11 @@ export function GameArchiveView({
                   返回游戏星图
                 </button>
               <p className="archive-brass-label archive-kicker">
-                世界游戏文化档案
+                ARCHIVE INDEX / 世界游戏文化档案
               </p>
               <h1>Game Chronicle / 游戏编年馆</h1>
                 <p>
-                沿着年份档案柜，浏览世界游戏文化的关键作品。
+                以年份为索引，翻阅来自不同国家与地区的游戏文化馆藏。
                 </p>
               </div>
             <dl className="archive-metrics archive-hero-metrics">
@@ -297,7 +297,7 @@ export function GameArchiveView({
                 <h2>年代索引与馆藏标签</h2>
               </div>
               <p>
-                {archiveYearRange.min}-{archiveYearRange.max} · 使用标题、类型与平台收束展陈。
+                {archiveYearRange.min}-{archiveYearRange.max} · 标题、类型与平台共同定位馆藏条目。
               </p>
             </div>
 
@@ -369,11 +369,11 @@ export function GameArchiveView({
             <div className="chronicle-main-stage-heading">
               <div>
                 <p className="archive-brass-label archive-kicker">
-                  时光展柜
+                  CHRONICLE RECORD / 时光展柜
                 </p>
                 <h2>年份档案柜</h2>
               </div>
-              <p>向下浏览年代展陈，点击年份打开大型档案抽屉。</p>
+              <p>沿年代主轴浏览馆藏，点击年份打开该年度的游戏档案卷宗。</p>
             </div>
             <ArchiveTimeline
               activeYear={openGroup?.year ?? null}

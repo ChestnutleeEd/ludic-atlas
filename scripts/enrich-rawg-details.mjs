@@ -7,8 +7,8 @@ const gamesFilePath = resolve("src/data/games.generated.ts");
 const cacheFilePath = resolve("data/rawg-details-cache.json");
 const failuresFilePath = resolve("data/rawg-enrich-failures.json");
 const envLocalPath = resolve(".env.local");
-const concurrentLimit = 2;
-const requestTimeoutMs = 15000;
+const concurrentLimit = readPositiveIntegerEnv("RAWG_ENRICH_CONCURRENCY", 2);
+const requestTimeoutMs = readPositiveIntegerEnv("RAWG_ENRICH_TIMEOUT_MS", 15000);
 
 main().catch((error) => {
   console.error("RAWG enrich script failed.");
@@ -23,6 +23,7 @@ async function main() {
   const games = readGeneratedGames();
   const cache = loadCache();
   const force = process.env.RAWG_ENRICH_FORCE === "true";
+  const enrichLimit = readOptionalPositiveIntegerEnv("RAWG_ENRICH_LIMIT");
 
   const toEnrich = [];
   const skipCount = { alreadyEnriched: 0 };
@@ -35,9 +36,19 @@ async function main() {
     toEnrich.push(game);
   }
 
+  const toEnrichBeforeLimit = toEnrich.length;
+  const limitedToEnrich = enrichLimit == null ? toEnrich : toEnrich.slice(0, enrichLimit);
+
+  console.log(`RAWG_ENRICH_CONCURRENCY: ${concurrentLimit}`);
+  console.log(`RAWG_ENRICH_TIMEOUT_MS: ${requestTimeoutMs}`);
   console.log(`Total games: ${games.length}`);
   console.log(`Already enriched (skipped): ${skipCount.alreadyEnriched}`);
-  console.log(`To enrich: ${toEnrich.length}`);
+  if (enrichLimit != null) {
+    console.log(`RAWG_ENRICH_LIMIT: ${enrichLimit}`);
+    console.log(`To enrich before limit: ${toEnrichBeforeLimit}`);
+    console.log(`To enrich after limit: ${limitedToEnrich.length}`);
+  }
+  console.log(`To enrich: ${limitedToEnrich.length}`);
   if (force) console.log("RAWG_ENRICH_FORCE=true: re-fetching all games");
 
   const failures = [];
@@ -45,8 +56,8 @@ async function main() {
   let enrichedPub = 0;
 
   // Process with concurrency limit
-  for (let i = 0; i < toEnrich.length; i += concurrentLimit) {
-    const batch = toEnrich.slice(i, i + concurrentLimit);
+  for (let i = 0; i < limitedToEnrich.length; i += concurrentLimit) {
+    const batch = limitedToEnrich.slice(i, i + concurrentLimit);
     const results = await Promise.allSettled(
       batch.map((game) => enrichGame(game, apiKey, cache))
     );
@@ -65,9 +76,9 @@ async function main() {
       }
     }
 
-    const done = Math.min(i + concurrentLimit, toEnrich.length);
-    if (done % 10 === 0 || done === toEnrich.length) {
-      console.log(`  Progress: ${done}/${toEnrich.length}`);
+    const done = Math.min(i + concurrentLimit, limitedToEnrich.length);
+    if (done % 10 === 0 || done === limitedToEnrich.length) {
+      console.log(`  Progress: ${done}/${limitedToEnrich.length}`);
     }
   }
 
@@ -186,6 +197,24 @@ function loadCache() {
   } catch {
     return {};
   }
+}
+
+function readPositiveIntegerEnv(name, fallback) {
+  const value = Number.parseInt(process.env[name] ?? "", 10);
+
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function readOptionalPositiveIntegerEnv(name) {
+  const rawValue = process.env[name]?.trim();
+
+  if (!rawValue) {
+    return null;
+  }
+
+  const value = Number.parseInt(rawValue, 10);
+
+  return Number.isFinite(value) && value > 0 ? value : null;
 }
 
 function readRawgApiKey() {

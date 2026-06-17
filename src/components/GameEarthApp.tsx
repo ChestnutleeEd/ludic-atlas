@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { GameArchiveView } from "@/components/archive/GameArchiveView";
 import { BottomControls } from "@/components/controls/BottomControls";
 import { GameGlobe } from "@/components/globe/GameGlobe";
@@ -9,8 +9,21 @@ import { RightPanel } from "@/components/panels/RightPanel";
 import { countries } from "@/data/countries";
 import { games } from "@/data/games";
 import { filterGamesByCountry, filterGamesByYearRange } from "@/lib/filterGames";
+import {
+  filterCountriesByRegion,
+  filterGamesByRegion,
+  getRegionLabel,
+  isCountryInRegion
+} from "@/lib/regions";
 import { getTotalStats } from "@/lib/stats";
-import type { Country, Game, ViewMode, YearRange } from "@/types/game";
+import type {
+  CameraMode,
+  Country,
+  Game,
+  RegionId,
+  ViewMode,
+  YearRange
+} from "@/types/game";
 
 type MainViewMode = "hub" | "earth" | "archive";
 
@@ -28,6 +41,9 @@ export function GameEarthApp() {
   const [coverSize, setCoverSize] = useState(56);
   const [viewMode, setViewMode] = useState<ViewMode>("countries");
   const [mainViewMode, setMainViewMode] = useState<MainViewMode>("hub");
+  const [activeRegionId, setActiveRegionId] = useState<RegionId>("global");
+  const [cameraMode, setCameraMode] = useState<CameraMode>("overview");
+  const [isRotateEnabled, setIsRotateEnabled] = useState(false);
 
   const selectedCountry = useMemo<Country | null>(
     () => countries.find((country) => country.code === selectedCountryCode) ?? null,
@@ -37,28 +53,55 @@ export function GameEarthApp() {
     () => filterGamesByYearRange(games, yearRange),
     [yearRange]
   );
+  const regionCountries = useMemo(
+    () => filterCountriesByRegion(countries, activeRegionId),
+    [activeRegionId]
+  );
+  const regionFilteredGames = useMemo(
+    () => filterGamesByRegion(yearFilteredGames, countries, activeRegionId),
+    [activeRegionId, yearFilteredGames]
+  );
   const visibleGames = useMemo<Game[]>(() => {
     if (!selectedCountryCode) {
-      return yearFilteredGames;
+      return regionFilteredGames;
     }
 
-    return filterGamesByCountry(yearFilteredGames, selectedCountryCode);
-  }, [selectedCountryCode, yearFilteredGames]);
+    return filterGamesByCountry(regionFilteredGames, selectedCountryCode);
+  }, [regionFilteredGames, selectedCountryCode]);
   const selectedGame = selectedGameId
     ? games.find((game) => game.id === selectedGameId) ?? null
     : null;
 
-  function handleSelectCountry(countryCode: string) {
+  const handleSelectCountry = useCallback((countryCode: string) => {
     setSelectedCountryCode(countryCode);
     setSelectedGameId(null);
-  }
+  }, []);
 
-  function handleClearCountry() {
+  const handleRegionChange = useCallback((regionId: RegionId) => {
+    setActiveRegionId(regionId);
+    setHoveredGameId(null);
+    setSelectedGameId(null);
+    setSelectedCountryCode((currentCountryCode) => {
+      if (!currentCountryCode || regionId === "global") {
+        return currentCountryCode;
+      }
+
+      const currentCountry = countries.find(
+        (country) => country.code === currentCountryCode
+      );
+
+      return currentCountry && isCountryInRegion(currentCountry, regionId)
+        ? currentCountryCode
+        : null;
+    });
+  }, []);
+
+  const handleClearCountry = useCallback(() => {
     setSelectedCountryCode(null);
     setSelectedGameId(null);
-  }
+  }, []);
 
-  function handleSelectGameFromMap(gameId: string) {
+  const handleSelectGameFromMap = useCallback((gameId: string) => {
     const game = yearFilteredGames.find((item) => item.id === gameId);
 
     if (game) {
@@ -66,9 +109,9 @@ export function GameEarthApp() {
     }
 
     setSelectedGameId(gameId);
-  }
+  }, [yearFilteredGames]);
 
-  function handleYearRangeChange(nextRange: YearRange) {
+  const handleYearRangeChange = useCallback((nextRange: YearRange) => {
     setYearRange(nextRange);
     setSelectedGameId((currentGameId) => {
       if (
@@ -82,16 +125,16 @@ export function GameEarthApp() {
 
       return null;
     });
-  }
+  }, []);
 
   return (
     <main
-      className={`game-earth-shell min-h-screen overflow-x-hidden text-slate-100 ${
+      className={`game-earth-shell min-h-screen overflow-x-hidden ${
         mainViewMode === "archive" ? "p-0" : "px-5 py-5 md:px-8"
       }`}
     >
       <div className="deep-space-backdrop pointer-events-none fixed inset-0" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(245,250,255,0.08),transparent_28%),radial-gradient(circle_at_76%_16%,rgba(125,245,255,0.055),transparent_26%),radial-gradient(circle_at_52%_88%,rgba(245,250,255,0.045),transparent_34%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_42%_18%,rgba(217,154,50,0.08),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(196,122,36,0.055),transparent_24%),radial-gradient(circle_at_52%_90%,rgba(245,239,227,0.035),transparent_34%)]" />
       <div
         className={`relative z-10 mx-auto flex flex-col gap-4 ${
           mainViewMode === "archive"
@@ -112,40 +155,40 @@ export function GameEarthApp() {
         ) : (
           <>
         {mainViewMode === "earth" ? (
-        <header className="glass-panel relative overflow-hidden p-4">
-          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-cyan-200/80 to-transparent" />
+        <header className="glass-panel atlas-header relative overflow-hidden p-4">
+          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D99A32]/70 to-transparent" />
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <button
-                className="mb-3 border border-cyan-100/20 bg-black/42 px-3 py-2 text-xs text-cyan-50/70 transition hover:border-cyan-100/50 hover:text-cyan-50"
+                className="atlas-ghost-button mb-3"
                 onClick={() => setMainViewMode("hub")}
                 type="button"
               >
                 返回游戏星图
               </button>
-              <h1 className="text-3xl font-semibold tracking-normal text-sky-50 drop-shadow-[0_0_22px_rgba(0,240,255,0.42)] md:text-5xl">
+              <h1 className="text-3xl font-semibold tracking-normal text-[#F5EFE3] md:text-5xl">
                 Earth Explorer / 地球探索
               </h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-cyan-50/70">
-                在 3D 地球上按国家与地区探索全球代表性游戏。
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#A99D8B]">
+                以电影式地球镜头浏览不同国家与地区的代表性游戏。
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-sm md:w-[32rem]">
               <div className="stat-tile p-3">
-                <span className="block text-cyan-50/55">游戏</span>
-                <strong className="text-2xl text-cyan-100">
+                <span className="block text-[#A99D8B]">游戏</span>
+                <strong className="text-2xl text-[#F0B65A]">
                   {totalStats.totalGames}
                 </strong>
               </div>
               <div className="stat-tile p-3">
-                <span className="block text-cyan-50/55">国家 / 地区</span>
-                <strong className="text-2xl text-cyan-100">
+                <span className="block text-[#A99D8B]">国家 / 地区</span>
+                <strong className="text-2xl text-[#F0B65A]">
                   {totalStats.totalCountries}
                 </strong>
               </div>
               <div className="stat-tile p-3">
-                <span className="block text-cyan-50/55">当前可见</span>
-                <strong className="text-2xl text-cyan-100">
+                <span className="block text-[#A99D8B]">当前可见</span>
+                <strong className="text-2xl text-[#F0B65A]">
                   {visibleGames.length}
                 </strong>
               </div>
@@ -158,7 +201,10 @@ export function GameEarthApp() {
           <section className="grid flex-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
             <GameGlobe
               countries={countries}
-              games={yearFilteredGames}
+              games={regionFilteredGames}
+              activeRegionId={activeRegionId}
+              cameraMode={cameraMode}
+              isRotateEnabled={isRotateEnabled}
               selectedCountry={selectedCountry}
               selectedGameId={selectedGameId}
               hoveredGameId={hoveredGameId}
@@ -167,10 +213,12 @@ export function GameEarthApp() {
               onSelectCountry={handleSelectCountry}
               onSelectGame={handleSelectGameFromMap}
               onHoverGame={setHoveredGameId}
+              onRegionChange={handleRegionChange}
             />
             <RightPanel
-              countries={countries}
-              games={yearFilteredGames}
+              countries={regionCountries}
+              games={regionFilteredGames}
+              activeRegionId={activeRegionId}
               selectedCountry={selectedCountry}
               selectedCountryCode={selectedCountryCode}
               selectedGame={selectedGame}
@@ -197,12 +245,19 @@ export function GameEarthApp() {
             maxYear={totalStats.maxReleaseYear}
             coverSize={coverSize}
             viewMode={viewMode}
+            activeRegionLabel={getRegionLabel(activeRegionId)}
+            cameraMode={cameraMode}
+            countriesCount={regionCountries.length}
+            isRotateEnabled={isRotateEnabled}
+            totalGames={visibleGames.length}
             onYearRangeChange={handleYearRangeChange}
             onCoverSizeChange={setCoverSize}
+            onCameraModeChange={setCameraMode}
             onViewModeChange={setViewMode}
+            onRotateChange={setIsRotateEnabled}
           />
         ) : null}
-        <p className="px-1 text-[11px] leading-5 text-cyan-50/42">
+        <p className="px-1 text-[11px] leading-5 text-[#A99D8B]/60">
           游戏资料与封面图片可由 RAWG 本地生成数据提供；页面运行时不直接请求 RAWG API。
         </p>
           </>

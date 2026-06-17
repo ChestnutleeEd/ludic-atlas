@@ -91,7 +91,7 @@ async function main() {
   for (let i = 0; i < pairsToInfer.length; i += concurrentLimit) {
     const batch = pairsToInfer.slice(i, i + concurrentLimit);
     const results = await Promise.allSettled(
-      batch.map((pair) => inferCountry(pair, cache))
+      batch.map((pair) => inferCountry(pair))
     );
 
     for (let j = 0; j < batch.length; j += 1) {
@@ -206,7 +206,7 @@ async function main() {
   console.log(`games.generated.ts: NOT modified (dry-run)`);
 }
 
-async function inferCountry(pair, cache) {
+async function inferCountry(pair) {
   const { developer, publisher } = pair;
 
   const prompt = `You are a game industry expert. Given a game's developer and publisher, infer the country where the game was primarily developed.

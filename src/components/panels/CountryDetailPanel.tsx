@@ -24,6 +24,8 @@ type CountryDetailPanelProps = {
   onSelectGame: (gameId: string | null) => void;
 };
 
+const DETAIL_GAME_LIMIT = 9;
+
 export function CountryDetailPanel({
   country,
   games,
@@ -44,6 +46,17 @@ export function CountryDetailPanel({
   }
 
   const countryGames = filterGamesByCountry(games, country.code);
+  const displayedCountryGames = [...countryGames]
+    .sort((gameA, gameB) => {
+      const ratingDifference = gameB.rating - gameA.rating;
+
+      if (ratingDifference !== 0) {
+        return ratingDifference;
+      }
+
+      return gameB.releaseYear - gameA.releaseYear;
+    })
+    .slice(0, DETAIL_GAME_LIMIT);
   const stats = getCountryStats(country, games);
   const releaseYears = countryGames.map((game) => game.releaseYear);
   const countryYearRange =
@@ -108,7 +121,7 @@ export function CountryDetailPanel({
           </p>
         ) : (
           <div className="country-game-wall">
-            {countryGames.map((game) => {
+            {displayedCountryGames.map((game) => {
               const secondaryTitle = getGameSecondaryTitle(game);
               const isSelected = game.id === selectedGameId;
               const title = getGameDisplayTitle(game);
@@ -123,7 +136,7 @@ export function CountryDetailPanel({
                 >
                   <span className="country-game-cover">
                     <img
-                      alt=""
+                      alt={title}
                       loading="lazy"
                       onError={(event) => {
                         if (
@@ -136,8 +149,6 @@ export function CountryDetailPanel({
                       }}
                       src={coverImage}
                     />
-                    <span>{title}</span>
-                    <strong>{game.releaseYear}</strong>
                   </span>
                   <span className="country-game-card-copy">
                     <strong>{title}</strong>

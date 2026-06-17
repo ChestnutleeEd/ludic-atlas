@@ -2,8 +2,8 @@
 
 :root {
   color-scheme: dark;
-  background: #000000;
-  color: #f4f7f8;
+  background: #030303;
+  color: #f5efe3;
 }
 
 * {
@@ -18,10 +18,10 @@ body {
 
 body {
   background:
-    radial-gradient(circle at 50% 38%, rgba(245, 250, 255, 0.035), transparent 28%),
-    radial-gradient(circle at 76% 18%, rgba(115, 230, 255, 0.026), transparent 22%),
-    radial-gradient(circle, rgba(245, 250, 255, 0.22) 1px, transparent 1px),
-    #000000;
+    radial-gradient(circle at 42% 28%, rgba(217, 154, 50, 0.04), transparent 28%),
+    radial-gradient(circle at 78% 18%, rgba(196, 122, 36, 0.032), transparent 22%),
+    radial-gradient(circle, rgba(240, 182, 90, 0.16) 1px, transparent 1px),
+    #030303;
   background-size: auto, auto, 56px 56px, auto;
   font-family: "Inter", "Avenir Next", "PingFang SC", "Microsoft YaHei",
     system-ui, sans-serif;
@@ -34,14 +34,14 @@ select {
 }
 
 .game-earth-shell {
-  color: #f4f7f8;
+  color: #f5efe3;
 }
 
 .deep-space-backdrop {
   background:
-    linear-gradient(135deg, rgba(0, 0, 0, 1), rgba(5, 7, 8, 0.99) 44%, rgba(0, 0, 0, 1)),
-    radial-gradient(circle at 30% 24%, rgba(245, 250, 255, 0.035), transparent 30%),
-    radial-gradient(circle at 70% 18%, rgba(125, 245, 255, 0.026), transparent 28%);
+    linear-gradient(135deg, rgba(3, 3, 3, 1), rgba(11, 10, 8, 0.99) 44%, rgba(3, 3, 3, 1)),
+    radial-gradient(circle at 30% 24%, rgba(217, 154, 50, 0.04), transparent 30%),
+    radial-gradient(circle at 70% 18%, rgba(196, 122, 36, 0.03), transparent 28%);
 }
 
 .deep-space-backdrop::before {
@@ -838,7 +838,6 @@ select {
     radial-gradient(circle at 22% 13%, rgba(255, 255, 255, 0.28), transparent 22%),
     linear-gradient(145deg, rgba(245, 250, 255, 0.15), rgba(52, 76, 80, 0.28) 34%, rgba(8, 10, 11, 0.96) 75%, #000000);
   box-shadow: inset 0 1px 0 rgba(245, 250, 255, 0.1);
-  padding: 9px;
 }
 
 .country-game-cover {
@@ -857,53 +856,6 @@ select {
 .country-game-cover img[src$="fallback-game-cover.svg"],
 .game-detail-cover img[src$="fallback-game-cover.svg"] {
   object-fit: cover;
-}
-
-.country-game-cover::before,
-.game-detail-cover::before {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  content: "";
-  background:
-    linear-gradient(180deg, rgba(2, 6, 23, 0.03), rgba(2, 6, 23, 0.18) 36%, rgba(2, 6, 23, 0.92) 100%),
-    linear-gradient(90deg, transparent, rgba(207, 250, 254, 0.1), transparent),
-    repeating-linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.05) 0,
-      rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px,
-      transparent 8px
-    );
-}
-
-.country-game-cover span,
-.country-game-cover strong,
-.game-detail-cover span,
-.game-detail-cover strong {
-  position: relative;
-  z-index: 1;
-}
-
-.country-game-cover span,
-.game-detail-cover span {
-  display: -webkit-box;
-  overflow: hidden;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.15;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow-wrap: anywhere;
-}
-
-.country-game-cover strong,
-.game-detail-cover strong {
-  margin-top: 7px;
-  color: rgba(207, 250, 254, 0.82);
-  font-size: 11px;
-  line-height: 1;
 }
 
 .country-game-card-copy {
@@ -4896,23 +4848,6 @@ body .chronicle-modal-dossier {
   transform: rotate(-18deg);
 }
 
-.globe-game-rating-badge {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  z-index: 3;
-  border: 1px solid rgba(245, 250, 255, 0.48);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.66);
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.58);
-  padding: 3px 5px;
-  color: rgba(245, 250, 255, 0.92);
-  font-size: 8px;
-  font-weight: 700;
-  line-height: 1;
-  backdrop-filter: blur(8px);
-}
-
 .globe-game-cover-copy {
   position: relative;
   z-index: 2;
@@ -6865,5 +6800,1355 @@ body .chronicle-year-modal .archive-dossier-section {
     min-height: 0 !important;
     overflow: visible !important;
     overflow-y: visible !important;
+  }
+}
+
+/* Game Chronicle final archive direction: premium vintage museum dossier. */
+.archive-redesign {
+  --archive-obsidian: #050403;
+  --archive-obsidian-soft: rgba(8, 7, 6, 0.92);
+  --archive-brown: #24140c;
+  --archive-brown-soft: rgba(42, 24, 14, 0.86);
+  --archive-green: #172820;
+  --archive-burgundy: #35151a;
+  --archive-gold: #b99755;
+  --archive-gold-bright: #d7bd7a;
+  --archive-ivory: #efe3c4;
+  --archive-ivory-muted: rgba(239, 227, 196, 0.68);
+  --archive-paper-quiet: #cdbb8a;
+  --archive-paper-deep: #8e7042;
+  --archive-ink-deep: #21150c;
+  --archive-rule: rgba(215, 189, 122, 0.24);
+  --archive-rule-strong: rgba(215, 189, 122, 0.46);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(185, 151, 85, 0.16), transparent 26%),
+    radial-gradient(circle at 84% 28%, rgba(53, 21, 26, 0.28), transparent 30%),
+    linear-gradient(180deg, #0b0805 0%, #050403 52%, #020202 100%);
+  color: var(--archive-ivory);
+  font-variant-numeric: tabular-nums;
+}
+
+.archive-redesign .archive-cinematic-bg {
+  background:
+    linear-gradient(90deg, rgba(5, 4, 3, 0.92), rgba(5, 4, 3, 0.44) 45%, rgba(5, 4, 3, 0.78)),
+    linear-gradient(180deg, rgba(5, 4, 3, 0.16), rgba(5, 4, 3, 0.9)),
+    url("/images/archive/archive-hall-bg-v1.png");
+  opacity: 0.72;
+  filter: sepia(0.18) saturate(0.78) contrast(1.04);
+}
+
+.archive-redesign .archive-wood-wash {
+  background:
+    radial-gradient(circle at 24% 18%, rgba(215, 189, 122, 0.16), transparent 28%),
+    radial-gradient(circle at 76% 42%, rgba(65, 87, 61, 0.16), transparent 28%),
+    linear-gradient(180deg, transparent, rgba(5, 4, 3, 0.78) 78%);
+}
+
+.archive-redesign .archive-spotlight {
+  background:
+    radial-gradient(circle at 34% 16%, rgba(239, 227, 196, 0.16), transparent 19%),
+    radial-gradient(circle at 66% 58%, rgba(53, 21, 26, 0.28), transparent 30%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.42), transparent 48%, rgba(0, 0, 0, 0.38));
+  mix-blend-mode: screen;
+  opacity: 0.72;
+}
+
+.archive-redesign .archive-star-grid {
+  background-image:
+    url("/textures/archive-noise.svg"),
+    repeating-linear-gradient(0deg, rgba(239, 227, 196, 0.026) 0, rgba(239, 227, 196, 0.026) 1px, transparent 1px, transparent 22px),
+    repeating-linear-gradient(90deg, rgba(185, 151, 85, 0.024) 0, rgba(185, 151, 85, 0.024) 1px, transparent 1px, transparent 72px);
+  opacity: 0.16;
+}
+
+.archive-redesign .archive-layout {
+  width: min(100%, 1680px);
+  padding: clamp(18px, 3vw, 46px);
+}
+
+.archive-redesign .archive-hero-panel {
+  min-height: min(76vh, 760px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  border-bottom: 1px solid var(--archive-rule);
+}
+
+.archive-redesign .archive-hero-copy {
+  position: relative;
+  padding-left: clamp(0px, 2vw, 34px);
+}
+
+.archive-redesign .archive-hero-copy::before {
+  position: absolute;
+  top: 4px;
+  bottom: 8px;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--archive-gold), transparent);
+  content: "";
+  opacity: 0.74;
+}
+
+.archive-redesign .archive-hero-copy h1 {
+  max-width: 840px;
+  color: #f7e8bf;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(42px, 7vw, 104px);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.94;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.58), 0 0 34px rgba(185, 151, 85, 0.14);
+}
+
+.archive-redesign .archive-hero-copy p:not(.archive-kicker) {
+  max-width: 650px;
+  color: var(--archive-ivory-muted);
+  font-size: clamp(15px, 1.6vw, 20px);
+  line-height: 1.8;
+}
+
+.archive-redesign .archive-brass-label,
+body .chronicle-year-modal .archive-brass-label {
+  min-height: 28px;
+  border: 1px solid rgba(215, 189, 122, 0.38);
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, rgba(185, 151, 85, 0.17), rgba(65, 87, 61, 0.1)),
+    rgba(9, 7, 5, 0.68);
+  box-shadow: inset 0 1px 0 rgba(239, 227, 196, 0.1);
+  color: rgba(239, 227, 196, 0.86);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.archive-redesign .archive-back-button,
+.archive-redesign .archive-clear-button,
+body .chronicle-year-modal .chronicle-modal-close {
+  border-color: rgba(215, 189, 122, 0.42);
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(37, 24, 14, 0.94), rgba(12, 9, 6, 0.94)),
+    url("/textures/brass-noise.svg");
+  color: var(--archive-ivory);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.archive-redesign .archive-back-button:hover,
+.archive-redesign .archive-back-button:focus-visible,
+.archive-redesign .archive-clear-button:hover,
+.archive-redesign .archive-clear-button:focus-visible,
+body .chronicle-year-modal .chronicle-modal-close:hover,
+body .chronicle-year-modal .chronicle-modal-close:focus-visible {
+  border-color: rgba(239, 227, 196, 0.62);
+  box-shadow:
+    inset 0 1px 0 rgba(239, 227, 196, 0.12),
+    0 14px 34px rgba(0, 0, 0, 0.36),
+    0 0 0 1px rgba(185, 151, 85, 0.12);
+  transform: translateY(-1px);
+}
+
+.archive-redesign .archive-metrics div {
+  border: 1px solid var(--archive-rule);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, rgba(36, 20, 12, 0.86), rgba(8, 6, 4, 0.84)),
+    url("/textures/walnut-wood.svg");
+}
+
+.archive-redesign .archive-metrics dt {
+  color: rgba(239, 227, 196, 0.56);
+}
+
+.archive-redesign .archive-metrics dd {
+  color: var(--archive-gold-bright);
+}
+
+.archive-redesign .archive-index-dock,
+.archive-redesign .chronicle-main-stage {
+  border: 1px solid var(--archive-rule-strong);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(36, 20, 12, 0.9), rgba(7, 6, 5, 0.88)),
+    radial-gradient(circle at 100% 0%, rgba(65, 87, 61, 0.12), transparent 36%),
+    url("/textures/walnut-wood.svg");
+  background-size: auto, auto, 520px 358px;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(239, 227, 196, 0.08);
+}
+
+.archive-redesign .archive-index-dock {
+  top: 0;
+}
+
+.archive-redesign .archive-index-dock::before,
+.archive-redesign .chronicle-main-stage::before {
+  inset: 10px;
+  border: 1px solid rgba(215, 189, 122, 0.16);
+  background:
+    repeating-linear-gradient(90deg, rgba(239, 227, 196, 0.025) 0, rgba(239, 227, 196, 0.025) 1px, transparent 1px, transparent 64px);
+}
+
+.archive-redesign .archive-index-heading h2,
+.archive-redesign .chronicle-main-stage-heading h2,
+body .chronicle-year-modal .chronicle-modal-header h3,
+body .chronicle-year-modal .chronicle-year-exhibit-hero h4 {
+  color: #f6e4b8;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  letter-spacing: 0;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.62);
+}
+
+.archive-redesign .archive-index-heading p:not(.archive-kicker),
+.archive-redesign .chronicle-main-stage-heading p {
+  color: var(--archive-ivory-muted);
+}
+
+.archive-redesign .archive-field input,
+.archive-redesign .archive-field select {
+  border-color: rgba(215, 189, 122, 0.34);
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(207, 188, 139, 0.96), rgba(145, 112, 65, 0.96)),
+    url("/textures/archive-paper.svg");
+  color: var(--archive-ink-deep);
+  font-weight: 700;
+}
+
+.archive-redesign .archive-filter-panel {
+  border: 1px solid rgba(215, 189, 122, 0.2);
+  border-radius: 4px;
+  background:
+    linear-gradient(145deg, rgba(10, 8, 6, 0.72), rgba(23, 40, 32, 0.38)),
+    rgba(5, 4, 3, 0.68);
+}
+
+.archive-redesign .archive-filter-heading h3 {
+  color: #efdcae;
+}
+
+.archive-redesign .archive-tag-button {
+  border-color: rgba(88, 65, 32, 0.58);
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(205, 187, 138, 0.96), rgba(142, 112, 66, 0.96)),
+    url("/textures/archive-paper.svg");
+  color: var(--archive-ink-deep);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.archive-redesign .archive-tag-button:hover,
+.archive-redesign .archive-tag-button:focus-visible,
+.archive-redesign .archive-tag-button.is-active {
+  border-color: rgba(239, 227, 196, 0.7);
+  background:
+    linear-gradient(180deg, rgba(215, 189, 122, 0.98), rgba(114, 74, 42, 0.96)),
+    url("/textures/brass-noise.svg");
+  color: #140d07;
+  transform: translateY(-1px);
+}
+
+.archive-redesign .chronicle-story-line {
+  top: 32px;
+  bottom: 32px;
+  left: clamp(20px, 4vw, 58px);
+  width: 1px;
+  background:
+    linear-gradient(180deg, transparent, rgba(215, 189, 122, 0.86), rgba(65, 87, 61, 0.6), transparent);
+  box-shadow: 0 0 28px rgba(185, 151, 85, 0.18);
+}
+
+.archive-redesign .chronicle-story-track {
+  gap: clamp(18px, 2.4vw, 34px);
+}
+
+.archive-redesign .chronicle-year-node {
+  width: min(100%, 1180px);
+  min-height: 252px;
+  grid-template-columns: minmax(178px, 238px) minmax(230px, 1fr) minmax(250px, 420px);
+  gap: clamp(14px, 2vw, 26px);
+  align-items: stretch;
+  border: 1px solid rgba(215, 189, 122, 0.28);
+  border-radius: 5px;
+  background:
+    linear-gradient(135deg, rgba(46, 27, 16, 0.92), rgba(8, 6, 5, 0.94)),
+    radial-gradient(circle at 0% 0%, rgba(185, 151, 85, 0.12), transparent 34%),
+    url("/textures/walnut-wood.svg");
+  background-size: auto, auto, 460px 316px;
+  box-shadow:
+    inset 0 1px 0 rgba(239, 227, 196, 0.07),
+    0 20px 58px rgba(0, 0, 0, 0.32);
+  padding: clamp(16px, 2vw, 22px);
+  transition:
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.archive-redesign .chronicle-year-node:hover,
+.archive-redesign .chronicle-year-node:focus-visible,
+.archive-redesign .chronicle-year-node.is-active {
+  border-color: rgba(215, 189, 122, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(239, 227, 196, 0.12),
+    0 28px 72px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(215, 189, 122, 0.12);
+}
+
+.archive-redesign .chronicle-year-node::before {
+  inset: 9px;
+  border-radius: 2px;
+  border-color: rgba(239, 227, 196, 0.12);
+}
+
+.archive-redesign .chronicle-era-marker {
+  left: calc(clamp(34px, 7vw, 92px) * -1);
+  width: 16px;
+  height: 16px;
+  border-color: rgba(239, 227, 196, 0.78);
+  background:
+    radial-gradient(circle, #f0d798 0 28%, #b99755 30% 62%, #3b2514 64%);
+  box-shadow:
+    0 0 0 7px rgba(185, 151, 85, 0.12),
+    0 0 20px rgba(185, 151, 85, 0.22);
+}
+
+.archive-redesign .chronicle-index-number {
+  position: absolute;
+  right: 18px;
+  top: 16px;
+  z-index: 2;
+  color: rgba(239, 227, 196, 0.52);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.archive-redesign .chronicle-year-plaque {
+  border-radius: 3px;
+  background:
+    linear-gradient(145deg, rgba(213, 195, 147, 0.98), rgba(132, 98, 56, 0.96)),
+    url("/textures/brass-noise.svg");
+  color: var(--archive-ink-deep);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 250, 223, 0.22),
+    inset 0 -18px 36px rgba(58, 34, 14, 0.1);
+}
+
+.archive-redesign .chronicle-year-plaque span {
+  color: rgba(33, 21, 12, 0.66);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.archive-redesign .chronicle-year-plaque strong {
+  color: #1d1209;
+  font-size: clamp(50px, 5.2vw, 78px);
+}
+
+.archive-redesign .chronicle-year-summary {
+  border: 1px solid rgba(215, 189, 122, 0.2);
+  border-radius: 3px;
+  background:
+    linear-gradient(145deg, rgba(23, 40, 32, 0.72), rgba(7, 6, 5, 0.74)),
+    radial-gradient(circle at 100% 0%, rgba(53, 21, 26, 0.22), transparent 34%);
+  padding: clamp(14px, 1.8vw, 20px);
+}
+
+.archive-redesign .chronicle-year-summary small {
+  color: rgba(215, 189, 122, 0.78);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.archive-redesign .chronicle-year-summary strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #f3dfb2;
+  font-size: clamp(20px, 2.5vw, 32px);
+  line-height: 1.12;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.archive-redesign .chronicle-year-summary span {
+  overflow: hidden;
+  color: var(--archive-ivory-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-redesign .chronicle-year-count,
+.archive-redesign .chronicle-year-open-label {
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(15, 11, 7, 0.88), rgba(5, 4, 3, 0.86));
+  color: rgba(239, 227, 196, 0.84);
+}
+
+.archive-redesign .drawer-preview-stack {
+  grid-column: auto;
+  min-height: 204px;
+  border: 1px solid rgba(215, 189, 122, 0.16);
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(4, 3, 2, 0.42), rgba(0, 0, 0, 0.36)),
+    radial-gradient(circle at 50% 0%, rgba(215, 189, 122, 0.11), transparent 38%);
+  padding: 24px 16px 18px;
+}
+
+.archive-redesign .chronicle-thumb {
+  width: min(100%, 70px);
+  border-radius: 3px;
+  transform-origin: bottom center;
+  transition:
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.archive-redesign .chronicle-year-node:hover .chronicle-thumb,
+.archive-redesign .chronicle-year-node:focus-visible .chronicle-thumb,
+.archive-redesign .chronicle-year-node.is-active .chronicle-thumb {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.34);
+  transform: translateY(-3px);
+}
+
+body .chronicle-year-modal {
+  background:
+    radial-gradient(circle at 72% 24%, rgba(185, 151, 85, 0.15), transparent 30%),
+    radial-gradient(circle at 36% 54%, rgba(53, 21, 26, 0.22), transparent 36%),
+    rgba(0, 0, 0, 0.84);
+}
+
+body .chronicle-year-modal .chronicle-year-drawer-panel {
+  width: min(86vw, 1320px);
+  border-left: 1px solid rgba(215, 189, 122, 0.42);
+  background:
+    linear-gradient(135deg, rgba(34, 20, 12, 0.98), rgba(5, 4, 3, 0.99)),
+    radial-gradient(circle at 0% 0%, rgba(185, 151, 85, 0.13), transparent 34%),
+    url("/textures/walnut-wood.svg");
+  box-shadow:
+    -38px 0 120px rgba(0, 0, 0, 0.82),
+    inset 1px 0 0 rgba(239, 227, 196, 0.1);
+}
+
+body .chronicle-year-modal .chronicle-modal-header {
+  min-height: 116px;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  border-bottom: 1px solid rgba(215, 189, 122, 0.3);
+  background:
+    linear-gradient(135deg, rgba(36, 20, 12, 0.98), rgba(7, 6, 5, 0.98)),
+    linear-gradient(90deg, rgba(185, 151, 85, 0.12), transparent 54%, rgba(53, 21, 26, 0.18));
+}
+
+body .chronicle-year-modal .chronicle-modal-header h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: clamp(24px, 3.1vw, 44px);
+  line-height: 1.05;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+body .chronicle-year-modal .chronicle-modal-header .archive-brass-label,
+body .chronicle-year-modal .chronicle-modal-dossier > .archive-brass-label,
+body .chronicle-year-modal .archive-dossier-year-summary .archive-brass-label {
+  width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body .chronicle-year-modal .chronicle-modal-header .brass-drawer-handle {
+  border-radius: 3px;
+  border-color: rgba(215, 189, 122, 0.46);
+  background:
+    linear-gradient(135deg, rgba(185, 151, 85, 0.18), rgba(53, 21, 26, 0.12)),
+    rgba(8, 6, 4, 0.9);
+}
+
+body .chronicle-year-modal .chronicle-modal-count,
+body .chronicle-year-modal .chronicle-year-exhibit-stat {
+  border-color: rgba(215, 189, 122, 0.34);
+  border-radius: 3px;
+  background:
+    linear-gradient(145deg, rgba(205, 187, 138, 0.96), rgba(142, 112, 66, 0.96)),
+    url("/textures/archive-paper.svg");
+  color: var(--archive-ink-deep);
+}
+
+body .chronicle-year-modal .chronicle-modal-count span,
+body .chronicle-year-modal .chronicle-year-exhibit-stat span {
+  color: var(--archive-ink-deep);
+}
+
+body .chronicle-year-modal .chronicle-modal-body {
+  height: calc(100vh - 116px);
+  grid-template-columns: minmax(0, 1fr) minmax(336px, 410px);
+  gap: 18px;
+  padding: 18px;
+}
+
+body .chronicle-year-modal .chronicle-year-exhibit-hero {
+  grid-column: 1;
+  border: 1px solid rgba(215, 189, 122, 0.22);
+  border-radius: 5px;
+  background:
+    linear-gradient(145deg, rgba(23, 40, 32, 0.68), rgba(8, 6, 5, 0.76)),
+    radial-gradient(circle at 100% 0%, rgba(185, 151, 85, 0.12), transparent 34%);
+}
+
+body .chronicle-year-modal .chronicle-exhibition-grid {
+  grid-template-columns: repeat(auto-fill, minmax(198px, 1fr));
+  gap: 16px;
+  align-content: start;
+  border: 1px solid rgba(215, 189, 122, 0.18);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(9, 7, 5, 0.72), rgba(4, 3, 2, 0.7)),
+    repeating-linear-gradient(0deg, rgba(239, 227, 196, 0.02) 0, rgba(239, 227, 196, 0.02) 1px, transparent 1px, transparent 18px);
+}
+
+body .chronicle-year-modal .chronicle-display-card {
+  min-height: 508px;
+  grid-template-rows: 244px minmax(216px, 1fr);
+  border: 1px solid rgba(215, 189, 122, 0.2);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(24, 17, 11, 0.94), rgba(6, 5, 4, 0.96)),
+    radial-gradient(circle at 50% 0%, rgba(185, 151, 85, 0.1), transparent 36%);
+  box-shadow:
+    inset 0 1px 0 rgba(239, 227, 196, 0.07),
+    0 16px 40px rgba(0, 0, 0, 0.28);
+  transform-origin: center bottom;
+}
+
+body .chronicle-year-modal .chronicle-display-card:hover,
+body .chronicle-year-modal .chronicle-display-card:focus-visible {
+  border-color: rgba(215, 189, 122, 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(239, 227, 196, 0.11),
+    0 24px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(215, 189, 122, 0.12);
+}
+
+body .chronicle-year-modal .chronicle-display-card.is-selected {
+  border-color: rgba(239, 227, 196, 0.68);
+  background:
+    linear-gradient(180deg, rgba(37, 24, 14, 0.96), rgba(8, 6, 4, 0.98)),
+    radial-gradient(circle at 50% 0%, rgba(185, 151, 85, 0.17), transparent 36%);
+}
+
+body .chronicle-year-modal .chronicle-card-cover {
+  height: 244px;
+  border: 1px solid rgba(215, 189, 122, 0.22);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(185, 151, 85, 0.14), transparent 34%),
+    linear-gradient(145deg, rgba(23, 40, 32, 0.82), rgba(5, 4, 3, 0.96));
+}
+
+body .chronicle-year-modal .chronicle-card-label {
+  min-height: 216px;
+  border-color: rgba(215, 189, 122, 0.16);
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(205, 187, 138, 0.98), rgba(176, 146, 94, 0.96)),
+    url("/textures/archive-paper.svg");
+  color: var(--archive-ink-deep);
+}
+
+body .chronicle-year-modal .chronicle-card-label strong {
+  color: #1c1209;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+}
+
+body .chronicle-year-modal .chronicle-card-label em {
+  color: rgba(33, 21, 12, 0.62);
+}
+
+body .chronicle-year-modal .chronicle-card-meta span {
+  border-color: rgba(33, 21, 12, 0.18);
+  background: rgba(33, 21, 12, 0.08);
+  color: #2a1a0e;
+}
+
+body .chronicle-year-modal .chronicle-card-tags {
+  color: rgba(33, 21, 12, 0.72);
+}
+
+body .chronicle-year-modal .chronicle-card-tags small {
+  border-color: rgba(33, 21, 12, 0.18);
+  background: rgba(53, 21, 26, 0.08);
+  color: #4d2523;
+}
+
+body .chronicle-year-modal .archive-selected-chip {
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(245, 222, 153, 0.98), rgba(151, 109, 54, 0.96));
+  color: #170e07;
+}
+
+body .chronicle-year-modal .chronicle-modal-dossier {
+  max-height: calc(100vh - 154px);
+  border: 1px solid rgba(91, 62, 28, 0.36);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(226, 211, 173, 0.99), rgba(194, 174, 128, 0.98)),
+    radial-gradient(circle at 100% 0%, rgba(53, 21, 26, 0.08), transparent 34%),
+    url("/textures/archive-paper.svg");
+  color: var(--archive-ink-deep);
+}
+
+body .chronicle-year-modal .archive-dossier h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #21150c;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+body .chronicle-year-modal .archive-dossier-subtitle,
+body .chronicle-year-modal .archive-dossier-section div,
+body .chronicle-year-modal .archive-dossier-grid dd {
+  overflow-wrap: anywhere;
+}
+
+body .chronicle-year-modal .archive-dossier-cover {
+  aspect-ratio: 2 / 3;
+  border: 1px solid rgba(72, 49, 22, 0.36);
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(72, 49, 22, 0.14), transparent 34%),
+    rgba(33, 21, 12, 0.1);
+}
+
+body .chronicle-year-modal .archive-dossier-grid div,
+body .chronicle-year-modal .archive-dossier-section {
+  border-color: rgba(72, 49, 22, 0.16);
+  border-radius: 3px;
+  background: rgba(255, 249, 229, 0.18);
+}
+
+body .chronicle-year-modal .archive-dossier-grid dt,
+body .chronicle-year-modal .archive-dossier-section p {
+  color: rgba(65, 41, 18, 0.72);
+}
+
+body .chronicle-year-modal .archive-dossier-grid dd,
+body .chronicle-year-modal .archive-dossier-section div {
+  color: #21150c;
+}
+
+@media (max-width: 980px) {
+  .archive-redesign .archive-hero-panel {
+    min-height: 68vh;
+    grid-template-columns: 1fr;
+  }
+
+  .archive-redesign .archive-hero-copy::before {
+    display: none;
+  }
+
+  .archive-redesign .chronicle-year-node,
+  .archive-redesign .chronicle-year-node:nth-child(even) {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    margin-left: 34px;
+  }
+
+  .archive-redesign .drawer-preview-stack {
+    grid-column: 1;
+    min-height: 180px;
+  }
+
+  body .chronicle-year-modal .chronicle-year-drawer-panel {
+    width: 100vw;
+  }
+
+  body .chronicle-year-modal .chronicle-modal-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  body .chronicle-year-modal .chronicle-year-exhibit-hero,
+  body .chronicle-year-modal .chronicle-exhibition-grid,
+  body .chronicle-year-modal .chronicle-modal-dossier {
+    grid-column: 1;
+  }
+
+  body .chronicle-year-modal .chronicle-modal-dossier {
+    position: relative;
+    top: auto;
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .archive-redesign .archive-layout {
+    padding: 12px;
+  }
+
+  .archive-redesign .archive-hero-copy h1 {
+    font-size: clamp(38px, 14vw, 62px);
+  }
+
+  .archive-redesign .archive-index-dock {
+    position: relative;
+  }
+
+  .archive-redesign .archive-hero-metrics,
+  .archive-redesign .archive-terminal-controls,
+  .archive-redesign .archive-filter-grid,
+  body .chronicle-year-modal .chronicle-year-exhibit-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-redesign .chronicle-year-node,
+  .archive-redesign .chronicle-year-node:nth-child(even) {
+    margin-left: 26px;
+    padding: 14px;
+  }
+
+  .archive-redesign .chronicle-story-line {
+    left: 17px;
+  }
+
+  .archive-redesign .chronicle-year-plaque strong {
+    font-size: clamp(44px, 18vw, 68px);
+  }
+
+  .archive-redesign .drawer-preview-stack {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .archive-redesign .chronicle-year-count,
+  .archive-redesign .chronicle-year-open-label,
+  .archive-redesign .chronicle-index-number {
+    position: relative;
+    inset: auto;
+    justify-self: start;
+  }
+
+  body .chronicle-year-modal .chronicle-modal-header {
+    min-height: 104px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 14px;
+  }
+
+  body .chronicle-year-modal .chronicle-modal-body {
+    height: calc(100vh - 104px);
+    padding: 12px;
+  }
+
+  body .chronicle-year-modal .chronicle-exhibition-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  body .chronicle-year-modal .chronicle-display-card {
+    min-height: 468px;
+    grid-template-rows: 220px minmax(202px, 1fr);
+  }
+
+  body .chronicle-year-modal .chronicle-card-cover {
+    height: 220px;
+  }
+
+  body .chronicle-year-modal .chronicle-card-label {
+    min-height: 202px;
+  }
+}
+
+/* Earth Explorer black-gold cinematic atlas theme. */
+.game-earth-shell {
+  --atlas-bg: #030303;
+  --atlas-bg-soft: #0b0a08;
+  --atlas-panel: rgba(12, 10, 8, 0.72);
+  --atlas-line: rgba(217, 154, 50, 0.22);
+  --atlas-line-strong: rgba(217, 154, 50, 0.52);
+  --atlas-gold: #d99a32;
+  --atlas-gold-soft: #f0b65a;
+  --atlas-copper: #c47a24;
+  --atlas-muted-gold: #7a5a2a;
+  --atlas-text: #f5efe3;
+  --atlas-muted: #a99d8b;
+  color: var(--atlas-text);
+}
+
+.game-earth-shell .glass-panel {
+  border: 1px solid rgba(217, 154, 50, 0.13);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(12, 10, 8, 0.88), rgba(3, 3, 3, 0.82)),
+    radial-gradient(circle at 18% 0%, rgba(217, 154, 50, 0.08), transparent 30%);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.68),
+    inset 0 1px 0 rgba(245, 239, 227, 0.07);
+  backdrop-filter: blur(14px);
+}
+
+.game-earth-shell .stat-tile,
+.game-earth-shell .panel-surface,
+.game-earth-shell .panel-button {
+  border: 1px solid rgba(217, 154, 50, 0.12);
+  border-radius: 7px;
+  background: linear-gradient(135deg, rgba(18, 14, 10, 0.52), rgba(3, 3, 3, 0.42));
+  box-shadow: inset 0 1px 0 rgba(245, 239, 227, 0.06);
+}
+
+.atlas-ghost-button,
+.globe-view-button,
+.region-preset-group button,
+.atlas-segment-button,
+.country-detail-back,
+.game-detail-close {
+  border: 1px solid rgba(217, 154, 50, 0.24);
+  border-radius: 6px;
+  background: rgba(8, 7, 5, 0.74);
+  padding: 8px 10px;
+  color: rgba(245, 239, 227, 0.78);
+  font-size: 12px;
+  line-height: 1;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.atlas-ghost-button:hover,
+.atlas-ghost-button:focus-visible,
+.globe-view-button:hover,
+.globe-view-button:focus-visible,
+.region-preset-group button:hover,
+.region-preset-group button:focus-visible,
+.region-preset-group button.is-active,
+.atlas-segment-button:hover,
+.atlas-segment-button:focus-visible,
+.atlas-segment-button.is-active,
+.country-detail-back:hover,
+.country-detail-back:focus-visible,
+.game-detail-close:hover,
+.game-detail-close:focus-visible {
+  border-color: var(--atlas-line-strong);
+  background-color: rgba(217, 154, 50, 0.1);
+  color: var(--atlas-text);
+  transform: translateY(-1px);
+}
+
+.real-globe-stage {
+  border-color: rgba(217, 154, 50, 0.11);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 42% 48%, rgba(217, 154, 50, 0.052), transparent 40%),
+    radial-gradient(circle at 48% 50%, rgba(245, 239, 227, 0.02), transparent 54%),
+    #030303;
+  box-shadow:
+    inset 0 0 92px rgba(0, 0, 0, 0.82),
+    inset 0 1px 0 rgba(245, 239, 227, 0.05);
+  touch-action: manipulation;
+}
+
+.region-preset-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  flex-basis: 100%;
+  max-width: min(820px, 100%);
+  border: 1px solid rgba(217, 154, 50, 0.16);
+  border-radius: 8px;
+  background: rgba(3, 3, 3, 0.38);
+  padding: 4px;
+  backdrop-filter: blur(12px);
+}
+
+.region-preset-group button {
+  min-height: 28px;
+  border-color: transparent;
+  background: transparent;
+  padding-inline: 9px;
+  color: rgba(169, 157, 139, 0.92);
+  font-size: 11px;
+}
+
+.globe-country-tooltip,
+.globe-country-marker {
+  border-color: rgba(217, 154, 50, 0.34);
+  background: rgba(5, 5, 4, 0.9);
+  box-shadow:
+    0 0 22px rgba(217, 154, 50, 0.14),
+    inset 0 1px 0 rgba(245, 239, 227, 0.08);
+  color: var(--atlas-text);
+}
+
+.globe-country-marker.is-hovered,
+.globe-country-marker.is-selected,
+.globe-country-marker:hover,
+.globe-country-marker:focus-visible {
+  border-color: rgba(240, 182, 90, 0.8);
+  color: #fff7e8;
+}
+
+.globe-game-marker {
+  color: var(--atlas-text);
+}
+
+.globe-game-marker:hover,
+.globe-game-marker:focus-visible,
+.globe-game-marker.is-hovered,
+.globe-game-marker.is-selected {
+  filter: drop-shadow(0 0 16px rgba(217, 154, 50, 0.34));
+}
+
+.globe-game-marker.is-dot::before {
+  background: rgba(217, 154, 50, 0.09);
+  box-shadow: 0 0 18px rgba(217, 154, 50, 0.14);
+}
+
+.globe-game-dot-core {
+  border-color: rgba(240, 182, 90, 0.84);
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 247, 232, 0.92), rgba(240, 182, 90, 0.74) 36%, rgba(122, 90, 42, 0.82) 72%);
+  box-shadow:
+    0 0 10px rgba(217, 154, 50, 0.45),
+    0 0 26px rgba(196, 122, 36, 0.16);
+}
+
+.globe-game-cover {
+  overflow: hidden;
+  border-color: rgba(217, 154, 50, 0.34);
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 24% 16%, rgba(240, 182, 90, 0.18), transparent 24%),
+    linear-gradient(145deg, rgba(245, 239, 227, 0.1), rgba(58, 44, 24, 0.22) 34%, rgba(8, 7, 5, 0.96) 74%, rgba(0, 0, 0, 0.98));
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.72),
+    0 0 14px rgba(217, 154, 50, 0.08),
+    inset 0 1px 0 rgba(245, 239, 227, 0.1);
+}
+
+.globe-game-marker.is-country-selected .globe-game-cover,
+.globe-game-marker.is-selected .globe-game-cover {
+  border-color: rgba(240, 182, 90, 0.94);
+  box-shadow:
+    0 0 26px rgba(217, 154, 50, 0.26),
+    0 0 62px rgba(196, 122, 36, 0.12),
+    inset 0 0 16px rgba(240, 182, 90, 0.1);
+}
+
+.globe-game-cover::before {
+  background: linear-gradient(180deg, rgba(245, 239, 227, 0.08), transparent 22%, transparent 72%, rgba(5, 4, 3, 0.22));
+}
+
+.globe-game-cover-shine {
+  background: linear-gradient(90deg, transparent, rgba(240, 182, 90, 0.22), transparent);
+}
+
+.globe-game-cover-copy,
+.globe-game-cover-title,
+.globe-game-cover-subtitle,
+.globe-game-cover-meta {
+  display: none;
+}
+
+.globe-game-tooltip {
+  border-color: rgba(217, 154, 50, 0.36);
+  border-radius: 7px;
+  background: rgba(8, 7, 5, 0.94);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.68),
+    0 0 30px rgba(217, 154, 50, 0.16);
+  color: var(--atlas-text);
+}
+
+.globe-game-tooltip-title {
+  color: #fff7e8;
+}
+
+.globe-game-tooltip-secondary,
+.globe-game-tooltip-list {
+  color: rgba(169, 157, 139, 0.92);
+}
+
+.globe-game-tooltip-list dd {
+  color: #f0b65a;
+}
+
+.right-panel-shell {
+  border-color: var(--atlas-line);
+  background: var(--atlas-panel);
+  scrollbar-color: rgba(217, 154, 50, 0.44) rgba(8, 7, 5, 0.55);
+  scrollbar-width: thin;
+}
+
+.right-panel-shell::-webkit-scrollbar,
+.country-overview-panel ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.right-panel-shell::-webkit-scrollbar-thumb,
+.country-overview-panel ::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(217, 154, 50, 0.34);
+}
+
+.country-search-input {
+  border-color: rgba(217, 154, 50, 0.24);
+  border-radius: 6px;
+  background: rgba(5, 4, 3, 0.78);
+  color: var(--atlas-text);
+}
+
+.country-search-input::placeholder {
+  color: rgba(169, 157, 139, 0.62);
+}
+
+.country-search-input:focus,
+.country-search-input:focus-visible {
+  border-color: rgba(240, 182, 90, 0.74);
+  box-shadow:
+    0 0 0 1px rgba(217, 154, 50, 0.18),
+    0 0 22px rgba(217, 154, 50, 0.12),
+    inset 0 1px 0 rgba(245, 239, 227, 0.1);
+  outline: none;
+}
+
+.country-overview-row {
+  border-color: rgba(217, 154, 50, 0.16);
+  border-radius: 7px;
+  background: rgba(5, 4, 3, 0.68);
+  color: var(--atlas-text);
+}
+
+.country-overview-row:hover,
+.country-overview-row:focus-visible,
+.country-overview-row.is-selected {
+  border-color: rgba(240, 182, 90, 0.68);
+  background: rgba(17, 13, 8, 0.92);
+}
+
+.country-overview-row h3 {
+  color: #fff7e8;
+}
+
+.country-overview-row p,
+.country-overview-row dt {
+  color: rgba(169, 157, 139, 0.78);
+}
+
+.country-overview-row dd {
+  color: #f0b65a;
+}
+
+.country-count-bar {
+  display: block;
+  height: 3px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(122, 90, 42, 0.24);
+}
+
+.country-count-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(122, 90, 42, 0.9), rgba(240, 182, 90, 0.9));
+}
+
+.country-detail-shell,
+.game-detail-card {
+  border-color: rgba(217, 154, 50, 0.22);
+  background:
+    linear-gradient(180deg, rgba(12, 10, 8, 0.9), rgba(3, 3, 3, 0.82)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(217, 154, 50, 0.026) 0,
+      rgba(217, 154, 50, 0.026) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+}
+
+.country-detail-topbar > span,
+.game-detail-card-header div > span,
+.game-detail-meta dd span {
+  border-color: rgba(217, 154, 50, 0.28);
+  background: rgba(217, 154, 50, 0.07);
+  color: #f0b65a;
+}
+
+.country-detail-header {
+  border-color: rgba(217, 154, 50, 0.2);
+  background:
+    radial-gradient(circle at 14% 0%, rgba(217, 154, 50, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(18, 14, 10, 0.92), rgba(5, 4, 3, 0.78));
+}
+
+.country-detail-header p,
+.country-game-wall-heading p,
+.country-detail-stats dt,
+.game-detail-meta,
+.game-detail-description h4 {
+  color: rgba(169, 157, 139, 0.82);
+}
+
+.country-detail-header h2,
+.country-game-wall-heading h3,
+.country-game-card-copy strong,
+.game-detail-card-header h3 {
+  color: #fff7e8;
+}
+
+.country-detail-header span,
+.country-game-wall-heading span,
+.country-game-card-copy span,
+.country-detail-stats dd {
+  color: #f0b65a;
+}
+
+.country-detail-stats > div,
+.country-game-card,
+.country-detail-empty,
+.country-detail-game-dock > p {
+  border-color: rgba(217, 154, 50, 0.16);
+  background: rgba(5, 4, 3, 0.66);
+}
+
+.country-game-card {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.country-game-card:hover,
+.country-game-card:focus-visible,
+.country-game-card.is-selected {
+  border-color: rgba(240, 182, 90, 0.72);
+  background: rgba(17, 13, 8, 0.92);
+}
+
+.game-earth-shell .country-game-wall {
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.country-game-card-copy {
+  display: none;
+}
+
+.country-game-cover,
+.game-detail-cover {
+  aspect-ratio: 2 / 3;
+  min-height: 0;
+  border-color: rgba(217, 154, 50, 0.28);
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 22% 13%, rgba(240, 182, 90, 0.18), transparent 22%),
+    linear-gradient(145deg, rgba(245, 239, 227, 0.12), rgba(58, 44, 24, 0.28) 34%, rgba(8, 7, 5, 0.96) 75%, #000000);
+}
+
+.country-detail-game-dock {
+  border-top-color: rgba(217, 154, 50, 0.18);
+  background:
+    linear-gradient(180deg, rgba(3, 3, 3, 0.2), rgba(3, 3, 3, 0.94) 20%),
+    #030303;
+}
+
+.game-detail-layer {
+  overscroll-behavior: contain;
+  background:
+    linear-gradient(180deg, rgba(3, 3, 3, 0.64), rgba(3, 3, 3, 0.86)),
+    radial-gradient(circle at 50% 16%, rgba(217, 154, 50, 0.13), transparent 36%);
+}
+
+.game-detail-layer .game-detail-card {
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.74),
+    0 0 42px rgba(217, 154, 50, 0.14),
+    inset 0 1px 0 rgba(245, 239, 227, 0.1);
+}
+
+.game-detail-card-header p,
+.game-detail-description p {
+  color: rgba(245, 239, 227, 0.74);
+}
+
+.atlas-bottom-controls {
+  align-items: stretch;
+  font-variant-numeric: tabular-nums;
+}
+
+.atlas-control-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.atlas-control-stats div,
+.atlas-control-box,
+.atlas-toggle-control {
+  min-width: 0;
+  border: 1px solid rgba(217, 154, 50, 0.18);
+  border-radius: 7px;
+  background: rgba(5, 4, 3, 0.58);
+  padding: 10px;
+}
+
+.atlas-control-stats dt {
+  margin: 0;
+  color: rgba(169, 157, 139, 0.86);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.atlas-control-stats dd {
+  overflow: hidden;
+  margin: 8px 0 0;
+  color: #f0b65a;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atlas-range-input {
+  accent-color: var(--atlas-gold);
+}
+
+.atlas-toggle-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #f0b65a;
+  font-size: 13px;
+}
+
+.atlas-toggle-control input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--atlas-gold);
+}
+
+.atlas-segment-button {
+  min-height: 36px;
+  text-align: left;
+}
+
+.game-earth-shell input[type="range"] {
+  accent-color: var(--atlas-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-earth-shell *,
+  .game-earth-shell *::before,
+  .game-earth-shell *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .right-panel-shell {
+    position: fixed;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    z-index: 50;
+    max-height: min(42vh, 420px);
+    min-height: 220px;
+    overflow-y: auto;
+    border-radius: 8px;
+  }
+
+  .atlas-globe-panel {
+    min-height: calc(100vh - 220px);
+  }
+
+  .real-globe-stage {
+    min-height: 58vh;
+  }
+
+  .region-preset-group {
+    max-height: 84px;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .game-earth-shell {
+    padding: 12px !important;
+  }
+
+  .atlas-header h1 {
+    font-size: 30px;
+    line-height: 1;
+  }
+
+  .atlas-header {
+    padding: 14px !important;
+  }
+
+  .atlas-header p {
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .atlas-header .grid.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .atlas-header .stat-tile {
+    padding: 8px !important;
+  }
+
+  .atlas-header .stat-tile span {
+    font-size: 11px;
+  }
+
+  .atlas-header .stat-tile strong {
+    font-size: 20px;
+  }
+
+  .atlas-globe-panel .grid.md\:grid-cols-\[1fr_auto\] {
+    display: none;
+  }
+
+  .atlas-globe-panel {
+    min-height: 64vh;
+  }
+
+  .atlas-globe-panel > .relative {
+    min-height: 64vh;
+    padding: 10px !important;
+  }
+
+  .country-game-wall {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .country-detail-shell {
+    min-height: 0;
+  }
+
+  .atlas-control-stats {
+    grid-template-columns: 1fr;
   }
 }

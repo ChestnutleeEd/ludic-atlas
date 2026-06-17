@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { CountryPanel } from "@/components/panels/CountryPanel";
 import { CountryDetailPanel } from "@/components/panels/CountryDetailPanel";
 import { GameDetailCard } from "@/components/panels/GameDetailCard";
-import { GlobalGameGallery } from "@/components/panels/GlobalGameGallery";
+import { getRegionLabel } from "@/lib/regions";
+import type { RegionId } from "@/types/game";
 import type { Country, Game, YearRange } from "@/types/game";
 
 type RightPanelProps = {
   countries: Country[];
   games: Game[];
+  activeRegionId: RegionId;
   selectedCountry: Country | null;
   selectedCountryCode: string | null;
   selectedGame: Game | null;
@@ -23,6 +25,7 @@ type RightPanelProps = {
 export function RightPanel({
   countries,
   games,
+  activeRegionId,
   selectedCountry,
   selectedCountryCode,
   selectedGame,
@@ -75,16 +78,10 @@ export function RightPanel({
             <CountryPanel
               countries={countries}
               games={games}
+              activeRegionLabel={getRegionLabel(activeRegionId)}
               selectedCountryCode={selectedCountryCode}
               onSelectCountry={onSelectCountry}
             />
-            {games.length > 0 ? (
-              <GlobalGameGallery
-                games={games}
-                selectedGameId={selectedGameId}
-                onSelectGame={onSelectGame}
-              />
-            ) : null}
           </>
         )}
       </div>

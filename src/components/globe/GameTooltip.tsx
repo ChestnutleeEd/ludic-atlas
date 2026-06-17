@@ -31,6 +31,8 @@ export function GameTooltip({ game }: GameTooltipProps) {
         <dd className="text-sky-100">{game.releaseYear}</dd>
         <dt>评分</dt>
         <dd className="text-sky-100">{game.rating.toFixed(1)}</dd>
+        <dt>国家</dt>
+        <dd className="text-sky-100">{game.countryName}</dd>
         <dt>类型</dt>
         <dd className="text-sky-100">{getGenreListLabel(game.genres)}</dd>
       </dl>
@@ -54,6 +56,8 @@ export function getGameTooltipMarkup(game: Game) {
         <dd>${game.releaseYear}</dd>
         <dt>评分</dt>
         <dd>${game.rating.toFixed(1)}</dd>
+        <dt>国家</dt>
+        <dd>${escapeHtml(game.countryName)}</dd>
         <dt>类型</dt>
         <dd>${escapeHtml(getGenreListLabel(game.genres))}</dd>
       </dl>

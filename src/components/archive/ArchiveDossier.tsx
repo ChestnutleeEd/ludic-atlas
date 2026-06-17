@@ -43,6 +43,10 @@ function getTopValues(values: string[], limit = 4) {
     .map(([value]) => value);
 }
 
+function getDossierCode(year: number | null, gameId?: string) {
+  return `GE-CHR-${year ?? "UNKN"}-${gameId ?? "YEAR"}`;
+}
+
 export function ArchiveDossier({
   group,
   selectedGame
@@ -86,7 +90,9 @@ export function ArchiveDossier({
         topGenres={topGenres}
         topPlatforms={topPlatforms}
       />
-      <p className="archive-brass-label archive-kicker">游戏档案卡</p>
+      <p className="archive-brass-label archive-kicker">
+        {getDossierCode(group.year, selectedGame.id)}
+      </p>
       <div className="archive-dossier-cover">
         <span className="archive-cover-fallback">
           {getCoverFallbackLabel(title)}
@@ -109,7 +115,7 @@ export function ArchiveDossier({
       <dl className="archive-dossier-grid">
         <div>
           <dt>馆藏编号</dt>
-          <dd>{selectedGame.id}</dd>
+          <dd>{getDossierCode(group.year, selectedGame.id)}</dd>
         </div>
         <div>
           <dt>发行年份</dt>

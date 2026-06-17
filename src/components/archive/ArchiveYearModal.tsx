@@ -36,6 +36,10 @@ function getCoverFallbackLabel(title: string) {
   return title.trim().charAt(0).toUpperCase() || "No Cover";
 }
 
+function getDossierCode(year: number | null) {
+  return `GE-CHR-${year ?? "UNKN"}-DOSSIER`;
+}
+
 export function ArchiveYearModal({
   group,
   selectedGameId,
@@ -98,9 +102,11 @@ export function ArchiveYearModal({
         <header className="chronicle-modal-header">
           <span className="brass-drawer-handle" aria-hidden="true" />
           <div>
-            <p className="archive-brass-label archive-kicker">年份档案抽屉</p>
+            <p className="archive-brass-label archive-kicker">
+              {getDossierCode(group.year)}
+            </p>
             <h3>
-              {group.year ?? "Unknown Year"} 年馆藏
+              {group.year ?? "Unknown Year"} / ARCHIVE DOSSIER
             </h3>
           </div>
           <div className="chronicle-modal-count">
@@ -121,9 +127,9 @@ export function ArchiveYearModal({
           <section className="chronicle-year-exhibit-hero">
             <div>
               <p className="archive-brass-label archive-kicker">年度展陈</p>
-              <h4>{group.year ?? "Unknown Year"} · 时光展柜</h4>
+              <h4>{group.year ?? "Unknown Year"} 年度馆藏目录</h4>
               <p>
-                默认聚焦该年份评分最高的馆藏作品。选择封面卡片可切换右侧游戏档案。
+                默认聚焦该年份评分最高的馆藏作品。选择索引卡可切换右侧游戏档案。
               </p>
             </div>
             <div className="chronicle-year-exhibit-stat">

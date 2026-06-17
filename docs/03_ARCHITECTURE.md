@@ -69,6 +69,7 @@ src/
 │  ├─ filterGames.ts
 │  ├─ stats.ts
 │  ├─ geo.ts
+│  ├─ regions.ts
 │  └─ search.ts
 ├─ types/
 │  └─ game.ts
@@ -128,6 +129,7 @@ src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
 src/lib/stats.ts	Pure statistics functions.
 src/lib/geo.ts	Geographic coordinate and marker position helpers.
+src/lib/regions.ts	Broad atlas region mapping, labels, game / country region filters, and cinematic camera presets.
 src/lib/gameCover.ts	Normalizes game cover fields and provides the shared fallback cover image path.
 src/types/game.ts	Shared TypeScript types.
 
@@ -145,6 +147,8 @@ Top-level state should include:
 * `yearRange`
 * `coverSize`
 * `viewMode`
+* `activeRegionId`
+* `cameraMode` (`overview` or `surface`)
 * `mainViewMode` (`hub`, `earth`, or `archive`)
 * auto rotate enabled or disabled
 
@@ -188,32 +192,35 @@ Legacy 2.5D globe behavior:
 Current 3D globe behavior:
 
 * `GameGlobe` dynamically imports `react-globe.gl` with SSR disabled because the WebGL globe depends on browser APIs.
-* Three.js `MeshPhongMaterial` provides a near-black globe surface, while `react-globe.gl` provides orbit controls, zoom, drag rotation, polygon layers, point layers, and HTML marker layers.
+* Three.js `MeshPhongMaterial` provides a near-black warm globe surface, while `react-globe.gl` provides orbit controls, zoom, drag rotation, polygon layers, point layers, and HTML marker layers.
+* `src/lib/regions.ts` owns broad Earth Explorer regions, `CAMERA_MODE_CONFIGS`, two-mode `CAMERA_PRESETS`, region labels, and pure helpers for deriving region-scoped country and game lists from existing source data.
 * `public/data/countries.geojson` stores the full source country border data copied from `https://github.com/datasets/geo-countries`.
 * `public/data/world-countries-lite.geojson` stores a simplified runtime world country outline dataset generated from the full source file. `GameGlobe` loads this file for the 3D base layer so all world country outlines are visible without loading the 14 MB source GeoJSON.
 * `public/data/mock-countries.geojson` stores the simplified MVP country border data for the current 10 mock countries and remains available to the 2.5D fallback mode.
 * `CountryLayer` converts the lightweight world GeoJSON feature collection and local mock country list into globe polygon props and point-cloud props. It handles all-country border color, selected / hovered country elevation, polygon hover, polygon click, mock-country dot-matrix points, and country point hover / click.
 * `src/lib/geo.ts` maps GeoJSON `ISO3166-1-Alpha-2` values to project country codes, with Alpha-3 / name fallback keys for non-mock countries and a small name fallback for records like France where this GeoJSON source uses `-99`.
-* `src/lib/geo.ts` also owns globe camera view helpers: a global point of view and per-country focus points for Europe, East Asia, North America, and other mock regions.
+* `src/lib/geo.ts` owns per-country focus points and deterministic country marker distribution. Broad Global / Europe / East Asia / North America / Latin America / Middle East / South Asia / Oceania camera presets live in `src/lib/regions.ts` with both Overview and Surface altitude values.
 * `src/lib/geo.ts` samples a controlled dot matrix inside the 10 mock country polygons. The 3D globe uses those points to make mock countries easier to spot without turning all game data into heavy HTML markers.
-* `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as non-interactive HTML labels only when a mock country is hovered or selected. With no selected country, the globe shows one representative cover marker per mock country; after country selection, it shows up to 12 top-rated current-year game markers for that country.
+* `GameGlobe` supports Overview and Surface camera modes. Overview uses higher altitude and wider zoom limits for global / region browsing. Surface uses lower altitude, lower rotate / zoom speed, disabled pan, and tighter OrbitControls distance limits to keep the camera close to a local earth surface view without letting the globe drift out of the container.
+* `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as non-interactive HTML labels only when a mock country is hovered or selected. Global mode shows one representative cover marker per country with games; region mode shows up to 6 top games per country in that region; after country selection, it shows up to 12 top-rated current-year game markers for that country.
+* Same-country game markers use deterministic sunflower / lane coordinates from `getDistributedGlobeCoordinates`. Large countries such as US, CA, CN, RU, AU, BR, and IN receive larger bounded spread profiles, while narrow countries such as JP, GB, IT, KR, and SE use tighter or rotated lane profiles so markers spread along the country's rough geographic shape.
 * Game cover lookup is centralized in `src/lib/gameCover.ts`. Earth markers and country detail cards prefer real RAWG / local cover paths and fall back to `public/covers/fallback-game-cover.svg` when a cover field is missing or an image load fails.
 * Earth cover markers keep the cover image clear. They do not render title / year text on top of the image; full game metadata is available through marker tooltip and the right panel game detail layer.
 * Marker size responds to `coverSize`; view mode changes marker presentation while keeping the same local mock data source.
 * `GameTooltip` still provides the React tooltip component for reusable UI and now also provides escaped HTML tooltip markup for globe HTML markers.
-* `src/app/globals.css` provides the black / white sci-fi visual system, globe stage styling, country tooltip styling, dot / border styling, and globe HTML marker styling.
+* `src/app/globals.css` provides the black-gold cinematic atlas visual system, globe stage styling, country tooltip styling, dot / border styling, panel styling, bottom drawer mobile behavior, and globe HTML marker styling.
 
 Real 3D Globe performance strategy:
 
-* Automatic rotation is disabled. The globe should rotate only from user drag / zoom interaction.
-* Initial and selected-country camera views use closer `pointOfView` altitude values so the globe fills the central stage and country selection focuses on the relevant geographic region.
-* Orbit controls allow deeper zoom than the first Real 3D Globe implementation, while still retaining a global zoom-out range.
+* Automatic rotation is disabled by default and exposed as a rotate toggle in `BottomControls`.
+* Initial, region, and selected-country camera views use `pointOfView` with closer cinematic altitude values so the globe fills / clips the central stage and country selection focuses on the relevant geographic region.
+* Orbit controls disable pan, enable damping, and constrain zoom distance so manual dragging cannot easily push the earth out of the viewport.
 * Runtime country borders use `public/data/world-countries-lite.geojson`, not the full 14MB source GeoJSON. The lightweight file is about 1.1 MB and contains simplified world country / region outlines.
 * The WebGL renderer pixel ratio is capped at 1.25 and antialiasing is disabled through `rendererConfig` to keep drag and zoom responsive on high-DPI screens.
 * Polygon altitude, opacity, curvature resolution, and transition duration are kept low to reduce hover and drag overhead. Hover / selected states brighten only the matching country dots and border; ocean / blank hover does not recolor the globe.
-* Atmosphere and graticules are disabled in the current MVP to prioritize interaction smoothness.
+* A restrained warm atmosphere is enabled for the black-gold atlas style; graticules remain disabled to prioritize interaction smoothness.
 * Globe HTML country labels are disabled by default. They appear only for hovered / selected mock countries and are hidden during drag / zoom.
-* With no selected country, `GameGlobe` shows only one representative game marker per mock country. After a country is selected, the globe shows only that country's top-rated current-year game markers, capped at 12, and hides other countries' games.
+* Global mode shows only one representative game marker per country with games. Region mode shows more local context, capped at 6 games per country. After a country is selected, the globe shows only that country's top-rated current-year game markers, capped at 12, and hides other countries' games.
 * Marker positions use a deterministic country-center distribution helper in `src/lib/geo.ts`. The helper uses a golden-angle spiral, a stable hash from `countryCode + gameId`, and country-specific latitude / longitude spread profiles so large countries such as the United States, Canada, China, Brazil, Australia, and Russia can spread wider while smaller or narrow countries stay tighter.
 * During drag / zoom interaction, `GameGlobe` hides country labels and downgrades cover-card markers into lightweight dots, then restores the needed card / label layer about 200ms after interaction ends.
 * Polygon hover uses per-feature country keys. Ocean / blank hover clears the hovered country state instead of applying a broad globe highlight. Non-mock country clicks only highlight the globe polygon; mock country clicks still update the right panel.

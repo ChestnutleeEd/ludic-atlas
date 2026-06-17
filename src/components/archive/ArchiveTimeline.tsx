@@ -59,6 +59,16 @@ function getAverageRating(games: Game[]) {
   ).toFixed(1);
 }
 
+function getFeaturedGame(games: Game[]) {
+  return [...games].sort(
+    (a, b) => b.rating - a.rating || b.releaseYear - a.releaseYear
+  )[0];
+}
+
+function getArchiveNumber(year: number | null, index: number) {
+  return `GE-CHR-${year ?? "UNKN"}-${String(index + 1).padStart(3, "0")}`;
+}
+
 export function ArchiveTimeline({
   activeYear,
   groups,
@@ -79,10 +89,11 @@ export function ArchiveTimeline({
     >
       <div className="chronicle-story-line" aria-hidden="true" />
       <div className="chronicle-year-track chronicle-story-track">
-        {groups.map((group) => {
+        {groups.map((group, index) => {
           const isActive = group.year === activeYear;
           const topGenre = getTopGenreLabel(group.games);
           const averageRating = getAverageRating(group.games);
+          const featuredGame = getFeaturedGame(group.games);
 
           return (
             <motion.button
@@ -98,13 +109,19 @@ export function ArchiveTimeline({
               type="button"
             >
               <span className="chronicle-era-marker" aria-hidden="true" />
+              <span className="chronicle-index-number">
+                {getArchiveNumber(group.year, index)}
+              </span>
               <span className="chronicle-year-plaque">
-                <span>年份档案柜</span>
+                <span>ARCHIVE INDEX / 年份档案</span>
                 <strong>{group.year ?? "Unknown"}</strong>
               </span>
               <span className="chronicle-year-summary">
-                <strong>{topGenre}</strong>
-                <span>平均评分 {averageRating}</span>
+                <small>CURATED ENTRY</small>
+                <strong title={featuredGame?.titleZh || featuredGame?.title}>
+                  {featuredGame?.titleZh || featuredGame?.title || topGenre}
+                </strong>
+                <span>{topGenre} · 平均评分 {averageRating}</span>
               </span>
               <span className="chronicle-year-count">
                 {group.games.length} 份馆藏记录

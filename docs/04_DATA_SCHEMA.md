@@ -58,11 +58,42 @@ File: `src/types/game.ts`
 ```ts
 export type ViewMode = "countries" | "games";
 
+export type CameraMode = "overview" | "surface";
+
+export type RegionId =
+  | "global"
+  | "europe"
+  | "eastAsia"
+  | "northAmerica"
+  | "latinAmerica"
+  | "middleEast"
+  | "southAsia"
+  | "oceania";
+
 export type YearRange = {
   min: number;
   max: number;
 };
 ```
+
+## Region / Camera Config
+
+File: `src/lib/regions.ts`
+
+Earth Explorer keeps broad atlas regions as a UI-level mapping layer instead of changing the source `Country.region` data. `RegionId` drives camera presets, country list filtering, game marker filtering, and bottom-control region labels.
+
+Current broad regions:
+
+- `global`
+- `europe`
+- `eastAsia`
+- `northAmerica`
+- `latinAmerica`
+- `middleEast`
+- `southAsia`
+- `oceania`
+
+`CAMERA_MODE_CONFIGS` stores Overview / Surface camera constraints, including default altitude, zoom distance limits, rotate speed, and zoom speed. `CAMERA_PRESETS` stores each region's `{ lat, lng, altitude: { overview, surface } }` values, and `getRegionPointOfView(regionId, cameraMode)` is used by `GameGlobe` through `globeRef.current.pointOfView(...)`.
 
 ## Derived Statistics Types
 
@@ -161,6 +192,12 @@ RAWG cover cache command:
 
 ```bash
 npm run data:covers
+```
+
+RAWG cover compression command:
+
+```bash
+npm run data:covers:compress
 ```
 
 Batch generation mode:

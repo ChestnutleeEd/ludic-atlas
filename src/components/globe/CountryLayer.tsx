@@ -10,6 +10,7 @@ import type { Country } from "@/types/game";
 import type { GlobeProps } from "react-globe.gl";
 
 type CountryLayerOptions = {
+  activeRegionCountryCodes: Set<string>;
   countries: Country[];
   countryDots: CountryDotPoint[];
   countryFeatures: CountryGeoJsonFeature[];
@@ -21,6 +22,7 @@ type CountryLayerOptions = {
 };
 
 export function getCountryLayerProps({
+  activeRegionCountryCodes,
   countries,
   countryDots,
   countryFeatures,
@@ -70,16 +72,16 @@ export function getCountryLayerProps({
       const countryCode = (point as CountryDotPoint).countryCode;
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(245, 250, 255, 0.96)";
+        return "rgba(240, 182, 90, 0.96)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(190, 245, 255, 0.86)";
+        return "rgba(217, 154, 50, 0.86)";
       }
 
       return gameCountryCodes.has(countryCode)
-        ? "rgba(190, 245, 255, 0.42)"
-        : "rgba(220, 225, 230, 0.28)";
+        ? "rgba(217, 154, 50, 0.38)"
+        : "rgba(169, 157, 139, 0.22)";
     },
     pointLabel: (point) => {
       const country = countryByCode.get((point as CountryDotPoint).countryCode);
@@ -136,18 +138,20 @@ export function getCountryLayerProps({
       const countryCode = getFeatureKey(feature);
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(245, 250, 255, 0.052)";
+        return "rgba(217, 154, 50, 0.048)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(190, 245, 255, 0.045)";
+        return "rgba(240, 182, 90, 0.044)";
       }
 
       if (countryCode && gameCountryCodes.has(countryCode)) {
-        return "rgba(230, 236, 242, 0.016)";
+        return activeRegionCountryCodes.has(countryCode)
+          ? "rgba(122, 90, 42, 0.024)"
+          : "rgba(58, 44, 24, 0.012)";
       }
 
-      return "rgba(230, 236, 242, 0.006)";
+      return "rgba(42, 36, 24, 0.006)";
     },
     polygonGeoJsonGeometry: (polygon) =>
       (polygon as CountryGeoJsonFeature).geometry as never,
@@ -161,24 +165,26 @@ export function getCountryLayerProps({
 
       return label ? `<div class="globe-country-tooltip">${label}</div>` : "";
     },
-    polygonSideColor: () => "rgba(245, 250, 255, 0.004)",
+    polygonSideColor: () => "rgba(217, 154, 50, 0.006)",
     polygonStrokeColor: (polygon) => {
       const feature = polygon as CountryGeoJsonFeature;
       const countryCode = getFeatureKey(feature);
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(250, 253, 255, 0.98)";
+        return "rgba(240, 182, 90, 0.72)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(190, 245, 255, 0.94)";
+        return "rgba(217, 154, 50, 0.62)";
       }
 
       if (countryCode && gameCountryCodes.has(countryCode)) {
-        return "rgba(225, 231, 238, 0.68)";
+        return activeRegionCountryCodes.has(countryCode)
+          ? "rgba(122, 90, 42, 0.42)"
+          : "rgba(122, 90, 42, 0.26)";
       }
 
-      return "rgba(225, 231, 238, 0.34)";
+      return "rgba(58, 44, 24, 0.32)";
     },
     polygonsTransitionDuration: 0,
     onPolygonClick: (polygon) => {

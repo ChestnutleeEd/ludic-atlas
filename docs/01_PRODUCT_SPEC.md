@@ -121,6 +121,8 @@ The first version should include:
 10. local mock data
 11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
 12. Game Chronicle horizontal timeline view for RAWG-generated global game records
+13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
+14. Cinematic black-gold atlas visual system for Earth Explorer, including Overview / Surface camera modes, controlled globe camera, region-scoped country list, sampled global markers, and mobile bottom-drawer panel behavior
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 
