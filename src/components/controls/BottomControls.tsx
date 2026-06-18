@@ -22,6 +22,7 @@ type BottomControlsProps = {
   onCameraModeChange: (cameraMode: CameraMode) => void;
   onViewModeChange: (viewMode: ViewMode) => void;
   onRotateChange: (isEnabled: boolean) => void;
+  onFocusSelected?: () => void;
   onResetView?: () => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
@@ -47,6 +48,7 @@ export function BottomControls({
   onCameraModeChange,
   onViewModeChange,
   onRotateChange,
+  onFocusSelected,
   onResetView,
   onZoomIn,
   onZoomOut
@@ -127,7 +129,7 @@ export function BottomControls({
         </span>
         <div
           aria-labelledby="earth-actions-label"
-          className="atlas-control-box mt-2 grid grid-cols-3 gap-2 text-sm"
+          className="atlas-control-box mt-2 grid grid-cols-2 gap-2 text-sm"
           role="group"
         >
           <button
@@ -156,6 +158,15 @@ export function BottomControls({
             type="button"
           >
             重置
+          </button>
+          <button
+            aria-label="聚焦当前选中国家"
+            className="atlas-segment-button disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!onFocusSelected}
+            onClick={onFocusSelected}
+            type="button"
+          >
+            聚焦
           </button>
         </div>
         <p className="mt-2 text-xs leading-5 text-[#A99D8B]">

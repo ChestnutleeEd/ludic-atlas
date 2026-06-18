@@ -40,7 +40,17 @@ const ReactGlobe = dynamic(() => import("react-globe.gl"), {
 const MAX_RENDER_PIXEL_RATIO = 1.25;
 const INTERACTION_RESTORE_DELAY_MS = 200;
 const MANUAL_ZOOM_TRANSITION_MS = 360;
-const COUNTRY_FOCUS_PRESET_CODES = ["JP", "CN", "US", "KR"] as const;
+const COUNTRY_FOCUS_PRESET_CODES = [
+  "JP",
+  "CN",
+  "US",
+  "KR",
+  "GB",
+  "NL",
+  "BE",
+  "CH",
+  "DK"
+] as const;
 const ZOOM_ALTITUDE_MULTIPLIER = {
   in: 0.82,
   out: 1.18
@@ -48,7 +58,7 @@ const ZOOM_ALTITUDE_MULTIPLIER = {
 
 export type GlobeCameraCommand = {
   id: number;
-  type: "reset" | "zoomIn" | "zoomOut";
+  type: "focusSelected" | "reset" | "zoomIn" | "zoomOut";
 };
 
 type GameGlobeProps = {
@@ -66,6 +76,7 @@ type GameGlobeProps = {
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
   onRegionChange: (regionId: RegionId) => void;
+  onInteractionStart?: () => void;
 };
 
 export function GameGlobe({
@@ -82,7 +93,8 @@ export function GameGlobe({
   onClearCountry,
   onSelectCountry,
   onSelectGame,
-  onRegionChange
+  onRegionChange,
+  onInteractionStart
 }: GameGlobeProps) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -279,17 +291,29 @@ export function GameGlobe({
       return;
     }
 
+    if (cameraCommand.type === "focusSelected") {
+      handleFocusSelectedCountry();
+      return;
+    }
+
     handleZoomCamera(cameraCommand.type === "zoomIn" ? "in" : "out");
-  }, [cameraCommand, cameraMode, handleZoomCamera, setGlobePointOfView]);
+  }, [
+    cameraCommand,
+    cameraMode,
+    handleFocusSelectedCountry,
+    handleZoomCamera,
+    setGlobePointOfView
+  ]);
 
   const handleGlobeInteractionStart = useCallback(() => {
     if (interactionRestoreTimerRef.current) {
       window.clearTimeout(interactionRestoreTimerRef.current);
     }
 
+    onInteractionStart?.();
     setIsGlobeInteracting(true);
     setHoveredCountryCode(null);
-  }, []);
+  }, [onInteractionStart]);
 
   const handleGlobeInteractionEnd = useCallback(() => {
     if (interactionRestoreTimerRef.current) {
@@ -537,11 +561,12 @@ export function GameGlobe({
           <div className="pointer-events-none absolute inset-x-10 top-6 h-px bg-gradient-to-r from-transparent via-[#D99A32]/55 to-transparent" />
           <div className="absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] flex-wrap gap-2">
             <button
+              aria-label="重置为全球视角"
               className="globe-view-button"
               onClick={handleResetGlobalView}
               type="button"
             >
-              全球视角
+              重置 Reset
             </button>
             <button
               aria-label="放大地球镜头"
@@ -560,11 +585,13 @@ export function GameGlobe({
               缩小
             </button>
             <button
+              aria-label="聚焦当前选中国家"
+              disabled={!selectedCountry}
               className="globe-view-button"
               onClick={handleFocusSelectedCountry}
               type="button"
             >
-              聚焦当前国家
+              聚焦 Focus
             </button>
             <div className="region-preset-group" aria-label="地区镜头" role="group">
               {REGION_CONFIGS.map((regionConfig) => (

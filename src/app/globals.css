@@ -8071,10 +8071,113 @@ body .chronicle-year-modal .archive-dossier-section div {
     bottom: max(12px, env(safe-area-inset-bottom));
     left: max(12px, env(safe-area-inset-left));
     z-index: 50;
-    max-height: min(42vh, 420px);
-    min-height: 220px;
-    overflow-y: auto;
+    display: flex;
+    height: var(--mobile-sheet-collapsed, 68px);
+    min-height: 0;
+    max-height: none;
+    flex-direction: column;
+    overflow: hidden;
     border-radius: 8px;
+    padding: 10px 12px 12px !important;
+    transition: height 220ms ease;
+  }
+
+  .right-panel-shell[data-sheet-state="peek"] {
+    height: var(--mobile-sheet-peek, clamp(260px, 36dvh, 340px));
+  }
+
+  .right-panel-shell[data-sheet-state="expanded"] {
+    height: var(--mobile-sheet-expanded, min(82dvh, calc(100dvh - 76px)));
+  }
+
+  .mobile-sheet-header {
+    display: grid;
+    flex: 0 0 auto;
+    gap: 8px;
+    padding-bottom: 10px;
+  }
+
+  .mobile-sheet-handle,
+  .mobile-sheet-summary,
+  .mobile-sheet-steps button {
+    border: 1px solid rgba(217, 154, 50, 0.18);
+    border-radius: 7px;
+    background: rgba(5, 4, 3, 0.66);
+    color: rgba(245, 239, 227, 0.82);
+  }
+
+  .mobile-sheet-handle {
+    display: grid;
+    min-height: 20px;
+    place-items: center;
+    touch-action: none;
+  }
+
+  .mobile-sheet-handle span {
+    width: 44px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(240, 182, 90, 0.54);
+  }
+
+  .mobile-sheet-summary {
+    display: grid;
+    gap: 4px;
+    padding: 8px 10px;
+    text-align: left;
+  }
+
+  .mobile-sheet-summary span,
+  .mobile-sheet-summary small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-sheet-summary span {
+    color: #fff7e8;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mobile-sheet-summary small {
+    color: rgba(169, 157, 139, 0.84);
+    font-size: 11px;
+  }
+
+  .mobile-sheet-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mobile-sheet-steps button {
+    min-height: 30px;
+    font-size: 11px;
+  }
+
+  .mobile-sheet-steps button[aria-pressed="true"] {
+    border-color: rgba(240, 182, 90, 0.7);
+    background: rgba(217, 154, 50, 0.12);
+    color: #f0b65a;
+  }
+
+  .right-panel-shell[data-sheet-state="collapsed"] .mobile-sheet-steps,
+  .right-panel-shell[data-sheet-state="collapsed"] .right-panel-content,
+  .right-panel-shell[data-sheet-state="collapsed"] .game-detail-layer {
+    display: none;
+  }
+
+  .right-panel-content {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .game-detail-layer {
+    overscroll-behavior: contain;
   }
 
   .atlas-globe-panel {
@@ -9485,6 +9588,10 @@ body .chronicle-year-modal .archive-dossier-section div {
     inset 0 1px 0 rgba(245, 239, 227, 0.07);
 }
 
+.mobile-sheet-header {
+  display: none;
+}
+
 .game-earth-shell:not(.is-archive-mode) .country-game-wall {
   grid-template-columns: 1fr;
 }
@@ -9507,6 +9614,13 @@ body .chronicle-year-modal .archive-dossier-section div {
   text-align: center;
 }
 
+.globe-view-button:disabled,
+.atlas-segment-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  transform: none;
+}
+
 .game-earth-shell:not(.is-archive-mode) button:focus-visible,
 .game-earth-shell:not(.is-archive-mode) input:focus-visible {
   outline: 2px solid rgba(240, 182, 90, 0.9);
@@ -9514,15 +9628,178 @@ body .chronicle-year-modal .archive-dossier-section div {
 }
 
 @media (max-width: 1023px) {
+  .game-earth-shell:not(.is-archive-mode) {
+    --mobile-sheet-collapsed: 68px;
+    --mobile-sheet-peek: clamp(260px, 36dvh, 340px);
+    --mobile-sheet-expanded: min(82dvh, calc(100dvh - 76px));
+    --mobile-sheet-reserved: var(--mobile-sheet-collapsed);
+  }
+
+  .game-earth-shell:not(.is-archive-mode)[data-mobile-sheet-state="peek"] {
+    --mobile-sheet-reserved: var(--mobile-sheet-peek);
+  }
+
+  .game-earth-shell:not(.is-archive-mode)[data-mobile-sheet-state="expanded"] {
+    --mobile-sheet-reserved: var(--mobile-sheet-expanded);
+  }
+
+  .mobile-sheet-header {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    margin: -4px -4px 10px;
+    border-bottom: 1px solid rgba(217, 154, 50, 0.14);
+    background:
+      linear-gradient(180deg, rgba(8, 7, 5, 0.98), rgba(8, 7, 5, 0.88)),
+      rgba(5, 4, 3, 0.96);
+    padding: 4px 4px 10px;
+  }
+
+  .mobile-sheet-handle,
+  .mobile-sheet-summary,
+  .mobile-sheet-steps button {
+    border: 1px solid rgba(217, 154, 50, 0.2);
+    border-radius: 6px;
+    background: rgba(5, 4, 3, 0.72);
+    color: rgba(245, 239, 227, 0.78);
+  }
+
+  .mobile-sheet-handle {
+    display: grid;
+    min-height: 38px;
+    place-items: center;
+    touch-action: none;
+  }
+
+  .mobile-sheet-handle span {
+    width: 22px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(240, 182, 90, 0.78);
+  }
+
+  .mobile-sheet-summary {
+    min-width: 0;
+    min-height: 38px;
+    padding: 6px 8px;
+    text-align: left;
+  }
+
+  .mobile-sheet-summary span,
+  .mobile-sheet-summary small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-sheet-summary span {
+    color: #fff7e8;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .mobile-sheet-summary small {
+    margin-top: 3px;
+    color: rgba(169, 157, 139, 0.84);
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .mobile-sheet-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 42px);
+    gap: 4px;
+  }
+
+  .mobile-sheet-steps button {
+    min-height: 30px;
+    padding: 0 4px;
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .mobile-sheet-steps button[aria-pressed="true"],
+  .mobile-sheet-handle:hover,
+  .mobile-sheet-handle:focus-visible,
+  .mobile-sheet-summary:hover,
+  .mobile-sheet-summary:focus-visible,
+  .mobile-sheet-steps button:hover,
+  .mobile-sheet-steps button:focus-visible {
+    border-color: rgba(240, 182, 90, 0.68);
+    background: rgba(217, 154, 50, 0.1);
+    color: #fff7e8;
+  }
+
+  .right-panel-shell {
+    max-height: none;
+    min-height: 0;
+    overflow: hidden;
+    padding: 12px;
+    transition:
+      height 220ms ease,
+      max-height 220ms ease,
+      transform 220ms ease;
+  }
+
+  .right-panel-shell[data-sheet-state="collapsed"] {
+    height: var(--mobile-sheet-collapsed);
+  }
+
+  .right-panel-shell[data-sheet-state="peek"] {
+    height: var(--mobile-sheet-peek);
+  }
+
+  .right-panel-shell[data-sheet-state="expanded"] {
+    height: var(--mobile-sheet-expanded);
+  }
+
+  .right-panel-shell[data-sheet-state="collapsed"] .mobile-sheet-header {
+    margin-bottom: 0;
+    border-bottom-color: transparent;
+    padding-bottom: 4px;
+  }
+
+  .right-panel-shell[data-sheet-state="collapsed"] .right-panel-content,
+  .right-panel-shell[data-sheet-state="collapsed"] .game-detail-layer {
+    display: none;
+  }
+
+  .right-panel-shell[data-sheet-state="peek"] .right-panel-content,
+  .right-panel-shell[data-sheet-state="expanded"] .right-panel-content {
+    max-height: calc(100% - 54px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 2px;
+  }
+
+  .right-panel-shell[data-sheet-state="expanded"] .game-detail-layer {
+    position: absolute;
+    inset: 54px 0 0;
+  }
+
+  .right-panel-shell[data-sheet-state="expanded"] .game-detail-layer .game-detail-card {
+    max-height: calc(var(--mobile-sheet-expanded) - 92px);
+  }
+
   .atlas-bottom-controls {
     position: relative;
     bottom: auto;
-    margin-bottom: calc(42vh + 22px);
+    margin-bottom: calc(var(--mobile-sheet-reserved) + 20px + env(safe-area-inset-bottom));
+  }
+
+  .game-earth-shell:not(.is-archive-mode)[data-mobile-sheet-state="expanded"] .atlas-bottom-controls {
+    display: none;
   }
 
   .globe-map-legend {
     right: 10px;
-    bottom: 10px;
+    bottom: calc(var(--mobile-sheet-reserved) + 16px);
   }
 }
 
@@ -9541,7 +9818,7 @@ body .chronicle-year-modal .archive-dossier-section div {
   .globe-map-legend {
     left: 10px;
     right: auto;
-    bottom: 10px;
+    bottom: calc(var(--mobile-sheet-reserved) + 16px);
     max-width: calc(100% - 20px);
   }
 

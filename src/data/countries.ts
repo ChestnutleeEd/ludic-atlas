@@ -90,12 +90,44 @@ export const countries: Country[] = [
     longitude: 9.5018
   },
   {
+    code: "CH",
+    name: "Switzerland",
+    nameZh: "瑞士",
+    region: "Western Europe",
+    latitude: 46.8182,
+    longitude: 8.2275
+  },
+  {
+    code: "NO",
+    name: "Norway",
+    nameZh: "挪威",
+    region: "Northern Europe",
+    latitude: 60.472,
+    longitude: 8.4689
+  },
+  {
     code: "NZ",
     name: "New Zealand",
     nameZh: "新西兰",
     region: "Oceania",
     latitude: -40.9006,
     longitude: 174.886
+  },
+  {
+    code: "AU",
+    name: "Australia",
+    nameZh: "澳大利亚",
+    region: "Oceania",
+    latitude: -25.2744,
+    longitude: 133.7751
+  },
+  {
+    code: "RU",
+    name: "Russia",
+    nameZh: "俄罗斯",
+    region: "Eastern Europe / Northern Asia",
+    latitude: 61.524,
+    longitude: 105.3188
   },
   {
     code: "UA",
