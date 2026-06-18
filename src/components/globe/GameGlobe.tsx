@@ -14,6 +14,7 @@ import {
   buildCountryDotMatrix,
   getCountryFocusPointOfView,
   type CountryDotPoint,
+  type GlobePointOfView,
   type CountryGeoJson,
   type CountryGeoJsonFeature
 } from "@/lib/geo";
@@ -36,9 +37,19 @@ const ReactGlobe = dynamic(() => import("react-globe.gl"), {
   GlobeProps & { ref?: React.MutableRefObject<GlobeMethods | undefined> }
 >;
 
-const REACT_GLOBE_GL_VERSION = "2.38.0";
 const MAX_RENDER_PIXEL_RATIO = 1.25;
 const INTERACTION_RESTORE_DELAY_MS = 200;
+const MANUAL_ZOOM_TRANSITION_MS = 360;
+const COUNTRY_FOCUS_PRESET_CODES = ["JP", "CN", "US", "KR"] as const;
+const ZOOM_ALTITUDE_MULTIPLIER = {
+  in: 0.82,
+  out: 1.18
+} as const;
+
+export type GlobeCameraCommand = {
+  id: number;
+  type: "reset" | "zoomIn" | "zoomOut";
+};
 
 type GameGlobeProps = {
   countries: Country[];
@@ -48,12 +59,12 @@ type GameGlobeProps = {
   isRotateEnabled: boolean;
   selectedCountry: Country | null;
   selectedGameId: string | null;
-  hoveredGameId: string | null;
   viewMode: ViewMode;
   coverSize: number;
+  cameraCommand: GlobeCameraCommand | null;
+  onClearCountry: () => void;
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
-  onHoverGame: (gameId: string | null) => void;
   onRegionChange: (regionId: RegionId) => void;
 };
 
@@ -65,19 +76,21 @@ export function GameGlobe({
   isRotateEnabled,
   selectedCountry,
   selectedGameId,
-  hoveredGameId,
   viewMode,
   coverSize,
+  cameraCommand,
+  onClearCountry,
   onSelectCountry,
   onSelectGame,
-  onHoverGame,
   onRegionChange
 }: GameGlobeProps) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const interactionRestoreTimerRef = useRef<number | null>(null);
-  const lastFocusedCountryCodeRef = useRef<string | null>(
-    selectedCountry?.code ?? null
+  const lastCameraPointOfViewRef = useRef<GlobePointOfView>(
+    selectedCountry
+      ? getCountryFocusPointOfView(selectedCountry, cameraMode)
+      : getRegionPointOfView(activeRegionId, cameraMode)
   );
   const [countryFeatures, setCountryFeatures] = useState<CountryGeoJsonFeature[]>(
     []
@@ -85,6 +98,7 @@ export function GameGlobe({
   const [hoveredCountryCode, setHoveredCountryCode] = useState<string | null>(
     null
   );
+  const [hoveredGameId, setHoveredGameId] = useState<string | null>(null);
   const [activeWorldCountry, setActiveWorldCountry] = useState<{
     baseSelectedCountryCode: string | null;
     countryCode: string;
@@ -92,6 +106,28 @@ export function GameGlobe({
   const [globeSize, setGlobeSize] = useState({ height: 720, width: 920 });
   const [isGlobeInteracting, setIsGlobeInteracting] = useState(false);
   const cameraModeConfig = CAMERA_MODE_CONFIGS[cameraMode];
+
+  const setGlobePointOfView = useCallback(
+    (pointOfView: GlobePointOfView, transitionMs: number) => {
+      lastCameraPointOfViewRef.current = pointOfView;
+      globeRef.current?.pointOfView(pointOfView, transitionMs);
+    },
+    []
+  );
+
+  const getCurrentPointOfView = useCallback((): GlobePointOfView => {
+    const currentPointOfView = globeRef.current?.pointOfView();
+    const fallbackPointOfView = lastCameraPointOfViewRef.current;
+
+    return {
+      altitude: getNumberOrFallback(
+        currentPointOfView?.altitude,
+        fallbackPointOfView.altitude
+      ),
+      lat: getNumberOrFallback(currentPointOfView?.lat, fallbackPointOfView.lat),
+      lng: getNumberOrFallback(currentPointOfView?.lng, fallbackPointOfView.lng)
+    };
+  }, []);
 
   const configureControls = useCallback(() => {
     const controls = globeRef.current?.controls();
@@ -169,33 +205,6 @@ export function GameGlobe({
   );
 
   useEffect(() => {
-    if (!selectedCountry || !globeRef.current) {
-      return;
-    }
-
-    if (selectedCountry.code === lastFocusedCountryCodeRef.current) {
-      return;
-    }
-
-    lastFocusedCountryCodeRef.current = selectedCountry.code;
-    globeRef.current.pointOfView(
-      getCountryFocusPointOfView(selectedCountry, cameraMode),
-      900
-    );
-  }, [cameraMode, selectedCountry]);
-
-  useEffect(() => {
-    if (!globeRef.current || selectedCountry) {
-      return;
-    }
-
-    globeRef.current.pointOfView(
-      getRegionPointOfView(activeRegionId, cameraMode),
-      900
-    );
-  }, [activeRegionId, cameraMode, selectedCountry]);
-
-  useEffect(() => {
     configureControls();
   }, [configureControls]);
 
@@ -208,39 +217,70 @@ export function GameGlobe({
       ? getCountryFocusPointOfView(selectedCountry, cameraMode)
       : getRegionPointOfView(activeRegionId, cameraMode);
 
-    globeRef.current.pointOfView(pointOfView, 820);
-  }, [activeRegionId, cameraMode, selectedCountry]);
+    setGlobePointOfView(pointOfView, 820);
+  }, [activeRegionId, cameraMode, selectedCountry, setGlobePointOfView]);
 
   const handleFocusSelectedCountry = useCallback(() => {
     if (!selectedCountry) {
-      globeRef.current?.pointOfView(
+      setGlobePointOfView(
         getRegionPointOfView(activeRegionId, cameraMode),
         650
       );
       return;
     }
 
-    globeRef.current?.pointOfView(
+    setGlobePointOfView(
       getCountryFocusPointOfView(selectedCountry, cameraMode),
       720
     );
-  }, [activeRegionId, cameraMode, selectedCountry]);
+  }, [activeRegionId, cameraMode, selectedCountry, setGlobePointOfView]);
 
   const handleResetGlobalView = useCallback(() => {
+    onClearCountry();
+    setActiveWorldCountry(null);
     onRegionChange("global");
-    globeRef.current?.pointOfView(getRegionPointOfView("global", cameraMode), 720);
-  }, [cameraMode, onRegionChange]);
+    setGlobePointOfView(getRegionPointOfView("global", cameraMode), 720);
+  }, [cameraMode, onClearCountry, onRegionChange, setGlobePointOfView]);
 
   const handleSelectRegion = useCallback(
     (regionId: RegionId) => {
       onRegionChange(regionId);
-      globeRef.current?.pointOfView(
-        getRegionPointOfView(regionId, cameraMode),
-        900
+    },
+    [onRegionChange]
+  );
+
+  const handleZoomCamera = useCallback(
+    (direction: keyof typeof ZOOM_ALTITUDE_MULTIPLIER) => {
+      const pointOfView = getCurrentPointOfView();
+      const altitude = clamp(
+        pointOfView.altitude * ZOOM_ALTITUDE_MULTIPLIER[direction],
+        cameraModeConfig.minAltitude,
+        cameraModeConfig.maxAltitude
+      );
+
+      setGlobePointOfView(
+        {
+          ...pointOfView,
+          altitude
+        },
+        MANUAL_ZOOM_TRANSITION_MS
       );
     },
-    [cameraMode, onRegionChange]
+    [cameraModeConfig, getCurrentPointOfView, setGlobePointOfView]
   );
+
+  useEffect(() => {
+    if (!cameraCommand) {
+      return;
+    }
+
+    if (cameraCommand.type === "reset") {
+      setGlobePointOfView(getRegionPointOfView("global", cameraMode), 720);
+      return;
+    }
+
+    handleZoomCamera(cameraCommand.type === "zoomIn" ? "in" : "out");
+  }, [cameraCommand, cameraMode, handleZoomCamera, setGlobePointOfView]);
 
   const handleGlobeInteractionStart = useCallback(() => {
     if (interactionRestoreTimerRef.current) {
@@ -397,12 +437,12 @@ export function GameGlobe({
     () =>
       createGameMarkerElement({
         coverSize: Math.round(
-          coverSize * (activeRegionId === "global" ? 0.82 : 1.08)
+          coverSize * (activeRegionId === "global" ? 0.72 : 0.92)
         ),
         loadCoverImages: true,
         renderCoverMarkers: !isGlobeInteracting,
         onHoverCountry: handleHoverCountry,
-        onHoverGame,
+        onHoverGame: setHoveredGameId,
         onSelectCountry: handleSelectGlobeCountry,
         onSelectGame
       }),
@@ -412,7 +452,6 @@ export function GameGlobe({
       handleHoverCountry,
       handleSelectGlobeCountry,
       isGlobeInteracting,
-      onHoverGame,
       onSelectGame
     ]
   );
@@ -436,12 +475,16 @@ export function GameGlobe({
     []
   );
   const activeRegion = getRegionConfig(activeRegionId);
-  const activeCameraPointOfView = selectedCountry
-    ? getCountryFocusPointOfView(selectedCountry, cameraMode)
-    : getRegionPointOfView(activeRegionId, cameraMode);
   const activeCameraLabel = selectedCountry
     ? getCountryDisplayName(selectedCountry)
     : `${activeRegion.labelZh} ${activeRegion.label}`;
+  const focusPresetCountries = useMemo(
+    () =>
+      COUNTRY_FOCUS_PRESET_CODES.map((countryCode) =>
+        countries.find((country) => country.code === countryCode)
+      ).filter((country): country is Country => Boolean(country)),
+    [countries]
+  );
 
   return (
     <section className="glass-panel atlas-globe-panel relative min-h-[690px] overflow-hidden">
@@ -449,13 +492,13 @@ export function GameGlobe({
       <div className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(circle,rgba(240,182,90,0.42)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="absolute inset-0 bg-[linear-gradient(112deg,transparent_0%,rgba(245,239,227,0.018)_50%,rgba(217,154,50,0.026)_52%,transparent_59%)]" />
       <div className="relative z-10 flex h-full min-h-[690px] flex-col justify-between gap-4 p-4">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+        <div className="atlas-globe-status grid gap-3 md:grid-cols-[1fr_auto]">
           <div>
             <p className="text-sm font-semibold text-[#F0B65A]">
-              Cinematic Camera / {getCameraModeLabel(cameraMode)}
+              当前镜头 / {getCameraModeLabel(cameraMode)}
             </p>
             <p className="mt-1 text-xs text-[#A99D8B]">
-              react-globe.gl {REACT_GLOBE_GL_VERSION}，当前镜头：{activeCameraLabel}，altitude {activeCameraPointOfView.altitude.toFixed(2)}。
+              {activeCameraLabel} · {visibleGameMarkers.length} 个地图标记 · 按开发商 / 工作室国家归属。
             </p>
           </div>
           <div className="grid gap-2 md:w-[31rem]">
@@ -471,11 +514,11 @@ export function GameGlobe({
                 <dd className="mt-1 text-[#F0B65A]">{getViewModeLabel(viewMode)}</dd>
               </div>
               <div className="stat-tile p-2">
-                <dt className="text-[#A99D8B]">世界轮廓</dt>
+                <dt className="text-[#A99D8B]">国家边界</dt>
                 <dd className="mt-1 text-[#F0B65A]">{countryFeatures.length}</dd>
               </div>
               <div className="stat-tile p-2">
-                <dt className="text-[#A99D8B]">地图游戏标记</dt>
+                <dt className="text-[#A99D8B]">地图标记</dt>
                 <dd className="mt-1 text-[#F0B65A]">{visibleGameMarkers.length}</dd>
               </div>
             </dl>
@@ -501,15 +544,32 @@ export function GameGlobe({
               全球视角
             </button>
             <button
+              aria-label="放大地球镜头"
+              className="globe-view-button"
+              onClick={() => handleZoomCamera("in")}
+              type="button"
+            >
+              放大
+            </button>
+            <button
+              aria-label="缩小地球镜头"
+              className="globe-view-button"
+              onClick={() => handleZoomCamera("out")}
+              type="button"
+            >
+              缩小
+            </button>
+            <button
               className="globe-view-button"
               onClick={handleFocusSelectedCountry}
               type="button"
             >
               聚焦当前国家
             </button>
-            <div className="region-preset-group" aria-label="地区镜头">
+            <div className="region-preset-group" aria-label="地区镜头" role="group">
               {REGION_CONFIGS.map((regionConfig) => (
                 <button
+                  aria-pressed={regionConfig.id === activeRegionId}
                   className={regionConfig.id === activeRegionId ? "is-active" : ""}
                   key={regionConfig.id}
                   onClick={() => handleSelectRegion(regionConfig.id)}
@@ -519,6 +579,37 @@ export function GameGlobe({
                 </button>
               ))}
             </div>
+            <div
+              aria-label="重点国家镜头"
+              className="region-preset-group focus-preset-group"
+              role="group"
+            >
+              {focusPresetCountries.map((country) => (
+                <button
+                  aria-pressed={country.code === selectedCountryCode}
+                  className={country.code === selectedCountryCode ? "is-active" : ""}
+                  key={country.code}
+                  onClick={() => onSelectCountry(country.code)}
+                  type="button"
+                >
+                  {country.name}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="globe-map-legend" aria-label="地图图例">
+            <span>
+              <i className="legend-pin" />
+              代表游戏
+            </span>
+            <span>
+              <i className="legend-dot" />
+              国家热点
+            </span>
+            <span>
+              <i className="legend-ring" />
+              选中区域
+            </span>
           </div>
           <ReactGlobe
             ref={globeRef}
@@ -559,8 +650,7 @@ export function GameGlobe({
                 controls.addEventListener("end", handleGlobeInteractionEnd);
               }
 
-              lastFocusedCountryCodeRef.current = selectedCountry?.code ?? null;
-              globeRef.current?.pointOfView(
+              setGlobePointOfView(
                 selectedCountry
                   ? getCountryFocusPointOfView(selectedCountry, cameraMode)
                   : getRegionPointOfView(activeRegionId, cameraMode),
@@ -582,7 +672,10 @@ export function GameGlobe({
             width={globeSize.width}
           />
           {countryFeatures.length === 0 ? (
-            <div className="pointer-events-none absolute inset-0 grid place-items-center text-sm text-[#A99D8B]">
+            <div
+              aria-live="polite"
+              className="pointer-events-none absolute inset-0 grid place-items-center text-sm text-[#A99D8B]"
+            >
               正在加载国家边界…
             </div>
           ) : null}
@@ -590,6 +683,14 @@ export function GameGlobe({
       </div>
     </section>
   );
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function getNumberOrFallback(value: number | undefined, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
 function GlobeLoadingState() {

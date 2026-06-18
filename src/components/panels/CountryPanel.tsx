@@ -57,23 +57,44 @@ export function CountryPanel({
       );
     });
   }, [countries, normalizedQuery]);
+  const visibleGameCount = useMemo(
+    () =>
+      countries.reduce(
+        (count, country) =>
+          count + (countryStatsByCode.get(country.code)?.gameCount ?? 0),
+        0
+      ),
+    [countries, countryStatsByCode]
+  );
 
   return (
-    <section className="country-overview-panel">
+    <section
+      aria-labelledby="country-overview-title"
+      className="country-overview-panel"
+    >
       <div className="flex items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#F5EFE3]">
-            Countries / Regions
+          <h2
+            className="text-lg font-semibold text-[#F5EFE3]"
+            id="country-overview-title"
+          >
+            国家与地区
           </h2>
           <p className="mt-1 text-xs text-[#A99D8B]">
-            当前地区：{activeRegionLabel}
+            当前区域：{activeRegionLabel} / {visibleGameCount} 款游戏
           </p>
         </div>
-        <span className="text-xs text-[#A99D8B]">共 {countries.length} 个</span>
+        <span className="text-xs text-[#A99D8B]">
+          显示 {visibleCountries.length}/{countries.length} 个
+        </span>
       </div>
+      <p className="mt-3 border border-white/10 bg-black/30 p-2 text-xs leading-5 text-[#A99D8B]">
+        行内条形表示该国家在当前筛选中的游戏数量；点击国家后，地球会聚焦到对应区域。
+      </p>
       <label className="mt-4 block">
         <span className="sr-only">搜索国家或地区</span>
         <input
+          aria-label="搜索国家、地区或国家代码"
           className="country-search-input"
           name="country-search"
           onChange={(event) => setQuery(event.target.value)}
@@ -82,10 +103,13 @@ export function CountryPanel({
           value={query}
         />
       </label>
-      <div className="mt-3 grid max-h-[640px] gap-1.5 overflow-y-auto pr-1">
+      <div
+        aria-label="国家与地区列表"
+        className="mt-3 grid max-h-[640px] gap-1.5 overflow-y-auto pr-1"
+      >
         {visibleCountries.length === 0 ? (
-            <p className="border border-white/12 bg-black/70 p-3 text-sm text-cyan-50/55">
-              未找到匹配国家。
+          <p className="border border-white/12 bg-black/70 p-3 text-sm text-cyan-50/55">
+            未找到匹配国家。
           </p>
         ) : null}
         {visibleCountries.map((country) => {
@@ -97,6 +121,10 @@ export function CountryPanel({
 
           return (
             <button
+              aria-label={`选择 ${country.nameZh} ${country.name}，${stats.gameCount} 款游戏，平均评分 ${stats.averageRating.toFixed(
+                1
+              )}`}
+              aria-pressed={isSelected}
               className={`country-overview-row ${
                 isSelected
                   ? "is-selected"
@@ -107,8 +135,8 @@ export function CountryPanel({
               type="button"
             >
               <div className="min-w-0">
-                <h3>{country.name}</h3>
-                <p>{country.nameZh} / {getRegionLabel(country.region)}</p>
+                <h3>{country.nameZh}</h3>
+                <p>{country.name} / {getRegionLabel(country.region)}</p>
                 <span className="country-count-bar" aria-hidden="true">
                   <span style={{ width: `${gameCountRatio}%` }} />
                 </span>

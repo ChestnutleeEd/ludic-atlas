@@ -84,7 +84,7 @@ A user drags a year slider to explore games from different periods.
 
 ### Scenario 5: Browse the game chronology
 
-A user opens Game Chronicle / 游戏编年馆 and browses the generated global game list through an immersive archive hall, sticky collection index, scroll-narrative year cabinets, title search, genre filters, platform filters, and rating sort. Clicking a year opens a large Year Dossier / 年份档案抽屉 for that year's games and dossier details.
+A user opens Game Chronicle / 游戏编年馆 and browses the generated global game list through a retro digital archive hall, searchable collection index, film-style year timeline, title search, genre filters, platform filters, and rating sort. Clicking a year opens a large Year Exhibit / 年度展柜 modal for that year's games and dossier details.
 
 ### Scenario 6: Choose an exploration mode
 
@@ -122,11 +122,11 @@ The first version should include:
 11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
 12. Game Chronicle horizontal timeline view for RAWG-generated global game records
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
-14. Cinematic black-gold atlas visual system for Earth Explorer, including Overview / Surface camera modes, controlled globe camera, region-scoped country list, sampled global markers, and mobile bottom-drawer panel behavior
+14. Premium black-gold atlas visual system for Earth Explorer, including Overview / Surface camera modes, deeper controlled globe zoom, region and key-country camera presets, country aggregate marker mode, high-rating game marker mode, region-scoped country list, sampled global markers, bottom zoom / reset controls, and mobile bottom-drawer panel behavior
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 
-Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. It groups filtered games by `releaseYear`, shows scroll-narrative year cabinets with year counts and cover previews, supports title search, multi-select genre / platform OR filters, year-desc and rating-desc sorting, opens the selected year in a museum-style Year Dossier drawer, and shows a year overview plus the selected-game museum dossier card.
+Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. It groups filtered games by `releaseYear`, shows film-style year cards with year counts and cover previews, supports title search, multi-select genre / platform OR filters, year-desc and rating-desc sorting, opens the selected year in a museum-style Year Exhibit modal, and shows a year overview plus the selected-game museum dossier card.
 
 ## MVP Data Fields
 

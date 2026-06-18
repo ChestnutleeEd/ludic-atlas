@@ -1,13 +1,13 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArchiveTimeline,
   type ArchiveYearGroup
 } from "@/components/archive/ArchiveTimeline";
 import { ArchiveYearModal } from "@/components/archive/ArchiveYearModal";
-import { getGenreLabel } from "@/lib/localization";
+import { getGameDisplayTitle, getGenreLabel } from "@/lib/localization";
 import type { Game } from "@/types/game";
 
 type GameArchiveViewProps = {
@@ -45,6 +45,33 @@ function toggleSetValue(current: Set<string>, value: string) {
   return next;
 }
 
+function getAverageRating(games: Game[]) {
+  if (games.length === 0) {
+    return "0.0";
+  }
+
+  const sum = games.reduce(
+    (total, game) => total + (Number.isFinite(game.rating) ? game.rating : 0),
+    0
+  );
+
+  return (sum / games.length).toFixed(1);
+}
+
+function getTopGame(games: Game[]) {
+  return [...games].sort(
+    (a, b) => b.rating - a.rating || b.releaseYear - a.releaseYear
+  )[0];
+}
+
+function formatYearRange(min: number, max: number) {
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    return "年份待归档";
+  }
+
+  return `${min}-${max}`;
+}
+
 export function GameArchiveView({
   games,
   onBackToHub,
@@ -52,6 +79,7 @@ export function GameArchiveView({
   onSelectGame
 }: GameArchiveViewProps) {
   const archiveRootRef = useRef<HTMLElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
   const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(
@@ -62,12 +90,19 @@ export function GameArchiveView({
 
   const archiveIndex = useMemo<ArchiveGameIndex[]>(
     () =>
-      games.map((game) => ({
-        game,
-        genreTags: splitArchiveTags(game.genres),
-        platformTags: splitArchiveTags(game.platforms),
-        searchText: `${game.title} ${game.titleZh}`.toLowerCase()
-      })),
+      games.map((game) => {
+        const genreTags = splitArchiveTags(game.genres);
+        const platformTags = splitArchiveTags(game.platforms);
+
+        return {
+          game,
+          genreTags,
+          platformTags,
+          searchText: `${game.title} ${game.titleZh} ${game.developer} ${game.publisher}`
+            .trim()
+            .toLowerCase()
+        };
+      }),
     [games]
   );
   const genreOptions = useMemo(
@@ -90,8 +125,8 @@ export function GameArchiveView({
       .filter((year) => Number.isFinite(year) && year > 0);
 
     return {
-      max: Math.max(...validYears),
-      min: Math.min(...validYears)
+      max: validYears.length > 0 ? Math.max(...validYears) : Number.NaN,
+      min: validYears.length > 0 ? Math.min(...validYears) : Number.NaN
     };
   }, [games]);
   const filteredGames = useMemo(() => {
@@ -118,7 +153,6 @@ export function GameArchiveView({
         Number.isFinite(game.releaseYear) && game.releaseYear > 0
           ? game.releaseYear
           : null;
-
       const groupGames = groupedGames.get(releaseYear);
 
       if (groupGames) {
@@ -138,7 +172,7 @@ export function GameArchiveView({
           return -1;
         }
 
-        return yearA - yearB;
+        return sortMode === "year-desc" ? yearB - yearA : yearA - yearB;
       })
       .map(([year, groupGames]) => {
         const sortedGames = [...groupGames].sort((a, b) => {
@@ -148,11 +182,9 @@ export function GameArchiveView({
 
           return b.releaseYear - a.releaseYear || b.rating - a.rating;
         });
-        const sortByRating = (a: Game, b: Game) => b.rating - a.rating;
-        const previewGames = [
-          ...groupGames.filter((game) => game.coverImage).sort(sortByRating),
-          ...groupGames.filter((game) => !game.coverImage).sort(sortByRating)
-        ].slice(0, 12);
+        const previewGames = [...groupGames]
+          .sort((a, b) => b.rating - a.rating || a.title.localeCompare(b.title))
+          .slice(0, 8);
 
         return {
           games: sortedGames,
@@ -166,12 +198,17 @@ export function GameArchiveView({
     () => yearGroups.find((group) => group.year === openYear) ?? null,
     [openYear, yearGroups]
   );
+  const featuredGame = useMemo(() => getTopGame(filteredGames), [filteredGames]);
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
     selectedGenres.size > 0 ||
     selectedPlatforms.size > 0;
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      return;
+    }
+
     let cleanup = () => {};
 
     async function runArchiveIntro() {
@@ -181,178 +218,87 @@ export function GameArchiveView({
         return;
       }
 
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-
-      if (reduceMotion) {
-        return;
-      }
-
       const { gsap } = await import("gsap");
-      let observerCleanup = () => {};
       const context = gsap.context(() => {
         gsap.fromTo(
           "[data-archive-intro]",
-          { autoAlpha: 0, y: 28 },
+          { autoAlpha: 0, y: 22 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.86,
+            duration: 0.74,
             ease: "power3.out",
-            stagger: 0.12
+            stagger: 0.08
           }
         );
-
-        const yearNodes = gsap.utils.toArray<HTMLElement>("[data-year-node]");
-        const seenNodes = new WeakSet<Element>();
-        const observer = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (!entry.isIntersecting || seenNodes.has(entry.target)) {
-                continue;
-              }
-
-              seenNodes.add(entry.target);
-              gsap.fromTo(
-                entry.target,
-                { autoAlpha: 0, y: 44, scale: 0.98 },
-                {
-                  autoAlpha: 1,
-                  y: 0,
-                  scale: 1,
-                  duration: 0.72,
-                  ease: "power3.out"
-                }
-              );
-            }
-          },
-          { rootMargin: "0px 0px -12% 0px", threshold: 0.16 }
-        );
-
-        yearNodes.forEach((node) => observer.observe(node));
-        observerCleanup = () => observer.disconnect();
       }, root);
 
-      cleanup = () => {
-        observerCleanup();
-        context.revert();
-      };
+      cleanup = () => context.revert();
     }
 
     runArchiveIntro();
 
     return () => cleanup();
-  }, [yearGroups]);
+  }, [shouldReduceMotion]);
 
   return (
     <section
-      className="archive-redesign game-chronicle-shell chrono-archive-vintage chrono-archive-shell archive-shell glass-panel relative min-h-[690px] overflow-hidden"
+      className="archive-v2 relative min-h-screen overflow-hidden"
       ref={archiveRootRef}
     >
-      <div className="archive-wood-wash pointer-events-none absolute inset-0" />
-      <div className="archive-cinematic-bg pointer-events-none absolute inset-0" />
-      <div className="archive-spotlight pointer-events-none absolute inset-0" />
-      <div className="archive-star-grid pointer-events-none absolute inset-0" />
-      <div className="archive-scanlines pointer-events-none absolute inset-0" />
-      <div className="archive-layout relative z-10 grid min-h-[690px] gap-4 p-4">
-        <div className="min-w-0">
-          <header className="archive-hero-panel" data-archive-intro>
-            <div className="archive-hero-copy">
-                <button
-                  className="archive-back-button"
-                  onClick={onBackToHub}
-                  type="button"
-                >
-                  返回游戏星图
-                </button>
-              <p className="archive-brass-label archive-kicker">
-                ARCHIVE INDEX / 世界游戏文化档案
-              </p>
-              <h1>Game Chronicle / 游戏编年馆</h1>
-                <p>
-                以年份为索引，翻阅来自不同国家与地区的游戏文化馆藏。
-                </p>
-              </div>
-            <dl className="archive-metrics archive-hero-metrics">
-                <div>
-                  <dt>筛选结果</dt>
-                  <dd>{filteredGames.length}</dd>
-                </div>
-                <div>
-                <dt>年份档案柜</dt>
-                  <dd>{yearGroups.length}</dd>
-                </div>
-                <div>
-                  <dt>总馆藏</dt>
-                  <dd>{games.length}</dd>
-                </div>
-              </dl>
-          </header>
+      <div className="archive-v2-bg" aria-hidden="true" />
+      <div className="archive-v2-scan" aria-hidden="true" />
+      <div className="archive-v2-shell">
+        <header className="archive-v2-hero" data-archive-intro>
+          <div className="archive-v2-hero-copy">
+            <button
+              className="archive-v2-back"
+              onClick={onBackToHub}
+              type="button"
+            >
+              返回游戏星图
+            </button>
+            <p className="archive-v2-kicker">Game Chronicle / 游戏编年馆</p>
+            <h1>复古数字游戏档案馆</h1>
+            <p>
+              按年份整理全球游戏馆藏，以胶片索引、年度展柜和游戏卷宗浏览代表作品。
+            </p>
+          </div>
 
-          <div className="archive-index-dock" data-archive-intro>
-            <div className="archive-index-heading">
+          <div className="archive-v2-hero-board" aria-label="档案馆统计">
+            <dl className="archive-v2-metrics">
               <div>
-                <p className="archive-brass-label archive-kicker">馆藏索引</p>
-                <h2>年代索引与馆藏标签</h2>
+                <dt>筛选结果</dt>
+                <dd>{filteredGames.length}</dd>
               </div>
-              <p>
-                {archiveYearRange.min}-{archiveYearRange.max} · 标题、类型与平台共同定位馆藏条目。
-              </p>
+              <div>
+                <dt>年份档案</dt>
+                <dd>{yearGroups.length}</dd>
+              </div>
+              <div>
+                <dt>平均评分</dt>
+                <dd>{getAverageRating(filteredGames)}</dd>
+              </div>
+            </dl>
+            <div className="archive-v2-featured">
+              <span>代表馆藏</span>
+              <strong title={featuredGame ? getGameDisplayTitle(featuredGame) : ""}>
+                {featuredGame ? getGameDisplayTitle(featuredGame) : "暂无结果"}
+              </strong>
+              <small>{formatYearRange(archiveYearRange.min, archiveYearRange.max)}</small>
             </div>
+          </div>
+        </header>
 
-            <div className="archive-terminal-controls">
-              <label className="archive-field archive-search-field">
-                <span>标题搜索</span>
-                <input
-                  autoComplete="off"
-                  name="archive-title-search"
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="搜索游戏标题…"
-                  type="search"
-                  value={searchQuery}
-                />
-              </label>
-              <label className="archive-field">
-                <span>排序</span>
-                <select
-                  name="archive-sort"
-                  onChange={(event) =>
-                    setSortMode(event.target.value as ArchiveSortMode)
-                  }
-                  value={sortMode}
-                >
-                  <option value="year-desc">年份倒序</option>
-                  <option value="rating-desc">评分倒序</option>
-                </select>
-              </label>
+        <section className="archive-v2-index" data-archive-intro>
+          <div className="archive-v2-section-heading">
+            <div className="min-w-0">
+              <p className="archive-v2-kicker">Archive Index / 馆藏索引</p>
+              <h2>标题、类型与平台</h2>
             </div>
-
-            <div className="archive-filter-grid">
-              <TagFilter
-                labels={genreOptions}
-                onToggle={(genre) =>
-                  setSelectedGenres((current) => toggleSetValue(current, genre))
-                }
-                selectedLabels={selectedGenres}
-                title="馆藏标签"
-                transformLabel={getGenreLabel}
-              />
-              <TagFilter
-                labels={platformOptions}
-                onToggle={(platform) =>
-                  setSelectedPlatforms((current) =>
-                    toggleSetValue(current, platform)
-                  )
-                }
-                selectedLabels={selectedPlatforms}
-                title="平台索引"
-              />
-            </div>
-
             {hasActiveFilters ? (
               <button
-                className="archive-clear-button"
+                className="archive-v2-clear"
                 onClick={() => {
                   setSearchQuery("");
                   setSelectedGenres(new Set());
@@ -365,27 +311,73 @@ export function GameArchiveView({
             ) : null}
           </div>
 
-          <main className="chronicle-main-stage" data-archive-intro>
-            <div className="chronicle-main-stage-heading">
-              <div>
-                <p className="archive-brass-label archive-kicker">
-                  CHRONICLE RECORD / 时光展柜
-                </p>
-                <h2>年份档案柜</h2>
-              </div>
-              <p>沿年代主轴浏览馆藏，点击年份打开该年度的游戏档案卷宗。</p>
-            </div>
-            <ArchiveTimeline
-              activeYear={openGroup?.year ?? null}
-              groups={yearGroups}
-              onSelectYear={(year) => {
-                setOpenYear(year);
-                onSelectGame(null);
-              }}
+          <div className="archive-v2-controls">
+            <label className="archive-v2-field archive-v2-search">
+              <span>标题搜索</span>
+              <input
+                autoComplete="off"
+                name="archive-title-search"
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="搜索游戏、开发者或发行商"
+                type="search"
+                value={searchQuery}
+              />
+            </label>
+            <label className="archive-v2-field">
+              <span>排序</span>
+              <select
+                name="archive-sort"
+                onChange={(event) =>
+                  setSortMode(event.target.value as ArchiveSortMode)
+                }
+                value={sortMode}
+              >
+                <option value="year-desc">年份倒序</option>
+                <option value="rating-desc">评分倒序</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="archive-v2-filter-grid">
+            <TagFilter
+              labels={genreOptions}
+              onToggle={(genre) =>
+                setSelectedGenres((current) => toggleSetValue(current, genre))
+              }
+              selectedLabels={selectedGenres}
+              title="类型"
+              transformLabel={getGenreLabel}
             />
-          </main>
-        </div>
+            <TagFilter
+              labels={platformOptions}
+              onToggle={(platform) =>
+                setSelectedPlatforms((current) => toggleSetValue(current, platform))
+              }
+              selectedLabels={selectedPlatforms}
+              title="平台"
+            />
+          </div>
+        </section>
+
+        <main className="archive-v2-stage" data-archive-intro>
+          <div className="archive-v2-section-heading">
+            <div className="min-w-0">
+              <p className="archive-v2-kicker">Cinematic Timeline / 年份胶片</p>
+              <h2>年度档案柜</h2>
+            </div>
+            <p>点击年份打开年度展柜；当前选中年份会以琥珀边框和索引灯标记。</p>
+          </div>
+          <ArchiveTimeline
+            activeYear={openGroup?.year ?? null}
+            groups={yearGroups}
+            onSelectYear={(year) => {
+              setOpenYear(year);
+              onSelectGame(null);
+            }}
+          />
+        </main>
       </div>
+
       <AnimatePresence>
         {openGroup ? (
           <ArchiveYearModal
@@ -418,8 +410,8 @@ function TagFilter({
   onToggle: (label: string) => void;
 }) {
   return (
-    <section className="archive-filter-panel">
-      <div className="archive-filter-heading">
+    <section className="archive-v2-filter-panel">
+      <div className="archive-v2-filter-heading">
         <h3>{title}</h3>
         <span>
           {labels.length === 0
@@ -429,9 +421,9 @@ function TagFilter({
               : "OR 多选"}
         </span>
       </div>
-      <div className="archive-tag-list" role="list">
+      <div className="archive-v2-tag-list" role="list">
         {labels.length === 0 ? (
-          <p className="archive-filter-empty">没有可用标签。</p>
+          <p className="archive-v2-empty-small">没有可用标签。</p>
         ) : null}
         {labels.map((label) => {
           const isSelected = selectedLabels.has(label);
@@ -439,11 +431,11 @@ function TagFilter({
           return (
             <motion.button
               layout
-              className={`archive-tag-button ${isSelected ? "is-active" : ""}`}
+              aria-pressed={isSelected}
+              className={`archive-v2-tag ${isSelected ? "is-active" : ""}`}
               key={label}
               onClick={() => onToggle(label)}
-              role="listitem"
-              whileTap={{ scale: 0.96 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
             >
               {transformLabel(label)}

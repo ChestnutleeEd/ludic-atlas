@@ -2,12 +2,14 @@
 
 /* eslint-disable @next/next/no-img-element */
 
+import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
 import {
   getGameDisplayTitle,
   getGameSecondaryTitle,
   getGenreLabel
 } from "@/lib/localization";
 import type { Game } from "@/types/game";
+import type { ReactNode, SyntheticEvent } from "react";
 import type { ArchiveYearGroup } from "./ArchiveTimeline";
 
 type ArchiveDossierProps = {
@@ -24,10 +26,6 @@ function splitArchiveTags(values: string[]) {
 
 function formatRating(rating: number) {
   return Number.isFinite(rating) ? rating.toFixed(1) : "0.0";
-}
-
-function getCoverFallbackLabel(title: string) {
-  return title.trim().charAt(0).toUpperCase() || "No Cover";
 }
 
 function getTopValues(values: string[], limit = 4) {
@@ -47,14 +45,19 @@ function getDossierCode(year: number | null, gameId?: string) {
   return `GE-CHR-${year ?? "UNKN"}-${gameId ?? "YEAR"}`;
 }
 
-export function ArchiveDossier({
-  group,
-  selectedGame
-}: ArchiveDossierProps) {
+function handleCoverError(event: SyntheticEvent<HTMLImageElement>) {
+  if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
+    event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
+  }
+}
+
+export function ArchiveDossier({ group, selectedGame }: ArchiveDossierProps) {
   const averageRating =
     group.games.length > 0
-      ? group.games.reduce((sum, game) => sum + game.rating, 0) /
-        group.games.length
+      ? group.games.reduce(
+          (sum, game) => sum + (Number.isFinite(game.rating) ? game.rating : 0),
+          0
+        ) / group.games.length
       : 0;
   const topGenres = getTopValues(
     group.games.flatMap((game) => splitArchiveTags(game.genres))
@@ -65,7 +68,7 @@ export function ArchiveDossier({
 
   if (!selectedGame) {
     return (
-      <aside className="chronicle-modal-dossier chronicle-dossier archive-paper-dossier archive-dossier archive-dossier-empty">
+      <aside className="archive-v2-dossier archive-v2-dossier-empty">
         <DossierYearSummary
           averageRating={averageRating}
           group={group}
@@ -82,41 +85,32 @@ export function ArchiveDossier({
   const platforms = splitArchiveTags(selectedGame.platforms);
 
   return (
-    <aside className="chronicle-modal-dossier chronicle-dossier archive-paper-dossier archive-dossier">
-      <div className="archive-dossier-tab" aria-hidden="true" />
+    <aside className="archive-v2-dossier">
       <DossierYearSummary
         averageRating={averageRating}
         group={group}
         topGenres={topGenres}
         topPlatforms={topPlatforms}
       />
-      <p className="archive-brass-label archive-kicker">
-        {getDossierCode(group.year, selectedGame.id)}
-      </p>
-      <div className="archive-dossier-cover">
-        <span className="archive-cover-fallback">
-          {getCoverFallbackLabel(title)}
-        </span>
-        {selectedGame.coverImage ? (
-          <img
-            alt={`${title} 封面`}
-            height={560}
-            loading="lazy"
-            onError={(event) => {
-              event.currentTarget.style.display = "none";
-            }}
-            src={selectedGame.coverImage}
-            width={420}
-          />
-        ) : null}
+
+      <div className="archive-v2-dossier-divider" aria-hidden="true" />
+
+      <p className="archive-v2-kicker">{getDossierCode(group.year, selectedGame.id)}</p>
+      <div className="archive-v2-dossier-cover">
+        <img
+          alt={`${title} 封面`}
+          loading="lazy"
+          onError={handleCoverError}
+          src={getGameCoverImage(selectedGame)}
+        />
       </div>
-      <h3>{title}</h3>
-      {secondaryTitle ? <p className="archive-dossier-subtitle">{secondaryTitle}</p> : null}
-      <dl className="archive-dossier-grid">
-        <div>
-          <dt>馆藏编号</dt>
-          <dd>{getDossierCode(group.year, selectedGame.id)}</dd>
-        </div>
+
+      <div className="archive-v2-dossier-title">
+        <h3>{title}</h3>
+        {secondaryTitle ? <p>{secondaryTitle}</p> : null}
+      </div>
+
+      <dl className="archive-v2-dossier-meta">
         <div>
           <dt>发行年份</dt>
           <dd>{selectedGame.releaseYear || "Unknown Year"}</dd>
@@ -127,36 +121,22 @@ export function ArchiveDossier({
         </div>
         <div>
           <dt>地区</dt>
-          <dd>{selectedGame.countryName || selectedGame.countryCode}</dd>
+          <dd>{selectedGame.countryName || selectedGame.countryCode || "未知"}</dd>
         </div>
       </dl>
-      <div className="archive-dossier-section">
-        <p>制作与发行</p>
-        <div>
-          {selectedGame.developer || "Unknown"} /{" "}
-          {selectedGame.publisher || "Unknown"}
-        </div>
-      </div>
-      <div className="archive-dossier-section">
-        <p>馆藏标签</p>
-        <div>{genres.length > 0 ? genres.map(getGenreLabel).join(" / ") : "类型未知"}</div>
-      </div>
-      <div className="archive-dossier-section">
-        <p>平台索引</p>
-        <div>{platforms.length > 0 ? platforms.join(" / ") : "平台未知"}</div>
-      </div>
-      <div className="archive-dossier-section">
-        <p>档案简介</p>
-        {selectedGame.description ? (
-          <div>{selectedGame.description}</div>
-        ) : (
-          <div className="archive-description-empty">
-            <span aria-hidden="true" />
-            <strong>暂无简介</strong>
-            <em>该位置保留为后续策展注记，不使用虚构内容填充。</em>
-          </div>
-        )}
-      </div>
+
+      <DossierSection title="制作与发行">
+        {selectedGame.developer || "Unknown"} / {selectedGame.publisher || "Unknown"}
+      </DossierSection>
+      <DossierSection title="馆藏标签">
+        {genres.length > 0 ? genres.map(getGenreLabel).join(" / ") : "类型未知"}
+      </DossierSection>
+      <DossierSection title="平台索引">
+        {platforms.length > 0 ? platforms.join(" / ") : "平台未知"}
+      </DossierSection>
+      <DossierSection title="档案简介" isLongText>
+        {selectedGame.description || "暂无简介"}
+      </DossierSection>
     </aside>
   );
 }
@@ -173,10 +153,10 @@ function DossierYearSummary({
   topPlatforms: string[];
 }) {
   return (
-    <section className="archive-dossier-year-summary">
-      <p className="archive-brass-label archive-kicker">年度概览</p>
+    <section className="archive-v2-year-summary-panel">
+      <p className="archive-v2-kicker">年度概览</p>
       <h3>{group.year ?? "Unknown Year"} 年</h3>
-      <dl className="archive-dossier-grid">
+      <dl className="archive-v2-dossier-meta">
         <div>
           <dt>馆藏记录</dt>
           <dd>{group.games.length}</dd>
@@ -186,16 +166,29 @@ function DossierYearSummary({
           <dd>{formatRating(averageRating)}</dd>
         </div>
       </dl>
-      <div className="archive-dossier-section">
-        <p>主要类型</p>
-        <div>
-          {topGenres.length > 0 ? topGenres.map(getGenreLabel).join(" / ") : "类型未知"}
-        </div>
-      </div>
-      <div className="archive-dossier-section">
-        <p>主要平台</p>
-        <div>{topPlatforms.length > 0 ? topPlatforms.join(" / ") : "平台未知"}</div>
-      </div>
+      <DossierSection title="主要类型">
+        {topGenres.length > 0 ? topGenres.map(getGenreLabel).join(" / ") : "类型未知"}
+      </DossierSection>
+      <DossierSection title="主要平台">
+        {topPlatforms.length > 0 ? topPlatforms.join(" / ") : "平台未知"}
+      </DossierSection>
+    </section>
+  );
+}
+
+function DossierSection({
+  children,
+  isLongText = false,
+  title
+}: {
+  children: ReactNode;
+  isLongText?: boolean;
+  title: string;
+}) {
+  return (
+    <section className={`archive-v2-dossier-section ${isLongText ? "is-long" : ""}`}>
+      <p>{title}</p>
+      <div>{children}</div>
     </section>
   );
 }

@@ -3,10 +3,38 @@ import {
   getGameSecondaryTitle,
   getGenreListLabel
 } from "@/lib/localization";
+import { Fragment } from "react";
 import type { Game } from "@/types/game";
+import type { CSSProperties } from "react";
 
 type GameTooltipProps = {
   game: Game | null;
+};
+
+type GameTooltipField = {
+  label: "年份" | "评分" | "国家" | "类型";
+  value: string;
+};
+
+type GameTooltipContent = {
+  fields: GameTooltipField[];
+  secondaryTitle: string | null;
+  title: string;
+};
+
+const clampTwoLineStyle: CSSProperties = {
+  display: "-webkit-box",
+  overflow: "hidden",
+  overflowWrap: "anywhere",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: 2
+};
+
+const clampOneLineStyle: CSSProperties = {
+  overflow: "hidden",
+  overflowWrap: "anywhere",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap"
 };
 
 export function GameTooltip({ game }: GameTooltipProps) {
@@ -14,56 +42,93 @@ export function GameTooltip({ game }: GameTooltipProps) {
     return null;
   }
 
-  const secondaryTitle = getGameSecondaryTitle(game);
+  const tooltip = getGameTooltipContent(game);
 
   return (
-    <div className="w-72 border border-cyan-100/45 bg-slate-950/88 p-3 text-left text-xs text-slate-100 shadow-[0_0_34px_rgba(0,240,255,0.34),0_0_70px_rgba(168,85,247,0.18)] backdrop-blur-xl">
-      <p className="text-sm font-semibold leading-snug text-cyan-50">
-        {getGameDisplayTitle(game)}
+    <div className="globe-game-tooltip">
+      <p className="globe-game-tooltip-title" style={clampTwoLineStyle}>
+        {tooltip.title}
       </p>
-      {secondaryTitle ? (
-        <p className="mt-1 text-[11px] leading-snug text-cyan-50/55">
-          {secondaryTitle}
+      {tooltip.secondaryTitle ? (
+        <p
+          className="globe-game-tooltip-secondary"
+          style={clampOneLineStyle}
+        >
+          {tooltip.secondaryTitle}
         </p>
       ) : null}
-      <dl className="mt-3 grid grid-cols-[72px_1fr] gap-x-3 gap-y-2 text-cyan-50/52">
-        <dt>年份</dt>
-        <dd className="text-sky-100">{game.releaseYear}</dd>
-        <dt>评分</dt>
-        <dd className="text-sky-100">{game.rating.toFixed(1)}</dd>
-        <dt>国家</dt>
-        <dd className="text-sky-100">{game.countryName}</dd>
-        <dt>类型</dt>
-        <dd className="text-sky-100">{getGenreListLabel(game.genres)}</dd>
+      <dl className="globe-game-tooltip-list">
+        {tooltip.fields.map((field) => (
+          <Fragment key={field.label}>
+            <dt>{field.label}</dt>
+            <dd style={clampTwoLineStyle}>
+              {field.value}
+            </dd>
+          </Fragment>
+        ))}
       </dl>
     </div>
   );
 }
 
 export function getGameTooltipMarkup(game: Game) {
-  const secondaryTitle = getGameSecondaryTitle(game);
+  const tooltip = getGameTooltipContent(game);
 
   return `
     <div class="globe-game-tooltip">
-      <p class="globe-game-tooltip-title">${escapeHtml(getGameDisplayTitle(game))}</p>
+      <p class="globe-game-tooltip-title" style="${CLAMP_TWO_LINE_STYLE}">${escapeHtml(tooltip.title)}</p>
       ${
-        secondaryTitle
-          ? `<p class="globe-game-tooltip-secondary">${escapeHtml(secondaryTitle)}</p>`
+        tooltip.secondaryTitle
+          ? `<p class="globe-game-tooltip-secondary" style="${CLAMP_ONE_LINE_STYLE}">${escapeHtml(tooltip.secondaryTitle)}</p>`
           : ""
       }
       <dl class="globe-game-tooltip-list">
-        <dt>年份</dt>
-        <dd>${game.releaseYear}</dd>
-        <dt>评分</dt>
-        <dd>${game.rating.toFixed(1)}</dd>
-        <dt>国家</dt>
-        <dd>${escapeHtml(game.countryName)}</dd>
-        <dt>类型</dt>
-        <dd>${escapeHtml(getGenreListLabel(game.genres))}</dd>
+        ${tooltip.fields
+          .map(
+            (field) => `
+              <dt>${field.label}</dt>
+              <dd style="${CLAMP_TWO_LINE_STYLE}">${escapeHtml(field.value)}</dd>
+            `
+          )
+          .join("")}
       </dl>
     </div>
   `;
 }
+
+function getGameTooltipContent(game: Game): GameTooltipContent {
+  return {
+    title: getGameDisplayTitle(game),
+    secondaryTitle: getGameSecondaryTitle(game),
+    fields: [
+      {
+        label: "年份",
+        value: String(game.releaseYear)
+      },
+      {
+        label: "评分",
+        value: formatRating(game.rating)
+      },
+      {
+        label: "国家",
+        value: game.countryName
+      },
+      {
+        label: "类型",
+        value: getGenreListLabel(game.genres)
+      }
+    ]
+  };
+}
+
+function formatRating(rating: number) {
+  return Number.isFinite(rating) ? rating.toFixed(1) : "暂无";
+}
+
+const CLAMP_TWO_LINE_STYLE =
+  "display:-webkit-box;overflow:hidden;overflow-wrap:anywhere;-webkit-box-orient:vertical;-webkit-line-clamp:2;";
+const CLAMP_ONE_LINE_STYLE =
+  "overflow:hidden;overflow-wrap:anywhere;text-overflow:ellipsis;white-space:nowrap;";
 
 function escapeHtml(value: string) {
   return value

@@ -24,11 +24,11 @@ export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
   const coverImage = getGameCoverImage(game);
 
   return (
-    <article className="game-detail-card">
+    <article aria-labelledby="game-detail-title" className="game-detail-card">
       <div className="game-detail-card-header">
-        <div className="game-detail-cover" aria-hidden="true">
+        <div className="game-detail-cover">
           <img
-            alt=""
+            alt={`${title} 封面`}
             loading="lazy"
             onError={(event) => {
               if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
@@ -39,13 +39,15 @@ export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
           />
         </div>
         <div className="min-w-0">
-          <h3>{title}</h3>
+          <h3 id="game-detail-title">{title}</h3>
           {secondaryTitle ? <p>{secondaryTitle}</p> : null}
-          <span>评分 {game.rating.toFixed(1)}</span>
+          <span>
+            {game.releaseYear} / 评分 {game.rating.toFixed(1)}
+          </span>
         </div>
         {onClose ? (
           <button
-            aria-label="关闭游戏简介"
+            aria-label={`关闭 ${title} 游戏简介`}
             className="game-detail-close"
             onClick={onClose}
             type="button"
@@ -56,6 +58,10 @@ export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
       </div>
 
       <dl className="game-detail-meta">
+        <div>
+          <dt>国家 / 地区</dt>
+          <dd>{game.countryName}</dd>
+        </div>
         <div>
           <dt>开发商</dt>
           <dd>{game.developer}</dd>

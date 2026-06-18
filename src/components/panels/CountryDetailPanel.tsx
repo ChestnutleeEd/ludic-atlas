@@ -36,8 +36,11 @@ export function CountryDetailPanel({
 }: CountryDetailPanelProps) {
   if (!country) {
     return (
-      <section className="country-detail-shell">
+      <section aria-labelledby="country-detail-empty-title" className="country-detail-shell">
         <h2 className="text-lg font-semibold text-cyan-100">国家详情</h2>
+        <span id="country-detail-empty-title" className="sr-only">
+          未选择国家
+        </span>
         <p className="mt-3 text-sm text-cyan-50/60">
           选择一个国家或地区，查看代表性游戏。
         </p>
@@ -63,11 +66,16 @@ export function CountryDetailPanel({
     releaseYears.length > 0
       ? `${Math.min(...releaseYears)}-${Math.max(...releaseYears)}`
       : `${yearRange.min}-${yearRange.max}`;
+  const countryTitle = getCountryDisplayName(country);
+  const selectedGame = selectedGameId
+    ? countryGames.find((game) => game.id === selectedGameId)
+    : null;
 
   return (
-    <section className="country-detail-shell">
+    <section aria-labelledby="country-detail-title" className="country-detail-shell">
       <div className="country-detail-topbar">
         <button
+          aria-label={`返回 ${getRegionLabel(country.region)} 国家总览`}
           className="country-detail-back"
           onClick={onClearCountry}
           type="button"
@@ -79,9 +87,11 @@ export function CountryDetailPanel({
 
       <header className="country-detail-header">
         <div>
-          <p>国家详情</p>
-          <h2>{getCountryDisplayName(country)}</h2>
-          <span>{getRegionLabel(country.region)}</span>
+          <p>当前国家 / 地区</p>
+          <h2 id="country-detail-title">{countryTitle}</h2>
+          <span>
+            {getRegionLabel(country.region)} / {countryGames.length} 款游戏
+          </span>
         </div>
       </header>
 
@@ -109,7 +119,7 @@ export function CountryDetailPanel({
           <div>
             <h3>游戏封面墙</h3>
             <p>
-              当前筛选年份：{yearRange.min}-{yearRange.max}
+              当前年份：{yearRange.min}-{yearRange.max}；封面 marker 代表可点击游戏
             </p>
           </div>
           <span>{countryGames.length} 款</span>
@@ -129,6 +139,10 @@ export function CountryDetailPanel({
 
               return (
                 <button
+                  aria-label={`查看 ${title} 详情，${game.releaseYear} 年，评分 ${game.rating.toFixed(
+                    1
+                  )}`}
+                  aria-pressed={isSelected}
                   className={`country-game-card ${isSelected ? "is-selected" : ""}`}
                   key={game.id}
                   onClick={() => onSelectGame(game.id)}
@@ -136,7 +150,7 @@ export function CountryDetailPanel({
                 >
                   <span className="country-game-cover">
                     <img
-                      alt={title}
+                      alt={`${title} 封面`}
                       loading="lazy"
                       onError={(event) => {
                         if (
@@ -165,7 +179,11 @@ export function CountryDetailPanel({
       </div>
 
       <div className="country-detail-game-dock">
-        <p>点击游戏封面查看简介。</p>
+        <p>
+          {selectedGame
+            ? `已选择：${getGameDisplayTitle(selectedGame)}`
+            : "点击游戏封面查看简介。"}
+        </p>
       </div>
     </section>
   );

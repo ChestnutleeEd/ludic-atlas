@@ -3,7 +3,9 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { motion } from "motion/react";
-import { getGenreLabel } from "@/lib/localization";
+import type { SyntheticEvent } from "react";
+import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
+import { getGameDisplayTitle, getGenreLabel } from "@/lib/localization";
 import type { Game } from "@/types/game";
 
 export type ArchiveYearGroup = {
@@ -18,12 +20,6 @@ type ArchiveTimelineProps = {
   groups: ArchiveYearGroup[];
   onSelectYear: (year: number | null) => void;
 };
-
-function getCoverFallbackLabel(game: Game) {
-  const title = game.titleZh || game.title || "No Cover";
-
-  return title.trim().charAt(0).toUpperCase() || "No Cover";
-}
 
 function splitArchiveTags(values: string[]) {
   return values
@@ -66,7 +62,13 @@ function getFeaturedGame(games: Game[]) {
 }
 
 function getArchiveNumber(year: number | null, index: number) {
-  return `GE-CHR-${year ?? "UNKN"}-${String(index + 1).padStart(3, "0")}`;
+  return `GE-${year ?? "UNKN"}-${String(index + 1).padStart(3, "0")}`;
+}
+
+function handleCoverError(event: SyntheticEvent<HTMLImageElement>) {
+  if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
+    event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
+  }
 }
 
 export function ArchiveTimeline({
@@ -76,83 +78,70 @@ export function ArchiveTimeline({
 }: ArchiveTimelineProps) {
   if (groups.length === 0) {
     return (
-      <div className="chronicle-timeline chronicle-timeline-empty">
+      <div className="archive-v2-timeline-empty">
         没有符合当前筛选条件的年份。
       </div>
     );
   }
 
   return (
-    <section
-      className="chronicle-timeline chronicle-year-story"
-      aria-label="Game Chronicle timeline"
-    >
-      <div className="chronicle-story-line" aria-hidden="true" />
-      <div className="chronicle-year-track chronicle-story-track">
+    <section className="archive-v2-timeline" aria-label="Game Chronicle timeline">
+      <div className="archive-v2-film-rail" aria-hidden="true" />
+      <div className="archive-v2-year-track">
         {groups.map((group, index) => {
           const isActive = group.year === activeYear;
           const topGenre = getTopGenreLabel(group.games);
           const averageRating = getAverageRating(group.games);
           const featuredGame = getFeaturedGame(group.games);
+          const featuredTitle = featuredGame
+            ? getGameDisplayTitle(featuredGame)
+            : topGenre;
 
           return (
             <motion.button
-              data-year-node
-              className={`chronicle-year-node chronicle-year-node-large ${
-                isActive ? "is-active" : ""
-              }`}
+              className={`archive-v2-year-card ${isActive ? "is-active" : ""}`}
               key={group.label}
               layout
               onClick={() => onSelectYear(group.year)}
-              whileHover={{ y: -6 }}
-              whileTap={{ scale: 0.985 }}
               type="button"
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.99 }}
             >
-              <span className="chronicle-era-marker" aria-hidden="true" />
-              <span className="chronicle-index-number">
-                {getArchiveNumber(group.year, index)}
+              <span className="archive-v2-year-topline">
+                <span>{getArchiveNumber(group.year, index)}</span>
+                <span>{group.games.length} 份馆藏</span>
               </span>
-              <span className="chronicle-year-plaque">
-                <span>ARCHIVE INDEX / 年份档案</span>
-                <strong>{group.year ?? "Unknown"}</strong>
+              <span className="archive-v2-year-title">
+                {group.year ?? "Unknown"}
               </span>
-              <span className="chronicle-year-summary">
-                <small>CURATED ENTRY</small>
-                <strong title={featuredGame?.titleZh || featuredGame?.title}>
-                  {featuredGame?.titleZh || featuredGame?.title || topGenre}
-                </strong>
-                <span>{topGenre} · 平均评分 {averageRating}</span>
+              <span className="archive-v2-year-summary">
+                <small>代表作品</small>
+                <strong title={featuredTitle}>{featuredTitle}</strong>
+                <span>{topGenre}</span>
               </span>
-              <span className="chronicle-year-count">
-                {group.games.length} 份馆藏记录
+              <span className="archive-v2-year-meta">
+                <span>
+                  <small>平均评分</small>
+                  <strong>{averageRating}</strong>
+                </span>
+                <span>
+                  <small>代表作品</small>
+                  <strong title={featuredTitle}>{featuredTitle}</strong>
+                </span>
               </span>
-              <span
-                className="chronicle-year-covers drawer-preview-stack"
-                style={{
-                  gridTemplateColumns: `repeat(${group.previewGames.length}, minmax(0, 1fr))`
-                }}
-              >
-                {group.previewGames.map((game) => (
-                  <span className="chronicle-thumb" key={game.id}>
-                    <span className="chronicle-thumb-fallback">
-                      {getCoverFallbackLabel(game)}
-                    </span>
-                    {game.coverImage ? (
-                      <img
-                        alt={`${game.titleZh || game.title} 封面`}
-                        height={120}
-                        loading="lazy"
-                        onError={(event) => {
-                          event.currentTarget.style.display = "none";
-                        }}
-                        src={game.coverImage}
-                        width={80}
-                      />
-                    ) : null}
+              <span className="archive-v2-cover-strip" aria-hidden="true">
+                {group.previewGames.slice(0, 5).map((game) => (
+                  <span className="archive-v2-mini-cover" key={game.id}>
+                    <img
+                      alt=""
+                      loading="lazy"
+                      onError={handleCoverError}
+                      src={getGameCoverImage(game)}
+                    />
                   </span>
                 ))}
               </span>
-              <span className="chronicle-year-open-label">打开档案抽屉</span>
+              <span className="archive-v2-open-label">打开年度展柜</span>
             </motion.button>
           );
         })}

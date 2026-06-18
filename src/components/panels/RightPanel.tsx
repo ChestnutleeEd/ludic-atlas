@@ -36,6 +36,9 @@ export function RightPanel({
   onSelectGame
 }: RightPanelProps) {
   const isGameDetailOpen = Boolean(selectedGame);
+  const panelTitle = selectedCountry
+    ? `${selectedCountry.nameZh} ${selectedCountry.name} 国家详情`
+    : `${getRegionLabel(activeRegionId)} 国家与地区总览`;
 
   useEffect(() => {
     if (!isGameDetailOpen) {
@@ -55,6 +58,7 @@ export function RightPanel({
 
   return (
     <aside
+      aria-label={panelTitle}
       className={`glass-panel right-panel-shell relative min-h-[460px] max-h-[calc(100vh-180px)] p-4 ${
         isGameDetailOpen ? "is-game-detail-open overflow-hidden" : "overflow-y-auto"
       }`}

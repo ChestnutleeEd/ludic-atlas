@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameArchiveView } from "@/components/archive/GameArchiveView";
 import { BottomControls } from "@/components/controls/BottomControls";
-import { GameGlobe } from "@/components/globe/GameGlobe";
+import {
+  GameGlobe,
+  type GlobeCameraCommand
+} from "@/components/globe/GameGlobe";
 import { LandingHub } from "@/components/home/LandingHub";
 import { RightPanel } from "@/components/panels/RightPanel";
 import { countries } from "@/data/countries";
@@ -33,7 +36,6 @@ export function GameEarthApp() {
     null
   );
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
-  const [hoveredGameId, setHoveredGameId] = useState<string | null>(null);
   const [yearRange, setYearRange] = useState<YearRange>({
     min: totalStats.minReleaseYear,
     max: totalStats.maxReleaseYear
@@ -44,6 +46,8 @@ export function GameEarthApp() {
   const [activeRegionId, setActiveRegionId] = useState<RegionId>("global");
   const [cameraMode, setCameraMode] = useState<CameraMode>("overview");
   const [isRotateEnabled, setIsRotateEnabled] = useState(false);
+  const [globeCameraCommand, setGlobeCameraCommand] =
+    useState<GlobeCameraCommand | null>(null);
 
   const selectedCountry = useMemo<Country | null>(
     () => countries.find((country) => country.code === selectedCountryCode) ?? null,
@@ -79,7 +83,6 @@ export function GameEarthApp() {
 
   const handleRegionChange = useCallback((regionId: RegionId) => {
     setActiveRegionId(regionId);
-    setHoveredGameId(null);
     setSelectedGameId(null);
     setSelectedCountryCode((currentCountryCode) => {
       if (!currentCountryCode || regionId === "global") {
@@ -100,6 +103,16 @@ export function GameEarthApp() {
     setSelectedCountryCode(null);
     setSelectedGameId(null);
   }, []);
+
+  const sendGlobeCameraCommand = useCallback(
+    (type: GlobeCameraCommand["type"]) => {
+      setGlobeCameraCommand({
+        id: Date.now(),
+        type
+      });
+    },
+    []
+  );
 
   const handleSelectGameFromMap = useCallback((gameId: string) => {
     const game = yearFilteredGames.find((item) => item.id === gameId);
@@ -127,9 +140,15 @@ export function GameEarthApp() {
     });
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ left: 0, top: 0 });
+  }, [mainViewMode]);
+
   return (
     <main
       className={`game-earth-shell min-h-screen overflow-x-hidden ${
+        mainViewMode === "archive" ? "is-archive-mode" : ""
+      } ${
         mainViewMode === "archive" ? "p-0" : "px-5 py-5 md:px-8"
       }`}
     >
@@ -207,12 +226,12 @@ export function GameEarthApp() {
               isRotateEnabled={isRotateEnabled}
               selectedCountry={selectedCountry}
               selectedGameId={selectedGameId}
-              hoveredGameId={hoveredGameId}
               viewMode={viewMode}
               coverSize={coverSize}
+              cameraCommand={globeCameraCommand}
+              onClearCountry={handleClearCountry}
               onSelectCountry={handleSelectCountry}
               onSelectGame={handleSelectGameFromMap}
-              onHoverGame={setHoveredGameId}
               onRegionChange={handleRegionChange}
             />
             <RightPanel
@@ -255,6 +274,19 @@ export function GameEarthApp() {
             onCameraModeChange={setCameraMode}
             onViewModeChange={setViewMode}
             onRotateChange={setIsRotateEnabled}
+            onResetView={() => {
+              handleClearCountry();
+              handleRegionChange("global");
+              sendGlobeCameraCommand("reset");
+            }}
+            onZoomIn={() => sendGlobeCameraCommand("zoomIn")}
+            onZoomOut={() => sendGlobeCameraCommand("zoomOut")}
+            regionStatusLabel={`区域筛选：${getRegionLabel(activeRegionId)}`}
+            zoomStatusLabel={
+              cameraMode === "surface"
+                ? "近地镜头支持深度放大"
+                : "总览镜头用于区域巡览"
+            }
           />
         ) : null}
         <p className="px-1 text-[11px] leading-5 text-[#A99D8B]/60">

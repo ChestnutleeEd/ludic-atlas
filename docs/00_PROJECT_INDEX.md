@@ -165,8 +165,8 @@ http://localhost:3000
 | Main product shell        | `src/components/GameEarthApp.tsx`              |
 | Landing hub               | `src/components/home/LandingHub.tsx`           |
 | Game Chronicle view       | `src/components/archive/GameArchiveView.tsx`   |
-| Archive scroll exhibition timeline | `src/components/archive/ArchiveTimeline.tsx`   |
-| Archive year dossier drawer | `src/components/archive/ArchiveYearModal.tsx` |
+| Archive film timeline | `src/components/archive/ArchiveTimeline.tsx`   |
+| Archive year exhibit modal | `src/components/archive/ArchiveYearModal.tsx` |
 | Archive active year drawer | `src/components/archive/ArchiveYearDrawer.tsx` |
 | Archive dossier panel     | `src/components/archive/ArchiveDossier.tsx`    |
 | Legacy 2.5D earth map view | `src/components/globe/GameGlobe2D.tsx`        |

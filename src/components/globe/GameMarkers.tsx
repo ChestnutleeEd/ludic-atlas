@@ -20,10 +20,19 @@ export type GlobeGameMarker = {
   lat: number;
   lng: number;
   markerStyle: "card" | "dot";
+  markerLayer:
+    | "country-aggregate"
+    | "rating-highlight"
+    | "selected-country"
+    | "selected-game";
   selected: boolean;
   hovered: boolean;
+  countryLabel: string;
+  countryGameCount: number;
   sameCountryIndex: number;
   sameCountrySelected: boolean;
+  selectsCountry: boolean;
+  showRichTooltip: boolean;
   viewMode: ViewMode;
 };
 
@@ -67,6 +76,8 @@ type CreateGameMarkerElementOptions = {
 const GLOBAL_MARKERS_PER_COUNTRY = 1;
 const REGION_MARKERS_PER_COUNTRY = 6;
 const SELECTED_COUNTRY_MARKER_LIMIT = 12;
+const HIGH_RATING_THRESHOLD_TEN_POINT = 9;
+const HIGH_RATING_THRESHOLD_FIVE_POINT = 4.5;
 
 export function buildGameMarkers({
   activeRegionId,
@@ -99,8 +110,15 @@ export function buildGameMarkers({
       ? GLOBAL_MARKERS_PER_COUNTRY
       : REGION_MARKERS_PER_COUNTRY;
 
-  return [...gamesByCountry.entries()].flatMap<GlobeGameMarker>(
-    ([countryCode, countryGames]) => {
+  const sortedCountryGroups = [...gamesByCountry.entries()].map(
+    ([countryCode, countryGames]) => ({
+      countryCode,
+      sortedGames: sortRepresentativeGames(countryGames)
+    })
+  );
+
+  return sortedCountryGroups.flatMap<GlobeGameMarker>(
+    ({ countryCode, sortedGames }) => {
       if (selectedCountryCode && countryCode !== selectedCountryCode) {
         return [];
       }
@@ -112,11 +130,12 @@ export function buildGameMarkers({
       }
 
       const representativeGames = getRepresentativeCountryGames({
-        games: countryGames,
+        games: sortedGames,
         limit: markerLimit,
         selectedGameId
       });
       const total = representativeGames.length;
+      const countryGameCount = sortedGames.length;
       const spreadMode = selectedCountryCode
         ? "country"
         : activeRegionId === "global"
@@ -132,16 +151,35 @@ export function buildGameMarkers({
           total
         });
 
+        const selected = game.id === selectedGameId;
+        const sameCountrySelected = game.countryCode === selectedCountryCode;
+        const markerLayer = getGameMarkerLayer({
+          game,
+          index,
+          sameCountrySelected,
+          selected,
+          viewMode
+        });
+
         return {
           kind: "game",
           game,
           lat: coordinates.lat,
           lng: coordinates.lng,
-          markerStyle: "card",
-          selected: game.id === selectedGameId,
-          hovered: game.id === hoveredGameId,
-          sameCountrySelected: game.countryCode === selectedCountryCode,
+          markerStyle: markerLayer === "country-aggregate" ? "dot" : "card",
+          markerLayer,
+          selected,
+          hovered: selected ? true : game.id === hoveredGameId,
+          countryLabel: getCountryDisplayName(country),
+          countryGameCount,
+          sameCountrySelected,
           sameCountryIndex: index,
+          selectsCountry:
+            markerLayer === "country-aggregate" && viewMode === "countries",
+          showRichTooltip:
+            markerLayer === "selected-country" ||
+            markerLayer === "selected-game" ||
+            markerLayer === "rating-highlight",
           viewMode
         };
       });
@@ -188,11 +226,7 @@ export function createGameMarkerElement({
     const secondaryTitle = getGameSecondaryTitle(marker.game);
     const isCoverMarker =
       renderCoverMarkers &&
-      (marker.markerStyle === "card" ||
-        marker.selected ||
-        (marker.viewMode === "games" &&
-          marker.sameCountrySelected &&
-          marker.sameCountryIndex < 6));
+      (marker.markerStyle === "card" || marker.selected);
     const width = isCoverMarker
       ? Math.max(46, Math.round(coverSize * 0.82))
       : Math.max(9, Math.round(coverSize * 0.18));
@@ -205,9 +239,7 @@ export function createGameMarkerElement({
     element.className = [
       "globe-game-marker",
       isCoverMarker ? "is-cover" : "is-dot",
-      marker.markerStyle === "card" && !marker.sameCountrySelected
-        ? "is-representative"
-        : "",
+      marker.markerLayer === "rating-highlight" ? "is-representative" : "",
       marker.selected ? "is-selected" : "",
       marker.hovered ? "is-hovered" : "",
       marker.sameCountrySelected ? "is-country-selected" : ""
@@ -216,10 +248,13 @@ export function createGameMarkerElement({
       .join(" ");
     element.style.width = `${width}px`;
     element.style.height = `${height}px`;
-    element.title = secondaryTitle
-      ? `${markerTitle} / ${secondaryTitle}`
-      : markerTitle;
-    element.setAttribute("aria-label", `选择游戏：${markerTitle}`);
+    element.title = getGameMarkerTitle(marker, markerTitle, secondaryTitle);
+    element.dataset.markerLayer = marker.markerLayer;
+    element.dataset.gameCount = String(marker.countryGameCount);
+    element.setAttribute(
+      "aria-label",
+      getGameMarkerAriaLabel(marker, markerTitle)
+    );
 
     if (isCoverMarker) {
       element.innerHTML = getCoverMarkerMarkup(
@@ -237,12 +272,41 @@ export function createGameMarkerElement({
     element.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
+      if (marker.selectsCountry) {
+        onSelectCountry(marker.game.countryCode);
+        return;
+      }
+
       onSelectGame(marker.game.id);
     });
-    element.addEventListener("mouseenter", () => onHoverGame(marker.game.id));
-    element.addEventListener("mouseleave", () => onHoverGame(null));
-    element.addEventListener("focus", () => onHoverGame(marker.game.id));
-    element.addEventListener("blur", () => onHoverGame(null));
+    element.addEventListener("mouseenter", () => {
+      if (marker.selectsCountry) {
+        onHoverCountry(marker.game.countryCode);
+      }
+
+      onHoverGame(marker.game.id);
+    });
+    element.addEventListener("mouseleave", () => {
+      if (marker.selectsCountry) {
+        onHoverCountry(null);
+      }
+
+      onHoverGame(null);
+    });
+    element.addEventListener("focus", () => {
+      if (marker.selectsCountry) {
+        onHoverCountry(marker.game.countryCode);
+      }
+
+      onHoverGame(marker.game.id);
+    });
+    element.addEventListener("blur", () => {
+      if (marker.selectsCountry) {
+        onHoverCountry(null);
+      }
+
+      onHoverGame(null);
+    });
 
     return element;
   };
@@ -300,7 +364,7 @@ function getCoverMarkerMarkup(
     ? `<img class="globe-game-cover-image ${coverImage === FALLBACK_GAME_COVER_IMAGE ? "is-fallback" : ""}" alt="" data-fallback-src="${escapeAttribute(FALLBACK_GAME_COVER_IMAGE)}" loading="lazy" src="${escapeAttribute(coverImage)}">`
     : "";
   const tooltipMarkup =
-    marker.sameCountrySelected || marker.selected || marker.hovered
+    marker.showRichTooltip || marker.selected || marker.hovered
       ? getGameTooltipMarkup(marker.game)
       : "";
 
@@ -313,6 +377,10 @@ function getCoverMarkerMarkup(
   `;
 }
 
+function sortRepresentativeGames(games: Game[]) {
+  return [...games].sort(compareRepresentativeGames);
+}
+
 function getRepresentativeCountryGames({
   games,
   limit,
@@ -322,32 +390,93 @@ function getRepresentativeCountryGames({
   limit: number;
   selectedGameId: string | null;
 }) {
-  const sortedGames = [...games].sort((gameA, gameB) => {
-    const ratingDifference = gameB.rating - gameA.rating;
-
-    if (ratingDifference !== 0) {
-      return ratingDifference;
-    }
-
-    if (hasRealGameCover(gameA) !== hasRealGameCover(gameB)) {
-      return hasRealGameCover(gameA) ? -1 : 1;
-    }
-
-    return gameA.title.localeCompare(gameB.title);
-  });
-  const visibleGames = sortedGames.slice(0, limit);
+  const visibleGames = games.slice(0, limit);
 
   if (!selectedGameId || visibleGames.some((game) => game.id === selectedGameId)) {
     return visibleGames;
   }
 
-  const selectedGame = sortedGames.find((game) => game.id === selectedGameId);
+  const selectedGame = games.find((game) => game.id === selectedGameId);
 
   if (!selectedGame) {
     return visibleGames;
   }
 
   return [...visibleGames.slice(0, Math.max(0, limit - 1)), selectedGame];
+}
+
+function compareRepresentativeGames(gameA: Game, gameB: Game) {
+  const ratingDifference = gameB.rating - gameA.rating;
+
+  if (ratingDifference !== 0) {
+    return ratingDifference;
+  }
+
+  const gameAHasCover = hasRealGameCover(gameA);
+  const gameBHasCover = hasRealGameCover(gameB);
+
+  if (gameAHasCover !== gameBHasCover) {
+    return gameAHasCover ? -1 : 1;
+  }
+
+  return gameA.title.localeCompare(gameB.title);
+}
+
+function getGameMarkerLayer({
+  game,
+  index,
+  sameCountrySelected,
+  selected,
+  viewMode
+}: {
+  game: Game;
+  index: number;
+  sameCountrySelected: boolean;
+  selected: boolean;
+  viewMode: ViewMode;
+}): GlobeGameMarker["markerLayer"] {
+  if (selected) {
+    return "selected-game";
+  }
+
+  if (sameCountrySelected) {
+    return "selected-country";
+  }
+
+  if (viewMode === "games" && index === 0 && isHighRatedGame(game)) {
+    return "rating-highlight";
+  }
+
+  return "country-aggregate";
+}
+
+function isHighRatedGame(game: Game) {
+  const threshold =
+    game.rating <= 5
+      ? HIGH_RATING_THRESHOLD_FIVE_POINT
+      : HIGH_RATING_THRESHOLD_TEN_POINT;
+
+  return game.rating >= threshold;
+}
+
+function getGameMarkerAriaLabel(marker: GlobeGameMarker, markerTitle: string) {
+  if (marker.selectsCountry) {
+    return `查看国家：${marker.countryLabel}，${marker.countryGameCount} 款游戏，代表作：${markerTitle}`;
+  }
+
+  return `选择游戏：${markerTitle}`;
+}
+
+function getGameMarkerTitle(
+  marker: GlobeGameMarker,
+  markerTitle: string,
+  secondaryTitle: string | null
+) {
+  if (marker.selectsCountry) {
+    return `${marker.countryLabel} · ${marker.countryGameCount} 款游戏 · 代表作：${markerTitle}`;
+  }
+
+  return secondaryTitle ? `${markerTitle} / ${secondaryTitle}` : markerTitle;
 }
 
 function installCoverFallback(element: HTMLElement) {
@@ -360,11 +489,12 @@ function installCoverFallback(element: HTMLElement) {
   image.addEventListener("error", () => {
     const fallbackSource = image.dataset.fallbackSrc;
 
-    if (!fallbackSource || image.src.endsWith(fallbackSource)) {
+    if (!fallbackSource || image.dataset.fallbackApplied === "true") {
       image.style.display = "none";
       return;
     }
 
+    image.dataset.fallbackApplied = "true";
     image.classList.add("is-fallback");
     image.src = fallbackSource;
   });
