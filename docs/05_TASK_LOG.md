@@ -86,6 +86,45 @@ The documentation now presents Ludic Atlas as a production-ready MVP release lin
 
 Create the `v0.1.0` tag from the verified release commit and publish a GitHub release draft.
 
+## 2026-06-21 - Chinese Release Package Instructions
+
+### Goal
+
+Make the v0.1.0 release visible and easier for macOS / Windows users to open after downloading, while converting README and release notes to Chinese.
+
+### Files Changed
+
+- `README.md`: converted the project-level introduction, setup instructions, data pipeline, screenshots, and architecture overview to Chinese.
+- `docs/releases/v0.1.0.md`: rewrote the release notes in Chinese and added download-package, macOS, Windows, and command-line opening instructions.
+- `start-mac.command`: added a macOS helper script that checks Node.js / npm, installs dependencies, starts the dev server, and opens `http://localhost:3000`.
+- `start-windows.bat`: added a Windows helper script that checks Node.js / npm, installs dependencies, starts the dev server, and opens `http://localhost:3000`.
+- `docs/00_PROJECT_INDEX.md`: registered the release helper scripts.
+- `docs/02_FEATURE_MAP.md`: updated project setup ownership to include release helper scripts.
+- `docs/05_TASK_LOG.md`: appended this task record.
+
+### Implementation Summary
+
+The release now documents the practical runtime boundary clearly: Ludic Atlas is a Next.js web project rather than a native `.exe` / `.app`, so the downloadable packages are designed for double-click local startup when Node.js is installed. Command-line installation remains documented for Git users.
+
+### Documentation Updated
+
+- `README.md`
+- `docs/releases/v0.1.0.md`
+- `docs/00_PROJECT_INDEX.md`
+- `docs/02_FEATURE_MAP.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `bash -n start-mac.command`.
+- Passed `npm run lint` with two existing `@next/next/no-img-element` warnings in `src/components/earth-pro/EarthExplorerProApp.tsx`.
+- Passed `npm run typecheck`.
+- Passed `npm run build`.
+
+### Next Step
+
+Retag `v0.1.0` to the updated release commit, upload macOS / Windows release assets, and publish the GitHub release.
+
 ## 2026-06-13 - Game Chronicle Archive Visual Polish
 
 ### Goal

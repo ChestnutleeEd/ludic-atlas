@@ -81,6 +81,8 @@ If the task involves product scope, read:
 | `postcss.config.mjs` | Tailwind CSS PostCSS configuration           |
 | `eslint.config.mjs`  | ESLint flat config for Next.js and TypeScript |
 | `.gitignore`         | Generated and dependency file ignore rules   |
+| `start-mac.command`  | macOS release-package helper script for installing dependencies and starting the local app |
+| `start-windows.bat`  | Windows release-package helper script for installing dependencies and starting the local app |
 | `.git/`              | Local Git repository metadata; do not edit manually |
 
 ## Git Engineering
@@ -137,6 +139,8 @@ http://localhost:3000
 | RAWG cover cache script | `scripts/cache-rawg-covers.mjs` |
 | RAWG cover compression script | `scripts/compress-rawg-covers.mjs` |
 | Country inference apply script | `scripts/apply-country-inference.mjs` |
+| macOS local start helper | `start-mac.command`             |
+| Windows local start helper | `start-windows.bat`           |
 | Mock country data    | `src/data/countries.ts`           |
 | v0.1.0 release notes | `docs/releases/v0.1.0.md`         |
 | Future cover assets  | `public/covers/README.md`         |

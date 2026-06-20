@@ -1,119 +1,43 @@
-# Ludic Atlas / Game Earth
+# Ludic Atlas / 游戏星图
 
-A 3D cultural atlas of global video games across geography and time.
+一个跨越地理与时间的 3D 全球游戏文化图谱。
 
-Ludic Atlas / Game Earth is an interactive game culture exploration product. It combines a country-based 3D globe, a timeline archive, and a local RAWG-derived data pipeline to help users browse representative games by place, year, studio origin, and cultural context.
+Ludic Atlas / 游戏星图是一个游戏文化探索产品。它把游戏放进国家、地区、年份、开发者与媒介史语境中展示，而不是只做普通游戏列表。当前版本提供 3D 游戏地球、游戏编年馆、RAWG 本地数据生成、国家 / 地区推断与封面缓存流程。
 
-The project is built as a runnable MVP: the browser reads static local data, cached local cover assets, and lightweight geographic files. It does not require a backend service or runtime RAWG API calls.
+> 当前项目是可运行 MVP。浏览器运行时只读取本地静态数据、本地 GeoJSON 和本地封面资源；不会在页面里直接请求 RAWG API，也不需要后端数据库。
 
-## What Is This Project
+## 项目是什么
 
-Ludic Atlas treats games as cultural records rather than a flat database. The main exploration model is:
+Ludic Atlas 的核心体验分为三层：
 
-- Earth Explorer: browse games by country or region on a 3D globe.
-- Game Chronicle: browse generated game records through a year-based archive and timeline.
-- Data engine: ingest RAWG data locally, infer country / region from developer or studio context, and cache cover images for stable presentation.
+- 地球探索：通过 3D 地球按国家 / 地区浏览代表性游戏。
+- 游戏编年馆：通过年份时间线浏览生成的全球游戏档案。
+- 数据引擎：通过本地脚本抓取 RAWG 数据、推断国家 / 地区、缓存封面，并输出静态 TypeScript 数据。
 
-Country mapping in the MVP is based on the primary developer / studio country or region. The mapping is a project-level inference layer for exploration and should not be read as an official classification.
+国家 / 地区映射规则基于游戏主要开发商或工作室所在国家 / 地区。这是用于文化探索与作品展示的项目级推断，不代表官方分类。
 
-## Features
+## 快速打开
 
-### Globe
+### 下载 release 包后打开
 
-- Real 3D earth rendering with `react-globe.gl` and Three.js.
-- Lightweight world country borders from local GeoJSON.
-- Country aggregate markers and representative game cover markers.
-- Hover tooltips, country selection, selected-game detail cards, and right-side country panels.
-- Region presets, selected-country focus, overview / surface camera modes, zoom controls, and mobile bottom-sheet behavior.
-- Experimental `/earth-pro` route using MapLibre GL JS and deck.gl for a GPU-layer map architecture.
-
-### Archive
-
-- Game Chronicle / 游戏编年馆 timeline browsing surface.
-- Year-grouped archive cards with cover previews, counts, rating summaries, genre summaries, and platform summaries.
-- Search, genre filters, platform filters, year-desc sorting, and rating-desc sorting.
-- Year Exhibit modal with selected-year overview and selected-game dossier details.
-- Retro-premium visual direction using archive textures, film-like timeline rhythm, and local cover imagery.
-
-### Data Engine
-
-- RAWG ingestion scripts generate a static TypeScript game dataset.
-- Batch mode fetches paginated RAWG list results by date, Metacritic range, ordering, and maximum record count.
-- Seed mode supports manually curated country mappings where RAWG does not provide reliable studio-country data.
-- Country inference applies reviewed high-confidence mappings to generated records.
-- Cover cache downloads RAWG cover URLs into `public/covers/rawg/` and rewrites records to local static paths.
-- Current generated dataset contains roughly 1,000 records, with local cached cover assets and a fallback SVG for missing images.
-
-## Tech Stack
-
-- Next.js App Router
-- React
-- TypeScript
-- Tailwind CSS
-- `react-globe.gl`
-- Three.js
-- MapLibre GL JS and deck.gl for the experimental Pro route
-- GSAP and Motion for archive UI transitions
-- RAWG API for local data generation
-- Node.js scripts for ingestion, enrichment, inference, and cover caching
-
-## Data Pipeline Overview
-
-The browser app does not call RAWG directly. Data is prepared offline and committed as static project assets.
+1. 进入 GitHub Releases 页面，下载适合系统的压缩包。
+2. 解压压缩包。
+3. macOS 双击 `start-mac.command`；Windows 双击 `start-windows.bat`。
+4. 脚本会检查 Node.js、安装依赖并启动本地服务。
+5. 浏览器打开：
 
 ```text
-RAWG API
-  -> scripts/fetch-rawg-games.mjs
-  -> src/data/games.generated.ts
-  -> scripts/cache-rawg-covers.mjs
-  -> public/covers/rawg/
-  -> scripts/apply-country-inference.mjs
-  -> src/data/games.ts
-  -> Earth Explorer / Game Chronicle
+http://localhost:3000
 ```
 
-Main commands:
+如果电脑没有安装 Node.js，请先安装 Node.js LTS：
 
-```bash
-npm run data:rawg
-npm run data:covers
-npm run data:enrich
-npm run data:apply-countries
-npm run data:infer-countries:dry
-```
+- 下载地址：https://nodejs.org/
+- 建议版本：Node.js 20 或更新的 LTS 版本。
 
-RAWG access requires a local `.env.local` file with `RAWG_API_KEY`. Running the app from the committed dataset does not require an API key.
+说明：这是 Next.js + TypeScript 项目，不是原生桌面应用。当前 release 包会尽量做到“解压后双击启动”，但首次运行仍需要本机安装 Node.js，并可能需要联网下载 npm 依赖。
 
-## Screenshots
-
-### Home Hub
-
-![Home hub](docs/assets/readme/home-hub.png)
-
-### 3D Globe
-
-![3D globe](docs/assets/readme/earth-globe.png)
-
-### Country Detail
-
-![Country detail panel](docs/assets/readme/country-detail.png)
-
-### Game Detail
-
-![Game detail card](docs/assets/readme/game-detail-card.png)
-
-### Game Chronicle
-
-![Game Chronicle archive](docs/assets/readme/game-archive.png)
-
-## Getting Started
-
-Requirements:
-
-- Node.js LTS, preferably Node.js 20 or newer
-- Git
-
-Install and run:
+### 命令行打开
 
 ```bash
 git clone https://github.com/ChestnutleeEd/ludic-atlas.git
@@ -122,13 +46,13 @@ npm install
 npm run dev
 ```
 
-Open:
+打开：
 
 ```text
 http://localhost:3000
 ```
 
-Useful commands:
+常用命令：
 
 ```bash
 npm run dev
@@ -138,26 +62,115 @@ npm run typecheck
 npm run build
 ```
 
-## Architecture Overview
+## 功能
+
+### 3D 游戏地球
+
+- 使用 `react-globe.gl` 和 Three.js 渲染真实可交互 3D 地球。
+- 使用本地轻量 GeoJSON 展示世界国家边界。
+- 支持国家聚合点、代表性游戏封面标记、悬停提示与点击详情。
+- 支持区域预设、国家聚焦、Overview / Surface 相机模式、缩放控制与移动端底部面板。
+- 保留实验性 `/earth-pro` 路由，使用 MapLibre GL JS 和 deck.gl 验证更高性能的 GPU 图层架构。
+
+### 游戏编年馆
+
+- 以年份为中心组织生成的游戏档案。
+- 年份卡片展示游戏数量、封面预览、平均评分、代表类型和平台。
+- 支持标题搜索、类型筛选、平台筛选、年份排序和评分排序。
+- 点击年份后打开年度展柜，查看年度概览与单个游戏档案。
+- 视觉方向是复古档案馆 + 高级数字展厅，而不是普通列表页。
+
+### 数据引擎
+
+- `scripts/fetch-rawg-games.mjs` 从 RAWG 生成本地静态游戏数据。
+- batch 模式按日期、Metacritic、排序、分页和最大数量抓取 RAWG 列表数据。
+- seed 模式支持人工维护国家 / 地区映射。
+- 国家推断流程会把高置信结果应用到生成数据。
+- 封面缓存脚本会把 RAWG 远程封面下载到 `public/covers/rawg/`，并把数据里的 `coverImage` 改成本地路径。
+- 当前生成数据规模约 1000 款游戏，并包含本地缓存封面与 fallback 封面。
+
+## 技术栈
+
+- Next.js App Router
+- React
+- TypeScript
+- Tailwind CSS
+- `react-globe.gl`
+- Three.js
+- MapLibre GL JS / deck.gl
+- GSAP / Motion
+- RAWG API
+- Node.js 本地数据脚本
+
+## 数据流程
+
+浏览器端不会直接访问 RAWG。数据先在本地生成，再作为静态文件进入前端。
 
 ```text
-src/app                 Next.js routes, layout, and global styles
-src/components/home     Landing hub and product entrance UI
-src/components/globe    3D earth, country layer, markers, and tooltips
-src/components/archive  Game Chronicle timeline and dossier surfaces
-src/components/panels   Country list, country detail, and game detail panels
-src/components/controls Earth Explorer filters and camera controls
-src/components/earth-pro Experimental MapLibre / deck.gl explorer
-src/data                Static frontend game and country data
-src/lib                 Filtering, statistics, geography, covers, regions
-src/types               Shared TypeScript data contracts
-scripts                 RAWG ingestion, enrichment, inference, cover caching
-public/covers           Local cover assets and fallback image
-public/data             Local GeoJSON country border data
-docs                    Product, architecture, schema, and release docs
+RAWG API
+  -> scripts/fetch-rawg-games.mjs
+  -> src/data/games.generated.ts
+  -> scripts/cache-rawg-covers.mjs
+  -> public/covers/rawg/
+  -> scripts/apply-country-inference.mjs
+  -> src/data/games.ts
+  -> 地球探索 / 游戏编年馆
 ```
 
-Primary runtime entrypoints:
+开发者更新数据时常用：
+
+```bash
+npm run data:rawg
+npm run data:covers
+npm run data:enrich
+npm run data:apply-countries
+npm run data:infer-countries:dry
+```
+
+只有重新抓取 RAWG 数据时才需要 `.env.local` 和 `RAWG_API_KEY`。普通用户运行已发布版本不需要 RAWG API Key。
+
+## 截图
+
+### 首页入口
+
+![首页入口](docs/assets/readme/home-hub.png)
+
+### 3D 游戏地球
+
+![3D 游戏地球](docs/assets/readme/earth-globe.png)
+
+### 国家详情面板
+
+![国家详情面板](docs/assets/readme/country-detail.png)
+
+### 游戏详情卡
+
+![游戏详情卡](docs/assets/readme/game-detail-card.png)
+
+### 游戏编年馆
+
+![游戏编年馆](docs/assets/readme/game-archive.png)
+
+## 目录结构
+
+```text
+src/app                 Next.js 路由、布局与全局样式
+src/components/home     首页入口与产品入口组件
+src/components/globe    3D 地球、国家层、标记与提示
+src/components/archive  游戏编年馆时间线与档案界面
+src/components/panels   国家列表、国家详情、游戏详情面板
+src/components/controls 地球探索筛选与相机控制
+src/components/earth-pro 实验性 MapLibre / deck.gl 探索界面
+src/data                前端静态游戏与国家数据
+src/lib                 筛选、统计、地理、封面、区域工具
+src/types               TypeScript 数据契约
+scripts                 RAWG 抓取、补全、推断、封面缓存脚本
+public/covers           本地封面资源与 fallback 图
+public/data             本地 GeoJSON 国家边界数据
+docs                    产品、架构、数据结构与 release 文档
+```
+
+主要入口：
 
 - `src/app/page.tsx`
 - `src/components/GameEarthApp.tsx`
@@ -165,17 +178,17 @@ Primary runtime entrypoints:
 - `src/components/archive/GameArchiveView.tsx`
 - `src/app/earth-pro/page.tsx`
 
-## Documentation
+## 项目文档
 
-- `docs/00_PROJECT_INDEX.md`: project navigation index
-- `docs/01_PRODUCT_SPEC.md`: product scope and MVP rules
-- `docs/02_FEATURE_MAP.md`: feature-to-file ownership map
-- `docs/03_ARCHITECTURE.md`: technical architecture
-- `docs/04_DATA_SCHEMA.md`: data contracts and generation rules
-- `docs/releases/v0.1.0.md`: first official release notes
+- `docs/00_PROJECT_INDEX.md`：项目导航索引
+- `docs/01_PRODUCT_SPEC.md`：产品范围与 MVP 规则
+- `docs/02_FEATURE_MAP.md`：功能到文件的映射
+- `docs/03_ARCHITECTURE.md`：技术架构
+- `docs/04_DATA_SCHEMA.md`：数据结构与生成规则
+- `docs/releases/v0.1.0.md`：v0.1.0 中文 release notes
 
-## Repository Status
+## 当前状态
 
-This is the first official MVP release line. The project is suitable for portfolio review, local exploration, and further product iteration. It is not a complete commercial game database.
+v0.1.0 是第一个正式 MVP release。它适合本地体验、作品集展示、课程展示和后续产品迭代；它不是完整商业游戏数据库。
 
-No license has been selected yet.
+当前尚未选择开源许可证。
