@@ -25,6 +25,14 @@ transcript_raw.txt
 *.m4v
 *.M4V
 
+# Local raw data exports / scratch datasets
+data/raw/
+data/tmp/
+data/*.tmp.json
+data/*.raw.json
+data/*.ndjson
+data/*.csv
+
 # Codex / local agent artifacts
 .agents/
 .playwright-cli/

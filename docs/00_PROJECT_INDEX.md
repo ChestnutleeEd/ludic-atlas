@@ -39,7 +39,7 @@ If the task involves product scope, read:
 | File                       | Purpose                                            |
 | -------------------------- | -------------------------------------------------- |
 | `AGENTS.md`                | Codex working rules and living documentation rules |
-| `README.md`                | Project overview, setup commands, source entrypoints |
+| `README.md`                | Product-level introduction, setup commands, screenshots, data pipeline overview |
 | `docs/00_PROJECT_INDEX.md` | Project overview and navigation index              |
 | `docs/01_PRODUCT_SPEC.md`  | Product positioning, users, scenarios, MVP scope   |
 | `docs/02_FEATURE_MAP.md`   | Feature-to-file mapping for fast modification      |
@@ -47,6 +47,7 @@ If the task involves product scope, read:
 | `docs/04_DATA_SCHEMA.md`   | Game, country, genre, and filter data structures   |
 | `docs/05_TASK_LOG.md`      | Iteration log and major change history             |
 | `docs/06_CODEX_RULES.md`   | Detailed execution rules for Codex                 |
+| `docs/releases/`           | Versioned GitHub release notes and release documentation |
 | `docs/assets/preview.png`  | Legacy README project preview image for GitHub     |
 | `docs/assets/readme/`      | Current README preview screenshots                 |
 
@@ -137,6 +138,7 @@ http://localhost:3000
 | RAWG cover compression script | `scripts/compress-rawg-covers.mjs` |
 | Country inference apply script | `scripts/apply-country-inference.mjs` |
 | Mock country data    | `src/data/countries.ts`           |
+| v0.1.0 release notes | `docs/releases/v0.1.0.md`         |
 | Future cover assets  | `public/covers/README.md`         |
 | Cached RAWG cover assets | `public/covers/rawg/`         |
 | Fallback game cover  | `public/covers/fallback-game-cover.svg` |

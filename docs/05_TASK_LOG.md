@@ -48,6 +48,44 @@ Example:
 
 Briefly state the recommended next step.
 
+## 2026-06-21 - v0.1.0 Release Documentation
+
+### Goal
+
+Prepare the repository documentation and release notes for the first official GitHub release of Ludic Atlas / Game Earth.
+
+### Files Changed
+
+- `README.md`: rewrote the project entry page as a product-level introduction with features, screenshots, setup, data pipeline, and architecture overview.
+- `docs/releases/v0.1.0.md`: added structured release notes for the first official release.
+- `.gitignore`: added future raw temporary dataset ignore patterns.
+- `docs/00_PROJECT_INDEX.md`: added the release notes directory and v0.1.0 release notes entry.
+- `docs/02_FEATURE_MAP.md`: updated project documentation ownership to include release documentation.
+- `docs/05_TASK_LOG.md`: appended this task record.
+
+### Implementation Summary
+
+The documentation now presents Ludic Atlas as a production-ready MVP release line: 3D globe exploration, Game Chronicle archive, RAWG-based static data generation, country inference, and cover caching are described consistently across the README and release notes.
+
+### Documentation Updated
+
+- `README.md`
+- `docs/releases/v0.1.0.md`
+- `docs/00_PROJECT_INDEX.md`
+- `docs/02_FEATURE_MAP.md`
+- `docs/05_TASK_LOG.md`
+
+### Verification
+
+- Passed `npm run lint` with two existing `@next/next/no-img-element` warnings in `src/components/earth-pro/EarthExplorerProApp.tsx`.
+- Passed `npm run typecheck`.
+- Passed `npm run build`.
+- Checked tracked-file hygiene with `git ls-files` filters for generated build folders, env files, screenshots, local outputs, and TypeScript build info.
+
+### Next Step
+
+Create the `v0.1.0` tag from the verified release commit and publish a GitHub release draft.
+
 ## 2026-06-13 - Game Chronicle Archive Visual Polish
 
 ### Goal
