@@ -120,10 +120,12 @@ The release now documents the practical runtime boundary clearly: Ludic Atlas is
 - Passed `npm run lint` with two existing `@next/next/no-img-element` warnings in `src/components/earth-pro/EarthExplorerProApp.tsx`.
 - Passed `npm run typecheck`.
 - Passed `npm run build`.
+- Generated lightweight macOS and Windows release zip assets.
+- Published GitHub release `v0.1.0` with two uploaded assets and Chinese release notes.
 
 ### Next Step
 
-Retag `v0.1.0` to the updated release commit, upload macOS / Windows release assets, and publish the GitHub release.
+Use the public release page to download and test the macOS / Windows startup packages on clean machines.
 
 ## 2026-06-13 - Game Chronicle Archive Visual Polish
 
