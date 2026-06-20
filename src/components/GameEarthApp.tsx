@@ -8,7 +8,10 @@ import {
   type GlobeCameraCommand
 } from "@/components/globe/GameGlobe";
 import { LandingHub } from "@/components/home/LandingHub";
-import { RightPanel } from "@/components/panels/RightPanel";
+import {
+  RightPanel,
+  type MobileSheetState
+} from "@/components/panels/RightPanel";
 import { countries } from "@/data/countries";
 import { games } from "@/data/games";
 import { filterGamesByCountry, filterGamesByYearRange } from "@/lib/filterGames";
@@ -46,6 +49,8 @@ export function GameEarthApp() {
   const [activeRegionId, setActiveRegionId] = useState<RegionId>("global");
   const [cameraMode, setCameraMode] = useState<CameraMode>("overview");
   const [isRotateEnabled, setIsRotateEnabled] = useState(false);
+  const [mobileSheetState, setMobileSheetState] =
+    useState<MobileSheetState>("collapsed");
   const [globeCameraCommand, setGlobeCameraCommand] =
     useState<GlobeCameraCommand | null>(null);
 
@@ -75,11 +80,25 @@ export function GameEarthApp() {
   const selectedGame = selectedGameId
     ? games.find((game) => game.id === selectedGameId) ?? null
     : null;
+  const sheetSummary = selectedGame
+    ? selectedGame.titleZh || selectedGame.title
+    : selectedCountry
+      ? `${selectedCountry.nameZh} ${selectedCountry.name}`
+      : getRegionLabel(activeRegionId);
+  const setMobileSheetStateIfSmallViewport = useCallback(
+    (nextState: MobileSheetState) => {
+      if (window.innerWidth <= 1023) {
+        setMobileSheetState(nextState);
+      }
+    },
+    []
+  );
 
   const handleSelectCountry = useCallback((countryCode: string) => {
     setSelectedCountryCode(countryCode);
     setSelectedGameId(null);
-  }, []);
+    setMobileSheetStateIfSmallViewport("peek");
+  }, [setMobileSheetStateIfSmallViewport]);
 
   const handleRegionChange = useCallback((regionId: RegionId) => {
     setActiveRegionId(regionId);
@@ -102,7 +121,12 @@ export function GameEarthApp() {
   const handleClearCountry = useCallback(() => {
     setSelectedCountryCode(null);
     setSelectedGameId(null);
-  }, []);
+    setMobileSheetStateIfSmallViewport("collapsed");
+  }, [setMobileSheetStateIfSmallViewport]);
+
+  const handleGlobeInteractionStart = useCallback(() => {
+    setMobileSheetStateIfSmallViewport("collapsed");
+  }, [setMobileSheetStateIfSmallViewport]);
 
   const sendGlobeCameraCommand = useCallback(
     (type: GlobeCameraCommand["type"]) => {
@@ -122,7 +146,18 @@ export function GameEarthApp() {
     }
 
     setSelectedGameId(gameId);
-  }, [yearFilteredGames]);
+    setMobileSheetStateIfSmallViewport("peek");
+  }, [setMobileSheetStateIfSmallViewport, yearFilteredGames]);
+
+  const handleSelectGameFromPanel = useCallback(
+    (gameId: string | null) => {
+      setSelectedGameId(gameId);
+      if (gameId) {
+        setMobileSheetStateIfSmallViewport("expanded");
+      }
+    },
+    [setMobileSheetStateIfSmallViewport]
+  );
 
   const handleYearRangeChange = useCallback((nextRange: YearRange) => {
     setYearRange(nextRange);
@@ -151,6 +186,7 @@ export function GameEarthApp() {
       } ${
         mainViewMode === "archive" ? "p-0" : "px-5 py-5 md:px-8"
       }`}
+      data-mobile-sheet-state={mobileSheetState}
     >
       <div className="deep-space-backdrop pointer-events-none fixed inset-0" />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_42%_18%,rgba(217,154,50,0.08),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(196,122,36,0.055),transparent_24%),radial-gradient(circle_at_52%_90%,rgba(245,239,227,0.035),transparent_34%)]" />
@@ -233,6 +269,7 @@ export function GameEarthApp() {
               onSelectCountry={handleSelectCountry}
               onSelectGame={handleSelectGameFromMap}
               onRegionChange={handleRegionChange}
+              onInteractionStart={handleGlobeInteractionStart}
             />
             <RightPanel
               countries={regionCountries}
@@ -242,10 +279,13 @@ export function GameEarthApp() {
               selectedCountryCode={selectedCountryCode}
               selectedGame={selectedGame}
               selectedGameId={selectedGameId}
+              sheetState={mobileSheetState}
+              sheetSummary={sheetSummary}
               yearRange={yearRange}
               onSelectCountry={handleSelectCountry}
               onClearCountry={handleClearCountry}
-              onSelectGame={setSelectedGameId}
+              onSelectGame={handleSelectGameFromPanel}
+              onSheetStateChange={setMobileSheetState}
             />
           </section>
         ) : (
@@ -275,12 +315,23 @@ export function GameEarthApp() {
             onViewModeChange={setViewMode}
             onRotateChange={setIsRotateEnabled}
             onResetView={() => {
+              setMobileSheetStateIfSmallViewport("collapsed");
               handleClearCountry();
               handleRegionChange("global");
               sendGlobeCameraCommand("reset");
             }}
-            onZoomIn={() => sendGlobeCameraCommand("zoomIn")}
-            onZoomOut={() => sendGlobeCameraCommand("zoomOut")}
+            onFocusSelected={() => {
+              setMobileSheetStateIfSmallViewport("collapsed");
+              sendGlobeCameraCommand("focusSelected");
+            }}
+            onZoomIn={() => {
+              setMobileSheetStateIfSmallViewport("collapsed");
+              sendGlobeCameraCommand("zoomIn");
+            }}
+            onZoomOut={() => {
+              setMobileSheetStateIfSmallViewport("collapsed");
+              sendGlobeCameraCommand("zoomOut");
+            }}
             regionStatusLabel={`区域筛选：${getRegionLabel(activeRegionId)}`}
             zoomStatusLabel={
               cameraMode === "surface"

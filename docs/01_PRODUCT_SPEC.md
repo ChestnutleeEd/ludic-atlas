@@ -90,6 +90,10 @@ A user opens Game Chronicle / 游戏编年馆 and browses the generated global g
 
 A user opens the site and first sees Ludic Atlas / 游戏星图 with two independent entrances: Earth Explorer / 地球探索 and Game Chronicle / 游戏编年馆.
 
+### Scenario 7: Use the experimental full-screen earth engine
+
+A user opens Earth Explorer Pro / 游戏地球 Pro and explores the same local game-country data through a full-screen geospatial dashboard, using country / region presets and a collapsible detail panel while the legacy Earth Explorer remains available as a fallback.
+
 ## Country Mapping Rule
 
 For the MVP, each game is mapped to the country or region of its main developer / studio.
@@ -122,7 +126,8 @@ The first version should include:
 11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
 12. Game Chronicle horizontal timeline view for RAWG-generated global game records
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
-14. Premium black-gold atlas visual system for Earth Explorer, including Overview / Surface camera modes, deeper controlled globe zoom, region and key-country camera presets, country aggregate marker mode, high-rating game marker mode, region-scoped country list, sampled global markers, bottom zoom / reset controls, and mobile bottom-drawer panel behavior
+14. Premium black-gold atlas visual system for Earth Explorer, including Overview / Surface camera modes, deeper controlled globe zoom, region and key-country camera presets, country aggregate marker mode, high-rating game marker mode, region-scoped country list, sampled global markers, bottom zoom / reset / focus controls, and mobile three-state bottom-sheet panel behavior
+15. Earth Explorer Pro experimental full-screen route at `/earth-pro`, using MapLibre GL JS plus deck.gl for a high-performance WebGL map / marker architecture, fixed camera presets, GPU scatter / icon / text marker layers, deterministic country marker distribution, and a mobile-collapsed bottom sheet.
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 

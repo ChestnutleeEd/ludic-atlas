@@ -10,6 +10,7 @@ The first MVP should use:
 - React 19.2.7
 - ESLint 9.39.4
 - `react-globe.gl` + Three.js for real interactive 3D earth rendering
+- MapLibre GL JS + deck.gl for the experimental Earth Explorer Pro full-screen engine route
 - `motion` for lightweight UI state transitions, hover motion, layout animation, and archive drawer entry / exit
 - `gsap` for Game Chronicle scene-level entry choreography and scroll-reveal sequencing
 - `undici` for RAWG data script proxy-aware fetch transport
@@ -32,12 +33,17 @@ Data filtering and statistics should live in `src/lib/`.
 src/
 ├─ app/
 │  ├─ page.tsx
+│  ├─ earth-pro/
+│  │  └─ page.tsx
 │  ├─ layout.tsx
 │  └─ globals.css
 ├─ components/
 │  ├─ GameEarthApp.tsx
 │  ├─ home/
 │  │  └─ LandingHub.tsx
+│  ├─ earth-pro/
+│  │  ├─ EarthExplorerProApp.tsx
+│  │  └─ EarthProMap.tsx
 │  ├─ archive/
 │  │  ├─ GameArchiveView.tsx
 │  │  ├─ ArchiveTimeline.tsx
@@ -69,6 +75,7 @@ src/
 │  ├─ filterGames.ts
 │  ├─ stats.ts
 │  ├─ geo.ts
+│  ├─ earthPro.ts
 │  ├─ regions.ts
 │  └─ search.ts
 ├─ types/
@@ -99,10 +106,13 @@ Main Component Responsibilities
 
 File	Responsibility
 src/app/page.tsx	Home page entry. Should render GameEarthApp.
+src/app/earth-pro/page.tsx	Experimental full-screen Earth Explorer Pro route.
 src/app/layout.tsx	App Router root layout, page metadata, and favicon metadata.
 src/app/globals.css	Global Tailwind import and base visual tokens.
 src/components/GameEarthApp.tsx	Main product shell. Owns top-level UI state and layout.
 src/components/home/LandingHub.tsx	Renders the Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrance cards.
+src/components/earth-pro/EarthExplorerProApp.tsx	Renders the Earth Explorer Pro state container, full-screen HUD, preset controls, and collapsible detail panel.
+src/components/earth-pro/EarthProMap.tsx	Client-only MapLibre GL JS and deck.gl renderer for the Pro basemap, country layer, and GPU game / country marker layers.
 src/components/archive/GameArchiveView.tsx	Renders Game Chronicle data preparation, local title search, multi-label genre / platform filters, year grouping, selected year drawer state, sorting, immersive archive hero, sticky collection index, and selected game archive details.
 src/components/archive/ArchiveTimeline.tsx	Renders the scroll-narrative year cabinet exhibition with filtered counts, average rating, top genre, and cover previews.
 src/components/archive/ArchiveYearModal.tsx	Renders the selected year dossier drawer, selected-year game card grid, close behavior, body scroll lock, and selected game handoff.
@@ -129,6 +139,7 @@ src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
 src/lib/stats.ts	Pure statistics functions.
 src/lib/geo.ts	Geographic coordinate and marker position helpers.
+src/lib/earthPro.ts	Pure Earth Explorer Pro preset, marker cap, deterministic marker layout, local-cover, and camera-view helpers.
 src/lib/regions.ts	Broad atlas region mapping, labels, game / country region filters, and cinematic camera presets.
 src/lib/gameCover.ts	Normalizes game cover fields and provides the shared fallback cover image path.
 src/types/game.ts	Shared TypeScript types.
@@ -162,6 +173,7 @@ The current MVP uses a landing hub plus a real 3D globe renderer and a separate 
 
 * `LandingHub` is the default first-screen experience and presents Earth Explorer and Game Chronicle as independent product entrances.
 * `GameGlobe` keeps the real WebGL 3D globe as the Earth Explorer experience.
+* `/earth-pro` is a parallel experimental App Router entry. It does not replace `GameGlobe`; it renders a client-only MapLibre GL JS map with deck.gl overlay layers for a full-screen Earth Explorer Pro experience.
 * `GameArchiveView` is selected through `GameEarthApp` main view mode and provides the Game Chronicle surface for generated global game records.
 * `GameGlobe2D` remains on disk as a legacy component, but `GameEarthApp` no longer imports or renders it and the UI no longer exposes a 2.5D / 3D switch.
 * `GameEarthApp` owns the main view switch so selected game state can carry between Earth and Archive. Earth-specific year range, cover size, and marker view controls are shown only in Earth mode.
@@ -198,19 +210,30 @@ Current 3D globe behavior:
 * `src/lib/regions.ts` owns broad Earth Explorer regions, `CAMERA_MODE_CONFIGS`, two-mode `CAMERA_PRESETS`, region labels, and pure helpers for deriving region-scoped country and game lists from existing source data.
 * `public/data/countries.geojson` stores the full source country border data copied from `https://github.com/datasets/geo-countries`.
 * `public/data/world-countries-lite.geojson` stores a simplified runtime world country outline dataset generated from the full source file. `GameGlobe` loads this file for the 3D base layer so all world country outlines are visible without loading the 14 MB source GeoJSON.
-* `public/data/mock-countries.geojson` stores the simplified MVP country border data for the current 10 mock countries and remains available to the 2.5D fallback mode.
+* `public/data/mock-countries.geojson` stores the simplified legacy MVP country border subset and remains available to the 2.5D fallback mode.
 * `CountryLayer` converts the lightweight world GeoJSON feature collection and local mock country list into globe polygon props and point-cloud props. It handles all-country border color, selected / hovered country elevation, polygon hover, polygon click, mock-country dot-matrix points, and country point hover / click.
 * `src/lib/geo.ts` maps GeoJSON `ISO3166-1-Alpha-2` values to project country codes, with Alpha-3 / name fallback keys for non-mock countries and a small name fallback for records like France where this GeoJSON source uses `-99`.
 * `src/lib/geo.ts` owns per-country focus points and deterministic country marker distribution. Broad Global / Europe / East Asia / North America / Latin America / Middle East / South Asia / Oceania camera presets live in `src/lib/regions.ts` with both Overview and Surface altitude values.
-* `src/lib/geo.ts` samples a controlled dot matrix inside the 10 mock country polygons. The 3D globe uses those points to make mock countries easier to spot without turning all game data into heavy HTML markers.
+* `src/lib/geo.ts` samples a controlled dot matrix inside supported local country polygons. The 3D globe uses those points to make countries with local records easier to spot without turning all game data into heavy HTML markers.
 * `GameGlobe` supports Overview and Surface camera modes. Overview uses higher altitude and wider zoom limits for global / region browsing. Surface uses lower altitude, lower rotate / zoom speed, disabled pan, and tighter OrbitControls distance limits to keep the camera close to a local earth surface view without letting the globe drift out of the container.
 * `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as non-interactive HTML labels only when a mock country is hovered or selected. Country marker mode uses lightweight country aggregate dots with game counts. Game marker mode promotes only high-rated representative games to cover markers, while selected countries / selected games restore richer cover markers and tooltip detail. Region mode remains capped at 6 candidate games per country and selected-country mode remains capped at 12 markers.
-* Same-country game markers use deterministic sunflower / lane coordinates from `getDistributedGlobeCoordinates`. Large countries such as US, CA, CN, RU, AU, BR, and IN receive larger bounded spread profiles, while narrow countries such as JP, GB, IT, KR, and SE use tighter or rotated lane profiles so markers spread along the country's rough geographic shape.
+* Same-country game markers use deterministic country-anchor offsets plus fixed global / region / selected-country slot templates from `getDistributedGlobeCoordinates`. Large countries such as US, CA, CN, RU, AU, BR, and IN receive larger bounded spread profiles, while narrow or dense countries such as JP, GB, KR, BE, NL, DK, CH, NO, PL, CZ, FI, and SE use tighter or rotated profiles so markers spread along the country's rough geographic shape without jumping between filter refreshes.
 * Game cover lookup is centralized in `src/lib/gameCover.ts`. Earth markers and country detail cards prefer real RAWG / local cover paths and fall back to `public/covers/fallback-game-cover.svg` when a cover field is missing or an image load fails.
 * Earth cover markers keep the cover image clear. They do not render title / year text on top of the image; full game metadata is available through marker tooltip and the right panel game detail layer.
 * Marker size responds to `coverSize`; view mode changes marker presentation while keeping the same local mock data source.
 * `GameTooltip` provides typed tooltip content for both the React component and escaped HTML tooltip markup for globe HTML markers.
 * `src/app/globals.css` provides the black-gold cinematic atlas visual system, globe stage styling, country tooltip styling, dot / border styling, panel styling, bottom drawer mobile behavior, and globe HTML marker styling.
+
+Earth Explorer Pro behavior:
+
+* `src/app/earth-pro/page.tsx` renders `EarthExplorerProApp` as a separate route so the legacy `/` hub, Earth Explorer, and Game Chronicle remain unchanged.
+* `EarthProMap` dynamically loads only on the client. MapLibre GL JS owns the full-screen WebGL country basemap and globe projection using local `public/data/world-countries-lite.geojson`; it does not require external basemap tiles or tokens. The MapLibre instance is created once per route mount; camera, country paint, and deck.gl layers update through separate effects so preset changes, country selection, and marker hover do not destroy and recreate the WebGL canvases.
+* deck.gl is attached through `MapboxOverlay` and renders country aggregates, high-rated game covers, dots, and selected labels with `ScatterplotLayer`, `IconLayer`, and `TextLayer` instead of DOM markers.
+* `src/lib/earthPro.ts` derives marker data from local `games` and `countries` using memoized React calls in `EarthExplorerProApp`. It caps global / region / selected-country markers, guarantees per-country representation in region mode, filters `UNKNOWN` or unmapped country codes out of geographic marker rendering without crashing, and uses deterministic grid / radial / spiral layouts so same-country markers do not jump between renders.
+* Pro cover markers use only local static cover paths or `public/covers/fallback-game-cover.svg`. Remote RAWG image URLs are not fetched by the deck.gl icon atlas, keeping the experimental route usable without runtime network access.
+* The Pro camera is MapLibre `flyTo` based rather than `react-globe.gl` altitude based. Presets exist for Global, Europe, East Asia, North America, Japan, China, United States, and South Korea; every mapped selected country can also derive a dynamic country camera view so non-preset countries such as Poland, Germany, France, Canada, Australia, and Belgium still focus correctly. Camera pitch is kept within the stable MapLibre range for the MVP, and programmatic `flyTo` / zoom commands are separated from user drag / wheel interaction so panel state is not accidentally collapsed by camera animation.
+* The Pro UI is scoped under `.earth-explorer-pro-shell`: top HUD, legend, bottom-left controls, hover tooltip, and a right collapsible detail panel. On mobile the panel starts collapsed as a bottom sheet so the map remains the primary surface; the sheet tab sits above the panel body to remain clickable at 390px widths.
+* Earth Explorer Pro displays generated-data totals separately from country-mapped geographic totals. The top HUD shows global game count, identified country count, and currently visible mapped games; the panel shows the current list and mapped / total generated data counts.
 
 Real 3D Globe performance strategy:
 
@@ -223,12 +246,19 @@ Real 3D Globe performance strategy:
 * A restrained warm atmosphere is enabled for the black-gold atlas style; graticules remain disabled to prioritize interaction smoothness.
 * Globe HTML country labels are disabled by default. They appear only for hovered / selected mock countries and are hidden during drag / zoom.
 * Global / country marker mode shows lightweight aggregate dots with counts instead of cover cards. Game mode promotes only high-rated representative games to cover cards. After a country is selected, the globe shows only that country's top-rated current-year game markers, capped at 12, and hides other countries' games.
-* Marker positions use a deterministic country-center distribution helper in `src/lib/geo.ts`. The helper uses a golden-angle spiral, a stable hash from `countryCode + gameId`, and country-specific latitude / longitude spread profiles so large countries such as the United States, Canada, China, Brazil, Australia, and Russia can spread wider while smaller or narrow countries stay tighter.
+* Marker positions use a deterministic country-anchor distribution helper in `src/lib/geo.ts`. The helper uses fixed global / region / selected-country slots, a stable hash from `countryCode + gameId`, and country-specific latitude / longitude spread profiles so large countries such as the United States, Canada, China, Brazil, Australia, and Russia can spread wider while smaller or narrow countries stay tighter.
 * During drag / zoom interaction, `GameGlobe` hides country labels and downgrades cover-card markers into lightweight dots, then restores the needed card / label layer about 200ms after interaction ends.
-* Bottom zoom / reset controls send a small `globeCameraCommand` from `GameEarthApp` to `GameGlobe`. The command effect only synchronizes the WebGL camera; selection and region state changes remain in event handlers to avoid cascading React renders.
+* Bottom zoom / reset / focus controls send a small `globeCameraCommand` from `GameEarthApp` to `GameGlobe`. The command effect only synchronizes the WebGL camera; selection and region state changes remain in event handlers to avoid cascading React renders.
+* On mobile, `GameEarthApp` owns a three-state Earth-side sheet state (`collapsed`, `peek`, `expanded`). Country selection opens Peek, game detail opens Expanded, and globe drag / wheel interaction collapses the sheet so the earth remains visible at 390px widths. `RightPanel` exposes the drag handle and state buttons; CSS variables reserve bottom space for controls and sheet height.
 * Polygon hover uses per-feature country keys. Ocean / blank hover clears the hovered country state instead of applying a broad globe highlight. Non-mock country clicks only highlight the globe polygon; mock country clicks still update the right panel.
 * Missing cover images are not requested by default, so mock cover paths do not create repeated 404 requests during globe rendering.
 * If real local cover files are added later, marker image loading should be gated by an explicit cover-availability check rather than blindly using every mock `coverImage` path.
+
+Engine evaluation:
+
+* The stable Earth Explorer keeps `react-globe.gl` as the primary engine because it already integrates with Next.js through dynamic client loading, supports local GeoJSON polygons, HTML markers, custom Three.js material, and camera control without runtime map tokens or external services.
+* Earth Explorer Pro now evaluates MapLibre GL JS + deck.gl in a separate `/earth-pro` route. This engine is better suited to large point sets because marker rendering happens in GPU layers and avoids per-marker DOM nodes; MapLibre provides the WebGL basemap / camera and deck.gl provides scatter, icon, and text overlays.
+* CesiumJS was not added in this iteration. It remains unsuitable for the first MVP unless the product shifts toward real GIS terrain, imagery, 3D Tiles, or WGS84 precision; the package weight, worker / static asset setup, and possible token / provider decisions remain too costly for a safe MVP experiment.
 
 Data Generation Strategy
 

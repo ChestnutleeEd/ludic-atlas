@@ -131,29 +131,23 @@ export function getDistributedGlobeCoordinates({
   mode: "global" | "region" | "country";
   total: number;
 }): GlobeCoordinates {
+  const countryAnchor = getGlobeMarkerAnchor(country, mode);
+
   if (total <= 1) {
-    return {
-      lat: country.latitude,
-      lng: country.longitude
-    };
+    return countryAnchor;
   }
 
   const profile = countryMarkerSpreadProfiles[country.code] ?? defaultCountryMarkerSpreadProfile;
   const modeScale = markerSpreadModeScales[mode];
-  const countScale = clamp(0.86 + Math.sqrt(total) * 0.1, 0.92, 1.28);
+  const slot = markerSpreadSlots[mode][index % markerSpreadSlots[mode].length];
   const stableSeed = hashString(`${country.code}:${gameId}`);
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  const angle =
-    index * goldenAngle +
-    (stableSeed % 41) * (Math.PI / 180);
-  const normalizedStep = (index + 0.5) / Math.max(total, 1);
-  const radiusScale = Math.sqrt(normalizedStep);
-  const jitter = ((stableSeed % 97) / 97 - 0.5) * 0.08;
-  const radius = profile.base * modeScale * countScale * (radiusScale + jitter);
+  const jitter = ((stableSeed % 97) / 97 - 0.5) * 0.1;
+  const angle = slot.angle + jitter;
+  const radius = profile.base * modeScale * slot.radius;
   const rawLatOffset = Math.sin(angle) * radius * profile.latScale;
   const rawLngOffset =
     (Math.cos(angle) * radius * profile.lngScale) /
-    Math.max(Math.cos((country.latitude * Math.PI) / 180), 0.35);
+    Math.max(Math.cos((countryAnchor.lat * Math.PI) / 180), 0.35);
   const rotatedOffsets = rotateMarkerOffsets(
     rawLatOffset,
     rawLngOffset,
@@ -172,11 +166,11 @@ export function getDistributedGlobeCoordinates({
 
   return {
     lat: clamp(
-      country.latitude + latOffset,
+      countryAnchor.lat + latOffset,
       -70,
       78
     ),
-    lng: wrapLongitude(country.longitude + lngOffset)
+    lng: wrapLongitude(countryAnchor.lng + lngOffset)
   };
 }
 
@@ -390,6 +384,27 @@ function wrapLongitude(longitude: number) {
   return longitude;
 }
 
+function getGlobeMarkerAnchor(
+  country: Country,
+  mode: "global" | "region" | "country"
+): GlobeCoordinates {
+  const offset = globeMarkerAnchorOffsets[country.code];
+
+  if (!offset || mode === "country") {
+    return {
+      lat: country.latitude,
+      lng: country.longitude
+    };
+  }
+
+  const scale = mode === "global" ? 1 : 0.72;
+
+  return {
+    lat: clamp(country.latitude + offset.lat * scale, -70, 78),
+    lng: wrapLongitude(country.longitude + offset.lng * scale)
+  };
+}
+
 type GeoJsonRing = number[][];
 type GeoJsonPolygon = GeoJsonRing[];
 
@@ -581,28 +596,47 @@ const markerAnchorOffsets: Record<string, MapPosition> = {
 };
 
 const countryNameToCode: Record<string, string> = {
+  Australia: "AU",
+  Belgium: "BE",
   Canada: "CA",
   China: "CN",
+  Czechia: "CZ",
+  "Czech Republic": "CZ",
+  Denmark: "DK",
   Finland: "FI",
   France: "FR",
+  Germany: "DE",
   Japan: "JP",
+  Netherlands: "NL",
+  "New Zealand": "NZ",
+  Norway: "NO",
   Poland: "PL",
+  Russia: "RU",
   "South Korea": "KR",
   Sweden: "SE",
+  Switzerland: "CH",
+  Ukraine: "UA",
   "United Kingdom": "GB",
   "United States of America": "US"
 };
 
 const countryDotTargetCounts: Record<string, number> = {
+  BE: 28,
   CA: 96,
   CN: 132,
+  CZ: 30,
+  DE: 62,
+  DK: 30,
   FI: 54,
   FR: 66,
   GB: 58,
   JP: 64,
   KR: 34,
+  NL: 30,
+  NZ: 46,
   PL: 44,
   SE: 62,
+  UA: 58,
   US: 138
 };
 
@@ -619,6 +653,58 @@ const markerSpreadModeScales: Record<"global" | "region" | "country", number> = 
   country: 1,
   global: 0.34,
   region: 0.68
+};
+
+const markerSpreadSlots: Record<
+  "global" | "region" | "country",
+  { angle: number; radius: number }[]
+> = {
+  country: [
+    { angle: -Math.PI / 2, radius: 0.28 },
+    { angle: Math.PI / 7, radius: 0.44 },
+    { angle: (5 * Math.PI) / 6, radius: 0.48 },
+    { angle: -Math.PI / 8, radius: 0.64 },
+    { angle: (4 * Math.PI) / 5, radius: 0.68 },
+    { angle: (-4 * Math.PI) / 5, radius: 0.72 },
+    { angle: Math.PI / 2, radius: 0.84 },
+    { angle: Math.PI / 3, radius: 0.92 },
+    { angle: (-2 * Math.PI) / 3, radius: 0.96 },
+    { angle: 0, radius: 1.04 },
+    { angle: Math.PI, radius: 1.08 },
+    { angle: (-Math.PI) / 3, radius: 1.12 }
+  ],
+  global: [
+    { angle: -Math.PI / 2, radius: 0.16 },
+    { angle: Math.PI / 6, radius: 0.22 },
+    { angle: (5 * Math.PI) / 6, radius: 0.24 },
+    { angle: -Math.PI / 6, radius: 0.28 },
+    { angle: (7 * Math.PI) / 8, radius: 0.3 },
+    { angle: (-7 * Math.PI) / 8, radius: 0.32 }
+  ],
+  region: [
+    { angle: -Math.PI / 2, radius: 0.2 },
+    { angle: Math.PI / 6, radius: 0.34 },
+    { angle: (5 * Math.PI) / 6, radius: 0.38 },
+    { angle: -Math.PI / 5, radius: 0.5 },
+    { angle: (4 * Math.PI) / 5, radius: 0.54 },
+    { angle: (-4 * Math.PI) / 5, radius: 0.58 }
+  ]
+};
+
+const globeMarkerAnchorOffsets: Record<string, GlobeCoordinates> = {
+  BE: { lat: -0.32, lng: -0.86 },
+  CH: { lat: -0.52, lng: 0.12 },
+  CZ: { lat: -0.62, lng: 0.82 },
+  DE: { lat: 0.1, lng: 0.66 },
+  DK: { lat: 0.86, lng: 0.24 },
+  FI: { lat: 0.5, lng: 0.9 },
+  FR: { lat: -0.42, lng: -0.72 },
+  GB: { lat: 0.36, lng: -0.62 },
+  NL: { lat: 0.48, lng: -0.42 },
+  NO: { lat: 0.92, lng: -0.8 },
+  PL: { lat: 0.28, lng: 0.88 },
+  SE: { lat: 0.68, lng: -0.38 },
+  UA: { lat: -0.34, lng: 1.04 }
 };
 
 const defaultCountryMarkerSpreadProfile: CountryMarkerSpreadProfile = {
@@ -644,6 +730,20 @@ const countryMarkerSpreadProfiles: Record<string, CountryMarkerSpreadProfile> = 
     maxLatOffset: 7.2,
     maxLngOffset: 7.8
   },
+  BE: {
+    base: 0.92,
+    latScale: 0.75,
+    lngScale: 0.75,
+    maxLatOffset: 0.72,
+    maxLngOffset: 0.8
+  },
+  CH: {
+    base: 1.25,
+    latScale: 0.78,
+    lngScale: 0.92,
+    maxLatOffset: 1.1,
+    maxLngOffset: 1.2
+  },
   CA: {
     base: 8,
     latScale: 0.65,
@@ -658,12 +758,34 @@ const countryMarkerSpreadProfiles: Record<string, CountryMarkerSpreadProfile> = 
     maxLatOffset: 6.5,
     maxLngOffset: 10.8
   },
+  CZ: {
+    base: 1.05,
+    latScale: 0.74,
+    lngScale: 0.95,
+    maxLatOffset: 0.86,
+    maxLngOffset: 1.12
+  },
   DE: {
     base: 2,
     latScale: 1,
     lngScale: 0.8,
     maxLatOffset: 2.5,
     maxLngOffset: 2.5
+  },
+  DK: {
+    base: 1,
+    latScale: 1.15,
+    lngScale: 0.68,
+    maxLatOffset: 1.2,
+    maxLngOffset: 0.86,
+    rotationDeg: -18
+  },
+  FI: {
+    base: 2.2,
+    latScale: 1.1,
+    lngScale: 0.78,
+    maxLatOffset: 2.5,
+    maxLngOffset: 2
   },
   FR: {
     base: 2.3,
@@ -710,6 +832,28 @@ const countryMarkerSpreadProfiles: Record<string, CountryMarkerSpreadProfile> = 
     maxLatOffset: 2.2,
     maxLngOffset: 1.6
   },
+  NL: {
+    base: 0.86,
+    latScale: 1.2,
+    lngScale: 0.58,
+    maxLatOffset: 0.9,
+    maxLngOffset: 0.62
+  },
+  NO: {
+    base: 2.4,
+    latScale: 1.2,
+    lngScale: 0.7,
+    maxLatOffset: 3.1,
+    maxLngOffset: 2.1,
+    rotationDeg: -8
+  },
+  PL: {
+    base: 1.9,
+    latScale: 0.88,
+    lngScale: 0.92,
+    maxLatOffset: 1.8,
+    maxLngOffset: 2
+  },
   RU: {
     base: 9,
     latScale: 0.55,
@@ -723,6 +867,13 @@ const countryMarkerSpreadProfiles: Record<string, CountryMarkerSpreadProfile> = 
     lngScale: 0.7,
     maxLatOffset: 4.2,
     maxLngOffset: 2.5
+  },
+  UA: {
+    base: 2.8,
+    latScale: 0.82,
+    lngScale: 1.05,
+    maxLatOffset: 2.5,
+    maxLngOffset: 3.2
   },
   US: {
     base: 7.5,
@@ -741,7 +892,9 @@ const countryFocusOverrides: Record<
   }
 > = {
   CA: { overviewAltitude: 1.16, surfaceAltitude: 0.62, lat: 54, lng: -96 },
+  AU: { overviewAltitude: 1.08, surfaceAltitude: 0.54, lat: -26, lng: 134 },
   BE: { overviewAltitude: 0.82, surfaceAltitude: 0.38, lat: 50.8, lng: 4.7 },
+  CH: { overviewAltitude: 0.8, surfaceAltitude: 0.36, lat: 46.9, lng: 8.3 },
   CN: { overviewAltitude: 0.96, surfaceAltitude: 0.48, lat: 34, lng: 105 },
   CZ: { overviewAltitude: 0.84, surfaceAltitude: 0.38, lat: 49.9, lng: 15.4 },
   DE: { overviewAltitude: 0.88, surfaceAltitude: 0.4, lat: 51, lng: 10 },
@@ -752,9 +905,11 @@ const countryFocusOverrides: Record<
   JP: { overviewAltitude: 0.86, surfaceAltitude: 0.4, lat: 36, lng: 138 },
   KR: { overviewAltitude: 0.84, surfaceAltitude: 0.38, lat: 36, lng: 128 },
   NL: { overviewAltitude: 0.82, surfaceAltitude: 0.38, lat: 52.2, lng: 5.3 },
+  NO: { overviewAltitude: 0.9, surfaceAltitude: 0.42, lat: 61, lng: 9 },
   NZ: { overviewAltitude: 0.98, surfaceAltitude: 0.48, lat: -41, lng: 174 },
   PL: { overviewAltitude: 0.9, surfaceAltitude: 0.42, lat: 52, lng: 19 },
   SE: { overviewAltitude: 0.94, surfaceAltitude: 0.46, lat: 59, lng: 18 },
+  RU: { overviewAltitude: 1.18, surfaceAltitude: 0.62, lat: 58, lng: 80 },
   UA: { overviewAltitude: 0.92, surfaceAltitude: 0.44, lat: 49, lng: 31 },
   US: { overviewAltitude: 1.04, surfaceAltitude: 0.54, lat: 38, lng: -97 }
 };

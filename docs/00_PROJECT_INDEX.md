@@ -57,6 +57,7 @@ If the task involves product scope, read:
 | `src/app/`                 | Next.js App Router page routes, layout, and global styles |
 | `src/components/`          | Main product shell and shared UI components               |
 | `src/components/home/`     | Ludic Atlas landing hub and product entrance components   |
+| `src/components/earth-pro/` | Earth Explorer Pro experimental full-screen MapLibre / deck.gl exploration surface |
 | `src/components/archive/`  | Game Chronicle timeline browsing components               |
 | `src/components/globe/`    | 3D earth, country layer, game cover markers               |
 | `src/components/panels/`   | Country list, country detail, game detail panels          |
@@ -121,8 +122,11 @@ http://localhost:3000
 | Purpose              | File                              |
 | -------------------- | --------------------------------- |
 | Page entry           | `src/app/page.tsx`                |
+| Earth Explorer Pro route | `src/app/earth-pro/page.tsx` |
 | App shell            | `src/components/GameEarthApp.tsx` |
 | Landing hub          | `src/components/home/LandingHub.tsx` |
+| Earth Explorer Pro shell | `src/components/earth-pro/EarthExplorerProApp.tsx` |
+| Earth Explorer Pro map engine | `src/components/earth-pro/EarthProMap.tsx` |
 | Global styles        | `src/app/globals.css`             |
 | Game data export     | `src/data/games.ts`               |
 | Generated RAWG game data | `src/data/games.generated.ts` |
@@ -154,16 +158,20 @@ http://localhost:3000
 | Filtering logic      | `src/lib/filterGames.ts`          |
 | Statistics logic     | `src/lib/stats.ts`                |
 | Region / camera mode helpers | `src/lib/regions.ts`          |
+| Earth Explorer Pro marker / preset helpers | `src/lib/earthPro.ts` |
 
 ## Current Main Entry Files
 
 | Feature                   | Current File                                   |
 | ------------------------- | ---------------------------------------------- |
 | Home page                 | `src/app/page.tsx`                             |
+| Earth Explorer Pro route  | `src/app/earth-pro/page.tsx`                   |
 | Root layout               | `src/app/layout.tsx`                           |
 | Global styles             | `src/app/globals.css`                          |
 | Main product shell        | `src/components/GameEarthApp.tsx`              |
 | Landing hub               | `src/components/home/LandingHub.tsx`           |
+| Earth Explorer Pro shell  | `src/components/earth-pro/EarthExplorerProApp.tsx` |
+| Earth Explorer Pro MapLibre / deck.gl renderer | `src/components/earth-pro/EarthProMap.tsx` |
 | Game Chronicle view       | `src/components/archive/GameArchiveView.tsx`   |
 | Archive film timeline | `src/components/archive/ArchiveTimeline.tsx`   |
 | Archive year exhibit modal | `src/components/archive/ArchiveYearModal.tsx` |

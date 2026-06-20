@@ -155,7 +155,11 @@ Current country data includes the original MVP countries / regions plus generate
 - Germany
 - Netherlands
 - Denmark
+- Switzerland
+- Norway
 - New Zealand
+- Australia
+- Russia
 - Ukraine
 - Czech Republic
 - France
