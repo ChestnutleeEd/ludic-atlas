@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 type LandingHubProps = {
   totalGames: number;
   yearRange: {
@@ -47,6 +49,22 @@ export function LandingHub({
               <span>在 3D 地球上探索游戏文化地图</span>
             </span>
           </button>
+
+          <Link className="portal-card portal-card-pro" href="/earth-pro">
+            <span className="portal-visual portal-pro-visual" aria-hidden="true">
+              <span className="portal-pro-map" />
+              <span className="portal-pro-scan portal-pro-scan-one" />
+              <span className="portal-pro-scan portal-pro-scan-two" />
+              <span className="portal-pro-node portal-pro-node-one" />
+              <span className="portal-pro-node portal-pro-node-two" />
+              <span className="portal-pro-node portal-pro-node-three" />
+            </span>
+            <span className="portal-copy">
+              <span className="portal-label">Earth Explorer Pro</span>
+              <strong>游戏地球 Pro</strong>
+              <span>进入全屏沉浸式地图实验入口</span>
+            </span>
+          </Link>
 
           <button
             className="portal-card portal-card-chronicle"

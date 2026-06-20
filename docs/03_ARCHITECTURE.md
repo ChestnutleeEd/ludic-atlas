@@ -10,6 +10,7 @@ The first MVP should use:
 - React 19.2.7
 - ESLint 9.39.4
 - `react-globe.gl` + Three.js for real interactive 3D earth rendering
+- MapLibre GL JS + deck.gl for the experimental Earth Explorer Pro full-screen engine route
 - `motion` for lightweight UI state transitions, hover motion, layout animation, and archive drawer entry / exit
 - `gsap` for Game Chronicle scene-level entry choreography and scroll-reveal sequencing
 - `undici` for RAWG data script proxy-aware fetch transport
@@ -32,12 +33,17 @@ Data filtering and statistics should live in `src/lib/`.
 src/
 ├─ app/
 │  ├─ page.tsx
+│  ├─ earth-pro/
+│  │  └─ page.tsx
 │  ├─ layout.tsx
 │  └─ globals.css
 ├─ components/
 │  ├─ GameEarthApp.tsx
 │  ├─ home/
 │  │  └─ LandingHub.tsx
+│  ├─ earth-pro/
+│  │  ├─ EarthExplorerProApp.tsx
+│  │  └─ EarthProMap.tsx
 │  ├─ archive/
 │  │  ├─ GameArchiveView.tsx
 │  │  ├─ ArchiveTimeline.tsx
@@ -69,6 +75,7 @@ src/
 │  ├─ filterGames.ts
 │  ├─ stats.ts
 │  ├─ geo.ts
+│  ├─ earthPro.ts
 │  ├─ regions.ts
 │  └─ search.ts
 ├─ types/
@@ -99,10 +106,13 @@ Main Component Responsibilities
 
 File	Responsibility
 src/app/page.tsx	Home page entry. Should render GameEarthApp.
+src/app/earth-pro/page.tsx	Experimental full-screen Earth Explorer Pro route.
 src/app/layout.tsx	App Router root layout, page metadata, and favicon metadata.
 src/app/globals.css	Global Tailwind import and base visual tokens.
 src/components/GameEarthApp.tsx	Main product shell. Owns top-level UI state and layout.
 src/components/home/LandingHub.tsx	Renders the Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrance cards.
+src/components/earth-pro/EarthExplorerProApp.tsx	Renders the Earth Explorer Pro state container, full-screen HUD, preset controls, and collapsible detail panel.
+src/components/earth-pro/EarthProMap.tsx	Client-only MapLibre GL JS and deck.gl renderer for the Pro basemap, country layer, and GPU game / country marker layers.
 src/components/archive/GameArchiveView.tsx	Renders Game Chronicle data preparation, local title search, multi-label genre / platform filters, year grouping, selected year drawer state, sorting, immersive archive hero, sticky collection index, and selected game archive details.
 src/components/archive/ArchiveTimeline.tsx	Renders the scroll-narrative year cabinet exhibition with filtered counts, average rating, top genre, and cover previews.
 src/components/archive/ArchiveYearModal.tsx	Renders the selected year dossier drawer, selected-year game card grid, close behavior, body scroll lock, and selected game handoff.
@@ -129,6 +139,7 @@ src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
 src/lib/stats.ts	Pure statistics functions.
 src/lib/geo.ts	Geographic coordinate and marker position helpers.
+src/lib/earthPro.ts	Pure Earth Explorer Pro preset, marker cap, deterministic marker layout, local-cover, and camera-view helpers.
 src/lib/regions.ts	Broad atlas region mapping, labels, game / country region filters, and cinematic camera presets.
 src/lib/gameCover.ts	Normalizes game cover fields and provides the shared fallback cover image path.
 src/types/game.ts	Shared TypeScript types.
@@ -162,6 +173,7 @@ The current MVP uses a landing hub plus a real 3D globe renderer and a separate 
 
 * `LandingHub` is the default first-screen experience and presents Earth Explorer and Game Chronicle as independent product entrances.
 * `GameGlobe` keeps the real WebGL 3D globe as the Earth Explorer experience.
+* `/earth-pro` is a parallel experimental App Router entry. It does not replace `GameGlobe`; it renders a client-only MapLibre GL JS map with deck.gl overlay layers for a full-screen Earth Explorer Pro experience.
 * `GameArchiveView` is selected through `GameEarthApp` main view mode and provides the Game Chronicle surface for generated global game records.
 * `GameGlobe2D` remains on disk as a legacy component, but `GameEarthApp` no longer imports or renders it and the UI no longer exposes a 2.5D / 3D switch.
 * `GameEarthApp` owns the main view switch so selected game state can carry between Earth and Archive. Earth-specific year range, cover size, and marker view controls are shown only in Earth mode.
@@ -212,6 +224,17 @@ Current 3D globe behavior:
 * `GameTooltip` provides typed tooltip content for both the React component and escaped HTML tooltip markup for globe HTML markers.
 * `src/app/globals.css` provides the black-gold cinematic atlas visual system, globe stage styling, country tooltip styling, dot / border styling, panel styling, bottom drawer mobile behavior, and globe HTML marker styling.
 
+Earth Explorer Pro behavior:
+
+* `src/app/earth-pro/page.tsx` renders `EarthExplorerProApp` as a separate route so the legacy `/` hub, Earth Explorer, and Game Chronicle remain unchanged.
+* `EarthProMap` dynamically loads only on the client. MapLibre GL JS owns the full-screen WebGL country basemap and globe projection using local `public/data/world-countries-lite.geojson`; it does not require external basemap tiles or tokens. The MapLibre instance is created once per route mount; camera, country paint, and deck.gl layers update through separate effects so preset changes, country selection, and marker hover do not destroy and recreate the WebGL canvases.
+* deck.gl is attached through `MapboxOverlay` and renders country aggregates, high-rated game covers, dots, and selected labels with `ScatterplotLayer`, `IconLayer`, and `TextLayer` instead of DOM markers.
+* `src/lib/earthPro.ts` derives marker data from local `games` and `countries` using memoized React calls in `EarthExplorerProApp`. It caps global / region / selected-country markers, guarantees per-country representation in region mode, filters `UNKNOWN` or unmapped country codes out of geographic marker rendering without crashing, and uses deterministic grid / radial / spiral layouts so same-country markers do not jump between renders.
+* Pro cover markers use only local static cover paths or `public/covers/fallback-game-cover.svg`. Remote RAWG image URLs are not fetched by the deck.gl icon atlas, keeping the experimental route usable without runtime network access.
+* The Pro camera is MapLibre `flyTo` based rather than `react-globe.gl` altitude based. Presets exist for Global, Europe, East Asia, North America, Japan, China, United States, and South Korea; every mapped selected country can also derive a dynamic country camera view so non-preset countries such as Poland, Germany, France, Canada, Australia, and Belgium still focus correctly. Camera pitch is kept within the stable MapLibre range for the MVP, and programmatic `flyTo` / zoom commands are separated from user drag / wheel interaction so panel state is not accidentally collapsed by camera animation.
+* The Pro UI is scoped under `.earth-explorer-pro-shell`: top HUD, legend, bottom-left controls, hover tooltip, and a right collapsible detail panel. On mobile the panel starts collapsed as a bottom sheet so the map remains the primary surface; the sheet tab sits above the panel body to remain clickable at 390px widths.
+* Earth Explorer Pro displays generated-data totals separately from country-mapped geographic totals. The top HUD shows global game count, identified country count, and currently visible mapped games; the panel shows the current list and mapped / total generated data counts.
+
 Real 3D Globe performance strategy:
 
 * Automatic rotation is disabled by default and exposed as a rotate toggle in `BottomControls`.
@@ -233,9 +256,9 @@ Real 3D Globe performance strategy:
 
 Engine evaluation:
 
-* The current experiment keeps `react-globe.gl` as the primary engine because it already integrates with Next.js through dynamic client loading, supports local GeoJSON polygons, HTML markers, custom Three.js material, and camera control without runtime map tokens or external services.
-* CesiumJS remains unsuitable for the first MVP unless the product shifts toward real GIS terrain, imagery, 3D Tiles, or WGS84 precision. It adds worker / static asset setup, client-only integration risk, package weight, and likely Cesium ion token / provider decisions.
-* MapLibre / deck.gl remain useful candidates for a future 2D or 2.5D analytics fallback with stronger point clustering, but they would weaken the current 3D earth main visual and introduce basemap / style / tile-source choices. No new engine dependency is installed in the MVP path.
+* The stable Earth Explorer keeps `react-globe.gl` as the primary engine because it already integrates with Next.js through dynamic client loading, supports local GeoJSON polygons, HTML markers, custom Three.js material, and camera control without runtime map tokens or external services.
+* Earth Explorer Pro now evaluates MapLibre GL JS + deck.gl in a separate `/earth-pro` route. This engine is better suited to large point sets because marker rendering happens in GPU layers and avoids per-marker DOM nodes; MapLibre provides the WebGL basemap / camera and deck.gl provides scatter, icon, and text overlays.
+* CesiumJS was not added in this iteration. It remains unsuitable for the first MVP unless the product shifts toward real GIS terrain, imagery, 3D Tiles, or WGS84 precision; the package weight, worker / static asset setup, and possible token / provider decisions remain too costly for a safe MVP experiment.
 
 Data Generation Strategy
 

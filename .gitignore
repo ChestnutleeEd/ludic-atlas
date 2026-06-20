@@ -38,7 +38,7 @@ output/
 *副本*
 
 # Large local RAWG cover cache
-public/covers/rawg/
+# public/covers/rawg/
 
 # Generated local backups
 backups/
