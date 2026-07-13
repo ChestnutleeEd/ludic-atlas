@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CountryPanel } from "@/components/panels/CountryPanel";
 import { CountryDetailPanel } from "@/components/panels/CountryDetailPanel";
 import { GameDetailCard } from "@/components/panels/GameDetailCard";
@@ -20,10 +20,12 @@ type RightPanelProps = {
   selectedGameId: string | null;
   sheetState: MobileSheetState;
   sheetSummary: string;
+  isDesktopOpen: boolean;
   yearRange: YearRange;
   onSelectCountry: (countryCode: string) => void;
   onClearCountry: () => void;
   onSelectGame: (gameId: string | null) => void;
+  onRequestClose: () => void;
   onSheetStateChange: (state: MobileSheetState) => void;
 };
 
@@ -37,18 +39,29 @@ export function RightPanel({
   selectedGameId,
   sheetState,
   sheetSummary,
+  isDesktopOpen,
   yearRange,
   onSelectCountry,
   onClearCountry,
   onSelectGame,
+  onRequestClose,
   onSheetStateChange
 }: RightPanelProps) {
   const dragStartYRef = useRef<number | null>(null);
   const suppressHandleClickRef = useRef(false);
+  const [isWideViewport, setIsWideViewport] = useState(false);
   const isGameDetailOpen = Boolean(selectedGame);
   const panelTitle = selectedCountry
     ? `${selectedCountry.nameZh} ${selectedCountry.name} 国家详情`
     : `${getRegionLabel(activeRegionId)} 国家与地区总览`;
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const syncViewport = () => setIsWideViewport(mediaQuery.matches);
+    syncViewport();
+    mediaQuery.addEventListener("change", syncViewport);
+    return () => mediaQuery.removeEventListener("change", syncViewport);
+  }, []);
 
   useEffect(() => {
     if (!isGameDetailOpen) {
@@ -69,11 +82,26 @@ export function RightPanel({
   return (
     <aside
       aria-label={panelTitle}
+      aria-hidden={isWideViewport && !isDesktopOpen ? true : undefined}
       data-sheet-state={sheetState}
+      inert={isWideViewport && !isDesktopOpen ? true : undefined}
+      id="earth-country-panel"
       className={`glass-panel right-panel-shell relative h-full min-h-0 p-4 ${
+        isDesktopOpen ? "is-desktop-open" : ""
+      } ${
         isGameDetailOpen ? "is-game-detail-open overflow-hidden" : "overflow-y-auto"
       }`}
     >
+      <button
+        aria-label="关闭国家目录"
+        className="right-panel-close"
+        onClick={onRequestClose}
+        type="button"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="m7 7 10 10M17 7 7 17" />
+        </svg>
+      </button>
       <div className="mobile-sheet-header">
         <button
           aria-label="切换底部面板展开状态"

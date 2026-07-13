@@ -9,12 +9,12 @@ import {
 
 test("longitude interpolation uses the shortest arc", () => {
   assert.equal(shortestLongitudeDelta(170, -170), 20);
-  assert.equal(interpolatePointOfView({ lat: 0, lng: 170, altitude: 1 }, { lat: 0, lng: -170, altitude: 1 }, 0.5).lng, 187.5);
+  assert.equal(interpolatePointOfView({ lat: 0, lng: 170, altitude: 1 }, { lat: 0, lng: -170, altitude: 1 }, 0.5).lng, 180);
 });
 
 test("reduced motion has zero duration", () => {
   assert.equal(getCameraDuration(600, true), 0);
-  assert.equal(getCameraDuration(900, false), 600);
+  assert.equal(getCameraDuration(1200, false), 900);
 });
 
 test("a newer revision and user interruption cancel stale frame writes", () => {

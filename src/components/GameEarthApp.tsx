@@ -77,6 +77,7 @@ export function GameEarthApp() {
   const [viewMode, setViewMode] = useState<ViewMode>("countries");
   const [mainViewMode, setMainViewMode] = useState<MainViewMode>("hub");
   const [isRotateEnabled, setIsRotateEnabled] = useState(false);
+  const [isDesktopPanelOpen, setIsDesktopPanelOpen] = useState(false);
   const [mobileSheetState, setMobileSheetState] =
     useState<MobileSheetState>("collapsed");
 
@@ -121,11 +122,16 @@ export function GameEarthApp() {
 
   const handleSelectCountry = useCallback((countryCode: string) => {
     dispatchExploration({ type: "selectCountry", countryCode });
+    dispatchExploration({ type: "setCameraMode", cameraMode: "surface" });
+    if (window.innerWidth > 1023) {
+      setIsDesktopPanelOpen(true);
+    }
     setMobileSheetStateIfSmallViewport("peek");
   }, [setMobileSheetStateIfSmallViewport]);
 
   const handleRegionChange = useCallback((regionId: RegionId) => {
     dispatchExploration({ type: "selectRegion", regionId });
+    dispatchExploration({ type: "setCameraMode", cameraMode: "overview" });
   }, []);
 
   const handleClearCountry = useCallback(() => {
@@ -210,50 +216,56 @@ export function GameEarthApp() {
         ) : (
           <>
         {mainViewMode === "earth" ? (
-        <header className="glass-panel atlas-header relative overflow-hidden p-4">
-          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#00FFFF]/70 to-transparent" />
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <button
-                className="atlas-ghost-button mb-3"
-                onClick={() => setMainViewMode("hub")}
-                type="button"
-              >
-                返回游戏星图
-              </button>
-              <h1 className="text-3xl font-semibold tracking-normal text-[#F5EFE3] md:text-5xl">
-                Earth Explorer / 地球探索
-              </h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#A99D8B]">
-                以电影式地球镜头浏览不同国家与地区的代表性游戏。
-              </p>
+          <header className="earth-command-bar" aria-label="地球探索导航">
+            <button
+              aria-label="返回游戏星图"
+              className="earth-icon-button earth-home-button"
+              onClick={() => setMainViewMode("hub")}
+              type="button"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m14.5 6-6 6 6 6" />
+              </svg>
+            </button>
+            <div className="earth-brand-lockup">
+              <span>LUDIC ATLAS</span>
+              <h1>地球探索</h1>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-sm md:w-[32rem]">
-              <div className="stat-tile p-3">
-                <span className="block text-[#A99D8B]">游戏</span>
-                <strong className="text-2xl text-[#F0B65A]">
-                  {totalStats.totalGames}
-                </strong>
-              </div>
-              <div className="stat-tile p-3">
-                <span className="block text-[#A99D8B]">国家 / 地区</span>
-                <strong className="text-2xl text-[#F0B65A]">
-                  {totalStats.totalCountries}
-                </strong>
-              </div>
-              <div className="stat-tile p-3">
-                <span className="block text-[#A99D8B]">当前可见</span>
-                <strong className="text-2xl text-[#F0B65A]">
-                  {visibleGames.length}
-                </strong>
-              </div>
+            <div className="earth-current-context" aria-live="polite">
+              <span>{cameraMode === "surface" ? "近地聚焦" : "全球巡览"}</span>
+              <strong>
+                {selectedCountry
+                  ? `${selectedCountry.nameZh} ${selectedCountry.name}`
+                  : getRegionLabel(activeRegionId)}
+              </strong>
             </div>
-          </div>
-        </header>
+            <button
+              aria-label="打开或收起国家目录"
+              aria-controls="earth-country-panel"
+              aria-expanded={isDesktopPanelOpen || mobileSheetState !== "collapsed"}
+              className="earth-directory-button"
+              onClick={() => {
+                if (window.innerWidth <= 1023) {
+                  setMobileSheetState((state) =>
+                    state === "collapsed" ? "expanded" : "collapsed"
+                  );
+                  return;
+                }
+                setIsDesktopPanelOpen((isOpen) => !isOpen);
+              }}
+              type="button"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5M12 3.5C9.8 5.8 8.7 8.6 8.7 12s1.1 6.2 3.3 8.5" />
+              </svg>
+              <span>国家目录</span>
+            </button>
+          </header>
         ) : null}
 
         {mainViewMode === "earth" ? (
-          <section className="earth-workspace-grid grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <section className="earth-workspace-grid">
             <GameGlobe
               countries={countries}
               games={regionFilteredGames}
@@ -268,6 +280,9 @@ export function GameEarthApp() {
               onSelectCountry={handleSelectCountry}
               onSelectGame={handleSelectGameFromMap}
               onRegionChange={handleRegionChange}
+              onCameraModeChange={(nextCameraMode) =>
+                dispatchExploration({ type: "setCameraMode", cameraMode: nextCameraMode })
+              }
               onInteractionStart={handleGlobeInteractionStart}
             />
             <RightPanel
@@ -280,10 +295,12 @@ export function GameEarthApp() {
               selectedGameId={selectedGameId}
               sheetState={mobileSheetState}
               sheetSummary={sheetSummary}
+              isDesktopOpen={isDesktopPanelOpen}
               yearRange={yearRange}
               onSelectCountry={handleSelectCountry}
               onClearCountry={handleClearCountry}
               onSelectGame={handleSelectGameFromPanel}
+              onRequestClose={() => setIsDesktopPanelOpen(false)}
               onSheetStateChange={setMobileSheetState}
             />
           </section>
@@ -327,9 +344,6 @@ export function GameEarthApp() {
             }
           />
         ) : null}
-        <p className="px-1 text-[11px] leading-5 text-[#A99D8B]/60">
-          游戏资料与封面图片可由 RAWG 本地生成数据提供；页面运行时不直接请求 RAWG API。
-        </p>
           </>
         )}
       </div>

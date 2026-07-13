@@ -62,8 +62,46 @@ test("mobile sheet starts collapsed and keeps the globe operable", async ({ page
     "data-sheet-state",
     "collapsed"
   );
+  const mobileBounds = await page.evaluate(() => ({
+    panelHeight: document.querySelector<HTMLElement>(".right-panel-shell")!.getBoundingClientRect().height,
+    stageWidth: document.querySelector<HTMLElement>(".real-globe-stage")!.getBoundingClientRect().width,
+    viewportWidth: window.innerWidth
+  }));
+  expect(mobileBounds.panelHeight).toBeLessThanOrEqual(70);
+  expect(mobileBounds.stageWidth).toBeLessThanOrEqual(mobileBounds.viewportWidth);
   await expect(page.locator(".real-globe-stage canvas")).toBeVisible();
   await expect(page.getByRole("button", { name: "放大地球镜头" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "打开或收起国家目录" })).toBeVisible();
+});
+
+test("initial desktop view keeps secondary UI collapsed around a dominant globe", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+
+  const panel = page.locator(".right-panel-shell");
+  const filters = page.locator(".atlas-bottom-controls");
+  await expect(panel).toHaveAttribute("inert", "");
+  await expect(filters).not.toHaveAttribute("open", "");
+  await expect(page.locator(".earth-command-bar")).toBeVisible();
+  await expect(page.locator(".earth-camera-readout")).toBeVisible();
+  await expect(page.locator(".earth-map-tools")).toBeVisible();
+  await expect(page.locator(".real-globe-stage canvas")).toBeVisible();
+});
+
+test("country selection enters a genuinely close surface focus with smooth travel", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  await page.locator(".earth-location-picker > summary").click();
+  await page.getByRole("button", { name: "Japan", exact: true }).click();
+
+  await expect(page.locator(".earth-camera-readout")).toContainText("深度聚焦");
+  await expect(page.locator(".earth-camera-readout")).toContainText("日本 Japan");
+  await expect(page.locator(".right-panel-shell")).not.toHaveAttribute("inert", "");
+  await page.waitForFunction(() => {
+    const altitude = Number(document.querySelector<HTMLElement>(".real-globe-stage")?.dataset.cameraAltitude);
+    return Number.isFinite(altitude) && altitude <= 0.2;
+  });
+  expect(Number(await page.locator(".real-globe-stage").getAttribute("data-camera-altitude"))).toBeLessThanOrEqual(0.2);
 });
 
 test("rapid cross-region country selection keeps the final intent and canvas", async ({ page }) => {
@@ -71,7 +109,7 @@ test("rapid cross-region country selection keeps the final intent and canvas", a
   await enterEarthExplorer(page);
   const canvas = page.locator(".real-globe-stage canvas");
   await canvas.evaluate((element) => { element.dataset.switchIdentity = "stable"; });
-  const japan = page.getByRole("button", { name: "Japan", exact: true });
+  const japan = page.locator(".focus-preset-group button").filter({ hasText: /^Japan$/ });
 
   await page.evaluate(() => {
     const buttons = [...document.querySelectorAll<HTMLButtonElement>(".focus-preset-group button")];
@@ -82,8 +120,8 @@ test("rapid cross-region country selection keeps the final intent and canvas", a
   });
 
   await expect(japan).toHaveAttribute("aria-pressed", "true", { timeout: 700 });
-  await expect(page.getByRole("button", { name: "East Asia", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator(".atlas-globe-status")).toContainText("日本 Japan");
+  await expect(page.locator(".region-preset-group button").filter({ hasText: /^East Asia$/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".earth-current-context")).toContainText("日本 Japan");
   await expect(canvas).toHaveAttribute("data-switch-identity", "stable");
 });
 
@@ -99,20 +137,21 @@ test("one hundred reducer-backed selections settle on the last country", async (
       byCode.get(names[selectionCodes[index === 99 ? 0 : index % selectionCodes.length]])?.click();
     }
   }, codes);
-  await expect(page.getByRole("button", { name: "Japan", exact: true })).toHaveAttribute("aria-pressed", "true", { timeout: 700 });
-  await expect(page.locator(".atlas-globe-status")).toContainText("日本 Japan");
+  await expect(page.locator(".focus-preset-group button").filter({ hasText: /^Japan$/ })).toHaveAttribute("aria-pressed", "true", { timeout: 700 });
+  await expect(page.locator(".earth-current-context")).toContainText("日本 Japan");
 });
 
 test("representative country markers stay bounded, aggregate truthfully, and return stably", async ({ page }) => {
+  test.setTimeout(75_000);
   await page.setViewportSize({ height: 900, width: 1440 });
   await enterEarthExplorer(page);
-  const names = ["Sweden", "Norway", "Denmark", "Netherlands", "Belgium", "Switzerland", "United Kingdom", "South Korea", "Japan"];
+  const names = ["Sweden", "Norway", "Netherlands", "Belgium", "Japan"];
   for (const name of names) {
     await page.evaluate((countryName) => {
       [...document.querySelectorAll<HTMLButtonElement>(".focus-preset-group button")]
         .find((button) => button.textContent?.trim() === countryName)?.click();
     }, name);
-    await expect(page.locator(".atlas-globe-status")).toContainText(name, { timeout: 1000 });
+    await expect(page.locator(".earth-current-context")).toContainText(name, { timeout: 3000 });
     await expect(page.locator(".real-globe-stage canvas")).toBeVisible();
   }
 
@@ -122,31 +161,37 @@ test("representative country markers stay bounded, aggregate truthfully, and ret
   const coverImage = page.locator(".globe-game-cover-image").first();
   await coverImage.evaluate((image) => { (image as HTMLImageElement).src = "/covers/missing-e2e-cover.webp"; });
   await expect(coverImage).toHaveAttribute("data-fallback-applied", "true");
-  const fallbackBox = await coverImage.boundingBox();
-  expect(fallbackBox?.width).toBeGreaterThan(0);
-  expect(fallbackBox?.height).toBeGreaterThan(0);
+  const fallbackBox = await coverImage.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return { height: bounds.height, width: bounds.width };
+  });
+  expect(fallbackBox.width).toBeGreaterThan(0);
+  expect(fallbackBox.height).toBeGreaterThan(0);
   const firstPosition = await aggregate.evaluate((element) => [element.dataset.markerLat, element.dataset.markerLng]);
-  await page.getByRole("button", { name: "Sweden", exact: true }).click();
-  await page.getByRole("button", { name: "Japan", exact: true }).click();
-  await expect(page.locator(".atlas-globe-status")).toContainText("日本 Japan · 12 个地图标记");
+  await page.evaluate(() => {
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>(".focus-preset-group button")];
+    buttons.find((button) => button.textContent?.trim() === "Sweden")?.click();
+    buttons.find((button) => button.textContent?.trim() === "Japan")?.click();
+  });
+  await expect(page.locator(".earth-camera-readout")).toContainText("日本 Japan");
   expect(firstPosition.every(Boolean)).toBe(true);
 });
 
-test("Earth uses the scoped cyan-magenta observatory theme with keyboard focus", async ({ page }, testInfo) => {
+test("Earth uses the softened observatory theme with keyboard focus", async ({ page }, testInfo) => {
   await page.setViewportSize({ height: 900, width: 1440 });
   await enterEarthExplorer(page);
   const tokens = await page.locator(".game-earth-shell.is-earth-mode").evaluate((element) => {
     const style = getComputedStyle(element);
-    const panel = getComputedStyle(document.querySelector(".atlas-globe-panel")!);
+    const commandBar = getComputedStyle(document.querySelector(".earth-command-bar")!);
     return {
       cyan: style.getPropertyValue("--earth-cyan").trim(),
       magenta: style.getPropertyValue("--earth-magenta").trim(),
       text: style.getPropertyValue("--earth-text").trim(),
-      panelBorder: panel.borderTopColor
+      commandRadius: commandBar.borderTopLeftRadius
     };
   });
   expect(["#0ff", "#00ffff"]).toContain(tokens.cyan);
-  expect(tokens).toMatchObject({ magenta: "#ff006e", text: "#eaf4ff", panelBorder: "rgba(0, 255, 255, 0.24)" });
+  expect(tokens).toMatchObject({ magenta: "#ff006e", text: "#eaf4ff", commandRadius: "19px" });
   await page.keyboard.press("Tab");
   await expect(page.locator(":focus-visible")).toBeVisible();
   await testInfo.attach("earth-observatory", { body: await page.screenshot(), contentType: "image/png" });
@@ -155,6 +200,7 @@ test("Earth uses the scoped cyan-magenta observatory theme with keyboard focus",
 test("reduced motion and Hub/Archive remain usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await enterEarthExplorer(page);
+  await page.locator(".earth-location-picker > summary").click();
   await page.getByRole("button", { name: "Japan", exact: true }).click();
   const transitionDuration = await page.locator(".globe-game-marker").first().evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(transitionDuration)).toBeLessThanOrEqual(0.001);

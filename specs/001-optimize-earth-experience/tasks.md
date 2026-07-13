@@ -50,7 +50,7 @@
 - [x] T005 [US1] Refactor Earth mode into a `100dvh` compact-header workspace with atomic layout state and no duplicate top statistics in `src/components/GameEarthApp.tsx`
 - [x] T006 [US1] Remove 690/560px hard minimums, make the globe inherit available height, and let ResizeObserver use real non-zero content bounds in `src/components/globe/GameGlobe.tsx`
 - [x] T007 [P] [US1] Convert the full-width bottom block into a compact expandable filter tray without duplicating map zoom/reset/focus controls in `src/components/controls/BottomControls.tsx`
-- [x] T008 [P] [US1] Make the desktop right panel stretch and scroll internally while preserving the three mobile sheet states and safe areas in `src/components/panels/RightPanel.tsx`
+- [x] T008 [P] [US1] Keep the desktop right panel off-canvas and internally scrollable until requested while preserving the three mobile sheet states and safe areas in `src/components/panels/RightPanel.tsx`
 - [x] T009 [US1] Implement scoped Earth workspace, tray, equal-height columns, responsive `dvh`, and canvas containment styles until the US1 browser assertions pass in `src/app/globals.css`
 
 **Checkpoint**: US1 可单独演示；地球成为首屏最大区域，所有既有入口仍可达。
@@ -74,7 +74,7 @@
 - [x] T013 [P] [US2] Implement the pure atomic ExplorationState reducer and validated actions in `src/lib/explorerState.ts`
 - [x] T014 [P] [US2] Implement revision-guarded camera interpolation, shortest-arc helpers, cancellation, and reduced-motion duration in `src/lib/globeCamera.ts`
 - [x] T015 [US2] Replace separate region/country/game state mutations with reducer dispatches for polygon, preset, list, game, clear, region, and reset entry points in `src/components/GameEarthApp.tsx`
-- [x] T016 [US2] Integrate the cancellable ≤600ms camera animator, cancel on user input, clean controls listeners/timers, avoid duplicate reset commands, and expose stable semantic state in `src/components/globe/GameGlobe.tsx`
+- [x] T016 [US2] Integrate the cancellable 680ms country-focus camera animator, cancel on user input, clean controls listeners/timers, avoid duplicate reset commands, and expose stable semantic state in `src/components/globe/GameGlobe.tsx`
 - [x] T017 [P] [US2] Merge decorative country dots, remove point hover/click picking, reuse static country/feature indexes, and reduce polygon/point geometry cost in `src/components/globe/CountryLayer.tsx`
 - [x] T018 [P] [US2] Remove game hover from marker data derivation, stabilize marker descriptors/elements/images, add intrinsic image dimensions and differential visibility writes in `src/components/globe/GameMarkers.tsx`
 - [x] T019 [US2] Add rapid 10/100-country selection, response/settle timing, MutationObserver canvas/img stability, reduced-motion, and interaction regression coverage in `tests/e2e/earth-explorer.spec.ts`

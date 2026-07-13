@@ -12,7 +12,10 @@ export function shortestLongitudeDelta(from: number, to: number) {
 }
 
 export function interpolatePointOfView(from: CameraPointOfView, to: CameraPointOfView, progress: number): CameraPointOfView {
-  const eased = 1 - Math.pow(1 - Math.min(1, Math.max(0, progress)), 3);
+  const clampedProgress = Math.min(1, Math.max(0, progress));
+  const eased = clampedProgress * clampedProgress * clampedProgress * (
+    clampedProgress * (clampedProgress * 6 - 15) + 10
+  );
   return {
     altitude: from.altitude + (to.altitude - from.altitude) * eased,
     lat: from.lat + (to.lat - from.lat) * eased,
@@ -21,7 +24,7 @@ export function interpolatePointOfView(from: CameraPointOfView, to: CameraPointO
 }
 
 export function getCameraDuration(requested: number, reducedMotion: boolean) {
-  return reducedMotion ? 0 : Math.min(600, Math.max(0, requested));
+  return reducedMotion ? 0 : Math.min(900, Math.max(0, requested));
 }
 
 export function createCameraAnimator(options: CameraAnimatorOptions) {

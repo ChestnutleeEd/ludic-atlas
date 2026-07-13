@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   getBoundaryDistance,
+  getCountryFocusPointOfView,
   getCountrySafeMarkerSlots,
   indexCountryFeatures,
   isCoordinateInsideFeature,
@@ -28,6 +29,16 @@ test("nine representative countries produce deterministic interior slots", () =>
       assert.equal(isCoordinateInsideFeature(feature, slot), true, `${code} slot is inside`);
       assert.ok(getBoundaryDistance(feature, slot) > 0, `${code} slot clears boundary`);
     }
+  }
+});
+
+test("surface country focus is materially closer than the overview camera", () => {
+  for (const code of countryCodes) {
+    const country = countryFromFeature(code);
+    const surface = getCountryFocusPointOfView(country, "surface");
+    const overview = getCountryFocusPointOfView(country, "overview");
+    assert.ok(surface.altitude <= 0.2, `${code} surface focus is close`);
+    assert.ok(surface.altitude < overview.altitude * 0.5, `${code} surface focus is distinct`);
   }
 });
 

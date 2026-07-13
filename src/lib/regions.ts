@@ -35,21 +35,21 @@ export const CAMERA_MODE_CONFIGS: Record<CameraMode, CameraModeConfig> = {
     labelZh: "总览",
     maxAltitude: 2.15,
     maxDistance: 410,
-    minAltitude: 0.86,
-    minDistance: 148,
+    minAltitude: 0.52,
+    minDistance: 132,
     rotateSpeed: 0.42,
     zoomSpeed: 0.52
   },
   surface: {
-    defaultAltitude: 0.56,
+    defaultAltitude: 0.24,
     label: "Surface",
     labelZh: "近地",
-    maxAltitude: 0.92,
-    maxDistance: 216,
-    minAltitude: 0.34,
-    minDistance: 118,
-    rotateSpeed: 0.2,
-    zoomSpeed: 0.18
+    maxAltitude: 0.78,
+    maxDistance: 198,
+    minAltitude: 0.1,
+    minDistance: 106,
+    rotateSpeed: 0.16,
+    zoomSpeed: 0.34
   }
 };
 
@@ -57,14 +57,14 @@ export const CAMERA_PRESETS: Record<RegionId, CameraPreset> = {
   // Altitude is tuned with the distance clamp above: lower values are close
   // enough for dense regions while still leaving room for markers and country
   // polygons to render in front of the globe surface without jitter.
-  global: { altitude: { overview: 1.36, surface: 0.68 }, lat: 24, lng: 38 },
-  europe: { altitude: { overview: 1.02, surface: 0.48 }, lat: 51, lng: 12 },
-  eastAsia: { altitude: { overview: 0.98, surface: 0.48 }, lat: 36, lng: 128 },
-  northAmerica: { altitude: { overview: 1.08, surface: 0.54 }, lat: 42, lng: -98 },
-  latinAmerica: { altitude: { overview: 1.3, surface: 0.66 }, lat: -12, lng: -62 },
-  middleEast: { altitude: { overview: 1.08, surface: 0.5 }, lat: 29, lng: 44 },
-  southAsia: { altitude: { overview: 1.08, surface: 0.5 }, lat: 22, lng: 78 },
-  oceania: { altitude: { overview: 1.16, surface: 0.58 }, lat: -25, lng: 142 }
+  global: { altitude: { overview: 1.36, surface: 0.58 }, lat: 24, lng: 38 },
+  europe: { altitude: { overview: 1.02, surface: 0.4 }, lat: 51, lng: 12 },
+  eastAsia: { altitude: { overview: 0.98, surface: 0.4 }, lat: 36, lng: 128 },
+  northAmerica: { altitude: { overview: 1.08, surface: 0.44 }, lat: 42, lng: -98 },
+  latinAmerica: { altitude: { overview: 1.3, surface: 0.54 }, lat: -12, lng: -62 },
+  middleEast: { altitude: { overview: 1.08, surface: 0.42 }, lat: 29, lng: 44 },
+  southAsia: { altitude: { overview: 1.08, surface: 0.42 }, lat: 22, lng: 78 },
+  oceania: { altitude: { overview: 1.16, surface: 0.48 }, lat: -25, lng: 142 }
 };
 
 export const REGION_CONFIGS: RegionConfig[] = [

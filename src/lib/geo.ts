@@ -244,7 +244,7 @@ export function getCountryFocusPointOfView(
   // prevents camera penetration during wheel or pinch zoom.
   const altitude =
     cameraMode === "surface"
-      ? focus?.surfaceAltitude ?? 0.5
+      ? focus?.surfaceAltitude ?? 0.2
       : focus?.overviewAltitude ?? 1.02;
 
   return {
@@ -1012,27 +1012,27 @@ const countryFocusOverrides: Record<
     surfaceAltitude?: number;
   }
 > = {
-  CA: { overviewAltitude: 1.16, surfaceAltitude: 0.62, lat: 54, lng: -96 },
-  AU: { overviewAltitude: 1.08, surfaceAltitude: 0.54, lat: -26, lng: 134 },
-  BE: { overviewAltitude: 0.82, surfaceAltitude: 0.38, lat: 50.8, lng: 4.7 },
-  CH: { overviewAltitude: 0.8, surfaceAltitude: 0.36, lat: 46.9, lng: 8.3 },
-  CN: { overviewAltitude: 0.96, surfaceAltitude: 0.48, lat: 34, lng: 105 },
-  CZ: { overviewAltitude: 0.84, surfaceAltitude: 0.38, lat: 49.9, lng: 15.4 },
-  DE: { overviewAltitude: 0.88, surfaceAltitude: 0.4, lat: 51, lng: 10 },
-  DK: { overviewAltitude: 0.86, surfaceAltitude: 0.4, lat: 56, lng: 10 },
-  FI: { overviewAltitude: 0.92, surfaceAltitude: 0.44, lat: 60, lng: 24 },
-  FR: { overviewAltitude: 0.92, surfaceAltitude: 0.44, lat: 48, lng: 5 },
-  GB: { overviewAltitude: 0.9, surfaceAltitude: 0.44, lat: 53, lng: -2 },
-  JP: { overviewAltitude: 0.86, surfaceAltitude: 0.4, lat: 36, lng: 138 },
-  KR: { overviewAltitude: 0.84, surfaceAltitude: 0.38, lat: 36, lng: 128 },
-  NL: { overviewAltitude: 0.82, surfaceAltitude: 0.38, lat: 52.2, lng: 5.3 },
-  NO: { overviewAltitude: 0.9, surfaceAltitude: 0.42, lat: 61, lng: 9 },
-  NZ: { overviewAltitude: 0.98, surfaceAltitude: 0.48, lat: -41, lng: 174 },
-  PL: { overviewAltitude: 0.9, surfaceAltitude: 0.42, lat: 52, lng: 19 },
-  SE: { overviewAltitude: 0.94, surfaceAltitude: 0.46, lat: 59, lng: 18 },
-  RU: { overviewAltitude: 1.18, surfaceAltitude: 0.62, lat: 58, lng: 80 },
-  UA: { overviewAltitude: 0.92, surfaceAltitude: 0.44, lat: 49, lng: 31 },
-  US: { overviewAltitude: 1.04, surfaceAltitude: 0.54, lat: 38, lng: -97 }
+  CA: { overviewAltitude: 1.16, surfaceAltitude: 0.34, lat: 54, lng: -96 },
+  AU: { overviewAltitude: 1.08, surfaceAltitude: 0.28, lat: -26, lng: 134 },
+  BE: { overviewAltitude: 0.82, surfaceAltitude: 0.12, lat: 50.8, lng: 4.7 },
+  CH: { overviewAltitude: 0.8, surfaceAltitude: 0.12, lat: 46.9, lng: 8.3 },
+  CN: { overviewAltitude: 0.96, surfaceAltitude: 0.26, lat: 34, lng: 105 },
+  CZ: { overviewAltitude: 0.84, surfaceAltitude: 0.14, lat: 49.9, lng: 15.4 },
+  DE: { overviewAltitude: 0.88, surfaceAltitude: 0.18, lat: 51, lng: 10 },
+  DK: { overviewAltitude: 0.86, surfaceAltitude: 0.13, lat: 56, lng: 10 },
+  FI: { overviewAltitude: 0.92, surfaceAltitude: 0.2, lat: 60, lng: 24 },
+  FR: { overviewAltitude: 0.92, surfaceAltitude: 0.2, lat: 48, lng: 5 },
+  GB: { overviewAltitude: 0.9, surfaceAltitude: 0.18, lat: 53, lng: -2 },
+  JP: { overviewAltitude: 0.86, surfaceAltitude: 0.18, lat: 36, lng: 138 },
+  KR: { overviewAltitude: 0.84, surfaceAltitude: 0.14, lat: 36, lng: 128 },
+  NL: { overviewAltitude: 0.82, surfaceAltitude: 0.12, lat: 52.2, lng: 5.3 },
+  NO: { overviewAltitude: 0.9, surfaceAltitude: 0.2, lat: 61, lng: 9 },
+  NZ: { overviewAltitude: 0.98, surfaceAltitude: 0.2, lat: -41, lng: 174 },
+  PL: { overviewAltitude: 0.9, surfaceAltitude: 0.18, lat: 52, lng: 19 },
+  SE: { overviewAltitude: 0.94, surfaceAltitude: 0.2, lat: 59, lng: 18 },
+  RU: { overviewAltitude: 1.18, surfaceAltitude: 0.38, lat: 58, lng: 80 },
+  UA: { overviewAltitude: 0.92, surfaceAltitude: 0.2, lat: 49, lng: 31 },
+  US: { overviewAltitude: 1.04, surfaceAltitude: 0.28, lat: 38, lng: -97 }
 };
 
 const country2DFocusOverrides: Record<

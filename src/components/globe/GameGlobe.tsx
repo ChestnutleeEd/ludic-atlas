@@ -20,12 +20,11 @@ import {
   type CountryGeoJsonFeature
 } from "@/lib/geo";
 import { createCameraAnimator, getCameraDuration } from "@/lib/globeCamera";
-import { getCountryDisplayName, getViewModeLabel } from "@/lib/localization";
+import { getCountryDisplayName } from "@/lib/localization";
 import {
   CAMERA_MODE_CONFIGS,
   REGION_CONFIGS,
   filterCountriesByRegion,
-  getCameraModeLabel,
   getRegionConfig,
   getRegionPointOfView
 } from "@/lib/regions";
@@ -41,7 +40,7 @@ const ReactGlobe = dynamic(() => import("react-globe.gl"), {
 
 const MAX_RENDER_PIXEL_RATIO = 1.25;
 const INTERACTION_RESTORE_DELAY_MS = 200;
-const MANUAL_ZOOM_TRANSITION_MS = 360;
+const MANUAL_ZOOM_TRANSITION_MS = 440;
 const COUNTRY_FOCUS_PRESET_CODES = [
   "JP",
   "SE",
@@ -74,6 +73,7 @@ type GameGlobeProps = {
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
   onRegionChange: (regionId: RegionId) => void;
+  onCameraModeChange: (cameraMode: CameraMode) => void;
   onInteractionStart?: () => void;
 };
 
@@ -91,10 +91,12 @@ export function GameGlobe({
   onSelectCountry,
   onSelectGame,
   onRegionChange,
+  onCameraModeChange,
   onInteractionStart
 }: GameGlobeProps) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
+  const locationPickerRef = useRef<HTMLDetailsElement>(null);
   const interactionRestoreTimerRef = useRef<number | null>(null);
   const controlsCleanupRef = useRef<(() => void) | null>(null);
   const cameraAnimatorRef = useRef<ReturnType<typeof createCameraAnimator> | null>(null);
@@ -116,6 +118,25 @@ export function GameGlobe({
   const [globeSize, setGlobeSize] = useState({ height: 640, width: 920 });
   const [isGlobeInteracting, setIsGlobeInteracting] = useState(false);
   const cameraModeConfig = CAMERA_MODE_CONFIGS[cameraMode];
+  const getViewportAdjustedPointOfView = useCallback(
+    (pointOfView: GlobePointOfView, isCountryFocus: boolean) => {
+      const portraitRatio = globeSize.height / Math.max(1, globeSize.width);
+
+      if (portraitRatio <= 1.25) {
+        return pointOfView;
+      }
+
+      const altitudeFactor = isCountryFocus
+        ? Math.min(1.32, 1 + (portraitRatio - 1) * 0.25)
+        : Math.min(1.55, 1 + (portraitRatio - 1) * 0.5);
+
+      return {
+        ...pointOfView,
+        altitude: pointOfView.altitude * altitudeFactor
+      };
+    },
+    [globeSize.height, globeSize.width]
+  );
 
   const getCurrentPointOfView = useCallback((): GlobePointOfView => {
     const currentPointOfView = globeRef.current?.pointOfView();
@@ -139,6 +160,9 @@ export function GameGlobe({
         requestFrame: (callback) => window.requestAnimationFrame(callback),
         write: (pointOfView) => {
           lastCameraPointOfViewRef.current = pointOfView;
+          if (containerRef.current) {
+            containerRef.current.dataset.cameraAltitude = pointOfView.altitude.toFixed(3);
+          }
           globeRef.current?.pointOfView(pointOfView, 0);
         }
       });
@@ -250,40 +274,63 @@ export function GameGlobe({
       return;
     }
 
-    const pointOfView = selectedCountry
+    const targetPointOfView = selectedCountry
       ? getCountryFocusPointOfView(selectedCountry, cameraMode)
       : getRegionPointOfView(activeRegionId, cameraMode);
+    const pointOfView = getViewportAdjustedPointOfView(
+      targetPointOfView,
+      Boolean(selectedCountry)
+    );
 
-    setGlobePointOfView(pointOfView, 560);
-  }, [activeRegionId, cameraMode, selectedCountry, setGlobePointOfView]);
+    setGlobePointOfView(pointOfView, selectedCountry ? 680 : 620);
+  }, [activeRegionId, cameraMode, getViewportAdjustedPointOfView, selectedCountry, setGlobePointOfView]);
 
   const handleFocusSelectedCountry = useCallback(() => {
     if (!selectedCountry) {
       setGlobePointOfView(
-        getRegionPointOfView(activeRegionId, cameraMode),
+        getViewportAdjustedPointOfView(
+          getRegionPointOfView(activeRegionId, cameraMode),
+          false
+        ),
         520
       );
       return;
     }
 
+    onCameraModeChange("surface");
     setGlobePointOfView(
-      getCountryFocusPointOfView(selectedCountry, cameraMode),
-      560
+      getViewportAdjustedPointOfView(
+        getCountryFocusPointOfView(selectedCountry, "surface"),
+        true
+      ),
+      680
     );
-  }, [activeRegionId, cameraMode, selectedCountry, setGlobePointOfView]);
+  }, [activeRegionId, cameraMode, getViewportAdjustedPointOfView, onCameraModeChange, selectedCountry, setGlobePointOfView]);
 
   const handleResetGlobalView = useCallback(() => {
     onClearCountry();
     setActiveWorldCountry(null);
     onRegionChange("global");
-    setGlobePointOfView(getRegionPointOfView("global", cameraMode), 560);
-  }, [cameraMode, onClearCountry, onRegionChange, setGlobePointOfView]);
+  }, [onClearCountry, onRegionChange]);
 
   const handleSelectRegion = useCallback(
     (regionId: RegionId) => {
+      if (locationPickerRef.current) {
+        locationPickerRef.current.open = false;
+      }
       onRegionChange(regionId);
     },
     [onRegionChange]
+  );
+
+  const handleSelectFocusCountry = useCallback(
+    (countryCode: string) => {
+      if (locationPickerRef.current) {
+        locationPickerRef.current.open = false;
+      }
+      onSelectCountry(countryCode);
+    },
+    [onSelectCountry]
   );
 
   const handleZoomCamera = useCallback(
@@ -493,10 +540,10 @@ export function GameGlobe({
     () =>
       new MeshPhongMaterial({
         color: "#030712",
-        emissive: "#071426",
-        emissiveIntensity: 0.3,
-        shininess: 12,
-        specular: "#00FFFF"
+        emissive: "#06111f",
+        emissiveIntensity: 0.2,
+        shininess: 5,
+        specular: "#24505c"
       }),
     []
   );
@@ -518,86 +565,89 @@ export function GameGlobe({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_42%_46%,rgba(0,255,255,0.08),transparent_34%),linear-gradient(135deg,rgba(3,7,18,0.98),rgba(10,0,20,0.94))]" />
       <div className="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(circle,rgba(0,255,255,0.36)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="absolute inset-0 bg-[linear-gradient(112deg,transparent_0%,rgba(234,244,255,0.018)_50%,rgba(255,0,110,0.028)_52%,transparent_59%)]" />
-      <div className="relative z-10 flex h-full min-h-0 flex-col gap-3 p-3">
-        <div className="atlas-globe-status grid gap-3 md:grid-cols-[1fr_auto]">
-          <div>
-            <p className="text-sm font-semibold text-[#F0B65A]">
-              当前镜头 / {getCameraModeLabel(cameraMode)}
-            </p>
-            <p className="mt-1 text-xs text-[#A99D8B]">
-              {activeCameraLabel} · {visibleGameMarkers.length} 个地图标记 · 按开发商 / 工作室国家归属。
-            </p>
-          </div>
-          <div className="grid gap-2 md:w-[31rem]">
-            <dl className="grid grid-cols-2 gap-2 text-xs">
-              <div className="stat-tile p-2">
-                <dt className="text-[#A99D8B]">当前国家</dt>
-                <dd className="mt-1 text-[#F0B65A]">
-                  {selectedCountry ? getCountryDisplayName(selectedCountry) : "未选择"}
-                </dd>
-              </div>
-              <div className="stat-tile p-2">
-                <dt className="text-[#A99D8B]">展示模式</dt>
-                <dd className="mt-1 text-[#F0B65A]">{getViewModeLabel(viewMode)}</dd>
-              </div>
-              <div className="stat-tile p-2">
-                <dt className="text-[#A99D8B]">国家边界</dt>
-                <dd className="mt-1 text-[#F0B65A]">{countryFeatures.length}</dd>
-              </div>
-              <div className="stat-tile p-2">
-                <dt className="text-[#A99D8B]">地图标记</dt>
-                <dd className="mt-1 text-[#F0B65A]">{visibleGameMarkers.length}</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-
+      <div className="relative z-10 h-full min-h-0 p-2">
         <div
           className={`real-globe-stage relative min-h-0 flex-1 overflow-hidden ${
             isGlobeInteracting ? "is-globe-interacting" : ""
           }`}
+          data-camera-mode={cameraMode}
           onPointerDown={handleGlobeInteractionStart}
           onPointerLeave={handleGlobeInteractionEnd}
           onPointerUp={handleGlobeInteractionEnd}
           onWheel={handleGlobeWheel}
           ref={containerRef}
         >
-          <div className="pointer-events-none absolute left-[42%] top-1/2 h-[min(90vw,800px)] w-[min(90vw,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,255,255,0.08),rgba(255,0,110,0.025)_44%,transparent_70%)] blur-2xl" />
-          <div className="pointer-events-none absolute inset-x-10 top-6 h-px bg-gradient-to-r from-transparent via-[#00FFFF]/55 to-transparent" />
-          <div className="absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] flex-wrap gap-2">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[min(94vw,920px)] w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,255,255,0.07),rgba(255,0,110,0.018)_46%,transparent_72%)] blur-2xl" />
+          <div className="earth-camera-readout" aria-live="polite">
+            <span>{cameraMode === "surface" ? "深度聚焦" : "轨道总览"}</span>
+            <strong>{activeCameraLabel}</strong>
+            <small>{visibleGameMarkers.length} 个游戏标记</small>
+          </div>
+          <div className="earth-map-tools" aria-label="镜头控制">
             <button
               aria-label="重置为全球视角"
-              className="globe-view-button"
+              className="earth-tool-button"
               onClick={handleResetGlobalView}
               type="button"
             >
-              重置 Reset
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M4.6 9A8 8 0 1 1 4 14" />
+                <path d="M4 4v5h5" />
+              </svg>
+              <span>全球</span>
             </button>
             <button
               aria-label="放大地球镜头"
-              className="globe-view-button"
+              className="earth-tool-button"
               onClick={() => handleZoomCamera("in")}
               type="button"
             >
-              放大
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6" />
+              </svg>
+              <span>拉近</span>
             </button>
             <button
               aria-label="缩小地球镜头"
-              className="globe-view-button"
+              className="earth-tool-button"
               onClick={() => handleZoomCamera("out")}
               type="button"
             >
-              缩小
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="M15.5 15.5 21 21M7.5 10.5h6" />
+              </svg>
+              <span>拉远</span>
             </button>
             <button
               aria-label="聚焦当前选中国家"
               disabled={!selectedCountry}
-              className="globe-view-button"
+              className="earth-tool-button is-focus"
               onClick={handleFocusSelectedCountry}
               type="button"
             >
-              聚焦 Focus
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5" />
+                <circle cx="12" cy="12" r="2.5" />
+              </svg>
+              <span>聚焦</span>
             </button>
+          </div>
+          <details className="earth-location-picker" ref={locationPickerRef}>
+            <summary>
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                <circle cx="12" cy="10" r="2.5" />
+              </svg>
+              <span>选择地点</span>
+              <small>{activeCameraLabel}</small>
+            </summary>
+            <div className="earth-location-menu">
+              <div className="earth-location-heading">
+                <span>区域镜头</span>
+                <small>先选区域，再深入国家</small>
+              </div>
             <div className="region-preset-group" aria-label="地区镜头" role="group">
               {REGION_CONFIGS.map((regionConfig) => (
                 <button
@@ -616,38 +666,29 @@ export function GameGlobe({
               className="region-preset-group focus-preset-group"
               role="group"
             >
+              <div className="earth-location-heading">
+                <span>快速聚焦</span>
+                <small>选择后自动进入近地模式</small>
+              </div>
               {focusPresetCountries.map((country) => (
                 <button
                   aria-pressed={country.code === selectedCountryCode}
                   className={country.code === selectedCountryCode ? "is-active" : ""}
                   key={country.code}
-                  onClick={() => onSelectCountry(country.code)}
+                  onClick={() => handleSelectFocusCountry(country.code)}
                   type="button"
                 >
                   {country.name}
                 </button>
               ))}
             </div>
-          </div>
-          <div className="globe-map-legend" aria-label="地图图例">
-            <span>
-              <i className="legend-pin" />
-              代表游戏
-            </span>
-            <span>
-              <i className="legend-dot" />
-              国家热点
-            </span>
-            <span>
-              <i className="legend-ring" />
-              选中区域
-            </span>
-          </div>
+            </div>
+          </details>
           <ReactGlobe
             ref={globeRef}
             {...countryLayerProps}
-            atmosphereAltitude={0.18}
-            atmosphereColor="#00FFFF"
+            atmosphereAltitude={0.14}
+            atmosphereColor="#55BFC8"
             backgroundColor="rgba(0,0,0,0)"
             enablePointerInteraction
             globeMaterial={globeMaterial}
@@ -688,9 +729,12 @@ export function GameGlobe({
               }
 
               setGlobePointOfView(
-                selectedCountry
-                  ? getCountryFocusPointOfView(selectedCountry, cameraMode)
-                  : getRegionPointOfView(activeRegionId, cameraMode),
+                getViewportAdjustedPointOfView(
+                  selectedCountry
+                    ? getCountryFocusPointOfView(selectedCountry, cameraMode)
+                    : getRegionPointOfView(activeRegionId, cameraMode),
+                  Boolean(selectedCountry)
+                ),
                 0
               );
             }}

@@ -31,7 +31,7 @@ selectCountry(countryCode)
 - 每个相机 intent 有单调 revision；只有最新 revision 可以写 POV 和 settled 状态。
 - 新 intent 必须取消旧 rAF，并从当前实际 POV 开始，不得先跳到旧目标。
 - 经度插值走最短弧；用户 drag/wheel/pinch 立即取消程序动画。
-- 普通选择动画不超过 600ms；reduced-motion 为 0ms。
+- 普通国家选择动画不超过 680ms；reduced-motion 为 0ms。
 - reset、focus、zoom 和 state selection 共用一个命令入口，不能为同一动作发两次 camera transition。
 
 ## 4. Marker Geometry Contract
