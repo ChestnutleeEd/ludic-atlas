@@ -47,6 +47,7 @@ export function RightPanel({
   onRequestClose,
   onSheetStateChange
 }: RightPanelProps) {
+  const panelRef = useRef<HTMLElement>(null);
   const dragStartYRef = useRef<number | null>(null);
   const suppressHandleClickRef = useRef(false);
   const [isWideViewport, setIsWideViewport] = useState(false);
@@ -68,6 +69,8 @@ export function RightPanel({
       return;
     }
 
+    panelRef.current?.scrollTo({ left: 0, top: 0 });
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onSelectGame(null);
@@ -86,6 +89,7 @@ export function RightPanel({
       data-sheet-state={sheetState}
       inert={isWideViewport && !isDesktopOpen ? true : undefined}
       id="earth-country-panel"
+      ref={panelRef}
       className={`glass-panel right-panel-shell relative h-full min-h-0 p-4 ${
         isDesktopOpen ? "is-desktop-open" : ""
       } ${

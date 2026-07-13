@@ -38,7 +38,7 @@ const ReactGlobe = dynamic(() => import("react-globe.gl"), {
   GlobeProps & { ref?: React.MutableRefObject<GlobeMethods | undefined> }
 >;
 
-const MAX_RENDER_PIXEL_RATIO = 1.25;
+const MAX_RENDER_PIXEL_RATIO = 1;
 const INTERACTION_RESTORE_DELAY_MS = 200;
 const MANUAL_ZOOM_TRANSITION_MS = 440;
 const COUNTRY_FOCUS_PRESET_CODES = [
@@ -98,6 +98,7 @@ export function GameGlobe({
   const containerRef = useRef<HTMLDivElement>(null);
   const locationPickerRef = useRef<HTMLDetailsElement>(null);
   const interactionRestoreTimerRef = useRef<number | null>(null);
+  const cameraDetailRestoreTimerRef = useRef<number | null>(null);
   const controlsCleanupRef = useRef<(() => void) | null>(null);
   const cameraAnimatorRef = useRef<ReturnType<typeof createCameraAnimator> | null>(null);
   const lastCameraPointOfViewRef = useRef<GlobePointOfView>(
@@ -116,6 +117,7 @@ export function GameGlobe({
     countryCode: string;
   } | null>(null);
   const [globeSize, setGlobeSize] = useState({ height: 640, width: 920 });
+  const [isCameraAnimating, setIsCameraAnimating] = useState(false);
   const [isGlobeInteracting, setIsGlobeInteracting] = useState(false);
   const cameraModeConfig = CAMERA_MODE_CONFIGS[cameraMode];
   const getViewportAdjustedPointOfView = useCallback(
@@ -174,6 +176,18 @@ export function GameGlobe({
     (pointOfView: GlobePointOfView, transitionMs: number) => {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const duration = getCameraDuration(transitionMs, reducedMotion);
+
+      if (cameraDetailRestoreTimerRef.current) {
+        window.clearTimeout(cameraDetailRestoreTimerRef.current);
+      }
+
+      setIsCameraAnimating(duration > 0);
+      if (duration > 0) {
+        cameraDetailRestoreTimerRef.current = window.setTimeout(() => {
+          setIsCameraAnimating(false);
+        }, duration + INTERACTION_RESTORE_DELAY_MS);
+      }
+
       getCameraAnimator().animate(getCurrentPointOfView(), pointOfView, duration);
     },
     [getCameraAnimator, getCurrentPointOfView]
@@ -260,6 +274,9 @@ export function GameGlobe({
       controlsCleanupRef.current?.();
       if (interactionRestoreTimerRef.current) {
         window.clearTimeout(interactionRestoreTimerRef.current);
+      }
+      if (cameraDetailRestoreTimerRef.current) {
+        window.clearTimeout(cameraDetailRestoreTimerRef.current);
       }
     },
     []
@@ -360,6 +377,10 @@ export function GameGlobe({
 
     onInteractionStart?.();
     cameraAnimatorRef.current?.cancel();
+    if (cameraDetailRestoreTimerRef.current) {
+      window.clearTimeout(cameraDetailRestoreTimerRef.current);
+    }
+    setIsCameraAnimating(false);
     setIsGlobeInteracting(true);
     setHoveredCountryCode(null);
   }, [onInteractionStart]);
@@ -559,6 +580,8 @@ export function GameGlobe({
       ).filter((country): country is Country => Boolean(country)),
     [countries]
   );
+  const isLowDetailRendering =
+    isCameraAnimating || isGlobeInteracting || isRotateEnabled;
 
   return (
     <section className="glass-panel atlas-globe-panel relative h-full min-h-0 overflow-hidden">
@@ -690,7 +713,7 @@ export function GameGlobe({
             atmosphereAltitude={0.14}
             atmosphereColor="#55BFC8"
             backgroundColor="rgba(0,0,0,0)"
-            enablePointerInteraction
+            enablePointerInteraction={!isLowDetailRendering}
             globeMaterial={globeMaterial}
             height={globeSize.height}
             htmlAltitude={(marker) =>
@@ -705,7 +728,7 @@ export function GameGlobe({
             }
             htmlElement={createMarkerElement}
             htmlElementVisibilityModifier={updateHtmlElementVisibility}
-            htmlElementsData={globeHtmlMarkers}
+            htmlElementsData={isLowDetailRendering ? [] : globeHtmlMarkers}
             htmlLat={(marker) => (marker as GlobeHtmlMarker).lat}
             htmlLng={(marker) => (marker as GlobeHtmlMarker).lng}
             htmlTransitionDuration={0}
@@ -739,6 +762,11 @@ export function GameGlobe({
               );
             }}
             polygonCapCurvatureResolution={2}
+            polygonsData={
+              isLowDetailRendering
+                ? []
+                : countryLayerProps.polygonsData
+            }
             rendererConfig={rendererConfig}
             showAtmosphere
             showGlobe

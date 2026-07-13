@@ -24,7 +24,7 @@ type CountryDetailPanelProps = {
   onSelectGame: (gameId: string | null) => void;
 };
 
-const DETAIL_GAME_LIMIT = 9;
+const DETAIL_GAME_LIMIT = 12;
 
 export function CountryDetailPanel({
   country,
