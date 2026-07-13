@@ -176,6 +176,19 @@ export const EARTH_PRO_PRESETS: EarthProPreset[] = [
   }
 ];
 
+const WIDE_COUNTRY_CODES = new Set(["AU", "CA", "CN", "RU", "US"]);
+const COMPACT_COUNTRY_CODES = new Set([
+  "BE",
+  "CH",
+  "CZ",
+  "DK",
+  "GB",
+  "KR",
+  "NL",
+  "NO",
+  "NZ"
+]);
+
 export function getEarthProPreset(presetId: EarthProPresetId) {
   return (
     EARTH_PRO_PRESETS.find((preset) => preset.id === presetId) ??
@@ -209,26 +222,13 @@ export function getEarthProCameraViewForCountry(
     };
   }
 
-  const wideCountryCodes = new Set(["AU", "CA", "CN", "RU", "US"]);
-  const compactCountryCodes = new Set([
-    "BE",
-    "CH",
-    "CZ",
-    "DK",
-    "GB",
-    "KR",
-    "NL",
-    "NO",
-    "NZ"
-  ]);
-
   return {
     bearing: -14,
     center: [country.longitude, country.latitude],
     pitch: 58,
-    zoom: wideCountryCodes.has(country.code)
+    zoom: WIDE_COUNTRY_CODES.has(country.code)
       ? 3.75
-      : compactCountryCodes.has(country.code)
+      : COMPACT_COUNTRY_CODES.has(country.code)
         ? 5.35
         : 4.75
   };
@@ -285,11 +285,18 @@ export function buildEarthProMarkerData({
     preset: selectedPreset,
     selectedGameId
   });
+  const markerCountByCountry = new Map<string, number>();
+
+  for (const entry of rankedGames) {
+    markerCountByCountry.set(
+      entry.game.countryCode,
+      (markerCountByCountry.get(entry.game.countryCode) ?? 0) + 1
+    );
+  }
+
   const gameMarkers = rankedGames.map((entry, index) => {
     const country = countryByCode.get(entry.game.countryCode) as Country;
-    const sameCountryTotal = rankedGames.filter(
-      (item) => item.game.countryCode === entry.game.countryCode
-    ).length;
+    const sameCountryTotal = markerCountByCountry.get(entry.game.countryCode) ?? 1;
     const layout = getCountryLayout(country.code, selectedPreset.layout);
     const position = getEarthProLayoutPosition({
       country,

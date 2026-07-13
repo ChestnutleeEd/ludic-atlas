@@ -408,21 +408,93 @@ function getGlobeMarkerAnchor(
 type GeoJsonRing = number[][];
 type GeoJsonPolygon = GeoJsonRing[];
 
-function getFeaturePolygons(feature: CountryGeoJsonFeature): GeoJsonPolygon[] {
+export function indexCountryFeatures(features: CountryGeoJsonFeature[]) {
+  const index = new Map<string, CountryGeoJsonFeature>();
+  for (const feature of features) {
+    const code = getCountryCodeFromFeature(feature);
+    if (code) index.set(code, feature);
+  }
+  return index;
+}
+
+export function getCountrySafeMarkerSlots(
+  feature: CountryGeoJsonFeature,
+  country: Country,
+  capacity: number
+): GlobeCoordinates[] {
+  const polygons = getFeaturePolygons(feature, country.longitude);
+  const bounds = getPolygonBounds(polygons);
+  if (!bounds || capacity <= 0) return [];
+
+  const latSpan = Math.max(0.001, bounds.maxLat - bounds.minLat);
+  const lngSpan = Math.max(0.001, bounds.maxLng - bounds.minLng);
+  const gridSize = 34;
+  const candidates: Array<GlobeCoordinates & { clearance: number }> = [];
+  for (let row = 0; row < gridSize; row += 1) {
+    const lat = bounds.minLat + ((row + 0.5) / gridSize) * latSpan;
+    for (let column = 0; column < gridSize; column += 1) {
+      const lng = bounds.minLng + ((column + 0.5) / gridSize) * lngSpan;
+      if (!isCoordinateInFeaturePolygons(lng, lat, polygons)) continue;
+      candidates.push({ lat, lng, clearance: getBoundaryDistanceFromPolygons(polygons, { lat, lng }) });
+    }
+  }
+  candidates.sort((a, b) => b.clearance - a.clearance || a.lat - b.lat || a.lng - b.lng);
+  if (candidates.length === 0) return [];
+
+  const selected = [candidates[0]];
+  while (selected.length < Math.min(capacity, candidates.length)) {
+    let best: (typeof candidates)[number] | null = null;
+    let bestScore = -Infinity;
+    for (const candidate of candidates) {
+      if (selected.includes(candidate)) continue;
+      const separation = Math.min(...selected.map((slot) => coordinateDistance(candidate, slot)));
+      const score = separation + candidate.clearance * 0.35;
+      if (score > bestScore) {
+        best = candidate;
+        bestScore = score;
+      }
+    }
+    if (!best) break;
+    selected.push(best);
+  }
+  return selected.map(({ lat, lng }) => ({ lat, lng: wrapLongitude(lng) }));
+}
+
+export function isCoordinateInsideFeature(
+  feature: CountryGeoJsonFeature,
+  coordinate: GlobeCoordinates
+) {
+  const polygons = getFeaturePolygons(feature, coordinate.lng);
+  const lng = unwrapLongitude(coordinate.lng, coordinate.lng);
+  return isCoordinateInFeaturePolygons(lng, coordinate.lat, polygons);
+}
+
+export function getBoundaryDistance(
+  feature: CountryGeoJsonFeature,
+  coordinate: GlobeCoordinates
+) {
+  const polygons = getFeaturePolygons(feature, coordinate.lng);
+  return getBoundaryDistanceFromPolygons(polygons, coordinate);
+}
+
+export function getFeaturePolygons(
+  feature: CountryGeoJsonFeature,
+  referenceLongitude?: number
+): GeoJsonPolygon[] {
   const coordinates = feature.geometry.coordinates;
 
   if (feature.geometry.type === "Polygon" && Array.isArray(coordinates)) {
-    return normalizePolygon(coordinates);
+    return normalizePolygon(coordinates, referenceLongitude);
   }
 
   if (feature.geometry.type === "MultiPolygon" && Array.isArray(coordinates)) {
-    return coordinates.flatMap((polygon) => normalizePolygon(polygon));
+    return coordinates.flatMap((polygon) => normalizePolygon(polygon, referenceLongitude));
   }
 
   return [];
 }
 
-function normalizePolygon(value: unknown): GeoJsonPolygon[] {
+function normalizePolygon(value: unknown, referenceLongitude?: number): GeoJsonPolygon[] {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -433,16 +505,65 @@ function normalizePolygon(value: unknown): GeoJsonPolygon[] {
         return [];
       }
 
-      return ring.filter(
+      const coordinates = ring.filter(
         (coordinate): coordinate is number[] =>
           Array.isArray(coordinate) &&
           typeof coordinate[0] === "number" &&
           typeof coordinate[1] === "number"
       );
+      if (referenceLongitude === undefined || coordinates.length === 0) return coordinates;
+      let previous = unwrapLongitude(coordinates[0][0], referenceLongitude);
+      return coordinates.map((coordinate, index) => {
+        const lng = index === 0 ? previous : unwrapLongitude(coordinate[0], previous);
+        previous = lng;
+        return [lng, coordinate[1]];
+      });
     })
     .filter((ring) => ring.length >= 4);
 
   return rings.length > 0 ? [rings] : [];
+}
+
+function unwrapLongitude(longitude: number, reference: number) {
+  let result = longitude;
+  while (result - reference > 180) result -= 360;
+  while (result - reference < -180) result += 360;
+  return result;
+}
+
+function getBoundaryDistanceFromPolygons(
+  polygons: GeoJsonPolygon[],
+  coordinate: GlobeCoordinates
+) {
+  let minimum = Infinity;
+  for (const polygon of polygons) {
+    for (const ring of polygon) {
+      for (let index = 0; index < ring.length - 1; index += 1) {
+        minimum = Math.min(minimum, pointSegmentDistance(coordinate, ring[index], ring[index + 1]));
+      }
+    }
+  }
+  return Number.isFinite(minimum) ? minimum : 0;
+}
+
+function pointSegmentDistance(point: GlobeCoordinates, start: number[], end: number[]) {
+  const latitudeScale = Math.max(0.25, Math.cos((point.lat * Math.PI) / 180));
+  const px = point.lng * latitudeScale;
+  const py = point.lat;
+  const ax = start[0] * latitudeScale;
+  const ay = start[1];
+  const bx = end[0] * latitudeScale;
+  const by = end[1];
+  const dx = bx - ax;
+  const dy = by - ay;
+  const lengthSquared = dx * dx + dy * dy;
+  const ratio = lengthSquared === 0 ? 0 : clamp(((px - ax) * dx + (py - ay) * dy) / lengthSquared, 0, 1);
+  return Math.hypot(px - (ax + ratio * dx), py - (ay + ratio * dy));
+}
+
+function coordinateDistance(a: GlobeCoordinates, b: GlobeCoordinates) {
+  const lngScale = Math.max(0.25, Math.cos((((a.lat + b.lat) / 2) * Math.PI) / 180));
+  return Math.hypot((a.lng - b.lng) * lngScale, a.lat - b.lat);
 }
 
 function getPolygonBounds(polygons: GeoJsonPolygon[]) {

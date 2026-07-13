@@ -126,7 +126,7 @@ The first version should include:
 11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
 12. Game Chronicle horizontal timeline view for RAWG-generated global game records
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
-14. Premium black-gold atlas visual system for Earth Explorer, including Overview / Surface camera modes, deeper controlled globe zoom, region and key-country camera presets, country aggregate marker mode, high-rating game marker mode, region-scoped country list, sampled global markers, bottom zoom / reset / focus controls, and mobile three-state bottom-sheet panel behavior
+14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace, deep navy / cyan / magenta visual hierarchy, Overview / Surface camera modes, controlled zoom, region and key-country presets, GeoJSON-constrained selected-country markers, truthful aggregation, a compact filter tray, and mobile three-state bottom-sheet behavior
 15. Earth Explorer Pro experimental full-screen route at `/earth-pro`, using MapLibre GL JS plus deck.gl for a high-performance WebGL map / marker architecture, fixed camera presets, GPU scatter / icon / text marker layers, deterministic country marker distribution, and a mobile-collapsed bottom sheet.
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.

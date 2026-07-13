@@ -1,12 +1,14 @@
 import { getGameTooltipMarkup } from "@/components/globe/GameTooltip";
 import {
-  getDistributedGlobeCoordinates
+  getCountrySafeMarkerSlots,
+  getDistributedGlobeCoordinates,
+  type CountryGeoJsonFeature
 } from "@/lib/geo";
 import {
   FALLBACK_GAME_COVER_IMAGE,
-  getGameCoverImage,
-  hasRealGameCover
+  getGameCoverImage
 } from "@/lib/gameCover";
+import { selectStableMarkerGames } from "@/lib/globeMarkerModel";
 import {
   getCountryDisplayName,
   getGameMarkerLabel,
@@ -29,6 +31,7 @@ export type GlobeGameMarker = {
   hovered: boolean;
   countryLabel: string;
   countryGameCount: number;
+  overflowCount: number;
   sameCountryIndex: number;
   sameCountrySelected: boolean;
   selectsCountry: boolean;
@@ -51,7 +54,7 @@ type BuildGameMarkersOptions = {
   activeRegionId: RegionId;
   countries: Country[];
   games: Game[];
-  hoveredGameId: string | null;
+  countryFeatureByCode?: Map<string, CountryGeoJsonFeature>;
   selectedCountryCode: string | null;
   selectedGameId: string | null;
   viewMode: ViewMode;
@@ -68,7 +71,6 @@ type CreateGameMarkerElementOptions = {
   loadCoverImages?: boolean;
   renderCoverMarkers?: boolean;
   onHoverCountry: (countryCode: string | null) => void;
-  onHoverGame: (gameId: string | null) => void;
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
 };
@@ -82,8 +84,8 @@ const HIGH_RATING_THRESHOLD_FIVE_POINT = 4.5;
 export function buildGameMarkers({
   activeRegionId,
   countries,
+  countryFeatureByCode,
   games,
-  hoveredGameId,
   selectedCountryCode,
   selectedGameId,
   viewMode
@@ -113,7 +115,7 @@ export function buildGameMarkers({
   const sortedCountryGroups = [...gamesByCountry.entries()].map(
     ([countryCode, countryGames]) => ({
       countryCode,
-      sortedGames: sortRepresentativeGames(countryGames)
+      sortedGames: selectStableMarkerGames(countryGames, countryGames.length, null)
     })
   );
 
@@ -129,11 +131,19 @@ export function buildGameMarkers({
         return [];
       }
 
-      const representativeGames = getRepresentativeCountryGames({
-        games: sortedGames,
-        limit: markerLimit,
+      const safeSlots = selectedCountryCode && countryFeatureByCode?.get(country.code)
+        ? getCountrySafeMarkerSlots(
+            countryFeatureByCode.get(country.code)!,
+            country,
+            markerLimit
+          )
+        : null;
+      const effectiveLimit = safeSlots ? Math.min(markerLimit, safeSlots.length) : markerLimit;
+      const representativeGames = selectStableMarkerGames(
+        sortedGames,
+        effectiveLimit,
         selectedGameId
-      });
+      );
       const total = representativeGames.length;
       const countryGameCount = sortedGames.length;
       const spreadMode = selectedCountryCode
@@ -143,7 +153,7 @@ export function buildGameMarkers({
           : "region";
 
       return representativeGames.map((game, index) => {
-        const coordinates = getDistributedGlobeCoordinates({
+        const coordinates = safeSlots?.[index] ?? getDistributedGlobeCoordinates({
           country,
           gameId: game.id,
           index,
@@ -169,9 +179,13 @@ export function buildGameMarkers({
           markerStyle: markerLayer === "country-aggregate" ? "dot" : "card",
           markerLayer,
           selected,
-          hovered: selected ? true : game.id === hoveredGameId,
+          hovered: false,
           countryLabel: getCountryDisplayName(country),
           countryGameCount,
+          overflowCount:
+            index === representativeGames.length - 1
+              ? Math.max(0, countryGameCount - representativeGames.length)
+              : 0,
           sameCountrySelected,
           sameCountryIndex: index,
           selectsCountry:
@@ -207,7 +221,6 @@ export function createGameMarkerElement({
   loadCoverImages = false,
   renderCoverMarkers = true,
   onHoverCountry,
-  onHoverGame,
   onSelectCountry,
   onSelectGame
 }: CreateGameMarkerElementOptions) {
@@ -250,7 +263,10 @@ export function createGameMarkerElement({
     element.style.height = `${height}px`;
     element.title = getGameMarkerTitle(marker, markerTitle, secondaryTitle);
     element.dataset.markerLayer = marker.markerLayer;
+    element.dataset.markerLat = marker.lat.toFixed(6);
+    element.dataset.markerLng = marker.lng.toFixed(6);
     element.dataset.gameCount = String(marker.countryGameCount);
+    element.dataset.overflowCount = String(marker.overflowCount);
     element.setAttribute(
       "aria-label",
       getGameMarkerAriaLabel(marker, markerTitle)
@@ -283,29 +299,21 @@ export function createGameMarkerElement({
       if (marker.selectsCountry) {
         onHoverCountry(marker.game.countryCode);
       }
-
-      onHoverGame(marker.game.id);
     });
     element.addEventListener("mouseleave", () => {
       if (marker.selectsCountry) {
         onHoverCountry(null);
       }
-
-      onHoverGame(null);
     });
     element.addEventListener("focus", () => {
       if (marker.selectsCountry) {
         onHoverCountry(marker.game.countryCode);
       }
-
-      onHoverGame(marker.game.id);
     });
     element.addEventListener("blur", () => {
       if (marker.selectsCountry) {
         onHoverCountry(null);
       }
-
-      onHoverGame(null);
     });
 
     return element;
@@ -361,7 +369,7 @@ function getCoverMarkerMarkup(
 ) {
   const coverImage = getGameCoverImage(marker.game);
   const coverImageMarkup = loadCoverImages
-    ? `<img class="globe-game-cover-image ${coverImage === FALLBACK_GAME_COVER_IMAGE ? "is-fallback" : ""}" alt="" data-fallback-src="${escapeAttribute(FALLBACK_GAME_COVER_IMAGE)}" loading="lazy" src="${escapeAttribute(coverImage)}">`
+    ? `<img class="globe-game-cover-image ${coverImage === FALLBACK_GAME_COVER_IMAGE ? "is-fallback" : ""}" alt="" width="160" height="220" data-fallback-src="${escapeAttribute(FALLBACK_GAME_COVER_IMAGE)}" decoding="async" loading="lazy" src="${escapeAttribute(coverImage)}">`
     : "";
   const tooltipMarkup =
     marker.showRichTooltip || marker.selected || marker.hovered
@@ -372,54 +380,10 @@ function getCoverMarkerMarkup(
     <span class="globe-game-cover">
       ${coverImageMarkup}
       <span class="globe-game-cover-shine"></span>
+      ${marker.overflowCount > 0 ? `<span class="globe-marker-overflow" aria-hidden="true">+${marker.overflowCount}</span>` : ""}
       ${tooltipMarkup}
     </span>
   `;
-}
-
-function sortRepresentativeGames(games: Game[]) {
-  return [...games].sort(compareRepresentativeGames);
-}
-
-function getRepresentativeCountryGames({
-  games,
-  limit,
-  selectedGameId
-}: {
-  games: Game[];
-  limit: number;
-  selectedGameId: string | null;
-}) {
-  const visibleGames = games.slice(0, limit);
-
-  if (!selectedGameId || visibleGames.some((game) => game.id === selectedGameId)) {
-    return visibleGames;
-  }
-
-  const selectedGame = games.find((game) => game.id === selectedGameId);
-
-  if (!selectedGame) {
-    return visibleGames;
-  }
-
-  return [...visibleGames.slice(0, Math.max(0, limit - 1)), selectedGame];
-}
-
-function compareRepresentativeGames(gameA: Game, gameB: Game) {
-  const ratingDifference = gameB.rating - gameA.rating;
-
-  if (ratingDifference !== 0) {
-    return ratingDifference;
-  }
-
-  const gameAHasCover = hasRealGameCover(gameA);
-  const gameBHasCover = hasRealGameCover(gameB);
-
-  if (gameAHasCover !== gameBHasCover) {
-    return gameAHasCover ? -1 : 1;
-  }
-
-  return gameA.title.localeCompare(gameB.title);
 }
 
 function getGameMarkerLayer({
@@ -464,7 +428,9 @@ function getGameMarkerAriaLabel(marker: GlobeGameMarker, markerTitle: string) {
     return `查看国家：${marker.countryLabel}，${marker.countryGameCount} 款游戏，代表作：${markerTitle}`;
   }
 
-  return `选择游戏：${markerTitle}`;
+  return marker.overflowCount > 0
+    ? `选择游戏：${markerTitle}，另有 ${marker.overflowCount} 款游戏可在国家详情中查看`
+    : `选择游戏：${markerTitle}`;
 }
 
 function getGameMarkerTitle(

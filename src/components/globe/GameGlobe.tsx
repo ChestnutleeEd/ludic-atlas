@@ -13,11 +13,13 @@ import {
 import {
   buildCountryDotMatrix,
   getCountryFocusPointOfView,
+  indexCountryFeatures,
   type CountryDotPoint,
   type GlobePointOfView,
   type CountryGeoJson,
   type CountryGeoJsonFeature
 } from "@/lib/geo";
+import { createCameraAnimator, getCameraDuration } from "@/lib/globeCamera";
 import { getCountryDisplayName, getViewModeLabel } from "@/lib/localization";
 import {
   CAMERA_MODE_CONFIGS,
@@ -42,6 +44,8 @@ const INTERACTION_RESTORE_DELAY_MS = 200;
 const MANUAL_ZOOM_TRANSITION_MS = 360;
 const COUNTRY_FOCUS_PRESET_CODES = [
   "JP",
+  "SE",
+  "NO",
   "CN",
   "US",
   "KR",
@@ -56,11 +60,6 @@ const ZOOM_ALTITUDE_MULTIPLIER = {
   out: 1.18
 } as const;
 
-export type GlobeCameraCommand = {
-  id: number;
-  type: "focusSelected" | "reset" | "zoomIn" | "zoomOut";
-};
-
 type GameGlobeProps = {
   countries: Country[];
   games: Game[];
@@ -71,7 +70,6 @@ type GameGlobeProps = {
   selectedGameId: string | null;
   viewMode: ViewMode;
   coverSize: number;
-  cameraCommand: GlobeCameraCommand | null;
   onClearCountry: () => void;
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
@@ -89,7 +87,6 @@ export function GameGlobe({
   selectedGameId,
   viewMode,
   coverSize,
-  cameraCommand,
   onClearCountry,
   onSelectCountry,
   onSelectGame,
@@ -99,6 +96,8 @@ export function GameGlobe({
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const interactionRestoreTimerRef = useRef<number | null>(null);
+  const controlsCleanupRef = useRef<(() => void) | null>(null);
+  const cameraAnimatorRef = useRef<ReturnType<typeof createCameraAnimator> | null>(null);
   const lastCameraPointOfViewRef = useRef<GlobePointOfView>(
     selectedCountry
       ? getCountryFocusPointOfView(selectedCountry, cameraMode)
@@ -110,22 +109,13 @@ export function GameGlobe({
   const [hoveredCountryCode, setHoveredCountryCode] = useState<string | null>(
     null
   );
-  const [hoveredGameId, setHoveredGameId] = useState<string | null>(null);
   const [activeWorldCountry, setActiveWorldCountry] = useState<{
     baseSelectedCountryCode: string | null;
     countryCode: string;
   } | null>(null);
-  const [globeSize, setGlobeSize] = useState({ height: 720, width: 920 });
+  const [globeSize, setGlobeSize] = useState({ height: 640, width: 920 });
   const [isGlobeInteracting, setIsGlobeInteracting] = useState(false);
   const cameraModeConfig = CAMERA_MODE_CONFIGS[cameraMode];
-
-  const setGlobePointOfView = useCallback(
-    (pointOfView: GlobePointOfView, transitionMs: number) => {
-      lastCameraPointOfViewRef.current = pointOfView;
-      globeRef.current?.pointOfView(pointOfView, transitionMs);
-    },
-    []
-  );
 
   const getCurrentPointOfView = useCallback((): GlobePointOfView => {
     const currentPointOfView = globeRef.current?.pointOfView();
@@ -140,6 +130,30 @@ export function GameGlobe({
       lng: getNumberOrFallback(currentPointOfView?.lng, fallbackPointOfView.lng)
     };
   }, []);
+
+  const getCameraAnimator = useCallback(() => {
+    if (!cameraAnimatorRef.current) {
+      cameraAnimatorRef.current = createCameraAnimator({
+        cancelFrame: (id) => window.cancelAnimationFrame(id),
+        now: () => performance.now(),
+        requestFrame: (callback) => window.requestAnimationFrame(callback),
+        write: (pointOfView) => {
+          lastCameraPointOfViewRef.current = pointOfView;
+          globeRef.current?.pointOfView(pointOfView, 0);
+        }
+      });
+    }
+    return cameraAnimatorRef.current;
+  }, []);
+
+  const setGlobePointOfView = useCallback(
+    (pointOfView: GlobePointOfView, transitionMs: number) => {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const duration = getCameraDuration(transitionMs, reducedMotion);
+      getCameraAnimator().animate(getCurrentPointOfView(), pointOfView, duration);
+    },
+    [getCameraAnimator, getCurrentPointOfView]
+  );
 
   const configureControls = useCallback(() => {
     const controls = globeRef.current?.controls();
@@ -163,25 +177,33 @@ export function GameGlobe({
   }, [cameraMode, cameraModeConfig, isRotateEnabled]);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
 
     // Source: public/data/countries.geojson simplified into a lightweight
     // runtime world outline file so the base globe can show all countries.
-    fetch("/data/world-countries-lite.geojson")
-      .then((response) => response.json() as Promise<CountryGeoJson>)
-      .then((geoJson) => {
-        if (active) {
-          setCountryFeatures(geoJson.features);
+    async function loadCountryFeatures() {
+      try {
+        const response = await fetch("/data/world-countries-lite.geojson", {
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`Country GeoJSON request failed: ${response.status}`);
         }
-      })
-      .catch(() => {
-        if (active) {
+
+        const geoJson = (await response.json()) as CountryGeoJson;
+        setCountryFeatures(geoJson.features);
+      } catch {
+        if (!controller.signal.aborted) {
           setCountryFeatures([]);
         }
-      });
+      }
+    }
+
+    void loadCountryFeatures();
 
     return () => {
-      active = false;
+      controller.abort();
     };
   }, []);
 
@@ -194,12 +216,13 @@ export function GameGlobe({
 
     const resizeObserver = new ResizeObserver(([entry]) => {
       const width = Math.max(320, Math.round(entry.contentRect.width));
-      const height = Math.min(
-        760,
-        Math.max(560, Math.round(entry.contentRect.height))
-      );
+      const height = Math.max(320, Math.round(entry.contentRect.height));
 
-      setGlobeSize({ height, width });
+      setGlobeSize((currentSize) =>
+        currentSize.height === height && currentSize.width === width
+          ? currentSize
+          : { height, width }
+      );
     });
 
     resizeObserver.observe(container);
@@ -209,6 +232,8 @@ export function GameGlobe({
 
   useEffect(
     () => () => {
+      cameraAnimatorRef.current?.cancel();
+      controlsCleanupRef.current?.();
       if (interactionRestoreTimerRef.current) {
         window.clearTimeout(interactionRestoreTimerRef.current);
       }
@@ -229,21 +254,21 @@ export function GameGlobe({
       ? getCountryFocusPointOfView(selectedCountry, cameraMode)
       : getRegionPointOfView(activeRegionId, cameraMode);
 
-    setGlobePointOfView(pointOfView, 820);
+    setGlobePointOfView(pointOfView, 560);
   }, [activeRegionId, cameraMode, selectedCountry, setGlobePointOfView]);
 
   const handleFocusSelectedCountry = useCallback(() => {
     if (!selectedCountry) {
       setGlobePointOfView(
         getRegionPointOfView(activeRegionId, cameraMode),
-        650
+        520
       );
       return;
     }
 
     setGlobePointOfView(
       getCountryFocusPointOfView(selectedCountry, cameraMode),
-      720
+      560
     );
   }, [activeRegionId, cameraMode, selectedCountry, setGlobePointOfView]);
 
@@ -251,7 +276,7 @@ export function GameGlobe({
     onClearCountry();
     setActiveWorldCountry(null);
     onRegionChange("global");
-    setGlobePointOfView(getRegionPointOfView("global", cameraMode), 720);
+    setGlobePointOfView(getRegionPointOfView("global", cameraMode), 560);
   }, [cameraMode, onClearCountry, onRegionChange, setGlobePointOfView]);
 
   const handleSelectRegion = useCallback(
@@ -281,36 +306,13 @@ export function GameGlobe({
     [cameraModeConfig, getCurrentPointOfView, setGlobePointOfView]
   );
 
-  useEffect(() => {
-    if (!cameraCommand) {
-      return;
-    }
-
-    if (cameraCommand.type === "reset") {
-      setGlobePointOfView(getRegionPointOfView("global", cameraMode), 720);
-      return;
-    }
-
-    if (cameraCommand.type === "focusSelected") {
-      handleFocusSelectedCountry();
-      return;
-    }
-
-    handleZoomCamera(cameraCommand.type === "zoomIn" ? "in" : "out");
-  }, [
-    cameraCommand,
-    cameraMode,
-    handleFocusSelectedCountry,
-    handleZoomCamera,
-    setGlobePointOfView
-  ]);
-
   const handleGlobeInteractionStart = useCallback(() => {
     if (interactionRestoreTimerRef.current) {
       window.clearTimeout(interactionRestoreTimerRef.current);
     }
 
     onInteractionStart?.();
+    cameraAnimatorRef.current?.cancel();
     setIsGlobeInteracting(true);
     setHoveredCountryCode(null);
   }, [onInteractionStart]);
@@ -330,6 +332,9 @@ export function GameGlobe({
   }, [handleGlobeInteractionEnd, handleGlobeInteractionStart]);
   const updateHtmlElementVisibility = useCallback(
     (element: HTMLElement, isVisible: boolean) => {
+      const nextVisibility = isVisible ? "visible" : "hidden";
+      if (element.dataset.visibility === nextVisibility) return;
+      element.dataset.visibility = nextVisibility;
       element.style.opacity = isVisible ? "1" : "0";
       element.style.pointerEvents = isVisible ? "auto" : "none";
     },
@@ -387,6 +392,10 @@ export function GameGlobe({
       ),
     [games]
   );
+  const countryFeatureByCode = useMemo(
+    () => indexCountryFeatures(countryFeatures),
+    [countryFeatures]
+  );
   const countryLayerProps = useMemo(
     () =>
       getCountryLayerProps({
@@ -417,17 +426,17 @@ export function GameGlobe({
       buildGameMarkers({
         activeRegionId,
         countries,
+        countryFeatureByCode,
         games,
-        hoveredGameId,
         selectedCountryCode,
         selectedGameId,
         viewMode
       }),
     [
       countries,
+      countryFeatureByCode,
       games,
       activeRegionId,
-      hoveredGameId,
       selectedCountryCode,
       selectedGameId,
       viewMode
@@ -447,12 +456,7 @@ export function GameGlobe({
     },
     [countries, hoveredCountryCode, isGlobeInteracting, selectedCountryCode]
   );
-  const visibleGameMarkers = useMemo(() => {
-    return gameMarkers.map((marker) => ({
-      ...marker,
-      markerStyle: isGlobeInteracting ? "dot" as const : marker.markerStyle
-    }));
-  }, [gameMarkers, isGlobeInteracting]);
+  const visibleGameMarkers = gameMarkers;
   const globeHtmlMarkers = useMemo<GlobeHtmlMarker[]>(
     () => [...countryMarkers, ...visibleGameMarkers],
     [countryMarkers, visibleGameMarkers]
@@ -464,9 +468,8 @@ export function GameGlobe({
           coverSize * (activeRegionId === "global" ? 0.72 : 0.92)
         ),
         loadCoverImages: true,
-        renderCoverMarkers: !isGlobeInteracting,
+        renderCoverMarkers: true,
         onHoverCountry: handleHoverCountry,
-        onHoverGame: setHoveredGameId,
         onSelectCountry: handleSelectGlobeCountry,
         onSelectGame
       }),
@@ -475,7 +478,6 @@ export function GameGlobe({
       coverSize,
       handleHoverCountry,
       handleSelectGlobeCountry,
-      isGlobeInteracting,
       onSelectGame
     ]
   );
@@ -490,14 +492,15 @@ export function GameGlobe({
   const globeMaterial = useMemo(
     () =>
       new MeshPhongMaterial({
-        color: "#050505",
-        emissive: "#050403",
-        emissiveIntensity: 0.12,
-        shininess: 4,
-        specular: "#7A5A2A"
+        color: "#030712",
+        emissive: "#071426",
+        emissiveIntensity: 0.3,
+        shininess: 12,
+        specular: "#00FFFF"
       }),
     []
   );
+  useEffect(() => () => globeMaterial.dispose(), [globeMaterial]);
   const activeRegion = getRegionConfig(activeRegionId);
   const activeCameraLabel = selectedCountry
     ? getCountryDisplayName(selectedCountry)
@@ -511,11 +514,11 @@ export function GameGlobe({
   );
 
   return (
-    <section className="glass-panel atlas-globe-panel relative min-h-[690px] overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_42%_46%,rgba(217,154,50,0.052),transparent_30%),linear-gradient(135deg,rgba(3,3,3,0.98),rgba(11,10,8,0.9))]" />
-      <div className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(circle,rgba(240,182,90,0.42)_1px,transparent_1px)] [background-size:72px_72px]" />
-      <div className="absolute inset-0 bg-[linear-gradient(112deg,transparent_0%,rgba(245,239,227,0.018)_50%,rgba(217,154,50,0.026)_52%,transparent_59%)]" />
-      <div className="relative z-10 flex h-full min-h-[690px] flex-col justify-between gap-4 p-4">
+    <section className="glass-panel atlas-globe-panel relative h-full min-h-0 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_42%_46%,rgba(0,255,255,0.08),transparent_34%),linear-gradient(135deg,rgba(3,7,18,0.98),rgba(10,0,20,0.94))]" />
+      <div className="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(circle,rgba(0,255,255,0.36)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(112deg,transparent_0%,rgba(234,244,255,0.018)_50%,rgba(255,0,110,0.028)_52%,transparent_59%)]" />
+      <div className="relative z-10 flex h-full min-h-0 flex-col gap-3 p-3">
         <div className="atlas-globe-status grid gap-3 md:grid-cols-[1fr_auto]">
           <div>
             <p className="text-sm font-semibold text-[#F0B65A]">
@@ -550,15 +553,17 @@ export function GameGlobe({
         </div>
 
         <div
-          className="real-globe-stage relative min-h-[560px] flex-1 overflow-hidden"
+          className={`real-globe-stage relative min-h-0 flex-1 overflow-hidden ${
+            isGlobeInteracting ? "is-globe-interacting" : ""
+          }`}
           onPointerDown={handleGlobeInteractionStart}
           onPointerLeave={handleGlobeInteractionEnd}
           onPointerUp={handleGlobeInteractionEnd}
           onWheel={handleGlobeWheel}
           ref={containerRef}
         >
-          <div className="pointer-events-none absolute left-[42%] top-1/2 h-[min(90vw,800px)] w-[min(90vw,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(240,182,90,0.05),rgba(122,90,42,0.032)_42%,transparent_68%)] blur-2xl" />
-          <div className="pointer-events-none absolute inset-x-10 top-6 h-px bg-gradient-to-r from-transparent via-[#D99A32]/55 to-transparent" />
+          <div className="pointer-events-none absolute left-[42%] top-1/2 h-[min(90vw,800px)] w-[min(90vw,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,255,255,0.08),rgba(255,0,110,0.025)_44%,transparent_70%)] blur-2xl" />
+          <div className="pointer-events-none absolute inset-x-10 top-6 h-px bg-gradient-to-r from-transparent via-[#00FFFF]/55 to-transparent" />
           <div className="absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] flex-wrap gap-2">
             <button
               aria-label="重置为全球视角"
@@ -642,7 +647,7 @@ export function GameGlobe({
             ref={globeRef}
             {...countryLayerProps}
             atmosphereAltitude={0.18}
-            atmosphereColor="#D99A32"
+            atmosphereColor="#00FFFF"
             backgroundColor="rgba(0,0,0,0)"
             enablePointerInteraction
             globeMaterial={globeMaterial}
@@ -672,9 +677,14 @@ export function GameGlobe({
               );
 
               if (controls) {
+                controlsCleanupRef.current?.();
                 configureControls();
                 controls.addEventListener("start", handleGlobeInteractionStart);
                 controls.addEventListener("end", handleGlobeInteractionEnd);
+                controlsCleanupRef.current = () => {
+                  controls.removeEventListener("start", handleGlobeInteractionStart);
+                  controls.removeEventListener("end", handleGlobeInteractionEnd);
+                };
               }
 
               setGlobePointOfView(

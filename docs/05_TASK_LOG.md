@@ -1236,3 +1236,39 @@ Earth cover markers now show the cover image without large text overlays. Full g
 ### Next Step
 
 Review the Earth view visually on mobile width and tune detail-layer height if needed.
+
+## 2026-07-10 - Code Quality and Performance Review
+
+### Goal
+
+Run at least ten small review / optimization rounds across compilation, static data derivation, Earth Explorer, Earth Explorer Pro, Game Chronicle, image loading, and verification without changing product scope.
+
+### Implementation Summary
+
+- Restricted TypeScript's compile scope so ignored backup / output files do not participate in checks.
+- Added Node-native characterization tests for filtering, statistics, and cover fallback behavior.
+- Added `src/data/gameCatalog.ts` so both Earth shells share indexed game / country access, grouped country records, recognition counts, and total statistics.
+- Replaced repeated country-stat, selected-record, marker-count, deck-layer, archive-year, and featured-game scans with single-pass or O(1) derivations.
+- Deferred archive title queries and reused one sorted list per year group.
+- Dynamically loaded the legacy 3D Earth and Game Chronicle implementations after entrance selection.
+- Added cancellable GeoJSON loading, unchanged-size suppression, and Three.js material cleanup to the 3D globe.
+- Replaced the two Earth Explorer Pro panel images with optimized `next/image` output.
+- Added engineering-skill repository configuration under `docs/agents/` and produced a temporary architecture review report outside the repository.
+
+### Documentation Updated
+
+- `AGENTS.md`
+- `docs/00_PROJECT_INDEX.md`
+- `docs/02_FEATURE_MAP.md`
+- `docs/03_ARCHITECTURE.md`
+- `docs/04_DATA_SCHEMA.md`
+- `docs/05_TASK_LOG.md`
+- `docs/agents/`
+
+### Verification
+
+- `npm test`
+- `npm run typecheck`
+- `npm run lint`
+- `npm run build`
+- Desktop and mobile browser smoke checks for hub, Earth Explorer, Game Chronicle, and Earth Explorer Pro.

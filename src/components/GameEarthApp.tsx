@@ -1,30 +1,29 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { GameArchiveView } from "@/components/archive/GameArchiveView";
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { BottomControls } from "@/components/controls/BottomControls";
-import {
-  GameGlobe,
-  type GlobeCameraCommand
-} from "@/components/globe/GameGlobe";
 import { LandingHub } from "@/components/home/LandingHub";
 import {
   RightPanel,
   type MobileSheetState
 } from "@/components/panels/RightPanel";
-import { countries } from "@/data/countries";
-import { games } from "@/data/games";
-import { filterGamesByCountry, filterGamesByYearRange } from "@/lib/filterGames";
+import { gameCatalog } from "@/data/gameCatalog";
+import {
+  filterGamesByCountry,
+  filterGamesByYearRange,
+  isGameInYearRange
+} from "@/lib/filterGames";
+import {
+  createExplorationReducer,
+  initialExplorationState
+} from "@/lib/explorerState";
 import {
   filterCountriesByRegion,
   filterGamesByRegion,
   getRegionLabel,
-  isCountryInRegion
 } from "@/lib/regions";
-import { getTotalStats } from "@/lib/stats";
 import type {
-  CameraMode,
-  Country,
   Game,
   RegionId,
   ViewMode,
@@ -32,13 +31,44 @@ import type {
 } from "@/types/game";
 
 type MainViewMode = "hub" | "earth" | "archive";
+const { countries, games, totalStats } = gameCatalog;
+const explorationReducer = createExplorationReducer(countries, games);
+const GameGlobe = dynamic(
+  () => import("@/components/globe/GameGlobe").then((module) => module.GameGlobe),
+  {
+    loading: () => (
+      <div className="glass-panel grid h-full min-h-[420px] place-items-center text-sm text-[#A99D8B]">
+        地球引擎加载中…
+      </div>
+    ),
+    ssr: false
+  }
+);
+const GameArchiveView = dynamic(
+  () =>
+    import("@/components/archive/GameArchiveView").then(
+      (module) => module.GameArchiveView
+    ),
+  {
+    loading: () => (
+      <div className="grid min-h-screen place-items-center bg-[#050505] text-sm text-[#A99D8B]">
+        编年馆加载中…
+      </div>
+    )
+  }
+);
 
 export function GameEarthApp() {
-  const totalStats = useMemo(() => getTotalStats(countries, games), []);
-  const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(
-    null
+  const [exploration, dispatchExploration] = useReducer(
+    explorationReducer,
+    initialExplorationState
   );
-  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+  const {
+    activeRegionId,
+    cameraMode,
+    selectedCountryCode,
+    selectedGameId
+  } = exploration;
   const [yearRange, setYearRange] = useState<YearRange>({
     min: totalStats.minReleaseYear,
     max: totalStats.maxReleaseYear
@@ -46,18 +76,13 @@ export function GameEarthApp() {
   const [coverSize, setCoverSize] = useState(56);
   const [viewMode, setViewMode] = useState<ViewMode>("countries");
   const [mainViewMode, setMainViewMode] = useState<MainViewMode>("hub");
-  const [activeRegionId, setActiveRegionId] = useState<RegionId>("global");
-  const [cameraMode, setCameraMode] = useState<CameraMode>("overview");
   const [isRotateEnabled, setIsRotateEnabled] = useState(false);
   const [mobileSheetState, setMobileSheetState] =
     useState<MobileSheetState>("collapsed");
-  const [globeCameraCommand, setGlobeCameraCommand] =
-    useState<GlobeCameraCommand | null>(null);
 
-  const selectedCountry = useMemo<Country | null>(
-    () => countries.find((country) => country.code === selectedCountryCode) ?? null,
-    [selectedCountryCode]
-  );
+  const selectedCountry = selectedCountryCode
+    ? gameCatalog.countryByCode.get(selectedCountryCode) ?? null
+    : null;
   const yearFilteredGames = useMemo(
     () => filterGamesByYearRange(games, yearRange),
     [yearRange]
@@ -78,7 +103,7 @@ export function GameEarthApp() {
     return filterGamesByCountry(regionFilteredGames, selectedCountryCode);
   }, [regionFilteredGames, selectedCountryCode]);
   const selectedGame = selectedGameId
-    ? games.find((game) => game.id === selectedGameId) ?? null
+    ? gameCatalog.gameById.get(selectedGameId) ?? null
     : null;
   const sheetSummary = selectedGame
     ? selectedGame.titleZh || selectedGame.title
@@ -95,32 +120,16 @@ export function GameEarthApp() {
   );
 
   const handleSelectCountry = useCallback((countryCode: string) => {
-    setSelectedCountryCode(countryCode);
-    setSelectedGameId(null);
+    dispatchExploration({ type: "selectCountry", countryCode });
     setMobileSheetStateIfSmallViewport("peek");
   }, [setMobileSheetStateIfSmallViewport]);
 
   const handleRegionChange = useCallback((regionId: RegionId) => {
-    setActiveRegionId(regionId);
-    setSelectedGameId(null);
-    setSelectedCountryCode((currentCountryCode) => {
-      if (!currentCountryCode || regionId === "global") {
-        return currentCountryCode;
-      }
-
-      const currentCountry = countries.find(
-        (country) => country.code === currentCountryCode
-      );
-
-      return currentCountry && isCountryInRegion(currentCountry, regionId)
-        ? currentCountryCode
-        : null;
-    });
+    dispatchExploration({ type: "selectRegion", regionId });
   }, []);
 
   const handleClearCountry = useCallback(() => {
-    setSelectedCountryCode(null);
-    setSelectedGameId(null);
+    dispatchExploration({ type: "clearCountry" });
     setMobileSheetStateIfSmallViewport("collapsed");
   }, [setMobileSheetStateIfSmallViewport]);
 
@@ -128,30 +137,20 @@ export function GameEarthApp() {
     setMobileSheetStateIfSmallViewport("collapsed");
   }, [setMobileSheetStateIfSmallViewport]);
 
-  const sendGlobeCameraCommand = useCallback(
-    (type: GlobeCameraCommand["type"]) => {
-      setGlobeCameraCommand({
-        id: Date.now(),
-        type
-      });
-    },
-    []
-  );
-
   const handleSelectGameFromMap = useCallback((gameId: string) => {
-    const game = yearFilteredGames.find((item) => item.id === gameId);
+    const game = gameCatalog.gameById.get(gameId);
 
-    if (game) {
-      setSelectedCountryCode(game.countryCode);
+    if (!game || !isGameInYearRange(game, yearRange)) {
+      return;
     }
 
-    setSelectedGameId(gameId);
+    dispatchExploration({ type: "selectGame", gameId });
     setMobileSheetStateIfSmallViewport("peek");
-  }, [setMobileSheetStateIfSmallViewport, yearFilteredGames]);
+  }, [setMobileSheetStateIfSmallViewport, yearRange]);
 
   const handleSelectGameFromPanel = useCallback(
     (gameId: string | null) => {
-      setSelectedGameId(gameId);
+      dispatchExploration(gameId ? { type: "selectGame", gameId } : { type: "clearGame" });
       if (gameId) {
         setMobileSheetStateIfSmallViewport("expanded");
       }
@@ -161,19 +160,13 @@ export function GameEarthApp() {
 
   const handleYearRangeChange = useCallback((nextRange: YearRange) => {
     setYearRange(nextRange);
-    setSelectedGameId((currentGameId) => {
-      if (
-        currentGameId &&
-        filterGamesByYearRange(games, nextRange).some(
-          (game) => game.id === currentGameId
-        )
-      ) {
-        return currentGameId;
-      }
-
-      return null;
-    });
-  }, []);
+    const currentGame = selectedGameId
+      ? gameCatalog.gameById.get(selectedGameId)
+      : null;
+    if (!currentGame || !isGameInYearRange(currentGame, nextRange)) {
+      dispatchExploration({ type: "clearGame" });
+    }
+  }, [selectedGameId]);
 
   useEffect(() => {
     window.scrollTo({ left: 0, top: 0 });
@@ -182,19 +175,26 @@ export function GameEarthApp() {
   return (
     <main
       className={`game-earth-shell min-h-screen overflow-x-hidden ${
-        mainViewMode === "archive" ? "is-archive-mode" : ""
+        mainViewMode === "archive"
+          ? "is-archive-mode"
+          : mainViewMode === "earth"
+            ? "is-earth-mode"
+            : "is-hub-mode"
       } ${
         mainViewMode === "archive" ? "p-0" : "px-5 py-5 md:px-8"
       }`}
+      data-main-view={mainViewMode}
       data-mobile-sheet-state={mobileSheetState}
     >
       <div className="deep-space-backdrop pointer-events-none fixed inset-0" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_42%_18%,rgba(217,154,50,0.08),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(196,122,36,0.055),transparent_24%),radial-gradient(circle_at_52%_90%,rgba(245,239,227,0.035),transparent_34%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_36%_14%,rgba(0,255,255,0.10),transparent_30%),radial-gradient(circle_at_82%_20%,rgba(255,0,110,0.08),transparent_26%),radial-gradient(circle_at_52%_92%,rgba(82,65,255,0.07),transparent_36%)]" />
       <div
         className={`relative z-10 mx-auto flex flex-col gap-4 ${
           mainViewMode === "archive"
             ? "min-h-screen w-full max-w-none"
-            : "min-h-[calc(100vh-40px)] max-w-7xl"
+            : mainViewMode === "earth"
+              ? "earth-shell-content max-w-[1800px]"
+              : "min-h-[calc(100vh-40px)] max-w-7xl"
         }`}
       >
         {mainViewMode === "hub" ? (
@@ -211,7 +211,7 @@ export function GameEarthApp() {
           <>
         {mainViewMode === "earth" ? (
         <header className="glass-panel atlas-header relative overflow-hidden p-4">
-          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#D99A32]/70 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#00FFFF]/70 to-transparent" />
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <button
@@ -253,7 +253,7 @@ export function GameEarthApp() {
         ) : null}
 
         {mainViewMode === "earth" ? (
-          <section className="grid flex-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <section className="earth-workspace-grid grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
             <GameGlobe
               countries={countries}
               games={regionFilteredGames}
@@ -264,7 +264,6 @@ export function GameEarthApp() {
               selectedGameId={selectedGameId}
               viewMode={viewMode}
               coverSize={coverSize}
-              cameraCommand={globeCameraCommand}
               onClearCountry={handleClearCountry}
               onSelectCountry={handleSelectCountry}
               onSelectGame={handleSelectGameFromMap}
@@ -293,7 +292,11 @@ export function GameEarthApp() {
             games={games}
             onBackToHub={() => setMainViewMode("hub")}
             selectedGameId={selectedGameId}
-            onSelectGame={setSelectedGameId}
+            onSelectGame={(gameId) =>
+              dispatchExploration(
+                gameId ? { type: "selectGame", gameId } : { type: "clearGame" }
+              )
+            }
           />
         )}
 
@@ -311,27 +314,11 @@ export function GameEarthApp() {
             totalGames={visibleGames.length}
             onYearRangeChange={handleYearRangeChange}
             onCoverSizeChange={setCoverSize}
-            onCameraModeChange={setCameraMode}
+            onCameraModeChange={(nextCameraMode) =>
+              dispatchExploration({ type: "setCameraMode", cameraMode: nextCameraMode })
+            }
             onViewModeChange={setViewMode}
             onRotateChange={setIsRotateEnabled}
-            onResetView={() => {
-              setMobileSheetStateIfSmallViewport("collapsed");
-              handleClearCountry();
-              handleRegionChange("global");
-              sendGlobeCameraCommand("reset");
-            }}
-            onFocusSelected={() => {
-              setMobileSheetStateIfSmallViewport("collapsed");
-              sendGlobeCameraCommand("focusSelected");
-            }}
-            onZoomIn={() => {
-              setMobileSheetStateIfSmallViewport("collapsed");
-              sendGlobeCameraCommand("zoomIn");
-            }}
-            onZoomOut={() => {
-              setMobileSheetStateIfSmallViewport("collapsed");
-              sendGlobeCameraCommand("zoomOut");
-            }}
             regionStatusLabel={`区域筛选：${getRegionLabel(activeRegionId)}`}
             zoomStatusLabel={
               cameraMode === "surface"

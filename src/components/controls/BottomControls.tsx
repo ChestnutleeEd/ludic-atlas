@@ -22,10 +22,6 @@ type BottomControlsProps = {
   onCameraModeChange: (cameraMode: CameraMode) => void;
   onViewModeChange: (viewMode: ViewMode) => void;
   onRotateChange: (isEnabled: boolean) => void;
-  onFocusSelected?: () => void;
-  onResetView?: () => void;
-  onZoomIn?: () => void;
-  onZoomOut?: () => void;
 };
 
 const cameraModes: CameraMode[] = ["overview", "surface"];
@@ -47,20 +43,22 @@ export function BottomControls({
   onCoverSizeChange,
   onCameraModeChange,
   onViewModeChange,
-  onRotateChange,
-  onFocusSelected,
-  onResetView,
-  onZoomIn,
-  onZoomOut
+  onRotateChange
 }: BottomControlsProps) {
-  const hasZoomControls = Boolean(onZoomIn && onZoomOut);
-
   return (
-    <section
-      aria-label="地球探索筛选与视图控制"
-      className="glass-panel atlas-bottom-controls grid gap-3 p-4 xl:grid-cols-[1.1fr_1fr_1fr_1fr_1fr_1fr]"
+    <details
+      className="glass-panel atlas-bottom-controls"
     >
-      <dl className="atlas-control-stats">
+      <summary className="atlas-filter-tray-summary">
+        <span>探索筛选</span>
+        <strong>{yearRange.min}–{yearRange.max}</strong>
+        <small>{activeRegionLabel} · {totalGames} 款</small>
+      </summary>
+      <section
+        aria-label="地球探索筛选与视图控制"
+        className="atlas-filter-tray-body grid gap-3 p-3 xl:grid-cols-[1.05fr_1.25fr_1fr_1fr_1fr]"
+      >
+        <dl className="atlas-control-stats">
         <div>
           <dt>当前游戏</dt>
           <dd>{totalGames}</dd>
@@ -85,7 +83,7 @@ export function BottomControls({
         <label className="atlas-toggle-control">
           <span>
             自动旋转
-            <small className="block text-[11px] text-[#A99D8B]">
+            <small className="earth-muted block text-[11px]">
               {isRotateEnabled ? "已开启" : "已关闭"}
             </small>
           </span>
@@ -98,8 +96,8 @@ export function BottomControls({
           />
         </label>
       </div>
-      <div>
-        <span className="block text-sm text-[#F0B65A]" id="camera-mode-label">
+        <div>
+        <span className="earth-label block text-sm" id="camera-mode-label">
           镜头模式
         </span>
         <div
@@ -122,60 +120,13 @@ export function BottomControls({
             </button>
           ))}
         </div>
-      </div>
-      <div>
-        <span className="block text-sm text-[#F0B65A]" id="earth-actions-label">
-          地球操作
-        </span>
-        <div
-          aria-labelledby="earth-actions-label"
-          className="atlas-control-box mt-2 grid grid-cols-2 gap-2 text-sm"
-          role="group"
-        >
-          <button
-            aria-label="放大地球视图"
-            className="atlas-segment-button disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!onZoomIn}
-            onClick={onZoomIn}
-            type="button"
-          >
-            放大
-          </button>
-          <button
-            aria-label="缩小地球视图"
-            className="atlas-segment-button disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!onZoomOut}
-            onClick={onZoomOut}
-            type="button"
-          >
-            缩小
-          </button>
-          <button
-            aria-label="重置当前区域镜头"
-            className="atlas-segment-button disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!onResetView}
-            onClick={onResetView}
-            type="button"
-          >
-            重置
-          </button>
-          <button
-            aria-label="聚焦当前选中国家"
-            className="atlas-segment-button disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!onFocusSelected}
-            onClick={onFocusSelected}
-            type="button"
-          >
-            聚焦
-          </button>
+          <p className="earth-muted mt-2 text-xs leading-5">
+            {zoomStatusLabel ?? "地图内提供缩放、重置与聚焦操作"}；
+            {regionStatusLabel ?? `当前区域：${activeRegionLabel}`}
+          </p>
         </div>
-        <p className="mt-2 text-xs leading-5 text-[#A99D8B]">
-          {zoomStatusLabel ??
-            (hasZoomControls ? "缩放控制已接入" : "缩放控制待接入地球组件")}
-          ；{regionStatusLabel ?? `当前区域：${activeRegionLabel}`}
-        </p>
-      </div>
-      <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
-    </section>
+        <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      </section>
+    </details>
   );
 }

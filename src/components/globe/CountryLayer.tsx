@@ -56,7 +56,6 @@ export function getCountryLayerProps({
   | "onPolygonClick"
   | "onPolygonHover"
 > {
-  const supportedCountryCodes = new Set(countries.map((country) => country.code));
   const countryByCode = new Map(countries.map((country) => [country.code, country]));
   const countryFeatureKeyByFeature = new Map(
     countryFeatures.map((feature) => [feature, getCountryFeatureKey(feature)])
@@ -72,24 +71,18 @@ export function getCountryLayerProps({
       const countryCode = (point as CountryDotPoint).countryCode;
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(240, 182, 90, 0.96)";
+        return "rgba(255, 0, 110, 0.98)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(217, 154, 50, 0.86)";
+        return "rgba(234, 244, 255, 0.96)";
       }
 
       return gameCountryCodes.has(countryCode)
-        ? "rgba(217, 154, 50, 0.38)"
-        : "rgba(169, 157, 139, 0.22)";
+        ? "rgba(0, 255, 255, 0.48)"
+        : "rgba(140, 163, 184, 0.2)";
     },
-    pointLabel: (point) => {
-      const country = countryByCode.get((point as CountryDotPoint).countryCode);
-
-      return country
-        ? `<div class="globe-country-tooltip">${getCountryDisplayName(country)}</div>`
-        : "";
-    },
+    pointLabel: () => "",
     pointLat: (point) => (point as CountryDotPoint).lat,
     pointLng: (point) => (point as CountryDotPoint).lng,
     pointRadius: (point) => {
@@ -105,19 +98,9 @@ export function getCountryLayerProps({
 
       return gameCountryCodes.has(countryCode) ? 0.036 : 0.028;
     },
-    pointResolution: 12,
-    pointsMerge: false,
+    pointResolution: 5,
+    pointsMerge: true,
     pointsTransitionDuration: 0,
-    onPointClick: (point) => {
-      const countryCode = (point as CountryDotPoint).countryCode;
-
-      if (supportedCountryCodes.has(countryCode)) {
-        onSelectCountry(countryCode);
-      }
-    },
-    onPointHover: (point) => {
-      onHoverCountry(point ? (point as CountryDotPoint).countryCode : null);
-    },
     polygonsData: countryFeatures,
     polygonAltitude: (polygon) => {
       const feature = polygon as CountryGeoJsonFeature;
@@ -138,20 +121,20 @@ export function getCountryLayerProps({
       const countryCode = getFeatureKey(feature);
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(217, 154, 50, 0.048)";
+        return "rgba(255, 0, 110, 0.14)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(240, 182, 90, 0.044)";
+        return "rgba(234, 244, 255, 0.12)";
       }
 
       if (countryCode && gameCountryCodes.has(countryCode)) {
         return activeRegionCountryCodes.has(countryCode)
-          ? "rgba(122, 90, 42, 0.024)"
-          : "rgba(58, 44, 24, 0.012)";
+          ? "rgba(0, 255, 255, 0.055)"
+          : "rgba(25, 58, 78, 0.022)";
       }
 
-      return "rgba(42, 36, 24, 0.006)";
+      return "rgba(6, 19, 36, 0.012)";
     },
     polygonGeoJsonGeometry: (polygon) =>
       (polygon as CountryGeoJsonFeature).geometry as never,
@@ -165,26 +148,26 @@ export function getCountryLayerProps({
 
       return label ? `<div class="globe-country-tooltip">${label}</div>` : "";
     },
-    polygonSideColor: () => "rgba(217, 154, 50, 0.006)",
+    polygonSideColor: () => "rgba(0, 255, 255, 0.012)",
     polygonStrokeColor: (polygon) => {
       const feature = polygon as CountryGeoJsonFeature;
       const countryCode = getFeatureKey(feature);
 
       if (countryCode === selectedCountryCode) {
-        return "rgba(240, 182, 90, 0.72)";
+        return "rgba(255, 0, 110, 0.96)";
       }
 
       if (countryCode === hoveredCountryCode) {
-        return "rgba(217, 154, 50, 0.62)";
+        return "rgba(234, 244, 255, 0.9)";
       }
 
       if (countryCode && gameCountryCodes.has(countryCode)) {
         return activeRegionCountryCodes.has(countryCode)
-          ? "rgba(122, 90, 42, 0.42)"
-          : "rgba(122, 90, 42, 0.26)";
+          ? "rgba(0, 255, 255, 0.56)"
+          : "rgba(0, 180, 210, 0.25)";
       }
 
-      return "rgba(58, 44, 24, 0.32)";
+      return "rgba(68, 96, 120, 0.3)";
     },
     polygonsTransitionDuration: 0,
     onPolygonClick: (polygon) => {

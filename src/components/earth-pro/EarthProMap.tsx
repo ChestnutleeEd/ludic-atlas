@@ -384,6 +384,28 @@ function buildDeckLayers({
   onSelectGame: (gameId: string) => void;
   setTooltip: (tooltip: EarthProMapTooltip) => void;
 }) {
+  const dotMarkers: EarthProGameMarker[] = [];
+  const coverMarkers: EarthProGameMarker[] = [];
+  const labelMarkers: (EarthProGameMarker | EarthProCountryMarker)[] = [];
+
+  for (const marker of countryMarkers) {
+    if (marker.country.code === selectedCountryCode) {
+      labelMarkers.push(marker);
+    }
+  }
+
+  for (const marker of gameMarkers) {
+    if (marker.markerStyle === "dot") {
+      dotMarkers.push(marker);
+    } else {
+      coverMarkers.push(marker);
+    }
+
+    if (marker.game.id === selectedGameId) {
+      labelMarkers.push(marker);
+    }
+  }
+
   const aggregateLayer = new ScatterplotLayer<EarthProCountryMarker>({
     data: countryMarkers,
     getFillColor: (marker) =>
@@ -427,7 +449,7 @@ function buildDeckLayers({
   });
 
   const dotLayer = new ScatterplotLayer<EarthProGameMarker>({
-    data: gameMarkers.filter((marker) => marker.markerStyle === "dot"),
+    data: dotMarkers,
     getFillColor: (marker) =>
       marker.game.id === selectedGameId ? [255, 184, 0, 245] : [245, 239, 227, 184],
     getLineColor: [0, 0, 0, 220],
@@ -457,7 +479,7 @@ function buildDeckLayers({
   const coverLayer = new IconLayer<EarthProGameMarker>({
     alphaCutoff: 0.08,
     billboard: true,
-    data: gameMarkers.filter((marker) => marker.markerStyle === "cover"),
+    data: coverMarkers,
     getColor: (marker) =>
       marker.game.id === selectedGameId ? [255, 255, 255, 255] : [235, 226, 210, 232],
     getIcon: (marker) => ({
@@ -487,12 +509,7 @@ function buildDeckLayers({
   });
 
   const labelLayer = new TextLayer<EarthProGameMarker | EarthProCountryMarker>({
-    data: [
-      ...countryMarkers.filter((marker) => marker.country.code === selectedCountryCode),
-      ...gameMarkers
-        .filter((marker) => marker.game.id === selectedGameId)
-        .slice(0, 1)
-    ],
+    data: labelMarkers,
     getAlignmentBaseline: "top",
     getColor: [245, 239, 227, 230],
     getPixelOffset: [0, 14],

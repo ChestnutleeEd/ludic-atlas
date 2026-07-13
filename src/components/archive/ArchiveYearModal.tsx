@@ -50,6 +50,7 @@ export function ArchiveYearModal({
   onSelectGame
 }: ArchiveYearModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const modalPanelRef = useRef<HTMLElement | null>(null);
   const featuredGame = useMemo(
     () => [...group.games].sort((a, b) => b.rating - a.rating)[0] ?? null,
     [group.games]
@@ -75,13 +76,39 @@ export function ArchiveYearModal({
     const previousOverflow = document.body.style.overflow;
     const activeElement =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const appShell = document.querySelector<HTMLElement>(".game-earth-shell");
 
     document.body.style.overflow = "hidden";
+    if (appShell) {
+      appShell.inert = true;
+    }
     closeButtonRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const focusableElements = modalPanelRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+
+        if (!focusableElements || focusableElements.length === 0) {
+          return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
       }
     }
 
@@ -89,6 +116,9 @@ export function ArchiveYearModal({
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      if (appShell) {
+        appShell.inert = false;
+      }
       window.removeEventListener("keydown", handleKeyDown);
       activeElement?.focus();
     };
@@ -114,6 +144,7 @@ export function ArchiveYearModal({
         className="archive-v2-modal-panel"
         exit={{ opacity: 0, y: 28, scale: 0.985 }}
         initial={{ opacity: 0, y: 42, scale: 0.985 }}
+        ref={modalPanelRef}
         role="dialog"
         transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
       >

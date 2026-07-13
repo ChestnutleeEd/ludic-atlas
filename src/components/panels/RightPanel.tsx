@@ -70,7 +70,7 @@ export function RightPanel({
     <aside
       aria-label={panelTitle}
       data-sheet-state={sheetState}
-      className={`glass-panel right-panel-shell relative min-h-[460px] max-h-[calc(100vh-180px)] p-4 ${
+      className={`glass-panel right-panel-shell relative h-full min-h-0 p-4 ${
         isGameDetailOpen ? "is-game-detail-open overflow-hidden" : "overflow-y-auto"
       }`}
     >

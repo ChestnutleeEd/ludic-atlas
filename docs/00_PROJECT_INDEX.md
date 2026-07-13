@@ -47,6 +47,7 @@ If the task involves product scope, read:
 | `docs/04_DATA_SCHEMA.md`   | Game, country, genre, and filter data structures   |
 | `docs/05_TASK_LOG.md`      | Iteration log and major change history             |
 | `docs/06_CODEX_RULES.md`   | Detailed execution rules for Codex                 |
+| `docs/agents/`             | Engineering-skill issue tracker, triage, and domain-doc configuration |
 | `docs/releases/`           | Versioned GitHub release notes and release documentation |
 | `docs/assets/preview.png`  | Legacy README project preview image for GitHub     |
 | `docs/assets/readme/`      | Current README preview screenshots                 |
@@ -69,6 +70,10 @@ If the task involves product scope, read:
 | `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, the shared fallback cover at `public/covers/fallback-game-cover.svg`, and future game cover images under `public/covers/` |
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
 | `docs/`                    | Project planning and architecture documents               |
+| `tests/`                   | Node-native state / geometry / camera tests plus Playwright Earth Explorer browser tests under `tests/e2e/` |
+| `.specify/`                | Spec Kit configuration, constitution, templates, scripts, extensions, and workflow metadata |
+| `.agents/skills/speckit-*/` | Project-scoped Codex skills for the Spec Kit SDD workflow |
+| `specs/`                   | Feature specifications, plans, tasks, research, and acceptance checklists created during substantial iterations |
 
 ## Project Setup Files
 
@@ -81,6 +86,7 @@ If the task involves product scope, read:
 | `postcss.config.mjs` | Tailwind CSS PostCSS configuration           |
 | `eslint.config.mjs`  | ESLint flat config for Next.js and TypeScript |
 | `.gitignore`         | Generated and dependency file ignore rules   |
+| `.specify/init-options.json` | Spec Kit 0.8.15 project initialization and Codex integration settings |
 | `start-mac.command`  | macOS release-package helper script for installing dependencies and starting the local app |
 | `start-windows.bat`  | Windows release-package helper script for installing dependencies and starting the local app |
 | `.git/`              | Local Git repository metadata; do not edit manually |
@@ -132,6 +138,7 @@ http://localhost:3000
 | Earth Explorer Pro map engine | `src/components/earth-pro/EarthProMap.tsx` |
 | Global styles        | `src/app/globals.css`             |
 | Game data export     | `src/data/games.ts`               |
+| Indexed game catalog | `src/data/gameCatalog.ts`         |
 | Generated RAWG game data | `src/data/games.generated.ts` |
 | Stable mock game fallback | `src/data/games.mock.ts` |
 | RAWG seed list       | `scripts/rawg-seeds.mjs`          |
@@ -197,6 +204,7 @@ http://localhost:3000
 | Cover size control        | `src/components/controls/CoverSizeSlider.tsx`  |
 | View mode toggle          | `src/components/controls/ViewModeToggle.tsx`   |
 | Game data export          | `src/data/games.ts`                            |
+| Indexed game catalog      | `src/data/gameCatalog.ts`                      |
 | Generated RAWG game data  | `src/data/games.generated.ts`                  |
 | RAWG cover cache script   | `scripts/cache-rawg-covers.mjs`                |
 | RAWG cover compression script | `scripts/compress-rawg-covers.mjs`         |
@@ -207,4 +215,9 @@ http://localhost:3000
 | Statistics logic          | `src/lib/stats.ts`                             |
 | Geographic helpers        | `src/lib/geo.ts`                               |
 | Region / camera helpers   | `src/lib/regions.ts`                           |
+| Atomic Earth exploration state | `src/lib/explorerState.ts`               |
+| Cancellable globe camera animation | `src/lib/globeCamera.ts`              |
+| Stable marker selection model | `src/lib/globeMarkerModel.ts`              |
+| Earth browser regression suite | `tests/e2e/earth-explorer.spec.ts`       |
+| Playwright configuration  | `playwright.config.ts`                         |
 | Search logic              | `src/lib/search.ts`                            |

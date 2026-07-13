@@ -178,6 +178,20 @@ The original stable mock dataset is preserved in:
 src/data/games.mock.ts
 ```
 
+## Indexed Game Catalog
+
+File: `src/data/gameCatalog.ts`
+
+The runtime catalog derives read-only-facing indexes from `games` and `countries` once at module initialization:
+
+- `gameById` for selected-game lookup;
+- `countryByCode` for selected-country lookup;
+- `gamesByCountry` for country detail lists;
+- recognized game / country counts for mapped geographic records;
+- `totalStats` for total counts and the valid release-year range.
+
+The catalog does not change the `Game` or `Country` record shape. Generated data continues to enter through `src/data/games.ts`.
+
 ## RAWG Generated Data
 
 Generated file:

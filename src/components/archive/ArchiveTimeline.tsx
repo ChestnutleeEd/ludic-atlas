@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { motion } from "motion/react";
-import type { SyntheticEvent } from "react";
+import { useRef, type SyntheticEvent } from "react";
 import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
 import { getGameDisplayTitle, getGenreLabel } from "@/lib/localization";
 import type { Game } from "@/types/game";
@@ -76,6 +76,15 @@ export function ArchiveTimeline({
   groups,
   onSelectYear
 }: ArchiveTimelineProps) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+
+  function moveTimeline(direction: -1 | 1) {
+    trackRef.current?.scrollBy({
+      behavior: "smooth",
+      left: direction * Math.min(trackRef.current.clientWidth * 0.82, 700)
+    });
+  }
+
   if (groups.length === 0) {
     return (
       <div className="archive-v2-timeline-empty">
@@ -86,8 +95,15 @@ export function ArchiveTimeline({
 
   return (
     <section className="archive-v2-timeline" aria-label="Game Chronicle timeline">
+      <div className="archive-v2-timeline-toolbar">
+        <span>{groups.length} 个年份 · 横向浏览</span>
+        <div>
+          <button onClick={() => moveTimeline(-1)} type="button">较新年份</button>
+          <button onClick={() => moveTimeline(1)} type="button">较早年份</button>
+        </div>
+      </div>
       <div className="archive-v2-film-rail" aria-hidden="true" />
-      <div className="archive-v2-year-track">
+      <div className="archive-v2-year-track" ref={trackRef}>
         {groups.map((group, index) => {
           const isActive = group.year === activeYear;
           const topGenre = getTopGenreLabel(group.games);
@@ -141,7 +157,10 @@ export function ArchiveTimeline({
                   </span>
                 ))}
               </span>
-              <span className="archive-v2-open-label">打开年度展柜</span>
+              <span className="archive-v2-open-label">
+                <span>打开年度展柜</span>
+                <i aria-hidden="true" />
+              </span>
             </motion.button>
           );
         })}

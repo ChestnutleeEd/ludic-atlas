@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -18,9 +19,7 @@ import {
   getGameSecondaryTitle,
   getGenreListLabel
 } from "@/lib/localization";
-import { countries } from "@/data/countries";
-import { games } from "@/data/games";
-import { getTotalStats } from "@/lib/stats";
+import { gameCatalog } from "@/data/gameCatalog";
 import type { Country, Game } from "@/types/game";
 import type { EarthProCameraCommand } from "@/components/earth-pro/EarthProMap";
 
@@ -31,26 +30,9 @@ const EarthProMap = dynamic(
     ssr: false
   }
 );
+const { countries, games, totalStats } = gameCatalog;
 
 export function EarthExplorerProApp() {
-  const totalStats = useMemo(() => getTotalStats(countries, games), []);
-  const countryByCode = useMemo(
-    () => new Map(countries.map((country) => [country.code, country])),
-    []
-  );
-  const recognizedGameCount = useMemo(
-    () => games.filter((game) => countryByCode.has(game.countryCode)).length,
-    [countryByCode]
-  );
-  const recognizedCountryCount = useMemo(
-    () =>
-      new Set(
-        games
-          .filter((game) => countryByCode.has(game.countryCode))
-          .map((game) => game.countryCode)
-      ).size,
-    [countryByCode]
-  );
   const [activePresetId, setActivePresetId] =
     useState<EarthProPresetId>("global");
   const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(
@@ -71,12 +53,13 @@ export function EarthExplorerProApp() {
   const selectedCountry = useMemo(
     () =>
       selectedCountryCode
-        ? countries.find((country) => country.code === selectedCountryCode) ?? null
+        ? gameCatalog.countryByCode.get(selectedCountryCode) ?? null
         : null,
     [selectedCountryCode]
   );
   const selectedGame = useMemo(
-    () => (selectedGameId ? games.find((game) => game.id === selectedGameId) ?? null : null),
+    () =>
+      selectedGameId ? gameCatalog.gameById.get(selectedGameId) ?? null : null,
     [selectedGameId]
   );
   const cameraView = useMemo(
@@ -101,16 +84,16 @@ export function EarthExplorerProApp() {
     ? getCountryDisplayName(selectedCountry)
     : `${activePreset.labelZh} ${activePreset.label}`;
   const hoveredCountry = hoveredCountryCode
-    ? countries.find((country) => country.code === hoveredCountryCode) ?? null
+    ? gameCatalog.countryByCode.get(hoveredCountryCode) ?? null
     : null;
   const hoveredGame = hoveredGameId
-    ? games.find((game) => game.id === hoveredGameId) ?? null
+    ? gameCatalog.gameById.get(hoveredGameId) ?? null
     : null;
   const panelCountry = selectedCountry ?? hoveredCountry;
   const panelGames = useMemo(
     () =>
       (panelCountry
-        ? games.filter((game) => game.countryCode === panelCountry.code)
+        ? gameCatalog.gamesByCountry.get(panelCountry.code) ?? []
         : markerData.scopedGames
       )
         .toSorted((a, b) => b.rating - a.rating || b.releaseYear - a.releaseYear)
@@ -140,7 +123,7 @@ export function EarthExplorerProApp() {
   }, []);
 
   const selectGame = useCallback((gameId: string) => {
-    const game = games.find((item) => item.id === gameId);
+    const game = gameCatalog.gameById.get(gameId);
 
     if (!game) {
       return;
@@ -162,6 +145,9 @@ export function EarthExplorerProApp() {
       type
     });
   }, []);
+  const handleMapInteractionStart = useCallback(() => {
+    setPanelOpen(false);
+  }, []);
 
   return (
     <main className="earth-explorer-pro-shell">
@@ -174,7 +160,7 @@ export function EarthExplorerProApp() {
         selectedGameId={selectedGameId}
         onHoverCountry={setHoveredCountryCode}
         onHoverGame={setHoveredGameId}
-        onInteractionStart={() => setPanelOpen(false)}
+        onInteractionStart={handleMapInteractionStart}
         onSelectCountry={selectCountry}
         onSelectGame={selectGame}
       />
@@ -197,7 +183,7 @@ export function EarthExplorerProApp() {
           </div>
           <div>
             <dt>已识别国家</dt>
-            <dd>{recognizedCountryCount}</dd>
+            <dd>{gameCatalog.recognizedCountryCount}</dd>
           </div>
           <div>
             <dt>可见游戏</dt>
@@ -268,7 +254,7 @@ export function EarthExplorerProApp() {
         isOpen={panelOpen}
         selectedGame={selectedGame}
         totalGames={totalStats.totalGames}
-        recognizedGameCount={recognizedGameCount}
+        recognizedGameCount={gameCatalog.recognizedGameCount}
         visibleCountries={markerData.countryMarkers.length}
         onClose={() => setPanelOpen(false)}
         onOpen={() => setPanelOpen(true)}
@@ -344,10 +330,13 @@ function EarthProDetailPanel({
 
         {featuredGame ? (
           <article className="earth-pro-featured-game">
-            <img
+            <Image
               alt={getGameDisplayTitle(featuredGame)}
+              height={235}
               loading="lazy"
+              sizes="88px"
               src={getEarthProDisplayCoverImage(featuredGame)}
+              width={176}
             />
             <div>
               <span>
@@ -374,10 +363,13 @@ function EarthProDetailPanel({
               type="button"
               onClick={() => onSelectGame(game.id)}
             >
-              <img
+              <Image
                 alt={getGameDisplayTitle(game)}
+                height={117}
                 loading="lazy"
+                sizes="44px"
                 src={getEarthProDisplayCoverImage(game)}
+                width={88}
               />
               <span>
                 <strong>{getGameDisplayTitle(game)}</strong>

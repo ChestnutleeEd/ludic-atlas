@@ -11,8 +11,9 @@ export function filterGamesByYearRange(
   gameList: Game[],
   yearRange: YearRange
 ): Game[] {
-  return gameList.filter(
-    (game) =>
-      game.releaseYear >= yearRange.min && game.releaseYear <= yearRange.max
-  );
+  return gameList.filter((game) => isGameInYearRange(game, yearRange));
+}
+
+export function isGameInYearRange(game: Game, yearRange: YearRange): boolean {
+  return game.releaseYear >= yearRange.min && game.releaseYear <= yearRange.max;
 }

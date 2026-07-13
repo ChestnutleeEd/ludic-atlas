@@ -5,7 +5,7 @@ import {
   getGenreLabel,
   getRegionLabel
 } from "@/lib/localization";
-import { getCountryStats } from "@/lib/stats";
+import { getCountryStatsByCode } from "@/lib/stats";
 import type { Country, Game } from "@/types/game";
 
 type CountryPanelProps = {
@@ -26,10 +26,7 @@ export function CountryPanel({
   const [query, setQuery] = useState("");
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const countryStatsByCode = useMemo(
-    () =>
-      new Map(
-        countries.map((country) => [country.code, getCountryStats(country, games)])
-      ),
+    () => getCountryStatsByCode(countries, games),
     [countries, games]
   );
   const maxGameCount = useMemo(
@@ -37,12 +34,10 @@ export function CountryPanel({
       Math.max(
         1,
         ...countries.map(
-          (country) =>
-            countryStatsByCode.get(country.code)?.gameCount ??
-            getCountryStats(country, games).gameCount
+          (country) => countryStatsByCode.get(country.code)?.gameCount ?? 0
         )
       ),
-    [countries, countryStatsByCode, games]
+    [countries, countryStatsByCode]
   );
   const visibleCountries = useMemo(() => {
     if (!normalizedQuery) {
@@ -75,20 +70,20 @@ export function CountryPanel({
       <div className="flex items-end justify-between gap-3">
         <div>
           <h2
-            className="text-lg font-semibold text-[#F5EFE3]"
+            className="earth-title text-lg font-semibold"
             id="country-overview-title"
           >
             国家与地区
           </h2>
-          <p className="mt-1 text-xs text-[#A99D8B]">
+          <p className="earth-muted mt-1 text-xs">
             当前区域：{activeRegionLabel} / {visibleGameCount} 款游戏
           </p>
         </div>
-        <span className="text-xs text-[#A99D8B]">
+        <span className="earth-muted text-xs">
           显示 {visibleCountries.length}/{countries.length} 个
         </span>
       </div>
-      <p className="mt-3 border border-white/10 bg-black/30 p-2 text-xs leading-5 text-[#A99D8B]">
+      <p className="earth-muted mt-3 border border-white/10 bg-black/30 p-2 text-xs leading-5">
         行内条形表示该国家在当前筛选中的游戏数量；点击国家后，地球会聚焦到对应区域。
       </p>
       <label className="mt-4 block">
@@ -113,7 +108,11 @@ export function CountryPanel({
           </p>
         ) : null}
         {visibleCountries.map((country) => {
-          const stats = countryStatsByCode.get(country.code) ?? getCountryStats(country, games);
+          const stats = countryStatsByCode.get(country.code);
+
+          if (!stats) {
+            return null;
+          }
           const isSelected = country.code === selectedCountryCode;
           const gameCountRatio = Math.round(
             (stats.gameCount / maxGameCount) * 100

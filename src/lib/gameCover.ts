@@ -11,7 +11,7 @@ type GameCoverSource = Game & {
   image?: unknown;
 };
 
-const COVER_FIELD_ORDER: (keyof GameCoverSource)[] = [
+const COVER_FIELD_ORDER: readonly (keyof GameCoverSource)[] = [
   "coverImage",
   "background_image",
   "backgroundImage",
@@ -23,11 +23,16 @@ const COVER_FIELD_ORDER: (keyof GameCoverSource)[] = [
 
 export function getGameCoverImage(game: Game): string {
   const source = game as GameCoverSource;
-  const cover = COVER_FIELD_ORDER.map((field) => source[field]).find(
-    isUsableImageSource
-  );
 
-  return cover ?? FALLBACK_GAME_COVER_IMAGE;
+  for (const field of COVER_FIELD_ORDER) {
+    const cover = source[field];
+
+    if (isUsableImageSource(cover)) {
+      return cover;
+    }
+  }
+
+  return FALLBACK_GAME_COVER_IMAGE;
 }
 
 export function hasRealGameCover(game: Game): boolean {
@@ -40,12 +45,13 @@ function isUsableImageSource(value: unknown): value is string {
   }
 
   const source = value.trim();
+  const normalizedSource = source.toLowerCase();
 
   return (
     source.length > 0 &&
     source !== "#" &&
     !source.startsWith("data:text/html") &&
-    !source.toLowerCase().includes("undefined") &&
-    !source.toLowerCase().includes("null")
+    !normalizedSource.includes("undefined") &&
+    !normalizedSource.includes("null")
   );
 }

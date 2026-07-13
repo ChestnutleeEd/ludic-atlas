@@ -1,12 +1,28 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+
+import {
+  AnimatePresence,
+  MotionConfig,
+  motion,
+  useReducedMotion
+} from "motion/react";
+import {
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type SyntheticEvent
+} from "react";
 import {
   ArchiveTimeline,
   type ArchiveYearGroup
 } from "@/components/archive/ArchiveTimeline";
 import { ArchiveYearModal } from "@/components/archive/ArchiveYearModal";
+import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
 import { getGameDisplayTitle, getGenreLabel } from "@/lib/localization";
 import type { Game } from "@/types/game";
 
@@ -59,9 +75,19 @@ function getAverageRating(games: Game[]) {
 }
 
 function getTopGame(games: Game[]) {
-  return [...games].sort(
-    (a, b) => b.rating - a.rating || b.releaseYear - a.releaseYear
-  )[0];
+  let topGame: Game | undefined;
+
+  for (const game of games) {
+    if (
+      !topGame ||
+      game.rating > topGame.rating ||
+      (game.rating === topGame.rating && game.releaseYear > topGame.releaseYear)
+    ) {
+      topGame = game;
+    }
+  }
+
+  return topGame;
 }
 
 function formatYearRange(min: number, max: number) {
@@ -70,6 +96,12 @@ function formatYearRange(min: number, max: number) {
   }
 
   return `${min}-${max}`;
+}
+
+function handleCoverError(event: SyntheticEvent<HTMLImageElement>) {
+  if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
+    event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
+  }
 }
 
 export function GameArchiveView({
@@ -86,7 +118,9 @@ export function GameArchiveView({
     new Set()
   );
   const [sortMode, setSortMode] = useState<ArchiveSortMode>("year-desc");
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
   const [openYear, setOpenYear] = useState<number | null>(null);
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   const archiveIndex = useMemo<ArchiveGameIndex[]>(
     () =>
@@ -120,19 +154,28 @@ export function GameArchiveView({
     [archiveIndex]
   );
   const archiveYearRange = useMemo(() => {
-    const validYears = games
-      .map((game) => game.releaseYear)
-      .filter((year) => Number.isFinite(year) && year > 0);
+    let min = Number.POSITIVE_INFINITY;
+    let max = Number.NEGATIVE_INFINITY;
+
+    for (const game of games) {
+      if (!Number.isFinite(game.releaseYear) || game.releaseYear <= 0) {
+        continue;
+      }
+
+      min = Math.min(min, game.releaseYear);
+      max = Math.max(max, game.releaseYear);
+    }
 
     return {
-      max: validYears.length > 0 ? Math.max(...validYears) : Number.NaN,
-      min: validYears.length > 0 ? Math.min(...validYears) : Number.NaN
+      max: Number.isFinite(max) ? max : Number.NaN,
+      min: Number.isFinite(min) ? min : Number.NaN
     };
   }, [games]);
   const filteredGames = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
+    const normalizedQuery = deferredSearchQuery.trim().toLowerCase();
+    const matches: Game[] = [];
 
-    return archiveIndex.flatMap(({ game, genreTags, platformTags, searchText }) => {
+    for (const { game, genreTags, platformTags, searchText } of archiveIndex) {
       const matchesSearch =
         normalizedQuery.length === 0 || searchText.includes(normalizedQuery);
       const matchesGenre =
@@ -142,9 +185,13 @@ export function GameArchiveView({
         selectedPlatforms.size === 0 ||
         platformTags.some((platform) => selectedPlatforms.has(platform));
 
-      return matchesSearch && matchesGenre && matchesPlatform ? [game] : [];
-    });
-  }, [archiveIndex, searchQuery, selectedGenres, selectedPlatforms]);
+      if (matchesSearch && matchesGenre && matchesPlatform) {
+        matches.push(game);
+      }
+    }
+
+    return matches;
+  }, [archiveIndex, deferredSearchQuery, selectedGenres, selectedPlatforms]);
   const yearGroups = useMemo<ArchiveYearGroup[]>(() => {
     const groupedGames = new Map<number | null, Game[]>();
 
@@ -177,19 +224,24 @@ export function GameArchiveView({
       .map(([year, groupGames]) => {
         const sortedGames = [...groupGames].sort((a, b) => {
           if (sortMode === "rating-desc") {
-            return b.rating - a.rating || b.releaseYear - a.releaseYear;
+            return (
+              b.rating - a.rating ||
+              b.releaseYear - a.releaseYear ||
+              a.title.localeCompare(b.title)
+            );
           }
 
-          return b.releaseYear - a.releaseYear || b.rating - a.rating;
+          return (
+            b.releaseYear - a.releaseYear ||
+            b.rating - a.rating ||
+            a.title.localeCompare(b.title)
+          );
         });
-        const previewGames = [...groupGames]
-          .sort((a, b) => b.rating - a.rating || a.title.localeCompare(b.title))
-          .slice(0, 8);
 
         return {
           games: sortedGames,
           label: year === null ? "Unknown Year" : String(year),
-          previewGames,
+          previewGames: sortedGames.slice(0, 8),
           year
         };
       });
@@ -199,6 +251,18 @@ export function GameArchiveView({
     [openYear, yearGroups]
   );
   const featuredGame = useMemo(() => getTopGame(filteredGames), [filteredGames]);
+  const featuredGames = useMemo(
+    () =>
+      [...filteredGames]
+        .sort(
+          (a, b) =>
+            b.rating - a.rating ||
+            b.releaseYear - a.releaseYear ||
+            a.title.localeCompare(b.title)
+        )
+        .slice(0, 6),
+    [filteredGames]
+  );
   const hasActiveFilters =
     searchQuery.trim().length > 0 ||
     selectedGenres.size > 0 ||
@@ -242,10 +306,11 @@ export function GameArchiveView({
   }, [shouldReduceMotion]);
 
   return (
-    <section
-      className="archive-v2 relative min-h-screen overflow-hidden"
-      ref={archiveRootRef}
-    >
+    <MotionConfig reducedMotion="user">
+      <section
+        className="archive-v2 relative min-h-screen overflow-hidden"
+        ref={archiveRootRef}
+      >
       <div className="archive-v2-bg" aria-hidden="true" />
       <div className="archive-v2-scan" aria-hidden="true" />
       <div className="archive-v2-shell">
@@ -259,13 +324,36 @@ export function GameArchiveView({
               返回游戏星图
             </button>
             <p className="archive-v2-kicker">Game Chronicle / 游戏编年馆</p>
-            <h1>复古数字游戏档案馆</h1>
+            <h1>游戏编年馆</h1>
             <p>
-              按年份整理全球游戏馆藏，以胶片索引、年度展柜和游戏卷宗浏览代表作品。
+              沿时间轨道浏览全球游戏馆藏，在年度展柜中打开每一份游戏卷宗。
             </p>
+            <div className="archive-v2-hero-range" aria-label="馆藏年代范围">
+              <span>{Number.isFinite(archiveYearRange.min) ? archiveYearRange.min : "—"}</span>
+              <i aria-hidden="true" />
+              <span>{Number.isFinite(archiveYearRange.max) ? archiveYearRange.max : "—"}</span>
+            </div>
           </div>
 
-          <div className="archive-v2-hero-board" aria-label="档案馆统计">
+          <div className="archive-v2-hero-board" aria-label="代表馆藏与档案馆统计">
+            <div className="archive-v2-cover-deck" aria-hidden="true">
+              {featuredGames.map((game, index) => (
+                <span
+                  className="archive-v2-hero-cover"
+                  key={game.id}
+                  style={{ "--archive-cover-index": index } as CSSProperties}
+                >
+                  <img
+                    alt=""
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index < 3 ? "eager" : "lazy"}
+                    onError={handleCoverError}
+                    src={getGameCoverImage(game)}
+                  />
+                </span>
+              ))}
+              <span className="archive-v2-deck-reticle" />
+            </div>
             <dl className="archive-v2-metrics">
               <div>
                 <dt>筛选结果</dt>
@@ -294,21 +382,37 @@ export function GameArchiveView({
           <div className="archive-v2-section-heading">
             <div className="min-w-0">
               <p className="archive-v2-kicker">Archive Index / 馆藏索引</p>
-              <h2>标题、类型与平台</h2>
+              <h2>检索馆藏</h2>
             </div>
-            {hasActiveFilters ? (
+            <div className="archive-v2-index-actions">
+              {hasActiveFilters ? (
+                <button
+                  className="archive-v2-clear"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedGenres(new Set());
+                    setSelectedPlatforms(new Set());
+                  }}
+                  type="button"
+                >
+                  清除筛选
+                </button>
+              ) : null}
               <button
-                className="archive-v2-clear"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedGenres(new Set());
-                  setSelectedPlatforms(new Set());
-                }}
+                aria-controls="archive-filter-options"
+                aria-expanded={isFilterExpanded}
+                className="archive-v2-filter-toggle"
+                onClick={() => setIsFilterExpanded((current) => !current)}
                 type="button"
               >
-                清除筛选
+                <span>{isFilterExpanded ? "收起类型与平台" : "展开类型与平台"}</span>
+                <strong>
+                  {selectedGenres.size + selectedPlatforms.size > 0
+                    ? selectedGenres.size + selectedPlatforms.size
+                    : ""}
+                </strong>
               </button>
-            ) : null}
+            </div>
           </div>
 
           <div className="archive-v2-controls">
@@ -338,25 +442,38 @@ export function GameArchiveView({
             </label>
           </div>
 
-          <div className="archive-v2-filter-grid">
-            <TagFilter
-              labels={genreOptions}
-              onToggle={(genre) =>
-                setSelectedGenres((current) => toggleSetValue(current, genre))
-              }
-              selectedLabels={selectedGenres}
-              title="类型"
-              transformLabel={getGenreLabel}
-            />
-            <TagFilter
-              labels={platformOptions}
-              onToggle={(platform) =>
-                setSelectedPlatforms((current) => toggleSetValue(current, platform))
-              }
-              selectedLabels={selectedPlatforms}
-              title="平台"
-            />
-          </div>
+          <AnimatePresence initial={false}>
+            {isFilterExpanded ? (
+              <motion.div
+                animate={{ height: "auto", opacity: 1 }}
+                className="archive-v2-filter-reveal"
+                exit={{ height: 0, opacity: 0 }}
+                id="archive-filter-options"
+                initial={{ height: 0, opacity: 0 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="archive-v2-filter-grid">
+                  <TagFilter
+                    labels={genreOptions}
+                    onToggle={(genre) =>
+                      setSelectedGenres((current) => toggleSetValue(current, genre))
+                    }
+                    selectedLabels={selectedGenres}
+                    title="类型"
+                    transformLabel={getGenreLabel}
+                  />
+                  <TagFilter
+                    labels={platformOptions}
+                    onToggle={(platform) =>
+                      setSelectedPlatforms((current) => toggleSetValue(current, platform))
+                    }
+                    selectedLabels={selectedPlatforms}
+                    title="平台"
+                  />
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </section>
 
         <main className="archive-v2-stage" data-archive-intro>
@@ -392,7 +509,8 @@ export function GameArchiveView({
           />
         ) : null}
       </AnimatePresence>
-    </section>
+      </section>
+    </MotionConfig>
   );
 }
 
