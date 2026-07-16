@@ -3234,294 +3234,479 @@ body .chronicle-modal-dossier {
   scrollbar-width: thin;
 }
 
-.ludic-atlas-hub {
-  position: relative;
-  display: grid;
-  min-height: calc(100vh - 40px);
-  place-items: center;
-  border: 1px solid rgba(230, 236, 242, 0.16);
-  background:
-    radial-gradient(circle at 24% 18%, rgba(125, 245, 255, 0.14), transparent 28%),
-    radial-gradient(circle at 80% 20%, rgba(225, 189, 105, 0.12), transparent 24%),
-    linear-gradient(135deg, rgba(4, 6, 7, 0.96), rgba(18, 7, 4, 0.96) 58%, rgba(0, 0, 0, 0.96));
-  box-shadow:
-    0 28px 90px rgba(0, 0, 0, 0.72),
-    inset 0 1px 0 rgba(245, 250, 255, 0.08);
+.game-earth-shell.is-hub-mode {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  background: #0b0907;
 }
 
-.hub-ambient {
+.game-earth-shell.is-hub-mode .ludic-atlas-hub {
+  --hub-ink: #15110d;
+  --hub-paper: #e8e0c0;
+  --hub-paper-deep: #d7c99c;
+  --hub-oxblood: #672c2a;
+  --hub-olive: #596044;
+  --hub-brass: #b58b49;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.28), transparent 26%),
+    var(--hub-paper);
+  color: var(--hub-ink);
+  padding: clamp(12px, 1.45vw, 24px);
+}
+
+.game-earth-shell.is-hub-mode .hub-ambient {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.56) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 238, 185, 0.05), transparent 22%, transparent 78%, rgba(125, 245, 255, 0.05));
+    radial-gradient(circle, rgba(21, 17, 13, 0.2) 0.7px, transparent 0.8px),
+    linear-gradient(102deg, transparent 48%, rgba(103, 44, 42, 0.055) 48.2%, transparent 49%);
   background-size:
-    82px 82px,
+    7px 7px,
     auto;
-  opacity: 0.26;
+  mix-blend-mode: multiply;
+  opacity: 0.28;
 }
 
-.hub-content {
+.game-earth-shell.is-hub-mode .hub-content {
   position: relative;
   z-index: 1;
-  width: min(100%, 1120px);
-  padding: clamp(24px, 5vw, 58px);
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(10px, 1.25vw, 18px);
 }
 
-.hub-masthead {
-  max-width: 800px;
+.game-earth-shell.is-hub-mode .hub-masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(24px, 4vw, 72px);
+  border-bottom: 1px solid var(--hub-ink);
+  padding: clamp(2px, 0.5vw, 8px) clamp(4px, 0.5vw, 8px) clamp(10px, 1vw, 16px);
 }
 
-.hub-kicker {
+.game-earth-shell.is-hub-mode .hub-brand-lockup {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: 4px clamp(14px, 2vw, 32px);
+}
+
+.game-earth-shell.is-hub-mode .hub-kicker {
+  grid-column: 1;
   width: fit-content;
-  margin: 0 0 14px;
-  border: 1px solid rgba(225, 189, 105, 0.52);
-  background:
-    linear-gradient(135deg, rgba(225, 189, 105, 0.94), rgba(114, 67, 27, 0.88)),
-    url("/textures/brass-noise.svg");
-  background-size:
-    auto,
-    180px 120px;
-  padding: 6px 10px;
-  color: #241006;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.hub-masthead h1 {
   margin: 0;
-  color: #f7fbff;
-  font-family: Georgia, "Times New Roman", "Songti SC", serif;
-  font-size: clamp(58px, 10vw, 124px);
+  background: var(--hub-ink);
+  padding: 5px 8px;
+  color: var(--hub-paper);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
   font-weight: 700;
-  line-height: 0.9;
+  letter-spacing: 0.12em;
+}
+
+.game-earth-shell.is-hub-mode .hub-masthead h1 {
+  display: flex;
+  min-width: 0;
+  grid-column: 1;
+  align-items: baseline;
+  gap: clamp(12px, 1.6vw, 28px);
+  margin: 0;
+  color: var(--hub-ink);
+  font-family: "Times New Roman", "Songti SC", serif;
+  font-size: clamp(42px, 5vw, 78px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.82;
   text-shadow:
-    0 0 28px rgba(125, 245, 255, 0.18),
-    0 2px 0 rgba(0, 0, 0, 0.42);
+    1px 0 rgba(103, 44, 42, 0.34),
+    -1px 0 rgba(89, 96, 68, 0.26);
 }
 
-.hub-title-zh {
-  margin: 12px 0 0;
-  color: #ffe8b5;
-  font-size: clamp(28px, 5vw, 54px);
+.game-earth-shell.is-hub-mode .hub-title-zh {
+  color: var(--hub-oxblood);
+  font-family: Helvetica, Arial, "PingFang SC", sans-serif;
+  font-size: clamp(20px, 2.2vw, 34px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.game-earth-shell.is-hub-mode .hub-subtitle {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  max-width: 360px;
+  margin: 0;
+  padding-bottom: 2px;
+  color: rgba(21, 17, 13, 0.7);
+  font-family: Helvetica, Arial, "PingFang SC", sans-serif;
+  font-size: clamp(13px, 1.05vw, 16px);
+  line-height: 1.55;
+}
+
+.game-earth-shell.is-hub-mode .hub-collection-context {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: clamp(18px, 2.4vw, 38px);
+  margin: 0;
+  padding-bottom: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-earth-shell.is-hub-mode .hub-collection-context div {
+  display: grid;
+  gap: 2px;
+}
+
+.game-earth-shell.is-hub-mode .hub-collection-context dt,
+.game-earth-shell.is-hub-mode .hub-collection-context dd {
+  margin: 0;
+}
+
+.game-earth-shell.is-hub-mode .hub-collection-context dt {
+  color: rgba(21, 17, 13, 0.58);
+  font-family: Helvetica, Arial, "PingFang SC", sans-serif;
+  font-size: 10px;
   font-weight: 700;
+  letter-spacing: 0.14em;
 }
 
-.hub-subtitle {
+.game-earth-shell.is-hub-mode .hub-collection-context dd {
+  color: var(--hub-ink);
+  font-family: Courier, "Courier New", monospace;
+  font-size: clamp(16px, 1.4vw, 22px);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.game-earth-shell.is-hub-mode .hub-portal-grid {
   display: grid;
-  gap: 8px;
-  max-width: 680px;
-  margin: 22px 0 0;
-  color: rgba(245, 250, 255, 0.78);
-  font-size: clamp(16px, 2vw, 20px);
-  line-height: 1.6;
+  min-height: 0;
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  gap: clamp(10px, 1.25vw, 18px);
 }
 
-.hub-subtitle span {
-  color: rgba(255, 238, 185, 0.74);
-  font-size: 15px;
-}
-
-.hub-portal-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: clamp(30px, 5vw, 54px);
-}
-
-.portal-card {
+.game-earth-shell.is-hub-mode .portal-card {
+  --portal-focus-x: 68%;
+  --portal-focus-y: 48%;
   position: relative;
+  isolation: isolate;
   display: grid;
-  min-height: 310px;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   align-items: end;
-  border: 1px solid rgba(245, 250, 255, 0.18);
-  padding: 24px;
-  color: #f4f7f8;
-  text-decoration: none;
+  border: 1px solid var(--hub-ink);
+  border-radius: 0;
+  background:
+    linear-gradient(145deg, #18140f, #050504 68%),
+    var(--hub-ink);
+  padding: clamp(24px, 3vw, 48px);
+  color: var(--hub-paper);
   text-align: left;
+  box-shadow: none;
+  transform: translateZ(0);
   transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
+    border-color 220ms ease,
+    filter 220ms ease;
 }
 
-.portal-card:hover,
-.portal-card:focus-visible {
-  border-color: rgba(255, 238, 185, 0.68);
-  box-shadow:
-    0 28px 70px rgba(0, 0, 0, 0.52),
-    0 0 34px rgba(225, 189, 105, 0.12);
-  transform: translateY(-4px);
+.game-earth-shell.is-hub-mode .portal-card::before {
+  position: absolute;
+  top: clamp(14px, 1.5vw, 24px);
+  right: clamp(14px, 1.5vw, 24px);
+  z-index: 3;
+  width: clamp(28px, 3vw, 48px);
+  height: clamp(44px, 4.8vw, 76px);
+  content: "";
+  border: 1px solid rgba(21, 17, 13, 0.76);
+  background: var(--hub-paper-deep);
+  box-shadow: 4px 4px 0 rgba(103, 44, 42, 0.54);
+  transform: rotate(4deg);
+  transition: transform 260ms ease;
 }
 
-.portal-card-earth {
+.game-earth-shell.is-hub-mode .portal-card:hover,
+.game-earth-shell.is-hub-mode .portal-card:focus-visible {
+  border-color: var(--hub-oxblood);
+  filter: contrast(1.04);
+  outline: 3px solid var(--hub-ink);
+  outline-offset: -7px;
+}
+
+.game-earth-shell.is-hub-mode .portal-card:hover::before,
+.game-earth-shell.is-hub-mode .portal-card:focus-visible::before {
+  transform: rotate(1deg) translateY(-3px);
+}
+
+.game-earth-shell.is-hub-mode .portal-card-chronicle {
+  --portal-focus-y: 46%;
   background:
-    radial-gradient(circle at 54% 38%, rgba(125, 245, 255, 0.2), transparent 24%),
-    linear-gradient(135deg, rgba(3, 8, 10, 0.94), rgba(0, 0, 0, 0.92));
+    linear-gradient(145deg, #241710, #070605 68%),
+    var(--hub-ink);
 }
 
-.portal-card-chronicle {
-  background:
-    linear-gradient(135deg, rgba(52, 22, 10, 0.94), rgba(18, 7, 4, 0.92)),
-    url("/textures/walnut-wood.svg");
-  background-size:
-    auto,
-    460px 316px;
+.game-earth-shell.is-hub-mode .portal-card-chronicle::before {
+  background: var(--hub-oxblood);
+  box-shadow: 4px 4px 0 var(--hub-paper-deep);
+  transform: rotate(-3deg);
 }
 
-.portal-visual {
+.game-earth-shell.is-hub-mode .portal-visual {
   position: absolute;
   inset: 0;
+  z-index: -2;
+  overflow: hidden;
   pointer-events: none;
 }
 
-.portal-planet {
+.game-earth-shell.is-hub-mode .portal-visual::before,
+.game-earth-shell.is-hub-mode .portal-visual::after {
   position: absolute;
-  top: 34px;
-  right: 12%;
-  width: min(42vw, 210px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(125, 245, 255, 0.5);
-  border-radius: 50%;
-  background:
-    linear-gradient(90deg, transparent 48%, rgba(125, 245, 255, 0.24) 49%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(125, 245, 255, 0.18) 49%, transparent 52%),
-    radial-gradient(circle at 36% 28%, rgba(245, 250, 255, 0.22), transparent 18%),
-    radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.2), rgba(0, 0, 0, 0.86) 66%);
-  box-shadow:
-    0 0 44px rgba(0, 240, 255, 0.24),
-    inset 0 0 32px rgba(125, 245, 255, 0.14);
-}
-
-.portal-orbit {
-  position: absolute;
-  top: 104px;
-  right: 5%;
-  width: min(54vw, 310px);
-  height: 84px;
-  border: 1px solid rgba(125, 245, 255, 0.28);
-  border-radius: 50%;
-  transform: rotate(-18deg);
-}
-
-.portal-orbit-two {
-  transform: rotate(18deg);
-}
-
-.portal-cabinet {
-  position: absolute;
-  top: 34px;
-  right: 8%;
-  display: grid;
-  width: min(44vw, 260px);
-  gap: 10px;
-  border: 1px solid rgba(225, 189, 105, 0.42);
-  background:
-    linear-gradient(135deg, rgba(65, 27, 12, 0.92), rgba(19, 7, 4, 0.92)),
-    url("/textures/walnut-wood.svg");
-  background-size:
-    auto,
-    360px 248px;
-  padding: 14px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 185, 0.12),
-    0 22px 54px rgba(0, 0, 0, 0.46);
-}
-
-.portal-cabinet span {
-  height: 48px;
-  border: 1px solid rgba(225, 189, 105, 0.38);
-  background:
-    linear-gradient(180deg, rgba(73, 31, 13, 0.96), rgba(27, 10, 5, 0.96)),
-    url("/textures/walnut-wood.svg");
-}
-
-.portal-cabinet span::after {
-  display: block;
-  width: 66px;
-  height: 10px;
-  margin: 18px auto 0;
-  content: "";
-  border: 1px solid rgba(255, 238, 185, 0.5);
-  background: linear-gradient(180deg, #d9b45b, #6d421d);
-}
-
-.portal-cover-strip {
-  position: absolute;
-  right: 10%;
-  bottom: 98px;
-  display: flex;
-  gap: 8px;
-}
-
-.portal-cover-strip span {
-  width: 44px;
-  height: 62px;
-  border: 2px solid rgba(44, 21, 10, 0.86);
-  outline: 1px solid rgba(225, 189, 105, 0.4);
-  background:
-    linear-gradient(140deg, rgba(111, 234, 244, 0.24), transparent 36%),
-    linear-gradient(180deg, #b89b65, #4b2111);
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34);
-}
-
-.portal-copy {
-  position: relative;
+  inset: 0;
   z-index: 1;
-  display: grid;
-  gap: 8px;
-  max-width: 390px;
+  content: "";
 }
 
-.portal-label {
-  color: rgba(255, 238, 185, 0.74);
-  font-size: 13px;
+.game-earth-shell.is-hub-mode .portal-visual::before {
+  background:
+    linear-gradient(90deg, rgba(5, 5, 4, 0.96) 0%, rgba(5, 5, 4, 0.78) 29%, rgba(5, 5, 4, 0.08) 66%),
+    linear-gradient(0deg, rgba(5, 5, 4, 0.92) 0%, transparent 52%);
+}
+
+.game-earth-shell.is-hub-mode .portal-visual::after {
+  background: radial-gradient(circle, rgba(232, 224, 192, 0.32) 0.65px, transparent 0.8px);
+  background-size: 6px 6px;
+  mix-blend-mode: soft-light;
+  opacity: 0.22;
+}
+
+.game-earth-shell.is-hub-mode .portal-image {
+  object-fit: cover;
+  object-position: var(--portal-focus-x) var(--portal-focus-y);
+  transition:
+    opacity 180ms ease,
+    transform 520ms ease;
+}
+
+.game-earth-shell.is-hub-mode .portal-card[data-image-state="error"] .portal-image {
+  opacity: 0;
+}
+
+.game-earth-shell.is-hub-mode .portal-card:hover .portal-image,
+.game-earth-shell.is-hub-mode .portal-card:focus-visible .portal-image {
+  transform: scale(1.025);
+}
+
+.game-earth-shell.is-hub-mode .portal-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: min(100%, 430px);
+  gap: clamp(6px, 0.8vw, 12px);
+}
+
+.game-earth-shell.is-hub-mode .portal-card-chronicle .portal-copy {
+  width: min(100%, 360px);
+}
+
+.game-earth-shell.is-hub-mode .portal-label {
+  color: var(--hub-paper-deep);
+  font-family: Courier, "Courier New", monospace;
+  font-size: clamp(11px, 0.9vw, 14px);
   font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
-.portal-copy strong {
-  color: #ffffff;
-  font-family: Georgia, "Times New Roman", "Songti SC", serif;
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1;
+.game-earth-shell.is-hub-mode .portal-copy strong {
+  color: var(--hub-paper);
+  font-family: "Times New Roman", "Songti SC", serif;
+  font-size: clamp(42px, 5vw, 78px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  text-shadow:
+    2px 0 rgba(103, 44, 42, 0.72),
+    -1px 0 rgba(89, 96, 68, 0.56);
 }
 
-.portal-copy span:last-child {
-  color: rgba(245, 250, 255, 0.72);
-  font-size: 14px;
-  line-height: 1.6;
+.game-earth-shell.is-hub-mode .portal-card-chronicle .portal-copy strong {
+  font-size: clamp(36px, 3.8vw, 62px);
 }
 
-.hub-collection-strip {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 18px 0 0;
+.game-earth-shell.is-hub-mode .portal-description {
+  max-width: 32rem;
+  color: rgba(232, 224, 192, 0.76);
+  font-family: Helvetica, Arial, "PingFang SC", sans-serif;
+  font-size: clamp(13px, 1.05vw, 16px);
+  line-height: 1.5;
 }
 
-.hub-collection-strip div {
-  border: 1px solid rgba(245, 250, 255, 0.14);
-  background: rgba(0, 0, 0, 0.34);
-  padding: 12px;
-}
-
-.hub-collection-strip dt,
-.hub-collection-strip dd {
-  margin: 0;
-}
-
-.hub-collection-strip dt {
-  color: rgba(245, 250, 255, 0.5);
+.game-earth-shell.is-hub-mode .portal-action {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 9px;
+  border-bottom: 1px solid currentColor;
+  margin-top: clamp(5px, 0.8vw, 12px);
+  padding-bottom: 3px;
+  color: var(--hub-paper);
+  font-family: Helvetica, Arial, "PingFang SC", sans-serif;
   font-size: 12px;
+  font-weight: 700;
 }
 
-.hub-collection-strip dd {
-  margin-top: 4px;
-  color: #ffe8b5;
-  font-size: 18px;
-  font-weight: 700;
+.game-earth-shell.is-hub-mode .portal-action svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-width: 1.6;
+  transition: transform 220ms ease;
+}
+
+.game-earth-shell.is-hub-mode .portal-card:hover .portal-action svg,
+.game-earth-shell.is-hub-mode .portal-card:focus-visible .portal-action svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 900px) {
+  .game-earth-shell.is-hub-mode {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .game-earth-shell.is-hub-mode > div.relative {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .game-earth-shell.is-hub-mode .ludic-atlas-hub {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    padding: 12px;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-content {
+    height: auto;
+    grid-template-rows: auto auto;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-masthead {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 14px;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-collection-context {
+    justify-content: start;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-portal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-card {
+    min-height: 430px;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-card-earth {
+    --portal-focus-x: 66%;
+    --portal-focus-y: 42%;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-card-chronicle {
+    --portal-focus-x: 69%;
+    --portal-focus-y: 44%;
+  }
+}
+
+@media (max-width: 560px) {
+  .game-earth-shell.is-hub-mode .hub-brand-lockup {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-kicker,
+  .game-earth-shell.is-hub-mode .hub-masthead h1,
+  .game-earth-shell.is-hub-mode .hub-subtitle {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-masthead h1 {
+    display: grid;
+    gap: 5px;
+    font-size: clamp(40px, 14vw, 58px);
+    line-height: 0.9;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-title-zh {
+    font-size: 22px;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-subtitle {
+    max-width: 30rem;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-collection-context {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .game-earth-shell.is-hub-mode .hub-collection-context div {
+    border-top: 1px solid rgba(21, 17, 13, 0.34);
+    padding-top: 7px;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-card {
+    min-height: 360px;
+    padding: 24px 20px;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-card::before {
+    width: 26px;
+    height: 40px;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-copy strong,
+  .game-earth-shell.is-hub-mode .portal-card-chronicle .portal-copy strong {
+    font-size: clamp(38px, 12vw, 52px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-earth-shell.is-hub-mode .portal-card,
+  .game-earth-shell.is-hub-mode .portal-card::before,
+  .game-earth-shell.is-hub-mode .portal-image,
+  .game-earth-shell.is-hub-mode .portal-action svg {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .game-earth-shell.is-hub-mode .portal-card:hover .portal-image,
+  .game-earth-shell.is-hub-mode .portal-card:focus-visible .portal-image,
+  .game-earth-shell.is-hub-mode .portal-card:hover::before,
+  .game-earth-shell.is-hub-mode .portal-card:focus-visible::before,
+  .game-earth-shell.is-hub-mode .portal-card:hover .portal-action svg,
+  .game-earth-shell.is-hub-mode .portal-card:focus-visible .portal-action svg {
+    transform: none;
+  }
 }
 
 .game-chronicle-shell .archive-terminal {
@@ -3868,130 +4053,6 @@ body .chronicle-modal-dossier {
   color: #2b170c;
   font-size: 10px;
   font-weight: 700;
-}
-
-.portal-card-chronicle .portal-cabinet {
-  top: 26px;
-  right: 7%;
-  display: block;
-  width: min(48vw, 300px);
-  min-height: 206px;
-  padding: 16px;
-}
-
-.portal-card-chronicle .portal-cabinet span {
-  display: block;
-  height: auto;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.portal-card-chronicle .portal-cabinet span::after {
-  display: none;
-}
-
-.portal-cabinet-top {
-  position: relative;
-  min-height: 72px;
-  border: 1px solid rgba(225, 189, 105, 0.42) !important;
-  background:
-    linear-gradient(180deg, rgba(75, 31, 13, 0.96), rgba(25, 9, 4, 0.96)),
-    url("/textures/walnut-wood.svg") !important;
-  background-size:
-    auto,
-    320px 220px !important;
-}
-
-.portal-cabinet-plaque {
-  position: absolute;
-  top: 14px;
-  left: 16px;
-  width: 96px;
-  height: 22px !important;
-  border: 1px solid rgba(255, 238, 185, 0.56) !important;
-  background:
-    linear-gradient(135deg, rgba(225, 189, 105, 0.96), rgba(115, 68, 27, 0.9)),
-    url("/textures/brass-noise.svg") !important;
-  background-size:
-    auto,
-    180px 120px !important;
-}
-
-.portal-cabinet-handle {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
-  width: 88px;
-  height: 12px !important;
-  border: 1px solid rgba(255, 238, 185, 0.58) !important;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #d9b45b, #6d421d) !important;
-}
-
-.portal-cabinet-drawers {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.portal-cabinet-drawers span {
-  position: relative;
-  height: 48px !important;
-  border: 1px solid rgba(225, 189, 105, 0.34) !important;
-  background:
-    linear-gradient(180deg, rgba(80, 34, 15, 0.96), rgba(29, 11, 5, 0.96)),
-    url("/textures/walnut-wood.svg") !important;
-  background-size:
-    auto,
-    280px 193px !important;
-}
-
-.portal-cabinet-drawers span::before {
-  position: absolute;
-  right: 50%;
-  bottom: 13px;
-  width: 42px;
-  height: 8px;
-  content: "";
-  border: 1px solid rgba(255, 238, 185, 0.46);
-  border-radius: 999px;
-  background: linear-gradient(180deg, #d9b45b, #6d421d);
-  transform: translateX(50%);
-}
-
-.portal-cabinet-rail {
-  display: flex !important;
-  gap: 14px;
-  align-items: center;
-  margin-top: 12px;
-  border-top: 1px solid rgba(225, 189, 105, 0.38) !important;
-  padding-top: 9px;
-}
-
-.portal-cabinet-rail span {
-  width: 2px;
-  height: 20px !important;
-  background: rgba(225, 189, 105, 0.66) !important;
-}
-
-.portal-card-chronicle .portal-cover-strip {
-  right: 8%;
-  bottom: 78px;
-  z-index: 1;
-}
-
-.portal-card-chronicle .portal-cover-strip span {
-  transform: rotate(-4deg);
-}
-
-.portal-card-chronicle .portal-cover-strip span:nth-child(2) {
-  transform: translateY(-8px) rotate(3deg);
-}
-
-.portal-card-chronicle .portal-cover-strip span:nth-child(3) {
-  transform: translateY(4px) rotate(7deg);
 }
 
 .chronicle-main-stage {
@@ -4649,15 +4710,6 @@ body .chronicle-modal-dossier {
 }
 
 @media (max-width: 900px) {
-  .hub-portal-grid,
-  .hub-collection-strip {
-    grid-template-columns: 1fr;
-  }
-
-  .portal-card {
-    min-height: 280px;
-  }
-
   .chronicle-main-stage-heading,
   .chronicle-modal-header,
   .chronicle-modal-body {

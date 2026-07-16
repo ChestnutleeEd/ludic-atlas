@@ -66,10 +66,10 @@ If the task involves product scope, read:
 | `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
 | `src/lib/`                 | Filtering, statistics, country mapping, region / camera presets, utility functions |
 | `src/types/`               | TypeScript data types                                     |
-| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, the shared fallback cover at `public/covers/fallback-game-cover.svg`, and future game cover images under `public/covers/` |
+| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, original generated homepage entrance imagery under `public/images/home/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, the shared fallback cover at `public/covers/fallback-game-cover.svg`, and future game cover images under `public/covers/` |
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
 | `docs/`                    | Project planning and architecture documents               |
-| `tests/`                   | Node-native state / geometry / camera tests plus Playwright Earth Explorer browser tests under `tests/e2e/` |
+| `tests/`                   | Node-native state / geometry / camera tests plus Playwright homepage and Earth Explorer browser tests under `tests/e2e/` |
 | `docs/archive/spec-kit/`   | Archived Spec Kit requirements, plans, research, tasks, and acceptance records retained for historical reference |
 
 ## Project Setup Files
@@ -129,6 +129,8 @@ http://localhost:3000
 | Page entry           | `src/app/page.tsx`                |
 | App shell            | `src/components/GameEarthApp.tsx` |
 | Landing hub          | `src/components/home/LandingHub.tsx` |
+| Homepage entrance assets | `public/images/home/` |
+| Homepage browser tests | `tests/e2e/homepage.spec.ts` |
 | Global styles        | `src/app/globals.css`             |
 | Game data export     | `src/data/games.ts`               |
 | Indexed game catalog | `src/data/gameCatalog.ts`         |
@@ -154,6 +156,9 @@ http://localhost:3000
 | Game Chronicle paper texture | `public/textures/archive-paper.svg` |
 | Game Chronicle brass texture | `public/textures/brass-noise.svg` |
 | Game Chronicle generated archive hall background | `public/images/archive/archive-hall-bg-v1.png` |
+| Homepage Earth Explorer hero | `public/images/home/earth-explorer-archive.webp` |
+| Homepage Game Chronicle hero | `public/images/home/game-chronicle-archive.webp` |
+| Homepage asset metadata | `public/images/home/README.md` |
 | MVP country border data | `public/data/mock-countries.geojson` |
 | Lightweight world country border data | `public/data/world-countries-lite.geojson` |
 | Full source country border data | `public/data/countries.geojson` |
@@ -174,6 +179,7 @@ http://localhost:3000
 | Global styles             | `src/app/globals.css`                          |
 | Main product shell        | `src/components/GameEarthApp.tsx`              |
 | Landing hub               | `src/components/home/LandingHub.tsx`           |
+| Homepage browser regression suite | `tests/e2e/homepage.spec.ts`              |
 | Game Chronicle view       | `src/components/archive/GameArchiveView.tsx`   |
 | Archive film timeline | `src/components/archive/ArchiveTimeline.tsx`   |
 | Archive year exhibit modal | `src/components/archive/ArchiveYearModal.tsx` |

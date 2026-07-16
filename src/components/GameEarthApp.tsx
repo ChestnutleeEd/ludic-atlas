@@ -185,20 +185,22 @@ export function GameEarthApp() {
             ? "is-earth-mode"
             : "is-hub-mode"
       } ${
-        mainViewMode === "archive" ? "p-0" : "px-5 py-5 md:px-8"
+        mainViewMode === "earth" ? "px-5 py-5 md:px-8" : "p-0"
       }`}
       data-main-view={mainViewMode}
       data-mobile-sheet-state={mobileSheetState}
     >
       <div className="deep-space-backdrop pointer-events-none fixed inset-0" />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_36%_14%,rgba(0,255,255,0.10),transparent_30%),radial-gradient(circle_at_82%_20%,rgba(255,0,110,0.08),transparent_26%),radial-gradient(circle_at_52%_92%,rgba(82,65,255,0.07),transparent_36%)]" />
+      {mainViewMode !== "hub" ? (
+        <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_36%_14%,rgba(0,255,255,0.10),transparent_30%),radial-gradient(circle_at_82%_20%,rgba(255,0,110,0.08),transparent_26%),radial-gradient(circle_at_52%_92%,rgba(82,65,255,0.07),transparent_36%)]" />
+      ) : null}
       <div
         className={`relative z-10 mx-auto flex flex-col gap-4 ${
           mainViewMode === "archive"
             ? "min-h-screen w-full max-w-none"
             : mainViewMode === "earth"
               ? "earth-shell-content max-w-[1800px]"
-              : "min-h-[calc(100vh-40px)] max-w-7xl"
+              : "h-[100dvh] w-full max-w-none"
         }`}
       >
         {mainViewMode === "hub" ? (
