@@ -70,9 +70,7 @@ If the task involves product scope, read:
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
 | `docs/`                    | Project planning and architecture documents               |
 | `tests/`                   | Node-native state / geometry / camera tests plus Playwright Earth Explorer browser tests under `tests/e2e/` |
-| `.specify/`                | Spec Kit configuration, constitution, templates, scripts, extensions, and workflow metadata |
-| `.agents/skills/speckit-*/` | Project-scoped Codex skills for the Spec Kit SDD workflow |
-| `specs/`                   | Feature specifications, plans, tasks, research, and acceptance checklists created during substantial iterations |
+| `docs/archive/spec-kit/`   | Archived Spec Kit requirements, plans, research, tasks, and acceptance records retained for historical reference |
 
 ## Project Setup Files
 
@@ -85,7 +83,6 @@ If the task involves product scope, read:
 | `postcss.config.mjs` | Tailwind CSS PostCSS configuration           |
 | `eslint.config.mjs`  | ESLint flat config for Next.js and TypeScript |
 | `.gitignore`         | Generated and dependency file ignore rules   |
-| `.specify/init-options.json` | Spec Kit 0.8.15 project initialization and Codex integration settings |
 | `start-mac.command`  | macOS release-package helper script for installing dependencies and starting the local app |
 | `start-windows.bat`  | Windows release-package helper script for installing dependencies and starting the local app |
 | `.git/`              | Local Git repository metadata; do not edit manually |

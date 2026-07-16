@@ -40,15 +40,6 @@ data/*.csv
 .playwright-cli/
 skills-lock.json
 
-# Track only the project-scoped Spec Kit skills. Keep every other local agent
-# artifact ignored because agent directories may contain machine-local data.
-!.agents/
-.agents/*
-!.agents/skills/
-.agents/skills/*
-!.agents/skills/speckit-*/
-!.agents/skills/speckit-*/**
-
 # Local visual test outputs
 output/
 

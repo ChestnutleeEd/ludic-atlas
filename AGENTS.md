@@ -119,8 +119,5 @@ Engineering skills use the default five-role triage label vocabulary. See `docs/
 
 This is a single-context repository; engineering skills read root domain docs and root ADRs when present. See `docs/agents/domain.md`.
 
-<!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan:
-`specs/001-optimize-earth-experience/plan.md`
-<!-- SPECKIT END -->
+Project-level historical specifications are archived under
+`docs/archive/spec-kit/` and are not active implementation instructions.
