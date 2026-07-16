@@ -70,7 +70,6 @@ npm run build
 - 使用本地轻量 GeoJSON 展示世界国家边界。
 - 支持国家聚合点、代表性游戏封面标记、悬停提示与点击详情。
 - 支持区域预设、国家聚焦、Overview / Surface 相机模式、缩放控制与移动端底部面板。
-- 保留实验性 `/earth-pro` 路由，使用 MapLibre GL JS 和 deck.gl 验证更高性能的 GPU 图层架构。
 
 ### 游戏编年馆
 
@@ -97,7 +96,6 @@ npm run build
 - Tailwind CSS
 - `react-globe.gl`
 - Three.js
-- MapLibre GL JS / deck.gl
 - GSAP / Motion
 - RAWG API
 - Node.js 本地数据脚本
@@ -160,7 +158,6 @@ src/components/globe    3D 地球、国家层、标记与提示
 src/components/archive  游戏编年馆时间线与档案界面
 src/components/panels   国家列表、国家详情、游戏详情面板
 src/components/controls 地球探索筛选与相机控制
-src/components/earth-pro 实验性 MapLibre / deck.gl 探索界面
 src/data                前端静态游戏与国家数据
 src/lib                 筛选、统计、地理、封面、区域工具
 src/types               TypeScript 数据契约
@@ -176,7 +173,6 @@ docs                    产品、架构、数据结构与 release 文档
 - `src/components/GameEarthApp.tsx`
 - `src/components/globe/GameGlobe.tsx`
 - `src/components/archive/GameArchiveView.tsx`
-- `src/app/earth-pro/page.tsx`
 
 ## 项目文档
 

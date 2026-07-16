@@ -122,7 +122,6 @@ export function GameEarthApp() {
 
   const handleSelectCountry = useCallback((countryCode: string) => {
     dispatchExploration({ type: "selectCountry", countryCode });
-    dispatchExploration({ type: "setCameraMode", cameraMode: "surface" });
     if (window.innerWidth > 1023) {
       setIsDesktopPanelOpen(true);
     }
@@ -131,7 +130,6 @@ export function GameEarthApp() {
 
   const handleRegionChange = useCallback((regionId: RegionId) => {
     dispatchExploration({ type: "selectRegion", regionId });
-    dispatchExploration({ type: "setCameraMode", cameraMode: "overview" });
   }, []);
 
   const handleClearCountry = useCallback(() => {

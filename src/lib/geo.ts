@@ -239,12 +239,12 @@ export function getCountryFocusPointOfView(
   cameraMode: CameraMode = "surface"
 ): GlobePointOfView {
   const focus = countryFocusOverrides[country.code];
-  // Keep focus altitude above the surface HTML / polygon layers. The close
-  // values make small countries usable, while OrbitControls minDistance still
-  // prevents camera penetration during wheel or pinch zoom.
+  // Preserve enough regional context to keep neighbouring countries visible.
+  // OrbitControls still allows users to zoom closer when they want to inspect
+  // individual covers.
   const altitude =
     cameraMode === "surface"
-      ? focus?.surfaceAltitude ?? 0.2
+      ? Math.max(focus?.surfaceAltitude ?? 0.28, 0.26)
       : focus?.overviewAltitude ?? 1.02;
 
   return {
@@ -407,6 +407,10 @@ function getGlobeMarkerAnchor(
 
 type GeoJsonRing = number[][];
 type GeoJsonPolygon = GeoJsonRing[];
+const countryMarkerSlotCache = new WeakMap<
+  CountryGeoJsonFeature,
+  Map<string, GlobeCoordinates[]>
+>();
 
 export function indexCountryFeatures(features: CountryGeoJsonFeature[]) {
   const index = new Map<string, CountryGeoJsonFeature>();
@@ -422,13 +426,21 @@ export function getCountrySafeMarkerSlots(
   country: Country,
   capacity: number
 ): GlobeCoordinates[] {
+  const cacheKey = `${country.code}:${country.longitude}:${capacity}`;
+  const featureCache = countryMarkerSlotCache.get(feature);
+  const cachedSlots = featureCache?.get(cacheKey);
+
+  if (cachedSlots) {
+    return cachedSlots;
+  }
+
   const polygons = getFeaturePolygons(feature, country.longitude);
   const bounds = getPolygonBounds(polygons);
   if (!bounds || capacity <= 0) return [];
 
   const latSpan = Math.max(0.001, bounds.maxLat - bounds.minLat);
   const lngSpan = Math.max(0.001, bounds.maxLng - bounds.minLng);
-  const gridSize = 34;
+  const gridSize = capacity <= 8 ? 22 : 34;
   const candidates: Array<GlobeCoordinates & { clearance: number }> = [];
   for (let row = 0; row < gridSize; row += 1) {
     const lat = bounds.minLat + ((row + 0.5) / gridSize) * latSpan;
@@ -457,7 +469,16 @@ export function getCountrySafeMarkerSlots(
     if (!best) break;
     selected.push(best);
   }
-  return selected.map(({ lat, lng }) => ({ lat, lng: wrapLongitude(lng) }));
+  const slots = selected.map(({ lat, lng }) => ({
+    lat,
+    lng: wrapLongitude(lng)
+  }));
+  const nextFeatureCache = featureCache ?? new Map<string, GlobeCoordinates[]>();
+  nextFeatureCache.set(cacheKey, slots);
+  if (!featureCache) {
+    countryMarkerSlotCache.set(feature, nextFeatureCache);
+  }
+  return slots;
 }
 
 export function isCoordinateInsideFeature(

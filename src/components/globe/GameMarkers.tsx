@@ -77,7 +77,7 @@ type CreateGameMarkerElementOptions = {
 
 const GLOBAL_MARKERS_PER_COUNTRY = 1;
 const REGION_MARKERS_PER_COUNTRY = 6;
-const SELECTED_COUNTRY_MARKER_LIMIT = 18;
+const SELECTED_COUNTRY_MARKER_LIMIT = 8;
 const HIGH_RATING_THRESHOLD_TEN_POINT = 9;
 const HIGH_RATING_THRESHOLD_FIVE_POINT = 4.5;
 
@@ -368,8 +368,9 @@ function getCoverMarkerMarkup(
   loadCoverImages: boolean
 ) {
   const coverImage = getGameCoverImage(marker.game);
+  const loadingMode = marker.sameCountrySelected ? "eager" : "lazy";
   const coverImageMarkup = loadCoverImages
-    ? `<img class="globe-game-cover-image ${coverImage === FALLBACK_GAME_COVER_IMAGE ? "is-fallback" : ""}" alt="" width="160" height="220" data-fallback-src="${escapeAttribute(FALLBACK_GAME_COVER_IMAGE)}" decoding="async" loading="lazy" src="${escapeAttribute(coverImage)}">`
+    ? `<img class="globe-game-cover-image ${coverImage === FALLBACK_GAME_COVER_IMAGE ? "is-fallback" : ""}" alt="" width="160" height="220" data-fallback-src="${escapeAttribute(FALLBACK_GAME_COVER_IMAGE)}" decoding="async" loading="${loadingMode}" src="${escapeAttribute(coverImage)}">`
     : "";
   const tooltipMarkup =
     marker.showRichTooltip || marker.selected || marker.hovered

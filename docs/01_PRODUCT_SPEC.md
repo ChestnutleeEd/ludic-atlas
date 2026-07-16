@@ -90,10 +90,6 @@ A user opens Game Chronicle / 游戏编年馆 and browses the generated global g
 
 A user opens the site and first sees Ludic Atlas / 游戏星图 with two independent entrances: Earth Explorer / 地球探索 and Game Chronicle / 游戏编年馆.
 
-### Scenario 7: Use the experimental full-screen earth engine
-
-A user opens Earth Explorer Pro / 游戏地球 Pro and explores the same local game-country data through a full-screen geospatial dashboard, using country / region presets and a collapsible detail panel while the legacy Earth Explorer remains available as a fallback.
-
 ## Country Mapping Rule
 
 For the MVP, each game is mapped to the country or region of its main developer / studio.
@@ -126,8 +122,7 @@ The first version should include:
 11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
 12. Game Chronicle horizontal timeline view for RAWG-generated global game records
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
-14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace with a non-overlapping command-bar row, softened deep navy / cyan / magenta visual hierarchy, an on-demand country drawer and filter tray, Overview / deep Surface camera modes, interaction-time 60 FPS rendering targets, portrait-aware camera framing, controlled zoom, region and key-country presets, up to 18 GeoJSON-constrained selected-country markers, truthful aggregation, scroll-safe game details, and mobile three-state bottom-sheet behavior
-15. Earth Explorer Pro experimental full-screen route at `/earth-pro`, using MapLibre GL JS plus deck.gl for a high-performance WebGL map / marker architecture, fixed camera presets, GPU scatter / icon / text marker layers, deterministic country marker distribution, and a mobile-collapsed bottom sheet.
+14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace with a non-overlapping command-bar row, softened deep navy / cyan / magenta visual hierarchy, an on-demand country drawer and filter tray, Overview / regional-context Surface camera modes, persistent medium-detail country boundaries, interaction-time 60 FPS rendering targets, portrait-aware camera framing, controlled zoom, region and key-country presets, up to 8 GeoJSON-constrained selected-country markers, truthful aggregation, scroll-safe game details, and mobile three-state bottom-sheet behavior
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 

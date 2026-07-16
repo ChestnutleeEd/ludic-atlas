@@ -15,10 +15,16 @@ const reduce = createExplorationReducer(countries, games);
 
 test("country and game actions atomically synchronize their region", () => {
   const sweden = reduce(initialExplorationState, { type: "selectCountry", countryCode: "SE" });
-  assert.deepEqual([sweden.activeRegionId, sweden.selectedCountryCode, sweden.selectedGameId], ["europe", "SE", null]);
+  assert.deepEqual(
+    [sweden.activeRegionId, sweden.cameraMode, sweden.selectedCountryCode, sweden.selectedGameId],
+    ["europe", "surface", "SE", null]
+  );
 
   const japan = reduce(sweden, { type: "selectGame", gameId: "jp-game" });
-  assert.deepEqual([japan.activeRegionId, japan.selectedCountryCode, japan.selectedGameId], ["eastAsia", "JP", "jp-game"]);
+  assert.deepEqual(
+    [japan.activeRegionId, japan.cameraMode, japan.selectedCountryCode, japan.selectedGameId],
+    ["eastAsia", "surface", "JP", "jp-game"]
+  );
 });
 
 test("invalid ids are idempotent and reset is complete", () => {

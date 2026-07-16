@@ -2,8 +2,14 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MeshPhongMaterial } from "three";
-import { getCountryLayerProps } from "@/components/globe/CountryLayer";
+import {
+  BufferGeometry,
+  Float32BufferAttribute,
+  LineBasicMaterial,
+  LineSegments,
+  MeshPhongMaterial,
+  type Object3D
+} from "three";
 import {
   buildCountryMarkers,
   buildGameMarkers,
@@ -11,10 +17,10 @@ import {
   type GlobeHtmlMarker
 } from "@/components/globe/GameMarkers";
 import {
-  buildCountryDotMatrix,
   getCountryFocusPointOfView,
+  getCountryFeatureKey,
   indexCountryFeatures,
-  type CountryDotPoint,
+  isCoordinateInsideFeature,
   type GlobePointOfView,
   type CountryGeoJson,
   type CountryGeoJsonFeature
@@ -24,7 +30,6 @@ import { getCountryDisplayName } from "@/lib/localization";
 import {
   CAMERA_MODE_CONFIGS,
   REGION_CONFIGS,
-  filterCountriesByRegion,
   getRegionConfig,
   getRegionPointOfView
 } from "@/lib/regions";
@@ -39,6 +44,18 @@ const ReactGlobe = dynamic(() => import("react-globe.gl"), {
 >;
 
 const MAX_RENDER_PIXEL_RATIO = 1;
+const GLOBE_RADIUS = 100;
+const PERSISTENT_BOUNDARY_ALTITUDE = 0.0022;
+const MAX_PERSISTENT_BOUNDARY_POINTS_PER_RING = 144;
+const SELECTED_BOUNDARY_ALTITUDE = 0.0045;
+const MAX_SELECTED_BOUNDARY_POINTS_PER_RING = 240;
+const SELECTED_BOUNDARY_OPTIONS = {
+  altitude: SELECTED_BOUNDARY_ALTITUDE,
+  color: "#ff006e",
+  maxPointsPerRing: MAX_SELECTED_BOUNDARY_POINTS_PER_RING,
+  opacity: 0.96,
+  renderOrder: 2
+} as const;
 const INTERACTION_RESTORE_DELAY_MS = 200;
 const MANUAL_ZOOM_TRANSITION_MS = 440;
 const COUNTRY_FOCUS_PRESET_CODES = [
@@ -177,13 +194,20 @@ export function GameGlobe({
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const duration = getCameraDuration(transitionMs, reducedMotion);
 
+      if (duration > 0 && containerRef.current) {
+        delete containerRef.current.dataset.countryFocusX;
+        delete containerRef.current.dataset.countryFocusY;
+      }
+
       if (cameraDetailRestoreTimerRef.current) {
         window.clearTimeout(cameraDetailRestoreTimerRef.current);
+        cameraDetailRestoreTimerRef.current = null;
       }
 
       setIsCameraAnimating(duration > 0);
       if (duration > 0) {
         cameraDetailRestoreTimerRef.current = window.setTimeout(() => {
+          cameraDetailRestoreTimerRef.current = null;
           setIsCameraAnimating(false);
         }, duration + INTERACTION_RESTORE_DELAY_MS);
       }
@@ -302,6 +326,26 @@ export function GameGlobe({
     setGlobePointOfView(pointOfView, selectedCountry ? 680 : 620);
   }, [activeRegionId, cameraMode, getViewportAdjustedPointOfView, selectedCountry, setGlobePointOfView]);
 
+  useEffect(() => {
+    if (
+      isCameraAnimating ||
+      cameraDetailRestoreTimerRef.current !== null ||
+      !selectedCountry ||
+      !containerRef.current
+    ) {
+      return;
+    }
+
+    const screenPosition = globeRef.current?.getScreenCoords(
+      selectedCountry.latitude,
+      selectedCountry.longitude
+    );
+    if (screenPosition) {
+      containerRef.current.dataset.countryFocusX = screenPosition.x.toFixed(2);
+      containerRef.current.dataset.countryFocusY = screenPosition.y.toFixed(2);
+    }
+  }, [globeSize.height, globeSize.width, isCameraAnimating, selectedCountry]);
+
   const handleFocusSelectedCountry = useCallback(() => {
     if (!selectedCountry) {
       setGlobePointOfView(
@@ -379,6 +423,7 @@ export function GameGlobe({
     cameraAnimatorRef.current?.cancel();
     if (cameraDetailRestoreTimerRef.current) {
       window.clearTimeout(cameraDetailRestoreTimerRef.current);
+      cameraDetailRestoreTimerRef.current = null;
     }
     setIsCameraAnimating(false);
     setIsGlobeInteracting(true);
@@ -394,10 +439,6 @@ export function GameGlobe({
       setIsGlobeInteracting(false);
     }, INTERACTION_RESTORE_DELAY_MS);
   }, []);
-  const handleGlobeWheel = useCallback(() => {
-    handleGlobeInteractionStart();
-    handleGlobeInteractionEnd();
-  }, [handleGlobeInteractionEnd, handleGlobeInteractionStart]);
   const updateHtmlElementVisibility = useCallback(
     (element: HTMLElement, isVisible: boolean) => {
       const nextVisibility = isVisible ? "visible" : "hidden";
@@ -410,15 +451,6 @@ export function GameGlobe({
   );
 
   const selectedCountryCode = selectedCountry?.code ?? null;
-  const activeRegionCountryCodes = useMemo(
-    () =>
-      new Set(
-        filterCountriesByRegion(countries, activeRegionId).map(
-          (country) => country.code
-        )
-      ),
-    [activeRegionId, countries]
-  );
   const activeCountryCode =
     activeWorldCountry?.baseSelectedCountryCode === selectedCountryCode
       ? activeWorldCountry.countryCode
@@ -447,47 +479,45 @@ export function GameGlobe({
     },
     [onSelectCountry, selectedCountryCode, supportedCountryCodes]
   );
-  const countryDots = useMemo<CountryDotPoint[]>(
-    () => buildCountryDotMatrix(countryFeatures, countries),
-    [countries, countryFeatures]
-  );
-  const gameCountryCodes = useMemo(
-    () =>
-      new Set(
-        games
-          .map((game) => game.countryCode)
-          .filter((countryCode) => countryCode !== "UNKNOWN")
-      ),
-    [games]
+  const handleSelectPickedCountry = useCallback(
+    (countryCode: string) => {
+      if (containerRef.current) {
+        containerRef.current.dataset.lastSurfaceCountry = countryCode;
+      }
+      handleSelectGlobeCountry(countryCode);
+    },
+    [handleSelectGlobeCountry]
   );
   const countryFeatureByCode = useMemo(
     () => indexCountryFeatures(countryFeatures),
     [countryFeatures]
   );
-  const countryLayerProps = useMemo(
-    () =>
-      getCountryLayerProps({
-        activeRegionCountryCodes,
-        countries,
-        countryDots,
-        countryFeatures,
-        gameCountryCodes,
-        hoveredCountryCode,
-        selectedCountryCode: activeCountryCode,
-        onHoverCountry: handleHoverCountry,
-        onSelectCountry: handleSelectGlobeCountry
-      }),
-    [
-      activeRegionCountryCodes,
-      countries,
-      countryDots,
-      countryFeatures,
-      gameCountryCodes,
-      hoveredCountryCode,
-      activeCountryCode,
-      handleHoverCountry,
-      handleSelectGlobeCountry
-    ]
+  const handleGlobeSurfaceClick = useCallback(
+    (coordinate: { lat: number; lng: number }) => {
+      if (containerRef.current) {
+        containerRef.current.dataset.lastGlobeLat = coordinate.lat.toFixed(4);
+        containerRef.current.dataset.lastGlobeLng = coordinate.lng.toFixed(4);
+      }
+      const feature = countryFeatures.find((candidate) =>
+        isCoordinateInsideFeature(candidate, coordinate)
+      );
+      const countryCode = feature ? getCountryFeatureKey(feature) : null;
+
+      if (countryCode) {
+        handleSelectPickedCountry(countryCode);
+      }
+    },
+    [countryFeatures, handleSelectPickedCountry]
+  );
+  const handleCustomBoundaryClick = useCallback(
+    (
+      _object: object,
+      _event: MouseEvent,
+      coordinate: { lat: number; lng: number }
+    ) => {
+      handleGlobeSurfaceClick(coordinate);
+    },
+    [handleGlobeSurfaceClick]
   );
   const gameMarkers = useMemo(
     () =>
@@ -520,7 +550,7 @@ export function GameGlobe({
         countries,
         hoveredCountryCode,
         selectedCountryCode
-      }).filter((marker) => marker.hovered || marker.selected);
+      }).filter((marker) => marker.hovered);
     },
     [countries, hoveredCountryCode, isGlobeInteracting, selectedCountryCode]
   );
@@ -569,6 +599,69 @@ export function GameGlobe({
     []
   );
   useEffect(() => () => globeMaterial.dispose(), [globeMaterial]);
+  const persistentBoundaryMesh = useMemo(
+    () =>
+      countryFeatures.length > 0
+        ? buildBoundaryMesh(countryFeatures, {
+            altitude: PERSISTENT_BOUNDARY_ALTITUDE,
+            color: "#168ba8",
+            maxPointsPerRing: MAX_PERSISTENT_BOUNDARY_POINTS_PER_RING,
+            opacity: 0.46,
+            renderOrder: 1
+          })
+        : null,
+    [countryFeatures]
+  );
+  const selectedBoundaryMesh = useMemo(
+    () =>
+      countryFeatures.length > 0
+        ? buildBoundaryMesh([], SELECTED_BOUNDARY_OPTIONS)
+        : null,
+    [countryFeatures.length]
+  );
+  const persistentBoundaryLayerData = useMemo<Object3D[]>(() => {
+    const meshes: Object3D[] = [];
+    if (persistentBoundaryMesh) meshes.push(persistentBoundaryMesh);
+    if (selectedBoundaryMesh) meshes.push(selectedBoundaryMesh);
+    return meshes;
+  }, [persistentBoundaryMesh, selectedBoundaryMesh]);
+  const persistentBoundarySegmentCount = persistentBoundaryMesh
+    ? persistentBoundaryMesh.geometry.getAttribute("position").count / 2
+    : 0;
+  const getPersistentBoundaryObject = useCallback(
+    (object: object) => object as Object3D,
+    []
+  );
+  useEffect(
+    () => () => {
+      persistentBoundaryMesh?.geometry.dispose();
+      persistentBoundaryMesh?.material.dispose();
+    },
+    [persistentBoundaryMesh]
+  );
+  useEffect(
+    () => () => {
+      selectedBoundaryMesh?.geometry.dispose();
+      selectedBoundaryMesh?.material.dispose();
+    },
+    [selectedBoundaryMesh]
+  );
+  useEffect(() => {
+    if (!selectedBoundaryMesh) {
+      return;
+    }
+
+    const selectedFeature = activeCountryCode
+      ? countryFeatureByCode.get(activeCountryCode)
+      : null;
+    const nextMesh = buildBoundaryMesh(
+      selectedFeature ? [selectedFeature] : [],
+      SELECTED_BOUNDARY_OPTIONS
+    );
+    selectedBoundaryMesh.geometry.copy(nextMesh.geometry);
+    nextMesh.geometry.dispose();
+    nextMesh.material.dispose();
+  }, [activeCountryCode, countryFeatureByCode, selectedBoundaryMesh]);
   const activeRegion = getRegionConfig(activeRegionId);
   const activeCameraLabel = selectedCountry
     ? getCountryDisplayName(selectedCountry)
@@ -592,12 +685,14 @@ export function GameGlobe({
         <div
           className={`real-globe-stage relative min-h-0 flex-1 overflow-hidden ${
             isGlobeInteracting ? "is-globe-interacting" : ""
-          }`}
+          } ${isLowDetailRendering ? "is-globe-low-detail" : ""}`}
+          data-camera-travelling={isCameraAnimating}
           data-camera-mode={cameraMode}
-          onPointerDown={handleGlobeInteractionStart}
-          onPointerLeave={handleGlobeInteractionEnd}
-          onPointerUp={handleGlobeInteractionEnd}
-          onWheel={handleGlobeWheel}
+          data-country-picking="globe-coordinates"
+          data-world-boundary-point-limit={MAX_PERSISTENT_BOUNDARY_POINTS_PER_RING}
+          data-world-boundary-segment-count={persistentBoundarySegmentCount}
+          data-world-country-count={countryFeatures.length}
+          data-world-boundaries-visible={Boolean(persistentBoundaryMesh)}
           ref={containerRef}
         >
           <div className="pointer-events-none absolute left-1/2 top-1/2 h-[min(94vw,920px)] w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,255,255,0.07),rgba(255,0,110,0.018)_46%,transparent_72%)] blur-2xl" />
@@ -709,10 +804,12 @@ export function GameGlobe({
           </details>
           <ReactGlobe
             ref={globeRef}
-            {...countryLayerProps}
             atmosphereAltitude={0.14}
             atmosphereColor="#55BFC8"
             backgroundColor="rgba(0,0,0,0)"
+            customLayerData={persistentBoundaryLayerData}
+            onCustomLayerClick={handleCustomBoundaryClick}
+            customThreeObject={getPersistentBoundaryObject}
             enablePointerInteraction={!isLowDetailRendering}
             globeMaterial={globeMaterial}
             height={globeSize.height}
@@ -728,10 +825,11 @@ export function GameGlobe({
             }
             htmlElement={createMarkerElement}
             htmlElementVisibilityModifier={updateHtmlElementVisibility}
-            htmlElementsData={isLowDetailRendering ? [] : globeHtmlMarkers}
+            htmlElementsData={globeHtmlMarkers}
             htmlLat={(marker) => (marker as GlobeHtmlMarker).lat}
             htmlLng={(marker) => (marker as GlobeHtmlMarker).lng}
             htmlTransitionDuration={0}
+            onGlobeClick={handleGlobeSurfaceClick}
             onGlobeReady={() => {
               const controls = globeRef.current?.controls();
               const renderer = globeRef.current?.renderer();
@@ -761,22 +859,13 @@ export function GameGlobe({
                 0
               );
             }}
-            polygonCapCurvatureResolution={2}
-            polygonsData={
-              isLowDetailRendering
-                ? []
-                : countryLayerProps.polygonsData
-            }
+            polygonsData={[]}
             rendererConfig={rendererConfig}
             showAtmosphere
             showGlobe
             showGraticules={false}
-            showPointerCursor={(objectType, objectData) => {
-              if (objectType === "polygon") {
-                return Boolean(objectData);
-              }
-
-              return objectType === "html";
+            showPointerCursor={(objectType) => {
+              return objectType === "globe" || objectType === "html";
             }}
             width={globeSize.width}
           />
@@ -800,6 +889,128 @@ function clamp(value: number, min: number, max: number) {
 
 function getNumberOrFallback(value: number | undefined, fallback: number) {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+type BoundaryMeshOptions = {
+  altitude: number;
+  color: string;
+  maxPointsPerRing: number;
+  opacity: number;
+  renderOrder: number;
+};
+
+function buildBoundaryMesh(
+  countryFeatures: CountryGeoJsonFeature[],
+  options: BoundaryMeshOptions
+) {
+  const positions: number[] = [];
+
+  for (const feature of countryFeatures) {
+    for (const sourceRing of getBoundaryRings(feature)) {
+      const ring = sampleBoundaryRing(sourceRing, options.maxPointsPerRing);
+      for (let index = 1; index < ring.length; index += 1) {
+        const previous = ring[index - 1];
+        const current = ring[index];
+
+        if (Math.abs(current[0] - previous[0]) > 180) {
+          continue;
+        }
+
+        const start = globeCoordinateToCartesian(
+          previous[1],
+          previous[0],
+          options.altitude
+        );
+        const end = globeCoordinateToCartesian(
+          current[1],
+          current[0],
+          options.altitude
+        );
+        positions.push(start.x, start.y, start.z, end.x, end.y, end.z);
+      }
+    }
+  }
+
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  const material = new LineBasicMaterial({
+    color: options.color,
+    opacity: options.opacity,
+    transparent: true
+  });
+
+  const mesh = new LineSegments(geometry, material);
+  mesh.frustumCulled = true;
+  mesh.renderOrder = options.renderOrder;
+  return mesh;
+}
+
+function sampleBoundaryRing(ring: number[][], maxPoints: number) {
+  if (ring.length <= maxPoints) {
+    return ring;
+  }
+
+  const lastIndex = ring.length - 1;
+  const step = Math.ceil(
+    lastIndex / (maxPoints - 1)
+  );
+  const sampled = ring.filter(
+    (_position, index) => index === 0 || index === lastIndex || index % step === 0
+  );
+
+  if (sampled.at(-1) !== ring[lastIndex]) {
+    sampled.push(ring[lastIndex]);
+  }
+
+  return sampled;
+}
+
+function getBoundaryRings(feature: CountryGeoJsonFeature): number[][][] {
+  const coordinates = feature.geometry.coordinates;
+
+  if (feature.geometry.type === "Polygon" && isPolygonCoordinates(coordinates)) {
+    return coordinates;
+  }
+
+  if (
+    feature.geometry.type === "MultiPolygon" &&
+    Array.isArray(coordinates)
+  ) {
+    return coordinates.flatMap((polygon) =>
+      isPolygonCoordinates(polygon) ? polygon : []
+    );
+  }
+
+  return [];
+}
+
+function isPolygonCoordinates(value: unknown): value is number[][][] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (ring) =>
+        Array.isArray(ring) &&
+        ring.every(
+          (position) =>
+            Array.isArray(position) &&
+            position.length >= 2 &&
+            position.every((coordinate) => typeof coordinate === "number")
+        )
+    )
+  );
+}
+
+function globeCoordinateToCartesian(lat: number, lng: number, altitude: number) {
+  const phi = ((90 - lat) * Math.PI) / 180;
+  const theta = ((90 - lng) * Math.PI) / 180;
+  const radius = GLOBE_RADIUS * (1 + altitude);
+  const phiSin = Math.sin(phi);
+
+  return {
+    x: radius * phiSin * Math.cos(theta),
+    y: radius * Math.cos(phi),
+    z: radius * phiSin * Math.sin(theta)
+  };
 }
 
 function GlobeLoadingState() {

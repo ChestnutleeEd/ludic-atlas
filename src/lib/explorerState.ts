@@ -45,7 +45,13 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
     }
     if (action.type === "clearCountry") {
       if (!state.selectedCountryCode && !state.selectedGameId) return state;
-      return { ...state, selectedCountryCode: null, selectedGameId: null, selectionRevision: state.selectionRevision + 1 };
+      return {
+        ...state,
+        cameraMode: "overview",
+        selectedCountryCode: null,
+        selectedGameId: null,
+        selectionRevision: state.selectionRevision + 1
+      };
     }
     if (action.type === "clearGame") {
       return state.selectedGameId ? { ...state, selectedGameId: null } : state;
@@ -53,10 +59,15 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
     if (action.type === "selectRegion") {
       const country = state.selectedCountryCode ? countryByCode.get(state.selectedCountryCode) : null;
       const keepCountry = action.regionId === "global" || (country && getExplorationCountryRegion(country) === action.regionId);
-      if (state.activeRegionId === action.regionId && keepCountry) return state;
+      if (
+        state.activeRegionId === action.regionId &&
+        keepCountry &&
+        state.cameraMode === "overview"
+      ) return state;
       return {
         ...state,
         activeRegionId: action.regionId,
+        cameraMode: "overview",
         selectedCountryCode: keepCountry ? state.selectedCountryCode : null,
         selectedGameId: keepCountry ? state.selectedGameId : null,
         selectionRevision: state.selectionRevision + 1
@@ -68,6 +79,7 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
       return {
         ...state,
         activeRegionId: getExplorationCountryRegion(country),
+        cameraMode: "surface",
         selectedCountryCode: country.code,
         selectedGameId: null,
         selectionRevision: state.selectionRevision + 1
@@ -79,6 +91,7 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
     return {
       ...state,
       activeRegionId: getExplorationCountryRegion(country),
+      cameraMode: "surface",
       selectedCountryCode: country.code,
       selectedGameId: game.id,
       selectionRevision: state.selectionRevision + 1

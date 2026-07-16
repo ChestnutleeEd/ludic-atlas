@@ -32,12 +32,13 @@ test("nine representative countries produce deterministic interior slots", () =>
   }
 });
 
-test("surface country focus is materially closer than the overview camera", () => {
+test("surface country focus balances detail with surrounding country context", () => {
   for (const code of countryCodes) {
     const country = countryFromFeature(code);
     const surface = getCountryFocusPointOfView(country, "surface");
     const overview = getCountryFocusPointOfView(country, "overview");
-    assert.ok(surface.altitude <= 0.2, `${code} surface focus is close`);
+    assert.ok(surface.altitude >= 0.26, `${code} keeps regional context`);
+    assert.ok(surface.altitude <= 0.38, `${code} surface focus stays close`);
     assert.ok(surface.altitude < overview.altitude * 0.5, `${code} surface focus is distinct`);
   }
 });

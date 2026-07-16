@@ -88,7 +88,7 @@ test("initial desktop view keeps secondary UI collapsed around a dominant globe"
   await expect(page.locator(".real-globe-stage canvas")).toBeVisible();
 });
 
-test("country selection enters a genuinely close surface focus with smooth travel", async ({ page }) => {
+test("country selection keeps regional context in a close surface focus", async ({ page }) => {
   await page.setViewportSize({ height: 900, width: 1440 });
   await enterEarthExplorer(page);
   await page.locator(".earth-location-picker > summary").click();
@@ -99,9 +99,156 @@ test("country selection enters a genuinely close surface focus with smooth trave
   await expect(page.locator(".right-panel-shell")).not.toHaveAttribute("inert", "");
   await page.waitForFunction(() => {
     const altitude = Number(document.querySelector<HTMLElement>(".real-globe-stage")?.dataset.cameraAltitude);
-    return Number.isFinite(altitude) && altitude <= 0.2;
+    return Number.isFinite(altitude) && altitude >= 0.26 && altitude <= 0.38;
   });
-  expect(Number(await page.locator(".real-globe-stage").getAttribute("data-camera-altitude"))).toBeLessThanOrEqual(0.2);
+  const altitude = Number(
+    await page.locator(".real-globe-stage").getAttribute("data-camera-altitude")
+  );
+  expect(altitude).toBeGreaterThanOrEqual(0.26);
+  expect(altitude).toBeLessThanOrEqual(0.38);
+});
+
+test("world boundary layer keeps detailed geometry for all countries", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  const stage = page.locator(".real-globe-stage");
+
+  await expect(stage).toHaveAttribute("data-world-country-count", "236");
+  await expect(stage).toHaveAttribute("data-world-boundary-point-limit", "144");
+  const segmentCount = Number(
+    await stage.getAttribute("data-world-boundary-segment-count")
+  );
+  expect(segmentCount).toBeGreaterThan(35_000);
+});
+
+test("country outlines remain visible throughout country focus travel", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  const stage = page.locator(".real-globe-stage");
+
+  await page.locator(".earth-location-picker > summary").click();
+  await page.getByRole("button", { name: "Japan", exact: true }).click();
+
+  await expect(stage).toHaveAttribute("data-camera-travelling", "true");
+  await expect(stage).toHaveAttribute("data-world-boundaries-visible", "true");
+  await expect(stage).toHaveAttribute("data-camera-travelling", "false", {
+    timeout: 5_000
+  });
+  await expect(stage).toHaveAttribute("data-world-boundaries-visible", "true");
+});
+
+test("country focus does not block the main thread when detail rendering settles", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  const stage = page.locator(".real-globe-stage");
+
+  await page.evaluate(() => {
+    document.addEventListener(
+      "pointerdown",
+      () => {
+        const startedAt = performance.now();
+        window.setTimeout(() => {
+          const globeStage = document.querySelector<HTMLElement>(".real-globe-stage");
+          if (globeStage) {
+            globeStage.dataset.postFocusTimerDrift = String(
+              performance.now() - startedAt - 1_100
+            );
+          }
+        }, 1_100);
+      },
+      { capture: true, once: true }
+    );
+  });
+
+  await page.locator(".earth-location-picker > summary").click();
+  await page.getByRole("button", { name: "Japan", exact: true }).click();
+  await expect(stage).toHaveAttribute("data-post-focus-timer-drift", /.+/, {
+    timeout: 5_000
+  });
+
+  const timerDrift = Number(
+    await stage.getAttribute("data-post-focus-timer-drift")
+  );
+  expect(timerDrift).toBeLessThan(250);
+});
+
+test("surface coordinate picking resolves a country without polygon meshes", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  const stage = page.locator(".real-globe-stage");
+
+  await page.locator(".earth-location-picker > summary").click();
+  await page.getByRole("button", { name: "Japan", exact: true }).click();
+  await expect(stage).toHaveAttribute("data-camera-travelling", "false", {
+    timeout: 5_000
+  });
+  await expect(stage).toHaveAttribute("data-country-focus-x", /.+/);
+  await expect(stage).toHaveAttribute("data-country-focus-y", /.+/);
+
+  const focusX = Number(await stage.getAttribute("data-country-focus-x"));
+  const focusY = Number(await stage.getAttribute("data-country-focus-y"));
+  const canvasBounds = await stage.locator("canvas").boundingBox();
+  expect(canvasBounds).not.toBeNull();
+  await page.locator(".globe-game-marker").evaluateAll((markers) => {
+    for (const marker of markers) {
+      (marker as HTMLElement).style.pointerEvents = "none";
+    }
+  });
+  const origins = [
+    { x: focusX, y: focusY },
+    { x: canvasBounds!.x + focusX, y: canvasBounds!.y + focusY }
+  ];
+  let resolvedCountry: string | null = null;
+
+  for (const origin of origins) {
+    for (const offsetY of [-60, 0, 60]) {
+      for (const offsetX of [-60, 0, 60]) {
+        await page.mouse.click(origin.x + offsetX, origin.y + offsetY);
+        resolvedCountry = await stage.getAttribute("data-last-surface-country");
+        if (resolvedCountry) break;
+      }
+      if (resolvedCountry) break;
+    }
+    if (resolvedCountry) break;
+  }
+
+  expect(resolvedCountry).toMatch(/^[A-Z]{2}$/);
+});
+
+test("wheel zoom settles without a main-thread restore stall", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  const stage = page.locator(".real-globe-stage");
+
+  await page.evaluate(() => {
+    document.addEventListener(
+      "wheel",
+      () => {
+        const startedAt = performance.now();
+        window.setTimeout(() => {
+          const globeStage = document.querySelector<HTMLElement>(".real-globe-stage");
+          if (globeStage) {
+            globeStage.dataset.postZoomTimerDrift = String(
+              performance.now() - startedAt - 350
+            );
+          }
+        }, 350);
+      },
+      { capture: true, once: true }
+    );
+  });
+
+  const canvasBounds = await stage.locator("canvas").boundingBox();
+  expect(canvasBounds).not.toBeNull();
+  await page.mouse.move(
+    canvasBounds!.x + canvasBounds!.width / 2,
+    canvasBounds!.y + canvasBounds!.height / 2
+  );
+  await page.mouse.wheel(0, -280);
+  await expect(stage).toHaveAttribute("data-post-zoom-timer-drift", /.+/);
+  expect(Number(await stage.getAttribute("data-post-zoom-timer-drift"))).toBeLessThan(
+    250
+  );
 });
 
 test("rapid cross-region country selection keeps the final intent and canvas", async ({ page }) => {
@@ -157,9 +304,17 @@ test("representative country markers stay bounded, aggregate truthfully, and ret
 
   const aggregate = page.locator(".globe-game-marker[data-overflow-count]:not([data-overflow-count='0'])").first();
   await expect(aggregate).toBeVisible();
+  await expect(page.locator(".real-globe-stage")).toHaveAttribute(
+    "data-camera-travelling",
+    "false",
+    { timeout: 5_000 }
+  );
   expect(Number(await aggregate.getAttribute("data-overflow-count"))).toBeGreaterThan(0);
   const coverImage = page.locator(".globe-game-cover-image").first();
-  await coverImage.evaluate((image) => { (image as HTMLImageElement).src = "/covers/missing-e2e-cover.webp"; });
+  await coverImage.evaluate((image) => {
+    (image as HTMLImageElement).src = "/covers/missing-e2e-cover.webp";
+    image.dispatchEvent(new Event("error"));
+  });
   await expect(coverImage).toHaveAttribute("data-fallback-applied", "true");
   const fallbackBox = await coverImage.evaluate((element) => {
     const bounds = element.getBoundingClientRect();
