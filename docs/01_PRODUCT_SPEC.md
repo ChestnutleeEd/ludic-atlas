@@ -88,7 +88,22 @@ A user opens Game Chronicle / 游戏编年馆 and browses the generated global g
 
 ### Scenario 6: Choose an exploration mode
 
-A user opens the site and first sees Ludic Atlas / 游戏星图 with two independent entrances: Earth Explorer / 地球探索 and Game Chronicle / 游戏编年馆.
+A user opens the site and first sees Ludic Atlas / 游戏星图 with two independent, fully clickable entrances: Earth Explorer / 地球探索 and Game Chronicle / 游戏编年馆. Earth Explorer is the larger visual lead, while Game Chronicle remains a complete parallel entrance. Choosing either entrance preserves the current local view-state behavior rather than navigating to a new route.
+
+## Landing Hub Experience
+
+The landing hub uses a restrained world-game-archive direction with retro game-magazine collage as a supporting material language. It avoids sci-fi blue dominance, neon glow, glass-heavy panels, and heavy continuous animation.
+
+Desktop requirements:
+
+- use one `100dvh` composition with the brand, collection context, and both entrances visible without vertical scrolling at 1366×768, 1440×900, and wider desktop viewports;
+- allocate the entrance stage at approximately 58:42, with Earth Explorer as the larger visual entrance;
+- integrate the live collection count and year range into the brand bar rather than a separate statistics strip;
+- use two original, text-free entrance images with live DOM labels, responsive crops, image-failure fallback, and prioritized loading for the Earth lead image;
+- keep all homepage layout, imagery, and motion styles isolated from Earth Explorer and Game Chronicle internal pages;
+- provide restrained hover / focus feedback and a static-equivalent `prefers-reduced-motion` presentation.
+
+On mobile, the brand and both complete entrances stack vertically and the document scrolls naturally without horizontal overflow.
 
 ## Country Mapping Rule
 
@@ -119,7 +134,7 @@ The first version should include:
 8. year filter
 9. cover size control
 10. local mock data
-11. Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrances
+11. Ludic Atlas landing hub with an Earth-led 58:42 desktop composition, original responsive entrance imagery, integrated collection context, preserved local view switching, and naturally scrolling mobile stacking
 12. Game Chronicle horizontal timeline view for RAWG-generated global game records
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
 14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace with a non-overlapping command-bar row, softened deep navy / cyan / magenta visual hierarchy, an on-demand country drawer and filter tray, Overview / regional-context Surface camera modes, persistent medium-detail country boundaries, interaction-time 60 FPS rendering targets, portrait-aware camera framing, controlled zoom, region and key-country presets, up to 8 GeoJSON-constrained selected-country markers, truthful aggregation, scroll-safe game details, and mobile three-state bottom-sheet behavior
