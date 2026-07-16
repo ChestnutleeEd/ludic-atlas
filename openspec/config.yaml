@@ -1,0 +1,86 @@
+schema: spec-driven
+
+context: |
+  Project: Ludic Atlas / 游戏星图 (Game-Earth)
+  Project type: Existing brownfield web application under active development.
+
+  Product:
+  - A game-culture exploration website with Earth Explorer and Game Chronicle experiences.
+  - Earth Explorer supports region, country, and game exploration through an interactive 3D globe.
+  - Preserve the premium, restrained, cultural and retro visual direction.
+  - Avoid generic sci-fi blue interfaces, excessive glow, and ornamental complexity.
+  - Globe interaction, country focus, cover distribution, readability, and perceived smoothness are core product requirements.
+
+  Technical stack:
+  - Next.js App Router
+  - React and TypeScript
+  - react-globe.gl and Three.js for globe rendering
+  - CSS and Tailwind-related project tooling
+  - Node.js scripts for RAWG data enrichment, country inference, and cover processing
+  - Playwright for browser and interaction tests
+  - Node native test runner for unit tests
+
+  Important source areas:
+  - src/components/GameEarthApp.tsx: product shell and high-level state flow
+  - src/components/globe/: globe rendering, markers, focus, and interaction
+  - src/components/archive/: Game Chronicle experience
+  - src/lib/explorerState.ts: atomic exploration state
+  - src/lib/geo.ts: geographic and marker calculations
+  - src/data/: game catalog and static data
+  - src/app/globals.css: global visual implementation
+  - tests/: unit and Playwright regression tests
+
+  Current-system documentation:
+  - README.md
+  - AGENTS.md
+  - docs/00_PROJECT_INDEX.md
+  - docs/01_PRODUCT_SPEC.md
+  - docs/02_FEATURE_MAP.md
+  - docs/03_ARCHITECTURE.md
+  - docs/06_CODEX_RULES.md
+  Historical Spec Kit material under docs/archive/spec-kit/ is read-only reference
+  and must not be treated as active implementation instructions.
+
+  Verification commands:
+  - npm run lint
+  - npm run typecheck
+  - npm test
+  - npm run build
+  - npm run test:e2e for browser-facing or interaction changes
+
+  Engineering constraints:
+  - Prefer incremental changes over broad rewrites.
+  - Preserve existing routes, data compatibility, and working behavior unless removal is explicitly required.
+  - Treat globe camera transitions, rapid country switching, responsive layout, and mobile interactions as regression-sensitive.
+  - Keep expensive globe calculations out of avoidable React render paths.
+  - Avoid unnecessary dependencies and duplicate state sources.
+  - Do not commit secrets, .env.local, node_modules, .next, screenshots, output, logs, caches, or temporary generated files.
+  - Update living documentation when architecture, user-visible behavior, commands, or file locations change.
+  - Do not push, publish releases, or perform destructive Git operations without explicit user instruction.
+
+rules:
+  proposal:
+    - State the user-visible problem, intended outcome, affected modules, and measurable success criteria.
+    - Include explicit non-goals to prevent uncontrolled scope expansion.
+    - Identify compatibility, performance, data, mobile, and interaction risks where relevant.
+    - For deletions or replacements, explain why existing behavior can be safely retired.
+
+  specs:
+    - Express requirements as observable and testable behavior.
+    - Cover loading, empty, failure, rapid-switching, responsive, and accessibility states when applicable.
+    - Separate product requirements from implementation details.
+    - Define concrete acceptance scenarios for globe camera and interaction changes.
+
+  design:
+    - Reference actual project files and current architecture before proposing new abstractions.
+    - Explain state ownership, rendering lifecycle, camera cancellation, and performance implications where relevant.
+    - Prefer reuse and simplification over parallel implementations.
+    - Record significant tradeoffs and rejected alternatives.
+    - Do not manually invent project behavior that cannot be verified from code or current documentation.
+
+  tasks:
+    - Organize tasks into small, independently verifiable implementation units.
+    - Include targeted tests next to the implementation they validate.
+    - End with lint, typecheck, unit tests, build, and relevant Playwright verification.
+    - Include documentation updates when behavior, architecture, commands, or source locations change.
+    - Do not include Git commit, push, merge, release, or deployment tasks unless explicitly requested.
