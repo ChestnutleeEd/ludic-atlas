@@ -1,278 +1,159 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
-import { motion } from "motion/react";
-import { useEffect, useMemo, useRef, type SyntheticEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArchiveDossier } from "@/components/archive/ArchiveDossier";
-import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
-import {
-  getGameDisplayTitle,
-  getGameSecondaryTitle,
-  getGenreLabel
-} from "@/lib/localization";
+import { useArchiveReducedMotion } from "@/components/archive/useArchiveReducedMotion";
+import type { ArchiveYearGroup } from "@/lib/archiveModel";
 import type { Game } from "@/types/game";
-import type { ArchiveYearGroup } from "./ArchiveTimeline";
+import styles from "./GameArchiveView.module.css";
 
 type ArchiveYearModalProps = {
   group: ArchiveYearGroup;
-  selectedGameId: string | null;
+  selectedGame: Game;
   onClose: () => void;
-  onSelectGame: (gameId: string | null) => void;
+  onSelectGame: (gameId: string) => void;
 };
 
-function splitArchiveTags(values: string[]) {
-  return values
-    .flatMap((value) => value.split(/\s*\/\s*/))
-    .map((value) => value.trim())
-    .filter(Boolean);
-}
-
-function formatRating(rating: number) {
-  return Number.isFinite(rating) ? rating.toFixed(1) : "0.0";
-}
-
-function handleCoverError(event: SyntheticEvent<HTMLImageElement>) {
-  if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
-    event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
-  }
-}
-
-function getDossierCode(year: number | null) {
-  return `GE-CHR-${year ?? "UNKN"}-DOSSIER`;
-}
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])'
+].join(",");
 
 export function ArchiveYearModal({
   group,
-  selectedGameId,
+  selectedGame,
   onClose,
   onSelectGame
 }: ArchiveYearModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-  const modalPanelRef = useRef<HTMLElement | null>(null);
-  const featuredGame = useMemo(
-    () => [...group.games].sort((a, b) => b.rating - a.rating)[0] ?? null,
-    [group.games]
-  );
-  const selectedGame = useMemo(
-    () => group.games.find((game) => game.id === selectedGameId) ?? featuredGame,
-    [featuredGame, group.games, selectedGameId]
-  );
-  const averageRating = useMemo(() => {
-    if (group.games.length === 0) {
-      return "0.0";
-    }
+  const panelRef = useRef<HTMLElement | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestCloseRef = useRef<() => void>(() => undefined);
+  const [isClosing, setIsClosing] = useState(false);
+  const reduceMotion = useArchiveReducedMotion();
+  const selectedIndex = group.games.findIndex((game) => game.id === selectedGame.id);
 
-    return (
-      group.games.reduce(
-        (sum, game) => sum + (Number.isFinite(game.rating) ? game.rating : 0),
-        0
-      ) / group.games.length
-    ).toFixed(1);
-  }, [group.games]);
+  const requestClose = useCallback(() => {
+    if (isClosing) return;
+    if (reduceMotion) {
+      onClose();
+      return;
+    }
+    setIsClosing(true);
+    closeTimerRef.current = setTimeout(onClose, 240);
+  }, [isClosing, onClose, reduceMotion]);
+
+  useEffect(() => {
+    requestCloseRef.current = requestClose;
+  }, [requestClose]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
-    const activeElement =
+    const returnTarget =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const appShell = document.querySelector<HTMLElement>(".game-earth-shell");
 
     document.body.style.overflow = "hidden";
-    if (appShell) {
-      appShell.inert = true;
-    }
+    if (appShell) appShell.inert = true;
     closeButtonRef.current?.focus();
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event: globalThis.KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        event.preventDefault();
+        requestCloseRef.current();
         return;
       }
 
-      if (event.key === "Tab") {
-        const focusableElements = modalPanelRef.current?.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
+      if (event.key !== "Tab") return;
+      const focusable = [...(panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? [])];
+      if (focusable.length === 0) {
+        event.preventDefault();
+        panelRef.current?.focus();
+        return;
+      }
 
-        if (!focusableElements || focusableElements.length === 0) {
-          return;
-        }
-
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (event.shiftKey && document.activeElement === firstElement) {
-          event.preventDefault();
-          lastElement.focus();
-        } else if (!event.shiftKey && document.activeElement === lastElement) {
-          event.preventDefault();
-          firstElement.focus();
-        }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.body.style.overflow = previousOverflow;
-      if (appShell) {
-        appShell.inert = false;
-      }
+      if (appShell) appShell.inert = false;
       window.removeEventListener("keydown", handleKeyDown);
-      activeElement?.focus();
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      if (returnTarget?.isConnected) returnTarget.focus();
     };
-  }, [onClose]);
+  }, []);
 
-  const modal = (
-    <motion.div
-      animate={{ opacity: 1 }}
-      className="archive-v2-modal"
-      exit={{ opacity: 0 }}
-      initial={{ opacity: 0 }}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) {
-          onClose();
-        }
+  return createPortal(
+    <div
+      className={`${styles.drawerBackdrop} ${isClosing ? styles.drawerBackdropClosing : ""}`}
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) requestClose();
       }}
       role="presentation"
     >
-      <motion.section
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        aria-label={`${group.year ?? "Unknown Year"} 年度展柜`}
+      <aside
+        aria-describedby="archive-drawer-description"
+        aria-labelledby="archive-drawer-title"
         aria-modal="true"
-        className="archive-v2-modal-panel"
-        exit={{ opacity: 0, y: 28, scale: 0.985 }}
-        initial={{ opacity: 0, y: 42, scale: 0.985 }}
-        ref={modalPanelRef}
+        className={`${styles.drawer} ${isClosing ? styles.drawerClosing : ""}`}
+        data-archive-region="dossier"
+        ref={panelRef}
         role="dialog"
-        transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+        tabIndex={-1}
       >
-        <header className="archive-v2-modal-header">
-          <div className="min-w-0">
-            <p className="archive-v2-kicker">{getDossierCode(group.year)}</p>
-            <h3>{group.year ?? "Unknown Year"} 年度展柜</h3>
+        <header className={styles.drawerHeader}>
+          <div>
+            <p>{group.label} 年度馆藏</p>
+            <h2 id="archive-drawer-title">游戏档案</h2>
           </div>
-          <dl className="archive-v2-modal-stats">
-            <div>
-              <dt>馆藏</dt>
-              <dd>{group.games.length}</dd>
-            </div>
-            <div>
-              <dt>均分</dt>
-              <dd>{averageRating}</dd>
-            </div>
-          </dl>
           <button
-            aria-label="关闭年度展柜"
-            className="archive-v2-modal-close"
-            onClick={onClose}
+            aria-label="关闭游戏档案"
+            className={styles.drawerClose}
+            onClick={requestClose}
             ref={closeButtonRef}
             type="button"
           >
             关闭
           </button>
         </header>
-
-        <div className="archive-v2-modal-body">
-          <section className="archive-v2-year-overview">
-            <div className="min-w-0">
-              <p className="archive-v2-kicker">Year Dossier / 年度概览</p>
-              <h4>{group.year ?? "Unknown Year"} 馆藏目录</h4>
-              <p>选择游戏卡片查看右侧卷宗。长标题、类型和平台会自动换行或截断。</p>
-            </div>
-            {selectedGame ? (
-              <div className="archive-v2-current-focus">
-                <span>当前查看 / CURRENT DOSSIER</span>
-                <strong title={getGameDisplayTitle(selectedGame)}>
-                  {getGameDisplayTitle(selectedGame)}
-                </strong>
-                <small>已选中的游戏档案</small>
-              </div>
-            ) : null}
-          </section>
-
-          <div className="archive-v2-exhibit-layout">
-            <section className="archive-v2-card-grid" aria-label="年度游戏列表">
-              {group.games.map((game, index) => (
-                <ArchiveExhibitionCard
-                  game={game}
-                  index={index}
-                  isSelected={game.id === selectedGame?.id}
-                  key={game.id}
-                  onSelectGame={onSelectGame}
-                />
-              ))}
-            </section>
-
-            <ArchiveDossier group={group} selectedGame={selectedGame} />
-          </div>
-        </div>
-      </motion.section>
-    </motion.div>
-  );
-
-  return createPortal(modal, document.body);
-}
-
-function ArchiveExhibitionCard({
-  game,
-  isSelected,
-  index,
-  onSelectGame
-}: {
-  game: Game;
-  isSelected: boolean;
-  index: number;
-  onSelectGame: (gameId: string | null) => void;
-}) {
-  const title = getGameDisplayTitle(game);
-  const secondaryTitle = getGameSecondaryTitle(game);
-  const genres = splitArchiveTags(game.genres).slice(0, 3);
-  const platforms = splitArchiveTags(game.platforms).slice(0, 3);
-  const genreLabel =
-    genres.length > 0 ? genres.map(getGenreLabel).join(" / ") : "类型未知";
-  const platformLabel = platforms.length > 0 ? platforms.join(" / ") : "平台未知";
-
-  return (
-    <motion.button
-      animate={{ opacity: 1, y: 0 }}
-      aria-label={`查看 ${title} 档案`}
-      aria-pressed={isSelected}
-      className={`archive-v2-game-card ${isSelected ? "is-selected" : ""}`}
-      initial={{ opacity: 0, y: 18 }}
-      onClick={() => onSelectGame(game.id)}
-      title={title}
-      transition={{ delay: Math.min(index * 0.018, 0.2), duration: 0.28 }}
-      type="button"
-      whileHover={{ y: -4 }}
-      whileTap={{ scale: 0.99 }}
-    >
-      {isSelected ? <span className="archive-v2-selected-chip">展陈中</span> : null}
-      <span className="archive-v2-card-cover">
-        <img
-          alt={`${title} 封面`}
-          loading="lazy"
-          onError={handleCoverError}
-          src={getGameCoverImage(game)}
-        />
-      </span>
-      <span className="archive-v2-card-copy">
-        <strong title={title}>{title}</strong>
-        {secondaryTitle ? <em title={secondaryTitle}>{secondaryTitle}</em> : null}
-        <span className="archive-v2-card-meta">
-          <span>{game.releaseYear || "年份未知"}</span>
-          <span>评分 {formatRating(game.rating)}</span>
-        </span>
-        <span className="archive-v2-card-row" title={genreLabel}>
-          <small>类型</small>
-          <span>{genreLabel}</span>
-        </span>
-        <span className="archive-v2-card-row" title={platformLabel}>
-          <small>平台</small>
-          <span>{platformLabel}</span>
-        </span>
-      </span>
-    </motion.button>
+        <p className={styles.srOnly} id="archive-drawer-description">
+          当前年份仍保留在背景中。按 Escape 可关闭档案并返回触发游戏。
+        </p>
+        <nav aria-label="切换年度馆藏" className={styles.drawerNavigation}>
+          <button
+            disabled={selectedIndex <= 0}
+            onClick={() => onSelectGame(group.games[selectedIndex - 1].id)}
+            type="button"
+          >
+            上一份
+          </button>
+          <span>{selectedIndex + 1} / {group.games.length}</span>
+          <button
+            disabled={selectedIndex < 0 || selectedIndex >= group.games.length - 1}
+            onClick={() => onSelectGame(group.games[selectedIndex + 1].id)}
+            type="button"
+          >
+            下一份
+          </button>
+        </nav>
+        <ArchiveDossier group={group} selectedGame={selectedGame} />
+      </aside>
+    </div>,
+    document.body
   );
 }

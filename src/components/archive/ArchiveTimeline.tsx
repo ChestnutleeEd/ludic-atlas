@@ -1,170 +1,122 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
+import { useRef, useState, type KeyboardEvent } from "react";
+import type { ArchiveYearGroup, ArchiveYearKey } from "@/lib/archiveModel";
+import styles from "./GameArchiveView.module.css";
 
-import { motion } from "motion/react";
-import { useRef, type SyntheticEvent } from "react";
-import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
-import { getGameDisplayTitle, getGenreLabel } from "@/lib/localization";
-import type { Game } from "@/types/game";
-
-export type ArchiveYearGroup = {
-  games: Game[];
-  label: string;
-  previewGames: Game[];
-  year: number | null;
-};
+export type { ArchiveYearGroup } from "@/lib/archiveModel";
 
 type ArchiveTimelineProps = {
-  activeYear: number | null;
+  activeYearKey: ArchiveYearKey;
   groups: ArchiveYearGroup[];
-  onSelectYear: (year: number | null) => void;
+  onPreviewYear?: (key: ArchiveYearKey) => void;
+  onSelectYear: (key: ArchiveYearKey) => void;
 };
 
-function splitArchiveTags(values: string[]) {
-  return values
-    .flatMap((value) => value.split(/\s*\/\s*/))
-    .map((value) => value.trim())
-    .filter(Boolean);
-}
-
-function getTopGenreLabel(games: Game[]) {
-  const counts = new Map<string, number>();
-
-  for (const game of games) {
-    for (const genre of splitArchiveTags(game.genres)) {
-      counts.set(genre, (counts.get(genre) ?? 0) + 1);
-    }
-  }
-
-  const [topGenre] =
-    [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0] ??
-    [];
-
-  return topGenre ? getGenreLabel(topGenre) : "类型待归档";
-}
-
-function getAverageRating(games: Game[]) {
-  if (games.length === 0) {
-    return "0.0";
-  }
-
-  return (
-    games.reduce((sum, game) => sum + (Number.isFinite(game.rating) ? game.rating : 0), 0) /
-    games.length
-  ).toFixed(1);
-}
-
-function getFeaturedGame(games: Game[]) {
-  return [...games].sort(
-    (a, b) => b.rating - a.rating || b.releaseYear - a.releaseYear
-  )[0];
-}
-
-function getArchiveNumber(year: number | null, index: number) {
-  return `GE-${year ?? "UNKN"}-${String(index + 1).padStart(3, "0")}`;
-}
-
-function handleCoverError(event: SyntheticEvent<HTMLImageElement>) {
-  if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
-    event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
-  }
-}
-
 export function ArchiveTimeline({
-  activeYear,
+  activeYearKey,
   groups,
+  onPreviewYear,
   onSelectYear
 }: ArchiveTimelineProps) {
-  const trackRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef(new Map<ArchiveYearKey, HTMLButtonElement>());
+  const [focusKey, setFocusKey] = useState<ArchiveYearKey>(activeYearKey);
+  const activeIndex = groups.findIndex((group) => group.key === activeYearKey);
+  const tabKey = groups.some((group) => group.key === focusKey)
+    ? focusKey
+    : activeYearKey;
 
-  function moveTimeline(direction: -1 | 1) {
-    trackRef.current?.scrollBy({
-      behavior: "smooth",
-      left: direction * Math.min(trackRef.current.clientWidth * 0.82, 700)
+  function focusAt(index: number) {
+    const group = groups[Math.max(0, Math.min(index, groups.length - 1))];
+    if (!group) return;
+    setFocusKey(group.key);
+    itemRefs.current.get(group.key)?.focus();
+    itemRefs.current.get(group.key)?.scrollIntoView({
+      behavior: "auto",
+      block: "nearest",
+      inline: "nearest"
     });
   }
 
-  if (groups.length === 0) {
-    return (
-      <div className="archive-v2-timeline-empty">
-        没有符合当前筛选条件的年份。
-      </div>
-    );
+  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const nextIndex =
+      event.key === "ArrowDown" || event.key === "ArrowRight"
+        ? index + 1
+        : event.key === "ArrowUp" || event.key === "ArrowLeft"
+          ? index - 1
+          : event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? groups.length - 1
+              : null;
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    focusAt(nextIndex);
+  }
+
+  function selectAndFocus(index: number) {
+    const group = groups[index];
+    if (!group) return;
+    onSelectYear(group.key);
+    requestAnimationFrame(() => focusAt(index));
   }
 
   return (
-    <section className="archive-v2-timeline" aria-label="Game Chronicle timeline">
-      <div className="archive-v2-timeline-toolbar">
-        <span>{groups.length} 个年份 · 横向浏览</span>
+    <nav aria-label="年份索引" className={styles.timeline} data-archive-region="timeline">
+      <div className={styles.timelineHeading}>
         <div>
-          <button onClick={() => moveTimeline(-1)} type="button">较新年份</button>
-          <button onClick={() => moveTimeline(1)} type="button">较早年份</button>
+          <p>Chronology</p>
+          <h2>年份索引</h2>
         </div>
+        <span>{groups.length} 年</span>
       </div>
-      <div className="archive-v2-film-rail" aria-hidden="true" />
-      <div className="archive-v2-year-track" ref={trackRef}>
+      <div className={styles.yearBoundaryControls}>
+        <button
+          disabled={activeIndex <= 0}
+          onClick={() => selectAndFocus(activeIndex - 1)}
+          type="button"
+        >
+          较新年份
+        </button>
+        <button
+          disabled={activeIndex < 0 || activeIndex >= groups.length - 1}
+          onClick={() => selectAndFocus(activeIndex + 1)}
+          type="button"
+        >
+          较早年份
+        </button>
+      </div>
+      <div className={styles.yearList} role="list">
         {groups.map((group, index) => {
-          const isActive = group.year === activeYear;
-          const topGenre = getTopGenreLabel(group.games);
-          const averageRating = getAverageRating(group.games);
-          const featuredGame = getFeaturedGame(group.games);
-          const featuredTitle = featuredGame
-            ? getGameDisplayTitle(featuredGame)
-            : topGenre;
+          const isActive = group.key === activeYearKey;
 
           return (
-            <motion.button
-              className={`archive-v2-year-card ${isActive ? "is-active" : ""}`}
-              key={group.label}
-              layout
-              onClick={() => onSelectYear(group.year)}
+            <button
+              aria-controls={`archive-year-panel-${group.key}`}
+              aria-current={isActive ? "true" : undefined}
+              className={`${styles.yearButton} ${isActive ? styles.yearButtonActive : ""}`}
+              key={group.key}
+              onClick={() => onSelectYear(group.key)}
+              onFocus={() => {
+                setFocusKey(group.key);
+                onPreviewYear?.(group.key);
+              }}
+              onKeyDown={(event) => handleKeyDown(event, index)}
+              onPointerEnter={() => onPreviewYear?.(group.key)}
+              ref={(element) => {
+                if (element) itemRefs.current.set(group.key, element);
+                else itemRefs.current.delete(group.key);
+              }}
+              tabIndex={group.key === tabKey ? 0 : -1}
               type="button"
-              whileHover={{ y: -5 }}
-              whileTap={{ scale: 0.99 }}
             >
-              <span className="archive-v2-year-topline">
-                <span>{getArchiveNumber(group.year, index)}</span>
-                <span>{group.games.length} 份馆藏</span>
-              </span>
-              <span className="archive-v2-year-title">
-                {group.year ?? "Unknown"}
-              </span>
-              <span className="archive-v2-year-summary">
-                <small>代表作品</small>
-                <strong title={featuredTitle}>{featuredTitle}</strong>
-                <span>{topGenre}</span>
-              </span>
-              <span className="archive-v2-year-meta">
-                <span>
-                  <small>平均评分</small>
-                  <strong>{averageRating}</strong>
-                </span>
-                <span>
-                  <small>代表作品</small>
-                  <strong title={featuredTitle}>{featuredTitle}</strong>
-                </span>
-              </span>
-              <span className="archive-v2-cover-strip" aria-hidden="true">
-                {group.previewGames.slice(0, 5).map((game) => (
-                  <span className="archive-v2-mini-cover" key={game.id}>
-                    <img
-                      alt=""
-                      loading="lazy"
-                      onError={handleCoverError}
-                      src={getGameCoverImage(game)}
-                    />
-                  </span>
-                ))}
-              </span>
-              <span className="archive-v2-open-label">
-                <span>打开年度展柜</span>
-                <i aria-hidden="true" />
-              </span>
-            </motion.button>
+              <span>{group.label}</span>
+              <small>{group.games.length}</small>
+            </button>
           );
         })}
       </div>
-    </section>
+    </nav>
   );
 }

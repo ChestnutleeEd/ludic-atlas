@@ -10,8 +10,8 @@ The first MVP should use:
 - React 19.2.7
 - ESLint 9.39.4
 - `react-globe.gl` + Three.js for real interactive 3D earth rendering
-- `motion` for lightweight UI state transitions, hover motion, layout animation, and archive drawer entry / exit
-- `gsap` for Game Chronicle scene-level entry choreography and scroll-reveal sequencing
+- `motion` for existing lightweight UI transitions outside the new archive reading room
+- `gsap` remains installed for existing experiments, but the Chronicle Reading Room does not use GSAP entry choreography
 - `undici` for RAWG data script proxy-aware fetch transport
 - SVG + CSS transforms remain available only in the legacy 2.5D earth component
 - Local generated / mock data
@@ -40,6 +40,7 @@ src/
 │  │  └─ LandingHub.tsx
 │  ├─ archive/
 │  │  ├─ GameArchiveView.tsx
+│  │  ├─ GameArchiveView.module.css
 │  │  ├─ ArchiveTimeline.tsx
 │  │  ├─ ArchiveYearModal.tsx
 │  │  ├─ ArchiveYearDrawer.tsx
@@ -66,6 +67,7 @@ src/
 │  └─ games.mock.ts
 ├─ lib/
 │  ├─ filterGames.ts
+│  ├─ archiveModel.ts
 │  ├─ stats.ts
 │  ├─ geo.ts
 │  ├─ regions.ts
@@ -102,11 +104,14 @@ src/app/layout.tsx	App Router root layout, page metadata, and favicon metadata.
 src/app/globals.css	Global Tailwind import and base visual tokens.
 src/components/GameEarthApp.tsx	Main product shell. Owns top-level UI state and layout.
 src/components/home/LandingHub.tsx	Renders the Ludic Atlas landing hub with Earth Explorer and Game Chronicle entrance cards.
-src/components/archive/GameArchiveView.tsx	Renders Game Chronicle data preparation, local title search, multi-label genre / platform filters, year grouping, selected year drawer state, sorting, immersive archive hero, sticky collection index, and selected game archive details.
-src/components/archive/ArchiveTimeline.tsx	Renders the scroll-narrative year cabinet exhibition with filtered counts, average rating, top genre, and cover previews.
-src/components/archive/ArchiveYearModal.tsx	Renders the selected year dossier drawer, selected-year game card grid, close behavior, body scroll lock, and selected game handoff.
+src/components/archive/GameArchiveView.tsx	Owns archive-only query / filter / sort / year / selected-game controls and composes the desktop and mobile Chronicle Reading Room.
+src/components/archive/ArchiveCover.tsx	Centralizes optimized archive cover geometry, responsive sizing, skeleton/failure states, and bounded year-intent prefetch.
+src/components/archive/GameArchiveView.module.css	Scopes the warm paper / ink / oxblood / brass reading-room visual system, responsive compositions, focus states, image geometry, drawer, and reduced-motion behavior.
+src/components/archive/ArchiveTimeline.tsx	Renders chronological year navigation with one current year, boundary controls, roving focus, Arrow / Home / End movement, and Enter / Space activation.
+src/components/archive/ArchiveYearModal.tsx	Renders the right-side desktop / full-screen mobile dossier portal, background inert state, body scroll lock, Escape close, focus trap, and trigger-focus restoration.
 src/components/archive/ArchiveYearDrawer.tsx	Legacy active-year drawer component retained on disk but no longer rendered by the current Game Chronicle view.
-src/components/archive/ArchiveDossier.tsx	Renders the modal dossier panel, showing either selected-year overview stats or selected game details.
+src/components/archive/ArchiveDossier.tsx	Renders selected game cover and archive metadata with explicit missing-field and UNKNOWN-region fallbacks.
+src/lib/archiveModel.ts	Purely derives archive search, filters, chronological groups, representatives, averages, options, collection ordering, active-year fallback, and selected game from catalog data plus archive controls.
 src/components/globe/GameGlobe2D.tsx	Legacy SVG 2.5D planet map component retained on disk but not exposed by the current main UI.
 src/components/globe/GameGlobe.tsx	Renders the default real 3D earth scene.
 src/components/globe/GameMarkers.tsx	Renders game cover markers on the globe.
@@ -155,28 +160,31 @@ Rendering Strategy
 The current MVP uses a landing hub plus a real 3D globe renderer and a separate archive view:
 
 * `LandingHub` is the default first-screen experience and presents Earth Explorer and Game Chronicle as independent product entrances.
-* `GameEarthApp` dynamically imports the Earth Explorer and Game Chronicle view modules after the user chooses an entrance, keeping Three.js / globe and Motion / archive implementations out of the initial hub execution path.
+* `GameEarthApp` dynamically imports the Earth Explorer and Game Chronicle view modules after the user chooses an entrance, keeping Three.js / globe and archive implementations out of the initial hub execution path.
 * `GameGlobe` keeps the real WebGL 3D globe as the Earth Explorer experience.
 * `GameArchiveView` is selected through `GameEarthApp` main view mode and provides the Game Chronicle surface for generated global game records.
 * `GameGlobe2D` remains on disk as a legacy component, but `GameEarthApp` no longer imports or renders it and the UI no longer exposes a 2.5D / 3D switch.
-* `GameEarthApp` owns the main view switch so selected game state can carry between Earth and Archive. Earth-specific year range, cover size, and marker view controls are shown only in Earth mode.
+* `GameEarthApp` owns only the cross-experience `mainViewMode` switch for Archive. Earth exploration state remains mounted but is not passed to or mutated by Game Chronicle. Earth-specific year range, cover size, and marker view controls are shown only in Earth mode.
 
 Game Chronicle behavior:
 
-* `GameArchiveView` receives `Game[]`, `selectedGameId`, and `onSelectGame` from `GameEarthApp`.
-* The component keeps search, selected genre filters, selected platform filters, and sort mode as local state.
-* Title search uses `useDeferredValue` so typing can update before the static catalog filter and year-group derivation finish.
+* The annual visual is data-driven rather than a per-year bitmap: `archiveModel` deterministically derives three rating-priority cover IDs and a layout variant, while `GameArchiveView` combines those real covers with the shared archive atmosphere WebP.
+* `ArchiveCover` resolves the existing `public/covers/rawg/<id>.webp` cache for all 992 records and routes display-size variants through Next Image, avoiding multi-megabyte originals and unreliable remote-image optimization. Collections mount eight games at a time and append bounded batches from an IntersectionObserver or explicit control; adjacent-year intent prefetch is capped at three 256px optimized images.
+* Year transitions use the existing Motion package with the final active group as the only rendered authority. CSS hover/depth feedback and Motion displacement are disabled under `prefers-reduced-motion`.
+
+* `GameArchiveView` receives only `Game[]` and `onBackToHub` from `GameEarthApp`; it never dispatches Earth reducer actions.
+* The component owns `query`, selected genres, selected platforms, sort mode, `openYearKey`, and `selectedArchiveGameId`.
+* `src/lib/archiveModel.ts` synchronously derives search results and every archive display model from the 992-record static catalog, so rapid controls cannot complete out of order.
 * Genre and platform filter options are built by splitting each game's `genres` and `platforms` arrays into individual tags. If a legacy tag string contains `/`, it is split before counting and filtering.
 * Multi-select genre and platform filters use OR logic inside each filter category. When no genre or no platform is selected, that category does not filter the list.
-* Filtered games are grouped by valid `releaseYear`, with invalid years placed under `Unknown Year`; year groups render as a scroll-narrative year cabinet exhibition with filtered counts, average rating, top genre, and 3-5 cover previews.
-* The Game Chronicle page uses `public/images/archive/archive-hall-bg-v1.png` as an immersive archive hall background. Interactive text, filters, year cabinets, and drawer content remain DOM / CSS rather than baked into the generated image.
-* `GameArchiveView` uses GSAP only for scene-level page entry and year cabinet scroll reveal. It avoids controlling the same transforms that `motion` controls for hover and drawer interactions.
-* The main Game Chronicle page does not render full game card lists. Clicking a year opens `ArchiveYearModal`, which behaves as a right-side dossier drawer and locks background body scroll while open.
-* `ArchiveYearModal` defaults the focused game to the selected year's highest-rated game when the user has not selected a specific game card.
-* `ArchiveDossier` always shows selected-year overview stats: record count, average rating, top genres, and top platforms. When a game is selected, it also shows the selected game cover, archive id, year, country / region, rating, developer, publisher, genres, platforms, and description. Missing descriptions use a designed empty archive state and do not fabricate copy.
-* `year-desc` is the default sort mode. `rating-desc` sorts each year group by rating descending.
-* Valid year range and featured game are derived with linear scans; each year group is sorted once and reuses its first eight records for the preview.
-* Game covers render with regular `<img loading="lazy">`. After `npm run data:covers`, generated RAWG covers are local `/covers/rawg/...` static paths instead of remote `media.rawg.io` URLs.
+* Filtered games are grouped by valid `releaseYear`, with invalid years represented by the distinct `unknown` key. The year index always remains newest-to-oldest with unknown last.
+* `馆藏评分优先` (`rating-desc`) only reorders games inside each annual collection; the default collection order is deterministic title / ID.
+* Desktop renders a compact masthead and tools above a year index, original-image annual feature, and scroll-contained annual collection. Mobile shares the model but uses sticky horizontal years, vertical content, and a full-screen dossier.
+* `public/images/archive/chronicle-reading-room.webp` is a 2400×1600 text-free original archive desk image. It has fixed intrinsic geometry, centered crop safety, and a CSS paper / halftone failure fallback.
+* Archive covers reserve 2:3 geometry and use `getGameCoverImage` plus `/covers/fallback-game-cover.svg`; noncritical collection covers lazy-load.
+* `ArchiveYearModal` is the selected-game dossier layer, not a year-selection owner. Desktop uses a right drawer and mobile uses the full viewport while background body scroll is locked.
+* `ArchiveDossier` shows the exact selected ID regardless of country recognition and labels `UNKNOWN` as `地区待归档`. Missing strings use explicit unknown / unavailable states.
+* The archive uses CSS transitions only, with a static-equivalent `prefers-reduced-motion` rule; it does not initialize GSAP.
 
 Legacy 2.5D globe behavior:
 
@@ -267,7 +275,7 @@ Current interaction flow:
 * `GameMarkers` emits game selection to `GameEarthApp`; hover is native CSS and country aggregate hover only updates the small country highlight state.
 * `CountryDetailPanel` emits game selection, game clear, and clear-country actions to `GameEarthApp`.
 * `BottomControls` emits year range, cover size, and view mode updates to `GameEarthApp`.
-* `GameArchiveView` emits selected game updates to `GameEarthApp` and keeps archive search / filter / sort state local.
+* `GameArchiveView` keeps archive search / filter / sort / year / game selection local; archive interaction never emits Earth selected-game updates.
 * `GameGlobe` receives year-filtered games and current earth state, and emits country selection plus game hover / selection.
 * `RightPanel` owns the Earth-side game detail layer. When `selectedGame` is set, the base country / gallery content is marked inert and visually dimmed, the right panel stops background scrolling, and Escape closes the detail layer.
 

@@ -84,7 +84,7 @@ A user drags a year slider to explore games from different periods.
 
 ### Scenario 5: Browse the game chronology
 
-A user opens Game Chronicle / 游戏编年馆 and browses the generated global game list through a retro digital archive hall, searchable collection index, film-style year timeline, title search, genre filters, platform filters, and rating sort. Clicking a year opens a large Year Exhibit / 年度展柜 modal for that year's games and dossier details.
+A user opens Game Chronicle / 游戏编年馆 and immediately browses the generated global game list through a Contemporary Game Archive: a chronological year index, current-year editorial feature assembled from that year's real covers, progressively loaded annual collection, title search, genre filters, platform filters, and optional `馆藏评分优先` ordering. Opening a game uses a right-side desktop dossier drawer or full-screen mobile reading layer while preserving the current year context.
 
 ### Scenario 6: Choose an exploration mode
 
@@ -135,13 +135,15 @@ The first version should include:
 9. cover size control
 10. local mock data
 11. Ludic Atlas landing hub with an Earth-led 58:42 desktop composition, original responsive entrance imagery, integrated collection context, preserved local view switching, and naturally scrolling mobile stacking
-12. Game Chronicle horizontal timeline view for RAWG-generated global game records
+12. Chronicle Reading Room for RAWG-generated global game records, with archive-owned selection, chronological year navigation, current-year feature, annual collection, and accessible dossier reading
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
 14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace with a non-overlapping command-bar row, softened deep navy / cyan / magenta visual hierarchy, an on-demand country drawer and filter tray, Overview / regional-context Surface camera modes, persistent medium-detail country boundaries, interaction-time 60 FPS rendering targets, portrait-aware camera framing, controlled zoom, region and key-country presets, up to 8 GeoJSON-constrained selected-country markers, truthful aggregation, scroll-safe game details, and mobile three-state bottom-sheet behavior
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 
-Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. It groups filtered games by `releaseYear`, shows film-style year cards with year counts and cover previews, supports title search, multi-select genre / platform OR filters, year-desc and rating-desc sorting, opens the selected year in a museum-style Year Exhibit modal, and shows a year overview plus the selected-game museum dossier card.
+Game Chronicle / 游戏编年馆 is the first dedicated global browsing surface for generated records whose `countryCode` is still `UNKNOWN`. Archive selection is independent from Earth Explorer, so every supplied game ID can open its own dossier without changing Earth country, region, selected game, or camera state. The desktop Reading Room keeps year navigation, current year, a real cover, search/filter access, annual collection, and detail actions in the first workspace; mobile uses a sticky horizontal year rail, vertical collection, and full-screen dossier. Search covers title, Chinese title, developer, and publisher; genre and platform remain OR within each category and AND across categories. Years always remain newest-to-oldest, while `馆藏评分优先` only reorders games inside annual collections or search results.
+
+The archive retains warm paper, charcoal, oxblood, brass, and serif year/title cues while using contemporary sans-serif controls, hairlines, moderate radii, surface depth, and restrained 180–360ms motion. Each annual feature combines one shared atmosphere WebP with the year's three rating-priority real covers; the collection initially mounts eight optimized thumbnails and appends bounded batches as the reader scrolls. Reduced-motion users receive immediate state changes without translation, scale, or stagger.
 
 ## MVP Data Fields
 

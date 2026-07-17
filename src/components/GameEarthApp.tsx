@@ -308,12 +308,6 @@ export function GameEarthApp() {
           <GameArchiveView
             games={games}
             onBackToHub={() => setMainViewMode("hub")}
-            selectedGameId={selectedGameId}
-            onSelectGame={(gameId) =>
-              dispatchExploration(
-                gameId ? { type: "selectGame", gameId } : { type: "clearGame" }
-              )
-            }
           />
         )}
 

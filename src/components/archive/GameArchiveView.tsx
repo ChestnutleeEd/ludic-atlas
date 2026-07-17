@@ -1,516 +1,470 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
-import {
-  AnimatePresence,
-  MotionConfig,
-  motion,
-  useReducedMotion
-} from "motion/react";
-import {
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-  type SyntheticEvent
-} from "react";
-import {
-  ArchiveTimeline,
-  type ArchiveYearGroup
-} from "@/components/archive/ArchiveTimeline";
+import { motion } from "motion/react";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArchiveCover, prefetchArchiveCovers } from "@/components/archive/ArchiveCover";
+import { useArchiveReducedMotion } from "@/components/archive/useArchiveReducedMotion";
+import { ArchiveTimeline } from "@/components/archive/ArchiveTimeline";
 import { ArchiveYearModal } from "@/components/archive/ArchiveYearModal";
-import { FALLBACK_GAME_COVER_IMAGE, getGameCoverImage } from "@/lib/gameCover";
-import { getGameDisplayTitle, getGenreLabel } from "@/lib/localization";
+import {
+  deriveArchiveModel,
+  splitArchiveTags,
+  type ArchiveSortMode,
+  type ArchiveYearGroup,
+  type ArchiveYearKey
+} from "@/lib/archiveModel";
+import {
+  getGameDisplayTitle,
+  getGameSecondaryTitle,
+  getGenreLabel
+} from "@/lib/localization";
 import type { Game } from "@/types/game";
+import styles from "./GameArchiveView.module.css";
 
 type GameArchiveViewProps = {
   games: Game[];
   onBackToHub: () => void;
-  selectedGameId: string | null;
-  onSelectGame: (gameId: string | null) => void;
 };
-
-type ArchiveSortMode = "year-desc" | "rating-desc";
-
-type ArchiveGameIndex = {
-  game: Game;
-  genreTags: string[];
-  platformTags: string[];
-  searchText: string;
-};
-
-function splitArchiveTags(values: string[]) {
-  return values
-    .flatMap((value) => value.split(/\s*\/\s*/))
-    .map((value) => value.trim())
-    .filter(Boolean);
-}
 
 function toggleSetValue(current: Set<string>, value: string) {
   const next = new Set(current);
-
-  if (next.has(value)) {
-    next.delete(value);
-  } else {
-    next.add(value);
-  }
-
+  if (next.has(value)) next.delete(value);
+  else next.add(value);
   return next;
 }
 
-function getAverageRating(games: Game[]) {
-  if (games.length === 0) {
-    return "0.0";
-  }
-
-  const sum = games.reduce(
-    (total, game) => total + (Number.isFinite(game.rating) ? game.rating : 0),
-    0
-  );
-
-  return (sum / games.length).toFixed(1);
+function formatRating(rating: number) {
+  return Number.isFinite(rating) ? rating.toFixed(1) : "—";
 }
 
-function getTopGame(games: Game[]) {
-  let topGame: Game | undefined;
-
-  for (const game of games) {
-    if (
-      !topGame ||
-      game.rating > topGame.rating ||
-      (game.rating === topGame.rating && game.releaseYear > topGame.releaseYear)
-    ) {
-      topGame = game;
-    }
-  }
-
-  return topGame;
+function safeTitle(game: Game) {
+  return getGameDisplayTitle(game)?.trim() || game.title?.trim() || "未命名游戏";
 }
 
-function formatYearRange(min: number, max: number) {
-  if (!Number.isFinite(min) || !Number.isFinite(max)) {
-    return "年份待归档";
-  }
-
-  return `${min}-${max}`;
-}
-
-function handleCoverError(event: SyntheticEvent<HTMLImageElement>) {
-  if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
-    event.currentTarget.src = FALLBACK_GAME_COVER_IMAGE;
-  }
-}
-
-export function GameArchiveView({
-  games,
-  onBackToHub,
-  selectedGameId,
-  onSelectGame
-}: GameArchiveViewProps) {
-  const archiveRootRef = useRef<HTMLElement | null>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const [searchQuery, setSearchQuery] = useState("");
+export function GameArchiveView({ games, onBackToHub }: GameArchiveViewProps) {
+  const [query, setQuery] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
-  const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(
-    new Set()
-  );
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(new Set());
   const [sortMode, setSortMode] = useState<ArchiveSortMode>("year-desc");
-  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
-  const [openYear, setOpenYear] = useState<number | null>(null);
-  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const [openYearKey, setOpenYearKey] = useState<ArchiveYearKey | null>(null);
+  const [selectedArchiveGameId, setSelectedArchiveGameId] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
+  const [yearDirection, setYearDirection] = useState(0);
+  const reduceMotion = useArchiveReducedMotion();
 
-  const archiveIndex = useMemo<ArchiveGameIndex[]>(
+  const model = useMemo(
     () =>
-      games.map((game) => {
-        const genreTags = splitArchiveTags(game.genres);
-        const platformTags = splitArchiveTags(game.platforms);
-
-        return {
-          game,
-          genreTags,
-          platformTags,
-          searchText: `${game.title} ${game.titleZh} ${game.developer} ${game.publisher}`
-            .trim()
-            .toLowerCase()
-        };
+      deriveArchiveModel({
+        games,
+        openYearKey,
+        query,
+        selectedArchiveGameId,
+        selectedGenres,
+        selectedPlatforms,
+        sortMode
       }),
-    [games]
+    [
+      games,
+      openYearKey,
+      query,
+      selectedArchiveGameId,
+      selectedGenres,
+      selectedPlatforms,
+      sortMode
+    ]
   );
-  const genreOptions = useMemo(
-    () =>
-      [...new Set(archiveIndex.flatMap((item) => item.genreTags))].sort((a, b) =>
-        a.localeCompare(b)
-      ),
-    [archiveIndex]
-  );
-  const platformOptions = useMemo(
-    () =>
-      [...new Set(archiveIndex.flatMap((item) => item.platformTags))].sort(
-        (a, b) => a.localeCompare(b)
-      ),
-    [archiveIndex]
-  );
-  const archiveYearRange = useMemo(() => {
-    let min = Number.POSITIVE_INFINITY;
-    let max = Number.NEGATIVE_INFINITY;
 
-    for (const game of games) {
-      if (!Number.isFinite(game.releaseYear) || game.releaseYear <= 0) {
-        continue;
-      }
-
-      min = Math.min(min, game.releaseYear);
-      max = Math.max(max, game.releaseYear);
-    }
-
-    return {
-      max: Number.isFinite(max) ? max : Number.NaN,
-      min: Number.isFinite(min) ? min : Number.NaN
-    };
-  }, [games]);
-  const filteredGames = useMemo(() => {
-    const normalizedQuery = deferredSearchQuery.trim().toLowerCase();
-    const matches: Game[] = [];
-
-    for (const { game, genreTags, platformTags, searchText } of archiveIndex) {
-      const matchesSearch =
-        normalizedQuery.length === 0 || searchText.includes(normalizedQuery);
-      const matchesGenre =
-        selectedGenres.size === 0 ||
-        genreTags.some((genre) => selectedGenres.has(genre));
-      const matchesPlatform =
-        selectedPlatforms.size === 0 ||
-        platformTags.some((platform) => selectedPlatforms.has(platform));
-
-      if (matchesSearch && matchesGenre && matchesPlatform) {
-        matches.push(game);
-      }
-    }
-
-    return matches;
-  }, [archiveIndex, deferredSearchQuery, selectedGenres, selectedPlatforms]);
-  const yearGroups = useMemo<ArchiveYearGroup[]>(() => {
-    const groupedGames = new Map<number | null, Game[]>();
-
-    for (const game of filteredGames) {
-      const releaseYear =
-        Number.isFinite(game.releaseYear) && game.releaseYear > 0
-          ? game.releaseYear
-          : null;
-      const groupGames = groupedGames.get(releaseYear);
-
-      if (groupGames) {
-        groupGames.push(game);
-      } else {
-        groupedGames.set(releaseYear, [game]);
-      }
-    }
-
-    return [...groupedGames.entries()]
-      .sort(([yearA], [yearB]) => {
-        if (yearA === null) {
-          return 1;
-        }
-
-        if (yearB === null) {
-          return -1;
-        }
-
-        return sortMode === "year-desc" ? yearB - yearA : yearA - yearB;
-      })
-      .map(([year, groupGames]) => {
-        const sortedGames = [...groupGames].sort((a, b) => {
-          if (sortMode === "rating-desc") {
-            return (
-              b.rating - a.rating ||
-              b.releaseYear - a.releaseYear ||
-              a.title.localeCompare(b.title)
-            );
-          }
-
-          return (
-            b.releaseYear - a.releaseYear ||
-            b.rating - a.rating ||
-            a.title.localeCompare(b.title)
-          );
-        });
-
-        return {
-          games: sortedGames,
-          label: year === null ? "Unknown Year" : String(year),
-          previewGames: sortedGames.slice(0, 8),
-          year
-        };
-      });
-  }, [filteredGames, sortMode]);
-  const openGroup = useMemo(
-    () => yearGroups.find((group) => group.year === openYear) ?? null,
-    [openYear, yearGroups]
-  );
-  const featuredGame = useMemo(() => getTopGame(filteredGames), [filteredGames]);
-  const featuredGames = useMemo(
-    () =>
-      [...filteredGames]
-        .sort(
-          (a, b) =>
-            b.rating - a.rating ||
-            b.releaseYear - a.releaseYear ||
-            a.title.localeCompare(b.title)
-        )
-        .slice(0, 6),
-    [filteredGames]
-  );
   const hasActiveFilters =
-    searchQuery.trim().length > 0 ||
-    selectedGenres.size > 0 ||
-    selectedPlatforms.size > 0;
+    query.trim().length > 0 || selectedGenres.size > 0 || selectedPlatforms.size > 0;
+  const activeGroup = model.activeGroup;
+  const representative = activeGroup?.representativeGame ?? null;
+  const closeDossier = useCallback(() => setSelectedArchiveGameId(null), []);
 
-  useEffect(() => {
-    if (shouldReduceMotion) {
-      return;
-    }
+  function clearFilters() {
+    setQuery("");
+    setSelectedGenres(new Set());
+    setSelectedPlatforms(new Set());
+    setOpenYearKey(null);
+    setSelectedArchiveGameId(null);
+    setYearDirection(0);
+  }
 
-    let cleanup = () => {};
-
-    async function runArchiveIntro() {
-      const root = archiveRootRef.current;
-
-      if (!root) {
-        return;
-      }
-
-      const { gsap } = await import("gsap");
-      const context = gsap.context(() => {
-        gsap.fromTo(
-          "[data-archive-intro]",
-          { autoAlpha: 0, y: 22 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.74,
-            ease: "power3.out",
-            stagger: 0.08
-          }
-        );
-      }, root);
-
-      cleanup = () => context.revert();
-    }
-
-    runArchiveIntro();
-
-    return () => cleanup();
-  }, [shouldReduceMotion]);
+  function selectYear(key: ArchiveYearKey) {
+    const currentIndex = model.yearGroups.findIndex((group) => group.key === activeGroup?.key);
+    const nextIndex = model.yearGroups.findIndex((group) => group.key === key);
+    setYearDirection(currentIndex === nextIndex ? 0 : nextIndex > currentIndex ? 1 : -1);
+    setOpenYearKey(key);
+    setSelectedArchiveGameId(null);
+  }
 
   return (
-    <MotionConfig reducedMotion="user">
-      <section
-        className="archive-v2 relative min-h-screen overflow-hidden"
-        ref={archiveRootRef}
-      >
-      <div className="archive-v2-bg" aria-hidden="true" />
-      <div className="archive-v2-scan" aria-hidden="true" />
-      <div className="archive-v2-shell">
-        <header className="archive-v2-hero" data-archive-intro>
-          <div className="archive-v2-hero-copy">
-            <button
-              className="archive-v2-back"
-              onClick={onBackToHub}
-              type="button"
+    <section className={`${styles.root} archive-v2`} data-testid="archive-reading-room">
+      <header className={styles.masthead}>
+        <button className={styles.backButton} onClick={onBackToHub} type="button">
+          返回游戏星图
+        </button>
+        <div className={styles.brand}>
+          <p>Game Chronicle</p>
+          <h1>游戏编年馆</h1>
+        </div>
+        <dl className={styles.collectionSummary} aria-label="馆藏概览">
+          <div>
+            <dt>馆藏</dt>
+            <dd>{model.filteredGames.length}</dd>
+          </div>
+          <div>
+            <dt>年代</dt>
+            <dd>
+              {model.yearRange.min ?? "—"}–{model.yearRange.max ?? "—"}
+            </dd>
+          </div>
+        </dl>
+      </header>
+
+      <section className={styles.tools} aria-label="馆藏检索工具" data-archive-region="tools">
+        <label className={styles.searchField}>
+          <span className={styles.srOnly}>搜索游戏、开发者或发行商</span>
+          <input
+            autoComplete="off"
+            name="archive-search"
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setOpenYearKey(null);
+              setSelectedArchiveGameId(null);
+              setYearDirection(0);
+            }}
+            placeholder="搜索游戏、开发者或发行商"
+            type="search"
+            value={query}
+          />
+        </label>
+        <label className={styles.sortField}>
+          <span>排序</span>
+          <select
+            name="archive-sort"
+            onChange={(event) => setSortMode(event.target.value as ArchiveSortMode)}
+            value={sortMode}
+          >
+            <option value="year-desc">标题索引</option>
+            <option value="rating-desc">馆藏评分优先</option>
+          </select>
+        </label>
+        <button
+          aria-controls="archive-filter-panel"
+          aria-expanded={isFilterOpen}
+          className={styles.filterButton}
+          onClick={() => setIsFilterOpen((value) => !value)}
+          type="button"
+        >
+          类型与平台
+          {selectedGenres.size + selectedPlatforms.size > 0 ? (
+            <span>{selectedGenres.size + selectedPlatforms.size}</span>
+          ) : null}
+        </button>
+        {hasActiveFilters ? (
+          <button className={styles.clearButton} onClick={clearFilters} type="button">
+            清除筛选
+          </button>
+        ) : null}
+        <p className={styles.resultAnnouncement} aria-live="polite" role="status">
+          {model.filteredGames.length} 条结果，{model.yearGroups.length} 个年份
+        </p>
+      </section>
+
+      {isFilterOpen ? (
+        <section className={styles.filterPanel} id="archive-filter-panel">
+          <TagFilter
+            labels={model.genreOptions}
+            onToggle={(genre) => {
+              setSelectedGenres((current) => toggleSetValue(current, genre));
+              setOpenYearKey(null);
+              setSelectedArchiveGameId(null);
+              setYearDirection(0);
+            }}
+            selectedLabels={selectedGenres}
+            title="类型"
+            transformLabel={getGenreLabel}
+          />
+          <TagFilter
+            labels={model.platformOptions}
+            onToggle={(platform) => {
+              setSelectedPlatforms((current) => toggleSetValue(current, platform));
+              setOpenYearKey(null);
+              setSelectedArchiveGameId(null);
+              setYearDirection(0);
+            }}
+            selectedLabels={selectedPlatforms}
+            title="平台"
+          />
+        </section>
+      ) : null}
+
+      {activeGroup ? (
+        <div className={styles.workspace} data-archive-region="workspace">
+          <ArchiveTimeline
+            activeYearKey={activeGroup.key}
+            groups={model.yearGroups}
+            onPreviewYear={(key) => {
+              const group = model.yearGroups.find((candidate) => candidate.key === key);
+              if (group) prefetchArchiveCovers(group.featureGames);
+            }}
+            onSelectYear={selectYear}
+          />
+
+          <motion.article
+            aria-labelledby={`archive-year-heading-${activeGroup.key}`}
+            className={styles.feature}
+            id={`archive-year-panel-${activeGroup.key}`}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.986, x: yearDirection * 18 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+            key={activeGroup.key}
+          >
+            <div
+              className={styles.featureVisual}
+              data-image-state={heroImageFailed ? "error" : "ready"}
+              data-testid="archive-hero-visual"
+              data-cover-signature={activeGroup.coverSignature}
+              data-year-variant={activeGroup.yearVariant}
             >
-              返回游戏星图
-            </button>
-            <p className="archive-v2-kicker">Game Chronicle / 游戏编年馆</p>
-            <h1>游戏编年馆</h1>
-            <p>
-              沿时间轨道浏览全球游戏馆藏，在年度展柜中打开每一份游戏卷宗。
-            </p>
-            <div className="archive-v2-hero-range" aria-label="馆藏年代范围">
-              <span>{Number.isFinite(archiveYearRange.min) ? archiveYearRange.min : "—"}</span>
-              <i aria-hidden="true" />
-              <span>{Number.isFinite(archiveYearRange.max) ? archiveYearRange.max : "—"}</span>
-            </div>
-          </div>
-
-          <div className="archive-v2-hero-board" aria-label="代表馆藏与档案馆统计">
-            <div className="archive-v2-cover-deck" aria-hidden="true">
-              {featuredGames.map((game, index) => (
-                <span
-                  className="archive-v2-hero-cover"
-                  key={game.id}
-                  style={{ "--archive-cover-index": index } as CSSProperties}
-                >
-                  <img
-                    alt=""
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    loading={index < 3 ? "eager" : "lazy"}
-                    onError={handleCoverError}
-                    src={getGameCoverImage(game)}
-                  />
-                </span>
-              ))}
-              <span className="archive-v2-deck-reticle" />
-            </div>
-            <dl className="archive-v2-metrics">
-              <div>
-                <dt>筛选结果</dt>
-                <dd>{filteredGames.length}</dd>
-              </div>
-              <div>
-                <dt>年份档案</dt>
-                <dd>{yearGroups.length}</dd>
-              </div>
-              <div>
-                <dt>平均评分</dt>
-                <dd>{getAverageRating(filteredGames)}</dd>
-              </div>
-            </dl>
-            <div className="archive-v2-featured">
-              <span>代表馆藏</span>
-              <strong title={featuredGame ? getGameDisplayTitle(featuredGame) : ""}>
-                {featuredGame ? getGameDisplayTitle(featuredGame) : "暂无结果"}
-              </strong>
-              <small>{formatYearRange(archiveYearRange.min, archiveYearRange.max)}</small>
-            </div>
-          </div>
-        </header>
-
-        <section className="archive-v2-index" data-archive-intro>
-          <div className="archive-v2-section-heading">
-            <div className="min-w-0">
-              <p className="archive-v2-kicker">Archive Index / 馆藏索引</p>
-              <h2>检索馆藏</h2>
-            </div>
-            <div className="archive-v2-index-actions">
-              {hasActiveFilters ? (
-                <button
-                  className="archive-v2-clear"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSelectedGenres(new Set());
-                    setSelectedPlatforms(new Set());
-                  }}
-                  type="button"
-                >
-                  清除筛选
-                </button>
+              {!heroImageFailed ? (
+                <Image
+                  alt="复古游戏文化档案阅览桌"
+                  className={styles.heroImage}
+                  height={1600}
+                  onError={() => setHeroImageFailed(true)}
+                  preload
+                  quality={72}
+                  sizes="(max-width: 760px) 100vw, 42vw"
+                  src="/images/archive/chronicle-reading-room.webp"
+                  width={2400}
+                />
               ) : null}
+              <div className={styles.annualCollage} aria-label={`${activeGroup.label} 年度代表封面`}>
+                {activeGroup.featureGames.map((game, index) => (
+                  <button
+                    aria-label={`打开 ${safeTitle(game)} 详情`}
+                    className={styles.featureCoverButton}
+                    data-cover-position={index + 1}
+                    key={game.id}
+                    onClick={() => setSelectedArchiveGameId(game.id)}
+                    type="button"
+                  >
+                    <ArchiveCover
+                      alt={`${safeTitle(game)} 封面`}
+                      game={game}
+                      loading="eager"
+                      priority={index === 0}
+                      sizes="(max-width: 760px) 34vw, 15vw"
+                    />
+                  </button>
+                ))}
+              </div>
+              <div className={styles.featureFolio}>
+                <span>年度档案</span>
+                <strong id={`archive-year-heading-${activeGroup.key}`}>
+                  {activeGroup.label}
+                </strong>
+                <small>{activeGroup.games.length} 份馆藏</small>
+              </div>
+            </div>
+
+            {representative ? (
               <button
-                aria-controls="archive-filter-options"
-                aria-expanded={isFilterExpanded}
-                className="archive-v2-filter-toggle"
-                onClick={() => setIsFilterExpanded((current) => !current)}
+                aria-label={`打开 ${safeTitle(representative)} 详情`}
+                className={styles.representative}
+                onClick={() => setSelectedArchiveGameId(representative.id)}
                 type="button"
               >
-                <span>{isFilterExpanded ? "收起类型与平台" : "展开类型与平台"}</span>
-                <strong>
-                  {selectedGenres.size + selectedPlatforms.size > 0
-                    ? selectedGenres.size + selectedPlatforms.size
-                    : ""}
-                </strong>
+                <ArchiveCover
+                  alt={`${safeTitle(representative)} 封面`}
+                  className={styles.representativeCover}
+                  game={representative}
+                  loading="eager"
+                  priority
+                  sizes="(max-width: 760px) 34vw, 12vw"
+                />
+                <span className={styles.representativeCopy}>
+                  <small>年度代表作品</small>
+                  <strong>{safeTitle(representative)}</strong>
+                  <span>
+                    评分 {formatRating(representative.rating)} · {representative.developer || "开发者未知"}
+                  </span>
+                  <em>打开详情</em>
+                </span>
               </button>
-            </div>
-          </div>
+            ) : (
+              <p className={styles.missingState}>该年度暂无可展示游戏。</p>
+            )}
+          </motion.article>
 
-          <div className="archive-v2-controls">
-            <label className="archive-v2-field archive-v2-search">
-              <span>标题搜索</span>
-              <input
-                autoComplete="off"
-                name="archive-title-search"
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="搜索游戏、开发者或发行商"
-                type="search"
-                value={searchQuery}
-              />
-            </label>
-            <label className="archive-v2-field">
-              <span>排序</span>
-              <select
-                name="archive-sort"
-                onChange={(event) =>
-                  setSortMode(event.target.value as ArchiveSortMode)
-                }
-                value={sortMode}
-              >
-                <option value="year-desc">年份倒序</option>
-                <option value="rating-desc">评分倒序</option>
-              </select>
-            </label>
-          </div>
-
-          <AnimatePresence initial={false}>
-            {isFilterExpanded ? (
-              <motion.div
-                animate={{ height: "auto", opacity: 1 }}
-                className="archive-v2-filter-reveal"
-                exit={{ height: 0, opacity: 0 }}
-                id="archive-filter-options"
-                initial={{ height: 0, opacity: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="archive-v2-filter-grid">
-                  <TagFilter
-                    labels={genreOptions}
-                    onToggle={(genre) =>
-                      setSelectedGenres((current) => toggleSetValue(current, genre))
-                    }
-                    selectedLabels={selectedGenres}
-                    title="类型"
-                    transformLabel={getGenreLabel}
-                  />
-                  <TagFilter
-                    labels={platformOptions}
-                    onToggle={(platform) =>
-                      setSelectedPlatforms((current) => toggleSetValue(current, platform))
-                    }
-                    selectedLabels={selectedPlatforms}
-                    title="平台"
-                  />
-                </div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+          <ArchiveCollection
+            direction={yearDirection}
+            group={activeGroup}
+            key={`${activeGroup.key}:${query}:${sortMode}:${[...selectedGenres].join(",")}:${[...selectedPlatforms].join(",")}`}
+            onSelectGame={setSelectedArchiveGameId}
+            reduceMotion={Boolean(reduceMotion)}
+            selectedGameId={selectedArchiveGameId}
+          />
+        </div>
+      ) : (
+        <section className={styles.emptyState} role="status">
+          <p>没有符合当前条件的馆藏。</p>
+          <button onClick={clearFilters} type="button">清除筛选</button>
         </section>
+      )}
 
-        <main className="archive-v2-stage" data-archive-intro>
-          <div className="archive-v2-section-heading">
-            <div className="min-w-0">
-              <p className="archive-v2-kicker">Cinematic Timeline / 年份胶片</p>
-              <h2>年度档案柜</h2>
-            </div>
-            <p>点击年份打开年度展柜；当前选中年份会以琥珀边框和索引灯标记。</p>
-          </div>
-          <ArchiveTimeline
-            activeYear={openGroup?.year ?? null}
-            groups={yearGroups}
-            onSelectYear={(year) => {
-              setOpenYear(year);
-              onSelectGame(null);
-            }}
-          />
-        </main>
+      {activeGroup && model.selectedGame ? (
+        <ArchiveYearModal
+          group={activeGroup}
+          onClose={closeDossier}
+          onSelectGame={setSelectedArchiveGameId}
+          selectedGame={model.selectedGame}
+        />
+      ) : null}
+    </section>
+  );
+}
+
+const ARCHIVE_BATCH_SIZE = 8;
+
+function ArchiveCollection({
+  direction,
+  group,
+  onSelectGame,
+  reduceMotion,
+  selectedGameId
+}: {
+  direction: number;
+  group: ArchiveYearGroup;
+  onSelectGame: (gameId: string) => void;
+  reduceMotion: boolean;
+  selectedGameId: string | null;
+}) {
+  const [visibleCount, setVisibleCount] = useState(ARCHIVE_BATCH_SIZE);
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLButtonElement | null>(null);
+  const visibleGames = group.games.slice(0, visibleCount);
+  const hasMore = visibleCount < group.games.length;
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    const root = listRef.current;
+    if (!sentinel || !root || !hasMore || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setVisibleCount((count) => Math.min(count + ARCHIVE_BATCH_SIZE, group.games.length));
+        }
+      },
+      {
+        root: window.matchMedia("(max-width: 760px)").matches ? null : root,
+        rootMargin: "0px"
+      }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [group.games.length, hasMore]);
+
+  return (
+    <motion.section
+      animate={{ opacity: 1, x: 0 }}
+      aria-labelledby="archive-collection-heading"
+      className={styles.collection}
+      data-archive-region="collection"
+      initial={reduceMotion ? false : { opacity: 0, x: direction * 14 }}
+      transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className={styles.collectionHeading}>
+        <div>
+          <p>Annual Collection</p>
+          <h2 id="archive-collection-heading">年度馆藏</h2>
+        </div>
+        <span>平均评分 {formatRating(group.averageRating)}</span>
       </div>
-
-      <AnimatePresence>
-        {openGroup ? (
-          <ArchiveYearModal
-            group={openGroup}
-            key={openGroup.label}
-            selectedGameId={selectedGameId}
-            onClose={() => {
-              setOpenYear(null);
-              onSelectGame(null);
-            }}
-            onSelectGame={onSelectGame}
+      <div className={styles.gameList} ref={listRef}>
+        {visibleGames.map((game, index) => (
+          <ArchiveGameCard
+            game={game}
+            index={index}
+            isSelected={game.id === selectedGameId}
+            key={game.id}
+            onSelect={() => onSelectGame(game.id)}
+            priority={index < 8}
+            reduceMotion={reduceMotion}
           />
-        ) : null}
-      </AnimatePresence>
-      </section>
-    </MotionConfig>
+        ))}
+        {hasMore ? (
+          <button
+            className={styles.loadMore}
+            onClick={() =>
+              setVisibleCount((count) => Math.min(count + ARCHIVE_BATCH_SIZE, group.games.length))
+            }
+            ref={sentinelRef}
+            type="button"
+          >
+            继续载入馆藏 · {group.games.length - visibleCount}
+          </button>
+        ) : (
+          <p className={styles.collectionEnd}>已显示本年度全部 {group.games.length} 份馆藏</p>
+        )}
+      </div>
+    </motion.section>
+  );
+}
+
+function ArchiveGameCard({
+  game,
+  index,
+  isSelected,
+  onSelect,
+  priority,
+  reduceMotion
+}: {
+  game: Game;
+  index: number;
+  isSelected: boolean;
+  onSelect: () => void;
+  priority: boolean;
+  reduceMotion: boolean;
+}) {
+  const title = safeTitle(game);
+  const secondaryTitle = game.titleZh?.trim() ? getGameSecondaryTitle(game) : null;
+  const genres = splitArchiveTags(game.genres).slice(0, 2).map(getGenreLabel).join(" / ") || "类型未知";
+
+  return (
+    <motion.button
+      aria-label={`打开 ${title} 详情`}
+      aria-pressed={isSelected}
+      className={`${styles.gameCard} ${isSelected ? styles.gameCardSelected : ""}`}
+      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      onClick={onSelect}
+      transition={{
+        delay: reduceMotion ? 0 : Math.min(index * 0.025, 0.14),
+        duration: reduceMotion ? 0 : 0.22,
+        ease: [0.22, 1, 0.36, 1]
+      }}
+      type="button"
+    >
+      <ArchiveCover
+        alt={`${title} 封面`}
+        className={styles.gameCover}
+        game={game}
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
+        sizes="(max-width: 760px) 64px, (max-width: 1100px) 48px, 56px"
+      />
+      <span className={styles.gameCopy}>
+        <strong>{title}</strong>
+        {secondaryTitle ? <small>{secondaryTitle}</small> : null}
+        <span>{genres}</span>
+      </span>
+      <span className={styles.gameRating}>{formatRating(game.rating)}</span>
+    </motion.button>
   );
 }
 
@@ -528,39 +482,22 @@ function TagFilter({
   onToggle: (label: string) => void;
 }) {
   return (
-    <section className="archive-v2-filter-panel">
-      <div className="archive-v2-filter-heading">
-        <h3>{title}</h3>
-        <span>
-          {labels.length === 0
-            ? "暂无索引"
-            : selectedLabels.size > 0
-              ? `已选 ${selectedLabels.size}`
-              : "OR 多选"}
-        </span>
+    <fieldset className={styles.tagFieldset}>
+      <legend>{title}</legend>
+      <div className={styles.tagList}>
+        {labels.length === 0 ? <p>暂无可用选项。</p> : null}
+        {labels.map((label) => (
+          <button
+            aria-pressed={selectedLabels.has(label)}
+            className={selectedLabels.has(label) ? styles.tagSelected : ""}
+            key={label}
+            onClick={() => onToggle(label)}
+            type="button"
+          >
+            {transformLabel(label)}
+          </button>
+        ))}
       </div>
-      <div className="archive-v2-tag-list" role="list">
-        {labels.length === 0 ? (
-          <p className="archive-v2-empty-small">没有可用标签。</p>
-        ) : null}
-        {labels.map((label) => {
-          const isSelected = selectedLabels.has(label);
-
-          return (
-            <motion.button
-              layout
-              aria-pressed={isSelected}
-              className={`archive-v2-tag ${isSelected ? "is-active" : ""}`}
-              key={label}
-              onClick={() => onToggle(label)}
-              whileTap={{ scale: 0.98 }}
-              type="button"
-            >
-              {transformLabel(label)}
-            </motion.button>
-          );
-        })}
-      </div>
-    </section>
+    </fieldset>
   );
 }

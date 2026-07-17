@@ -156,6 +156,8 @@ http://localhost:3000
 | Game Chronicle paper texture | `public/textures/archive-paper.svg` |
 | Game Chronicle brass texture | `public/textures/brass-noise.svg` |
 | Game Chronicle generated archive hall background | `public/images/archive/archive-hall-bg-v1.png` |
+| Chronicle Reading Room original hero | `public/images/archive/chronicle-reading-room.webp` |
+| Chronicle Reading Room asset metadata | `public/images/archive/README.md` |
 | Homepage Earth Explorer hero | `public/images/home/earth-explorer-archive.webp` |
 | Homepage Game Chronicle hero | `public/images/home/game-chronicle-archive.webp` |
 | Homepage asset metadata | `public/images/home/README.md` |
@@ -181,10 +183,16 @@ http://localhost:3000
 | Landing hub               | `src/components/home/LandingHub.tsx`           |
 | Homepage browser regression suite | `tests/e2e/homepage.spec.ts`              |
 | Game Chronicle view       | `src/components/archive/GameArchiveView.tsx`   |
-| Archive film timeline | `src/components/archive/ArchiveTimeline.tsx`   |
-| Archive year exhibit modal | `src/components/archive/ArchiveYearModal.tsx` |
+| Game Chronicle optimized cover | `src/components/archive/ArchiveCover.tsx` |
+| Game Chronicle reduced-motion subscription | `src/components/archive/useArchiveReducedMotion.ts` |
+| Game Chronicle scoped styles | `src/components/archive/GameArchiveView.module.css` |
+| Archive derived model | `src/lib/archiveModel.ts` |
+| Archive year index | `src/components/archive/ArchiveTimeline.tsx`   |
+| Archive dossier drawer | `src/components/archive/ArchiveYearModal.tsx` |
 | Archive active year drawer | `src/components/archive/ArchiveYearDrawer.tsx` |
 | Archive dossier panel     | `src/components/archive/ArchiveDossier.tsx`    |
+| Archive model tests | `tests/archive-model.test.ts` |
+| Archive browser tests | `tests/e2e/game-archive.spec.ts` |
 | Legacy 2.5D earth map view | `src/components/globe/GameGlobe2D.tsx`        |
 | 3D earth view             | `src/components/globe/GameGlobe.tsx`           |
 | Game cover markers        | `src/components/globe/GameMarkers.tsx`         |
