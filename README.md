@@ -3,7 +3,7 @@
 > A spatial and chronological atlas of global game culture.
 > 一座从地理与时间两个维度探索全球游戏文化的互动星图。
 
-Ludic Atlas / 游戏星图是一项课程作品与可运行的 Web MVP。它不把游戏仅仅排列成榜单，而是将作品放回开发工作室所在的国家或地区、发行年代和媒介文化中，邀请用户沿着地球与时间线发现游戏。
+Ludic Atlas / 游戏星图是一个持续维护的游戏文化探索 Web 项目。它不把游戏仅仅排列成榜单，而是将作品放回开发工作室所在的国家或地区、发行年代和媒介文化中，邀请用户沿着地球与时间线发现游戏。
 
 本项目是基于 Next.js 的本地 Web 应用，不是原生桌面应用，也不是完全免安装程序。运行现有内容需要 **Node.js 20 或更高版本**；普通浏览不需要配置 RAWG API Key。
 
@@ -11,7 +11,7 @@ Ludic Atlas / 游戏星图是一项课程作品与可运行的 Web MVP。它不�
 
 - **空间也是索引**：以主要开发商 / 工作室所在国家或地区组织代表性游戏，观察不同地方的产业与创作脉络。
 - **时间也是展厅**：用编年馆串联 2010–2026 年的游戏档案，让同一批数据呈现出另一种叙事。
-- **本地数据优先**：浏览器只读取仓库中的静态数据、地理边界和封面，课程展示不依赖后端数据库。
+- **本地数据优先**：浏览器只读取仓库中的静态数据、地理边界和封面，现有浏览功能不依赖后端数据库。
 - **探索胜过排名**：评分用于筛选和辅助发现，不把文化价值简化成单一排行榜。
 
 ## 三个主要界面
@@ -72,14 +72,36 @@ Ludic Atlas / 游戏星图是一项课程作品与可运行的 Web MVP。它不�
 - `public/covers/rawg/`：本地缓存封面
 - `public/data/earth-lod/`：地球边界分级数据
 
-浏览现有内容时，页面不会直接请求 RAWG API，也不需要用户设置 `RAWG_API_KEY`。只有开发者重新抓取 RAWG 数据时才需要自行准备 `.env.local` 与 API Key；这些文件不会进入课程发布包。
+浏览现有内容时，页面不会直接请求 RAWG API，也不需要用户设置 `RAWG_API_KEY`。只有开发者重新抓取 RAWG 数据时才需要自行准备 `.env.local` 与 API Key；这些文件不会进入发布包。
+
+## GitHub Release 下载与校验
+
+前往 [GitHub Releases](https://github.com/ChestnutleeEd/ludic-atlas/releases) 下载发布页提供的 ZIP 压缩包和 `SHA256SUMS.txt`。发布包是包含跨平台启动脚本的源码压缩包，仍需预先安装 Node.js 20 或更高版本，并在首次启动时联网安装依赖。
+
+下载完成后，可在文件所在目录校验 SHA-256：
+
+### Windows PowerShell
+
+```powershell
+Get-FileHash .\下载的压缩包.zip -Algorithm SHA256
+Get-Content .\SHA256SUMS.txt
+```
+
+### macOS
+
+```bash
+shasum -a 256 下载的压缩包.zip
+cat SHA256SUMS.txt
+```
+
+将命令输出的哈希值与 `SHA256SUMS.txt` 中对应记录比较；二者应完全一致。
 
 ## 快速启动
 
 ### Windows
 
 1. 安装 Node.js 20 或更高版本，并确认安装时包含 npm。
-2. 解压课程发布 ZIP。
+2. 解压从 GitHub Release 下载的 ZIP 源码包。
 3. 双击 `start-windows.cmd`。
 4. 第一次启动时脚本会自动执行 `npm ci` 安装依赖；之后只要 `node_modules` 仍存在，就不会重复安装。
 5. 脚本构建项目、启动本地服务，并自动打开 `http://localhost:3000`。
@@ -89,7 +111,7 @@ Ludic Atlas / 游戏星图是一项课程作品与可运行的 Web MVP。它不�
 ### macOS
 
 1. 安装 Node.js 20 或更高版本，并确认安装时包含 npm。
-2. 解压课程发布 ZIP。
+2. 解压从 GitHub Release 下载的 ZIP 源码包。
 3. 首次运行如遇到权限提示，在“终端”进入项目目录后执行：
 
    ```bash
@@ -129,14 +151,6 @@ npm test
 npm run build
 ```
 
-创建课程发布包：
-
-```bash
-npm run release:course
-```
-
-产物位于 `dist-release/Ludic-Atlas-Course-Edition.zip`，校验文件位于 `dist-release/SHA256SUMS.txt`。
-
 ## 项目目录
 
 ```text
@@ -150,7 +164,7 @@ src/data/                 静态游戏与国家数据入口
 src/lib/                  筛选、统计、地理、相机与布局逻辑
 src/types/                TypeScript 数据契约
 public/                   本地封面、地理数据和界面素材
-scripts/                  数据处理与课程发布脚本
+scripts/                  数据处理与发布脚本
 tests/                    单元测试与 Playwright 回归测试
 docs/                     产品、架构、数据与发布文档
 ```
@@ -159,7 +173,7 @@ docs/                     产品、架构、数据与发布文档
 
 ### 是否需要 RAWG API Key？
 
-不需要。课程包已包含浏览现有内容所需的主要数据和封面。只有重新抓取 RAWG 数据的开发工作才需要 API Key。
+不需要。发布包已包含浏览现有内容所需的主要数据和封面。只有重新抓取 RAWG 数据的开发工作才需要 API Key。
 
 ### 为什么第一次启动较慢？
 
@@ -175,7 +189,7 @@ docs/                     产品、架构、数据与发布文档
 
 ### macOS 为什么阻止脚本？
 
-课程包中的 `.command` 文件未进行 Apple 代码签名或公证。确认下载来源后，可按上方 macOS 步骤授权或从终端运行。
+发布包中的 `.command` 文件未进行 Apple 代码签名或公证。确认下载来源后，可按上方 macOS 步骤授权或从终端运行。
 
 ### 可以完全离线使用吗？
 
@@ -183,7 +197,7 @@ docs/                     产品、架构、数据与发布文档
 
 ## 已知限制
 
-- 这是课程用途的 Web MVP，不是原生桌面应用或完全免安装程序。
+- 这是本地运行的 Web 项目，不是原生桌面应用或完全免安装程序。
 - 必须由用户预先安装 Node.js 20+ 与 npm。
 - 启动脚本未进行 Windows 代码签名或 Apple 公证。
 - 国家 / 地区归属来自项目级推断，跨国协作作品被简化为一个主要地区。
@@ -196,4 +210,4 @@ docs/                     产品、架构、数据与发布文档
 
 ---
 
-**English summary:** Ludic Atlas is a course-project Web MVP for exploring game culture by geography and chronology. It includes a 3D Earth Explorer, country and year filters, persistent cover markers during globe interaction, a 48–112 px cover-size control, and a Game Chronicle. Node.js 20+ and npm are required; the first launch installs dependencies, while existing browsing data and most covers are local and require no RAWG API Key.
+**English summary:** Ludic Atlas is a maintained Web project for exploring game culture by geography and chronology. It includes a 3D Earth Explorer, country and year filters, persistent cover markers during globe interaction, a 48–112 px cover-size control, and a Game Chronicle. Node.js 20+ and npm are required; the first launch installs dependencies, while existing browsing data and most covers are local and require no RAWG API Key.
