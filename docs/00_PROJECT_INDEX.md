@@ -51,8 +51,10 @@ If the task involves product scope, read:
 | `docs/EARTH_EXPLORER_VALIDATION.md` | Earth functional, viewport, marker-continuity, cover-size, production performance, accessibility, lifecycle, and verification evidence |
 | `docs/agents/`             | Engineering-skill issue tracker, triage, and domain-doc configuration |
 | `docs/releases/`           | Versioned GitHub release notes and release documentation |
-| `docs/assets/preview.png`  | Legacy README project preview image for GitHub     |
-| `docs/assets/readme/`      | Current README preview screenshots                 |
+| `docs/assets/landing-hub.png` | Course release Landing Hub screenshot           |
+| `docs/assets/earth-global.png` | Course release Earth Explorer global screenshot |
+| `docs/assets/earth-country-detail.png` | Course release Earth country-detail screenshot |
+| `docs/assets/game-chronicle.png` | Course release Game Chronicle screenshot       |
 
 ## Current Core Directories
 
@@ -86,8 +88,9 @@ If the task involves product scope, read:
 | `postcss.config.mjs` | Tailwind CSS PostCSS configuration           |
 | `eslint.config.mjs`  | ESLint flat config for Next.js and TypeScript |
 | `.gitignore`         | Generated and dependency file ignore rules   |
-| `start-mac.command`  | macOS release-package helper script for installing dependencies and starting the local app |
-| `start-windows.bat`  | Windows release-package helper script for installing dependencies and starting the local app |
+| `start-macos.command` | macOS course-package helper for Node 20 checks, first-run `npm ci`, build, start, and browser launch |
+| `start-windows.cmd` | Windows course-package helper for Node 20 checks, first-run `npm ci`, build, start, and browser launch |
+| `scripts/create-course-release.mjs` | Creates the whitelisted course ZIP and SHA-256 checksum file |
 | `.git/`              | Local Git repository metadata; do not edit manually |
 
 ## Git Engineering
@@ -144,8 +147,9 @@ http://localhost:3000
 | RAWG cover cache script | `scripts/cache-rawg-covers.mjs` |
 | RAWG cover compression script | `scripts/compress-rawg-covers.mjs` |
 | Country inference apply script | `scripts/apply-country-inference.mjs` |
-| macOS local start helper | `start-mac.command`             |
-| Windows local start helper | `start-windows.bat`           |
+| macOS course start helper | `start-macos.command`          |
+| Windows course start helper | `start-windows.cmd`          |
+| Course release packager | `scripts/create-course-release.mjs` |
 | Mock country data    | `src/data/countries.ts`           |
 | v0.1.0 release notes | `docs/releases/v0.1.0.md`         |
 | Future cover assets  | `public/covers/README.md`         |
@@ -169,8 +173,10 @@ http://localhost:3000
 | MVP country border data | `public/data/mock-countries.geojson` |
 | Lightweight world country border data | `public/data/world-countries-lite.geojson` |
 | Full source country border data | `public/data/countries.geojson` |
-| Legacy README preview image | `docs/assets/preview.png` |
-| Current README screenshots | `docs/assets/readme/` |
+| Landing Hub release screenshot | `docs/assets/landing-hub.png` |
+| Earth global release screenshot | `docs/assets/earth-global.png` |
+| Earth country-detail release screenshot | `docs/assets/earth-country-detail.png` |
+| Game Chronicle release screenshot | `docs/assets/game-chronicle.png` |
 | Shared types         | `src/types/game.ts`               |
 | Earth state types    | `src/types/earth.ts`              |
 | Earth view / navigation contract | `src/lib/earthViewState.ts` |
