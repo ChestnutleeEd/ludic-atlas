@@ -1,7 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Component,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode
+} from "react";
 import {
   BufferGeometry,
   Float32BufferAttribute,
@@ -10,30 +18,41 @@ import {
   MeshPhongMaterial,
   type Object3D
 } from "three";
+import { buildGlobeBoundaryPositions } from "@/lib/globeBoundary";
 import {
   buildCountryMarkers,
   buildGameMarkers,
   createGameMarkerElement,
+  updateGameMarkerSelection,
   type GlobeHtmlMarker
 } from "@/components/globe/GameMarkers";
 import {
-  getCountryFocusPointOfView,
   getCountryFeatureKey,
   indexCountryFeatures,
   isCoordinateInsideFeature,
   type GlobePointOfView,
-  type CountryGeoJson,
   type CountryGeoJsonFeature
 } from "@/lib/geo";
-import { createCameraAnimator, getCameraDuration } from "@/lib/globeCamera";
+import { geographyRepository, type GeographyResource } from "@/lib/geographyRepository";
+import { applyScreenSpaceCollision } from "@/lib/markerLayout";
+import {
+  createGlobeCameraController,
+  getCameraDuration,
+  type GlobeCameraState
+} from "@/lib/globeCamera";
+import { resolveGlobeNavigationPoint } from "@/lib/globeNavigation";
 import { getCountryDisplayName } from "@/lib/localization";
 import {
   CAMERA_MODE_CONFIGS,
   REGION_CONFIGS,
-  getRegionConfig,
-  getRegionPointOfView
+  getRegionConfig
 } from "@/lib/regions";
 import type { CameraMode, Country, Game, RegionId, ViewMode } from "@/types/game";
+import type {
+  GlobeViewState,
+  SafeViewport,
+  SpatialNavigationIntent
+} from "@/types/earth";
 import type { GlobeMethods, GlobeProps } from "react-globe.gl";
 
 const ReactGlobe = dynamic(() => import("react-globe.gl"), {
@@ -44,16 +63,12 @@ const ReactGlobe = dynamic(() => import("react-globe.gl"), {
 >;
 
 const MAX_RENDER_PIXEL_RATIO = 1;
-const GLOBE_RADIUS = 100;
 const PERSISTENT_BOUNDARY_ALTITUDE = 0.0022;
-const MAX_PERSISTENT_BOUNDARY_POINTS_PER_RING = 144;
 const SELECTED_BOUNDARY_ALTITUDE = 0.0045;
-const MAX_SELECTED_BOUNDARY_POINTS_PER_RING = 240;
 const SELECTED_BOUNDARY_OPTIONS = {
   altitude: SELECTED_BOUNDARY_ALTITUDE,
-  color: "#ff006e",
-  maxPointsPerRing: MAX_SELECTED_BOUNDARY_POINTS_PER_RING,
-  opacity: 0.96,
+  color: "#c49a58",
+  opacity: 0.92,
   renderOrder: 2
 } as const;
 const INTERACTION_RESTORE_DELAY_MS = 200;
@@ -79,6 +94,10 @@ const ZOOM_ALTITUDE_MULTIPLIER = {
 type GameGlobeProps = {
   countries: Country[];
   games: Game[];
+  initialViewRevision: number;
+  initialViewState: GlobeViewState;
+  navigationIntent: SpatialNavigationIntent;
+  safeViewport: SafeViewport;
   activeRegionId: RegionId;
   cameraMode: CameraMode;
   isRotateEnabled: boolean;
@@ -92,11 +111,16 @@ type GameGlobeProps = {
   onRegionChange: (regionId: RegionId) => void;
   onCameraModeChange: (cameraMode: CameraMode) => void;
   onInteractionStart?: () => void;
+  onSettledViewState?: (viewState: GlobeViewState, revision: number) => void;
 };
 
 export function GameGlobe({
   countries,
   games,
+  initialViewRevision,
+  initialViewState,
+  navigationIntent,
+  safeViewport,
   activeRegionId,
   cameraMode,
   isRotateEnabled,
@@ -109,23 +133,26 @@ export function GameGlobe({
   onSelectGame,
   onRegionChange,
   onCameraModeChange,
-  onInteractionStart
+  onInteractionStart,
+  onSettledViewState
 }: GameGlobeProps) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const locationPickerRef = useRef<HTMLDetailsElement>(null);
+  const sizeBoundaryRef = useRef<HTMLDivElement>(null);
   const interactionRestoreTimerRef = useRef<number | null>(null);
-  const cameraDetailRestoreTimerRef = useRef<number | null>(null);
+  const interactionTokenRef = useRef(0);
   const controlsCleanupRef = useRef<(() => void) | null>(null);
-  const cameraAnimatorRef = useRef<ReturnType<typeof createCameraAnimator> | null>(null);
-  const lastCameraPointOfViewRef = useRef<GlobePointOfView>(
-    selectedCountry
-      ? getCountryFocusPointOfView(selectedCountry, cameraMode)
-      : getRegionPointOfView(activeRegionId, cameraMode)
-  );
-  const [countryFeatures, setCountryFeatures] = useState<CountryGeoJsonFeature[]>(
-    []
-  );
+  const cameraControllerRef = useRef<ReturnType<typeof createGlobeCameraController> | null>(null);
+  const isRendererReadyRef = useRef(false);
+  const isMountedRef = useRef(false);
+  const latestIntentRef = useRef(navigationIntent);
+  const lastCameraPointOfViewRef = useRef<GlobePointOfView>(initialViewState);
+  const settledViewStateCallbackRef = useRef(onSettledViewState);
+  const geographyRequestRevisionRef = useRef(0);
+  const [globalGeography, setGlobalGeography] = useState<GeographyResource | null>(null);
+  const [regionGeography, setRegionGeography] = useState<GeographyResource | null>(null);
+  const [countryGeography, setCountryGeography] = useState<GeographyResource | null>(null);
   const [hoveredCountryCode, setHoveredCountryCode] = useState<string | null>(
     null
   );
@@ -133,30 +160,49 @@ export function GameGlobe({
     baseSelectedCountryCode: string | null;
     countryCode: string;
   } | null>(null);
-  const [globeSize, setGlobeSize] = useState({ height: 640, width: 920 });
+  const [globeSize, setGlobeSize] = useState({ height: 1, width: 1 });
   const [isCameraAnimating, setIsCameraAnimating] = useState(false);
   const [isGlobeInteracting, setIsGlobeInteracting] = useState(false);
+  const [cameraState, setCameraState] = useState<GlobeCameraState>("idle");
+  const [controlListenerCount, setControlListenerCount] = useState(0);
+  const [expandedTinyCountryCode, setExpandedTinyCountryCode] = useState<string | null>(null);
+  const [settledAltitude, setSettledAltitude] = useState(initialViewState.altitude);
+  const activeRegionGeography = regionGeography?.key === activeRegionId ? regionGeography : null;
+  const activeCountryGeography = countryGeography?.key === selectedCountry?.code ? countryGeography : null;
   const cameraModeConfig = CAMERA_MODE_CONFIGS[cameraMode];
-  const getViewportAdjustedPointOfView = useCallback(
-    (pointOfView: GlobePointOfView, isCountryFocus: boolean) => {
-      const portraitRatio = globeSize.height / Math.max(1, globeSize.width);
-
-      if (portraitRatio <= 1.25) {
-        return pointOfView;
-      }
-
-      const altitudeFactor = isCountryFocus
-        ? Math.min(1.32, 1 + (portraitRatio - 1) * 0.25)
-        : Math.min(1.55, 1 + (portraitRatio - 1) * 0.5);
-
-      return {
-        ...pointOfView,
-        altitude: pointOfView.altitude * altitudeFactor
-      };
-    },
-    [globeSize.height, globeSize.width]
+  const countryByCode = useMemo(
+    () => new Map(countries.map((country) => [country.code, country])),
+    [countries]
   );
-
+  const countryFeatures = useMemo(() => {
+    const merged = new Map<string, CountryGeoJsonFeature>();
+    for (const resource of [globalGeography, activeRegionGeography, activeCountryGeography]) for (const feature of resource?.features ?? []) {
+      const key = getCountryFeatureKey(feature); if (key) merged.set(key, feature);
+    }
+    return [...merged.values()];
+  }, [activeCountryGeography, activeRegionGeography, globalGeography]);
+  const countryFeatureByCode = useMemo(
+    () => indexCountryFeatures(countryFeatures),
+    [countryFeatures]
+  );
+  const normalizedFeatureByCode = useMemo(() => {
+    const merged = new Map(globalGeography?.normalized ?? []);
+    for (const [code, feature] of activeRegionGeography?.normalized ?? []) merged.set(code, feature);
+    for (const [code, feature] of activeCountryGeography?.normalized ?? []) merged.set(code, feature);
+    return merged;
+  }, [activeCountryGeography, activeRegionGeography, globalGeography]);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+  useEffect(() => {
+    settledViewStateCallbackRef.current = onSettledViewState;
+  }, [onSettledViewState]);
+  useEffect(() => {
+    latestIntentRef.current = navigationIntent;
+  }, [navigationIntent]);
   const getCurrentPointOfView = useCallback((): GlobePointOfView => {
     const currentPointOfView = globeRef.current?.pointOfView();
     const fallbackPointOfView = lastCameraPointOfViewRef.current;
@@ -171,50 +217,60 @@ export function GameGlobe({
     };
   }, []);
 
-  const getCameraAnimator = useCallback(() => {
-    if (!cameraAnimatorRef.current) {
-      cameraAnimatorRef.current = createCameraAnimator({
+  const getCameraController = useCallback(() => {
+    if (!cameraControllerRef.current) {
+      cameraControllerRef.current = createGlobeCameraController({
         cancelFrame: (id) => window.cancelAnimationFrame(id),
         now: () => performance.now(),
+        onSettle: (pointOfView, revision) => {
+          if (!isMountedRef.current) return;
+          setIsCameraAnimating(false);
+          setSettledAltitude(pointOfView.altitude);
+          settledViewStateCallbackRef.current?.(pointOfView, revision);
+        },
+        onStateChange: (nextState) => {
+          if (!isMountedRef.current) return;
+          setCameraState(nextState);
+          setIsCameraAnimating(nextState === "programmatic-navigation");
+        },
+        read: getCurrentPointOfView,
         requestFrame: (callback) => window.requestAnimationFrame(callback),
         write: (pointOfView) => {
           lastCameraPointOfViewRef.current = pointOfView;
           if (containerRef.current) {
             containerRef.current.dataset.cameraAltitude = pointOfView.altitude.toFixed(3);
+            containerRef.current.dataset.cameraLat = pointOfView.lat.toFixed(3);
+            containerRef.current.dataset.cameraLng = pointOfView.lng.toFixed(3);
           }
           globeRef.current?.pointOfView(pointOfView, 0);
         }
       });
     }
-    return cameraAnimatorRef.current;
-  }, []);
+    return cameraControllerRef.current;
+  }, [getCurrentPointOfView]);
 
-  const setGlobePointOfView = useCallback(
-    (pointOfView: GlobePointOfView, transitionMs: number) => {
+  const navigateCamera = useCallback(
+    (intent: SpatialNavigationIntent, transitionMs: number, target?: GlobePointOfView) => {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const duration = getCameraDuration(transitionMs, reducedMotion);
-
       if (duration > 0 && containerRef.current) {
         delete containerRef.current.dataset.countryFocusX;
         delete containerRef.current.dataset.countryFocusY;
       }
-
-      if (cameraDetailRestoreTimerRef.current) {
-        window.clearTimeout(cameraDetailRestoreTimerRef.current);
-        cameraDetailRestoreTimerRef.current = null;
-      }
-
-      setIsCameraAnimating(duration > 0);
-      if (duration > 0) {
-        cameraDetailRestoreTimerRef.current = window.setTimeout(() => {
-          cameraDetailRestoreTimerRef.current = null;
-          setIsCameraAnimating(false);
-        }, duration + INTERACTION_RESTORE_DELAY_MS);
-      }
-
-      getCameraAnimator().animate(getCurrentPointOfView(), pointOfView, duration);
+      return getCameraController().navigate({
+        duration,
+        revision: intent.revision,
+        target: target ?? resolveGlobeNavigationPoint({
+          cameraMode,
+          countryByCode,
+          featureByCode: countryFeatureByCode,
+          intent,
+          markerFootprintPx: coverSize,
+          safeViewport
+        })
+      });
     },
-    [getCameraAnimator, getCurrentPointOfView]
+    [cameraMode, countryByCode, countryFeatureByCode, coverSize, getCameraController, safeViewport]
   );
 
   const configureControls = useCallback(() => {
@@ -239,97 +295,130 @@ export function GameGlobe({
   }, [cameraMode, cameraModeConfig, isRotateEnabled]);
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    // Source: public/data/countries.geojson simplified into a lightweight
-    // runtime world outline file so the base globe can show all countries.
-    async function loadCountryFeatures() {
-      try {
-        const response = await fetch("/data/world-countries-lite.geojson", {
-          signal: controller.signal
-        });
-
-        if (!response.ok) {
-          throw new Error(`Country GeoJSON request failed: ${response.status}`);
-        }
-
-        const geoJson = (await response.json()) as CountryGeoJson;
-        setCountryFeatures(geoJson.features);
-      } catch {
-        if (!controller.signal.aborted) {
-          setCountryFeatures([]);
-        }
-      }
-    }
-
-    void loadCountryFeatures();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
+    let active = true;
+    void geographyRepository.load("global", "global", countries).then((resource) => {
+      if (active) setGlobalGeography(resource);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [countries]);
 
   useEffect(() => {
-    const container = containerRef.current;
+    if (!globalGeography || activeRegionId === "global") return;
+    const revision = ++geographyRequestRevisionRef.current;
+    void geographyRepository.loadWithFallback("region", activeRegionId, countries, globalGeography).then((resource) => {
+      if (revision === geographyRequestRevisionRef.current) setRegionGeography(resource.lod === "region" ? resource : null);
+    });
+  }, [activeRegionId, countries, globalGeography]);
 
-    if (!container) {
+  useEffect(() => {
+    if (!globalGeography || !selectedCountry?.code) return;
+    const revision = ++geographyRequestRevisionRef.current;
+    void geographyRepository.loadWithFallback("country", selectedCountry.code, countries, activeRegionGeography ?? globalGeography).then((resource) => {
+      if (revision === geographyRequestRevisionRef.current) setCountryGeography(resource.lod === "country" ? resource : null);
+    });
+  }, [activeRegionGeography, countries, globalGeography, selectedCountry?.code]);
+
+  useEffect(() => {
+    const boundary = sizeBoundaryRef.current;
+
+    if (!boundary) {
       return;
     }
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      const width = Math.max(320, Math.round(entry.contentRect.width));
-      const height = Math.max(320, Math.round(entry.contentRect.height));
-
+    let resizeFrame: number | null = null;
+    const measure = () => {
+      resizeFrame = null;
+      const style = getComputedStyle(boundary);
+      const width = Math.max(1, Math.round(
+        boundary.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+      ));
+      const height = Math.max(1, Math.round(
+        boundary.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+      ));
       setGlobeSize((currentSize) =>
         currentSize.height === height && currentSize.width === width
           ? currentSize
           : { height, width }
       );
-    });
-
-    resizeObserver.observe(container);
-
-    return () => resizeObserver.disconnect();
+    };
+    const scheduleMeasure = () => {
+      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(measure);
+    };
+    const resizeObserver = new ResizeObserver(scheduleMeasure);
+    resizeObserver.observe(boundary);
+    measure();
+    return () => {
+      resizeObserver.disconnect();
+      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+    };
   }, []);
 
-  useEffect(
-    () => () => {
-      cameraAnimatorRef.current?.cancel();
-      controlsCleanupRef.current?.();
+  useEffect(() => {
+    if (cameraControllerRef.current?.getSnapshot().disposed) {
+      cameraControllerRef.current = null;
+    }
+    return () => {
+      settledViewStateCallbackRef.current?.(
+        getCurrentPointOfView(),
+        latestIntentRef.current.revision
+      );
+      cameraControllerRef.current?.dispose();
+      cameraControllerRef.current = null;
       if (interactionRestoreTimerRef.current) {
         window.clearTimeout(interactionRestoreTimerRef.current);
       }
-      if (cameraDetailRestoreTimerRef.current) {
-        window.clearTimeout(cameraDetailRestoreTimerRef.current);
-      }
-    },
-    []
-  );
+    };
+  }, [getCurrentPointOfView]);
 
   useEffect(() => {
     configureControls();
   }, [configureControls]);
 
+  const navigationExecutorRef = useRef(navigateCamera);
   useEffect(() => {
-    if (!globeRef.current) {
+    navigationExecutorRef.current = navigateCamera;
+  }, [navigateCamera]);
+  useEffect(() => {
+    if (!isRendererReadyRef.current) return;
+    if (
+      navigationIntent.target.type === "game" &&
+      navigationIntent.target.countryCode === selectedCountry?.code
+    ) {
       return;
     }
-
-    const targetPointOfView = selectedCountry
-      ? getCountryFocusPointOfView(selectedCountry, cameraMode)
-      : getRegionPointOfView(activeRegionId, cameraMode);
-    const pointOfView = getViewportAdjustedPointOfView(
-      targetPointOfView,
-      Boolean(selectedCountry)
+    navigationExecutorRef.current(
+      navigationIntent,
+      navigationIntent.target.type === "country" || navigationIntent.target.type === "game"
+        ? 680
+        : 620
     );
+  }, [cameraMode, navigationIntent, selectedCountry?.code]);
 
-    setGlobePointOfView(pointOfView, selectedCountry ? 680 : 620);
-  }, [activeRegionId, cameraMode, getViewportAdjustedPointOfView, selectedCountry, setGlobePointOfView]);
+  const previousSafeViewportRef = useRef(safeViewport);
+  useEffect(() => {
+    const previous = previousSafeViewportRef.current;
+    previousSafeViewportRef.current = safeViewport;
+    const previousRightObstruction = previous.width - previous.right;
+    const nextRightObstruction = safeViewport.width - safeViewport.right;
+    const previousBottomObstruction = previous.height - previous.bottom;
+    const nextBottomObstruction = safeViewport.height - safeViewport.bottom;
+    const safeAreaShrank =
+      nextRightObstruction > previousRightObstruction + 8 ||
+      nextBottomObstruction > previousBottomObstruction + 8;
+    if (!safeAreaShrank || !isRendererReadyRef.current) return;
+    const frameId = requestAnimationFrame(() => {
+      if (getCameraController().getSnapshot().state === "user-controlled") return;
+      navigationExecutorRef.current(
+        { ...latestIntentRef.current, source: "focus-control" },
+        420
+      );
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [getCameraController, safeViewport]);
 
   useEffect(() => {
     if (
       isCameraAnimating ||
-      cameraDetailRestoreTimerRef.current !== null ||
       !selectedCountry ||
       !containerRef.current
     ) {
@@ -347,26 +436,13 @@ export function GameGlobe({
   }, [globeSize.height, globeSize.width, isCameraAnimating, selectedCountry]);
 
   const handleFocusSelectedCountry = useCallback(() => {
-    if (!selectedCountry) {
-      setGlobePointOfView(
-        getViewportAdjustedPointOfView(
-          getRegionPointOfView(activeRegionId, cameraMode),
-          false
-        ),
-        520
-      );
-      return;
-    }
-
+    if (!selectedCountry) return;
     onCameraModeChange("surface");
-    setGlobePointOfView(
-      getViewportAdjustedPointOfView(
-        getCountryFocusPointOfView(selectedCountry, "surface"),
-        true
-      ),
+    navigationExecutorRef.current(
+      { ...latestIntentRef.current, source: "focus-control" },
       680
     );
-  }, [activeRegionId, cameraMode, getViewportAdjustedPointOfView, onCameraModeChange, selectedCountry, setGlobePointOfView]);
+  }, [onCameraModeChange, selectedCountry]);
 
   const handleResetGlobalView = useCallback(() => {
     onClearCountry();
@@ -403,15 +479,13 @@ export function GameGlobe({
         cameraModeConfig.maxAltitude
       );
 
-      setGlobePointOfView(
-        {
-          ...pointOfView,
-          altitude
-        },
-        MANUAL_ZOOM_TRANSITION_MS
+      navigateCamera(
+        { ...latestIntentRef.current, source: "focus-control" },
+        MANUAL_ZOOM_TRANSITION_MS,
+        { ...pointOfView, altitude }
       );
     },
-    [cameraModeConfig, getCurrentPointOfView, setGlobePointOfView]
+    [cameraModeConfig, getCurrentPointOfView, navigateCamera]
   );
 
   const handleGlobeInteractionStart = useCallback(() => {
@@ -420,25 +494,43 @@ export function GameGlobe({
     }
 
     onInteractionStart?.();
-    cameraAnimatorRef.current?.cancel();
-    if (cameraDetailRestoreTimerRef.current) {
-      window.clearTimeout(cameraDetailRestoreTimerRef.current);
-      cameraDetailRestoreTimerRef.current = null;
-    }
-    setIsCameraAnimating(false);
+    interactionTokenRef.current += 1;
+    getCameraController().beginUserControl();
     setIsGlobeInteracting(true);
     setHoveredCountryCode(null);
-  }, [onInteractionStart]);
+  }, [getCameraController, onInteractionStart]);
 
   const handleGlobeInteractionEnd = useCallback(() => {
     if (interactionRestoreTimerRef.current) {
       window.clearTimeout(interactionRestoreTimerRef.current);
     }
 
+    getCameraController().endUserControl();
+    const ownToken = ++interactionTokenRef.current;
     interactionRestoreTimerRef.current = window.setTimeout(() => {
+      if (ownToken !== interactionTokenRef.current) return;
       setIsGlobeInteracting(false);
     }, INTERACTION_RESTORE_DELAY_MS);
-  }, []);
+  }, [getCameraController]);
+  const attachControlListeners = useCallback(() => {
+    const controls = globeRef.current?.controls();
+    if (!controls) return;
+    controlsCleanupRef.current?.();
+    configureControls();
+    controls.addEventListener("start", handleGlobeInteractionStart);
+    controls.addEventListener("end", handleGlobeInteractionEnd);
+    if (isMountedRef.current) setControlListenerCount(2);
+    controlsCleanupRef.current = () => {
+      controls.removeEventListener("start", handleGlobeInteractionStart);
+      controls.removeEventListener("end", handleGlobeInteractionEnd);
+      controlsCleanupRef.current = null;
+    };
+  }, [configureControls, handleGlobeInteractionEnd, handleGlobeInteractionStart]);
+  useEffect(() => {
+    if (!isRendererReadyRef.current) return;
+    attachControlListeners();
+    return () => controlsCleanupRef.current?.();
+  }, [attachControlListeners]);
   const updateHtmlElementVisibility = useCallback(
     (element: HTMLElement, isVisible: boolean) => {
       const nextVisibility = isVisible ? "visible" : "hidden";
@@ -488,10 +580,6 @@ export function GameGlobe({
     },
     [handleSelectGlobeCountry]
   );
-  const countryFeatureByCode = useMemo(
-    () => indexCountryFeatures(countryFeatures),
-    [countryFeatures]
-  );
   const handleGlobeSurfaceClick = useCallback(
     (coordinate: { lat: number; lng: number }) => {
       if (containerRef.current) {
@@ -524,20 +612,31 @@ export function GameGlobe({
       buildGameMarkers({
         activeRegionId,
         countries,
-        countryFeatureByCode,
+        normalizedFeatureByCode,
         games,
+        altitude: settledAltitude,
+        coverSize,
+        performanceTier: getMarkerPerformanceTier(),
+        safeViewport,
+        // Keep the last settled layout model while the camera moves; CSS hides the
+        // lightweight HTML layer until the controller publishes a settled altitude.
+        settled: true,
+        expandedTinyCountryCode,
         selectedCountryCode,
-        selectedGameId,
+        selectedGameId: null,
         viewMode
       }),
     [
       countries,
-      countryFeatureByCode,
+      normalizedFeatureByCode,
       games,
       activeRegionId,
       selectedCountryCode,
-      selectedGameId,
-      viewMode
+      viewMode,
+      settledAltitude,
+      coverSize,
+      safeViewport,
+      expandedTinyCountryCode
     ]
   );
   const countryMarkers = useMemo(
@@ -554,7 +653,47 @@ export function GameGlobe({
     },
     [countries, hoveredCountryCode, isGlobeInteracting, selectedCountryCode]
   );
-  const visibleGameMarkers = gameMarkers;
+  const [collidedGameMarkers, setCollidedGameMarkers] = useState<typeof gameMarkers>([]);
+  useEffect(() => {
+    if (isCameraAnimating || isGlobeInteracting) return;
+    if (!selectedCountryCode && activeRegionId === "global") return;
+    const globe = globeRef.current;
+    if (!globe) return;
+    const width = Math.max(32, Math.round(coverSize * 0.82));
+    const height = Math.max(42, Math.round(coverSize * 1.08));
+    const collision = applyScreenSpaceCollision({
+      candidates: gameMarkers.flatMap((marker) => {
+        const point = globe.getScreenCoords(marker.lat, marker.lng, 0.03);
+        return point ? [{ height, id: marker.game.id, payload: marker, width, x: point.x, y: point.y }] : [];
+      }),
+      gap: selectedCountryCode ? 2 : 6,
+      safeViewport
+    });
+    const lastByCountry = new Map<string, number>();
+    const visibleByCountry = new Map<string, number>();
+    collision.visible.forEach((candidate, index) => lastByCountry.set(candidate.payload.game.countryCode, index));
+    collision.visible.forEach((candidate) => visibleByCountry.set(
+      candidate.payload.game.countryCode,
+      (visibleByCountry.get(candidate.payload.game.countryCode) ?? 0) + 1
+    ));
+    setCollidedGameMarkers(collision.visible.map((candidate, index) => index === lastByCountry.get(candidate.payload.game.countryCode)
+      ? {
+          ...candidate.payload,
+          overflowCount: Math.max(
+            0,
+            candidate.payload.countryGameCount -
+              (visibleByCountry.get(candidate.payload.game.countryCode) ?? 0)
+          )
+        }
+      : candidate.payload));
+  }, [activeRegionId, coverSize, gameMarkers, isCameraAnimating, isGlobeInteracting, safeViewport, selectedCountryCode]);
+  const visibleGameMarkers = !selectedCountryCode && activeRegionId === "global"
+    ? gameMarkers
+    : collidedGameMarkers;
+  useEffect(() => {
+    if (!containerRef.current) return;
+    updateGameMarkerSelection(containerRef.current, selectedGameId);
+  }, [selectedGameId, visibleGameMarkers]);
   const globeHtmlMarkers = useMemo<GlobeHtmlMarker[]>(
     () => [...countryMarkers, ...visibleGameMarkers],
     [countryMarkers, visibleGameMarkers]
@@ -570,6 +709,7 @@ export function GameGlobe({
         onHoverCountry: handleHoverCountry,
         onSelectCountry: handleSelectGlobeCountry,
         onSelectGame
+        ,onToggleTinyCluster: (countryCode) => setExpandedTinyCountryCode((current) => current === countryCode ? null : countryCode)
       }),
     [
       activeRegionId,
@@ -590,11 +730,11 @@ export function GameGlobe({
   const globeMaterial = useMemo(
     () =>
       new MeshPhongMaterial({
-        color: "#030712",
-        emissive: "#06111f",
-        emissiveIntensity: 0.2,
-        shininess: 5,
-        specular: "#24505c"
+        color: "#07110f",
+        emissive: "#0b1713",
+        emissiveIntensity: 0.18,
+        shininess: 7,
+        specular: "#59685a"
       }),
     []
   );
@@ -604,13 +744,13 @@ export function GameGlobe({
       countryFeatures.length > 0
         ? buildBoundaryMesh(countryFeatures, {
             altitude: PERSISTENT_BOUNDARY_ALTITUDE,
-            color: "#168ba8",
-            maxPointsPerRing: MAX_PERSISTENT_BOUNDARY_POINTS_PER_RING,
-            opacity: 0.46,
+            cacheKey: `boundaries:${globalGeography?.key ?? "none"}:${activeRegionGeography?.key ?? "none"}:${activeCountryGeography?.key ?? "none"}`,
+            color: "#6f897c",
+            opacity: 0.5,
             renderOrder: 1
           })
         : null,
-    [countryFeatures]
+    [activeCountryGeography?.key, activeRegionGeography?.key, countryFeatures, globalGeography?.key]
   );
   const selectedBoundaryMesh = useMemo(
     () =>
@@ -627,6 +767,9 @@ export function GameGlobe({
   }, [persistentBoundaryMesh, selectedBoundaryMesh]);
   const persistentBoundarySegmentCount = persistentBoundaryMesh
     ? persistentBoundaryMesh.geometry.getAttribute("position").count / 2
+    : 0;
+  const persistentBoundaryMaxArc = persistentBoundaryMesh
+    ? Number(persistentBoundaryMesh.geometry.userData.maxRenderedArcDegrees ?? 0)
     : 0;
   const getPersistentBoundaryObject = useCallback(
     (object: object) => object as Object3D,
@@ -656,12 +799,12 @@ export function GameGlobe({
       : null;
     const nextMesh = buildBoundaryMesh(
       selectedFeature ? [selectedFeature] : [],
-      SELECTED_BOUNDARY_OPTIONS
+      { ...SELECTED_BOUNDARY_OPTIONS, cacheKey: selectedFeature ? `selected:${activeCountryCode}:${activeCountryGeography?.key ?? activeRegionGeography?.key ?? globalGeography?.key}` : undefined }
     );
     selectedBoundaryMesh.geometry.copy(nextMesh.geometry);
     nextMesh.geometry.dispose();
     nextMesh.material.dispose();
-  }, [activeCountryCode, countryFeatureByCode, selectedBoundaryMesh]);
+  }, [activeCountryCode, activeCountryGeography?.key, activeRegionGeography?.key, countryFeatureByCode, globalGeography?.key, selectedBoundaryMesh]);
   const activeRegion = getRegionConfig(activeRegionId);
   const activeCameraLabel = selectedCountry
     ? getCountryDisplayName(selectedCountry)
@@ -675,27 +818,73 @@ export function GameGlobe({
   );
   const isLowDetailRendering =
     isCameraAnimating || isGlobeInteracting || isRotateEnabled;
+  const forceRendererFallback =
+    process.env.NODE_ENV !== "production" &&
+    typeof window !== "undefined" &&
+    window.__forceEarthGlobeFallback === true;
 
   return (
-    <section className="glass-panel atlas-globe-panel relative h-full min-h-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_42%_46%,rgba(0,255,255,0.08),transparent_34%),linear-gradient(135deg,rgba(3,7,18,0.98),rgba(10,0,20,0.94))]" />
-      <div className="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(circle,rgba(0,255,255,0.36)_1px,transparent_1px)] [background-size:72px_72px]" />
-      <div className="absolute inset-0 bg-[linear-gradient(112deg,transparent_0%,rgba(234,244,255,0.018)_50%,rgba(255,0,110,0.028)_52%,transparent_59%)]" />
-      <div className="relative z-10 h-full min-h-0 p-2">
+    <section
+      className="glass-panel atlas-globe-panel relative h-full min-h-0 overflow-hidden"
+      data-earth-renderer="globe"
+    >
+      <div className="earth-globe-backdrop absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="earth-atmosphere-fallback pointer-events-none absolute inset-0"
+        data-earth-atmosphere="archive-material"
+      >
+        <picture className="earth-atmosphere-picture">
+          <source
+            media="(max-width: 1366px)"
+            srcSet="/images/earth/earth-atmosphere-archive-1280.webp"
+          />
+          <img
+            alt=""
+            className="earth-atmosphere-image"
+            decoding="async"
+            fetchPriority="low"
+            height={941}
+            loading="eager"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+            }}
+            src="/images/earth/earth-atmosphere-archive-1672.webp"
+            width={1672}
+          />
+        </picture>
+      </div>
+      <div className="earth-globe-chart-grid absolute inset-0" />
+      <div className="relative z-10 h-full min-h-0 min-w-0 p-2" ref={sizeBoundaryRef}>
         <div
           className={`real-globe-stage relative min-h-0 flex-1 overflow-hidden ${
             isGlobeInteracting ? "is-globe-interacting" : ""
           } ${isLowDetailRendering ? "is-globe-low-detail" : ""}`}
           data-camera-travelling={isCameraAnimating}
+          data-camera-controller-state={cameraState}
+          data-camera-controller-count="1"
+          data-camera-raf-active={cameraState === "programmatic-navigation"}
+          data-control-listener-count={controlListenerCount}
+          data-resize-observer-count="1"
           data-camera-mode={cameraMode}
           data-country-picking="globe-coordinates"
-          data-world-boundary-point-limit={MAX_PERSISTENT_BOUNDARY_POINTS_PER_RING}
+          data-runtime-boundary-sampling="false"
           data-world-boundary-segment-count={persistentBoundarySegmentCount}
+          data-world-boundary-max-arc-degrees={persistentBoundaryMaxArc.toFixed(3)}
           data-world-country-count={countryFeatures.length}
+          data-geography-fetch-count={geographyRepository.getDiagnostics().fetches}
+          data-geography-parse-count={geographyRepository.getDiagnostics().parses}
+          data-selected-geography-lod={activeCountryGeography?.lod ?? activeRegionGeography?.lod ?? globalGeography?.lod ?? "pending"}
+          data-marker-candidate-count={gameMarkers.length}
+          data-marker-visible-count={visibleGameMarkers.length}
           data-world-boundaries-visible={Boolean(persistentBoundaryMesh)}
+          data-safe-viewport-bottom={safeViewport.bottom.toFixed(2)}
+          data-safe-viewport-left={safeViewport.left.toFixed(2)}
+          data-safe-viewport-right={safeViewport.right.toFixed(2)}
+          data-safe-viewport-top={safeViewport.top.toFixed(2)}
           ref={containerRef}
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[min(94vw,920px)] w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,255,255,0.07),rgba(255,0,110,0.018)_46%,transparent_72%)] blur-2xl" />
+          <div className="earth-globe-orbit-halo pointer-events-none absolute left-1/2 top-1/2 h-[min(94vw,920px)] w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           <div className="earth-camera-readout" aria-live="polite">
             <span>{cameraMode === "surface" ? "深度聚焦" : "轨道总览"}</span>
             <strong>{activeCameraLabel}</strong>
@@ -802,15 +991,17 @@ export function GameGlobe({
             </div>
             </div>
           </details>
+          {forceRendererFallback ? <GlobeUnavailableState /> : (
+          <GlobeRendererBoundary>
           <ReactGlobe
             ref={globeRef}
             atmosphereAltitude={0.14}
-            atmosphereColor="#55BFC8"
+            atmosphereColor="#78978d"
             backgroundColor="rgba(0,0,0,0)"
             customLayerData={persistentBoundaryLayerData}
             onCustomLayerClick={handleCustomBoundaryClick}
             customThreeObject={getPersistentBoundaryObject}
-            enablePointerInteraction={!isLowDetailRendering}
+            enablePointerInteraction={!isCameraAnimating && !isRotateEnabled}
             globeMaterial={globeMaterial}
             height={globeSize.height}
             htmlAltitude={(marker) =>
@@ -838,26 +1029,17 @@ export function GameGlobe({
                 Math.min(window.devicePixelRatio || 1, MAX_RENDER_PIXEL_RATIO)
               );
 
-              if (controls) {
-                controlsCleanupRef.current?.();
-                configureControls();
-                controls.addEventListener("start", handleGlobeInteractionStart);
-                controls.addEventListener("end", handleGlobeInteractionEnd);
-                controlsCleanupRef.current = () => {
-                  controls.removeEventListener("start", handleGlobeInteractionStart);
-                  controls.removeEventListener("end", handleGlobeInteractionEnd);
-                };
+              if (controls) attachControlListeners();
+              isRendererReadyRef.current = true;
+              if (initialViewRevision === latestIntentRef.current.revision) {
+                navigateCamera(
+                  { ...latestIntentRef.current, motion: "immediate", source: "restore" },
+                  0,
+                  initialViewState
+                );
+              } else {
+                navigationExecutorRef.current(latestIntentRef.current, 0);
               }
-
-              setGlobePointOfView(
-                getViewportAdjustedPointOfView(
-                  selectedCountry
-                    ? getCountryFocusPointOfView(selectedCountry, cameraMode)
-                    : getRegionPointOfView(activeRegionId, cameraMode),
-                  Boolean(selectedCountry)
-                ),
-                0
-              );
             }}
             polygonsData={[]}
             rendererConfig={rendererConfig}
@@ -869,10 +1051,12 @@ export function GameGlobe({
             }}
             width={globeSize.width}
           />
+          </GlobeRendererBoundary>
+          )}
           {countryFeatures.length === 0 ? (
             <div
               aria-live="polite"
-              className="pointer-events-none absolute inset-0 grid place-items-center text-sm text-[#A99D8B]"
+              className="earth-renderer-status pointer-events-none absolute inset-0 grid place-items-center text-sm"
             >
               正在加载国家边界…
             </div>
@@ -887,14 +1071,51 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
+class GlobeRendererBoundary extends Component<
+  { children: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (this.state.failed) {
+      return <GlobeUnavailableState />;
+    }
+    return this.props.children;
+  }
+}
+
+function GlobeUnavailableState() {
+  return (
+    <div className="absolute inset-0 grid place-items-center px-8 text-center">
+      <div role="alert">
+        <strong className="earth-title block text-base">地球渲染器暂不可用</strong>
+        <p className="earth-muted mt-2 text-sm">
+          当前浏览器无法初始化 WebGL。请使用顶部返回按钮退出地球探索。
+        </p>
+      </div>
+    </div>
+  );
+}
+
+declare global {
+  interface Window {
+    __forceEarthGlobeFallback?: boolean;
+  }
+}
+
 function getNumberOrFallback(value: number | undefined, fallback: number) {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
 type BoundaryMeshOptions = {
   altitude: number;
+  cacheKey?: string;
   color: string;
-  maxPointsPerRing: number;
   opacity: number;
   renderOrder: number;
 };
@@ -903,36 +1124,9 @@ function buildBoundaryMesh(
   countryFeatures: CountryGeoJsonFeature[],
   options: BoundaryMeshOptions
 ) {
-  const positions: number[] = [];
-
-  for (const feature of countryFeatures) {
-    for (const sourceRing of getBoundaryRings(feature)) {
-      const ring = sampleBoundaryRing(sourceRing, options.maxPointsPerRing);
-      for (let index = 1; index < ring.length; index += 1) {
-        const previous = ring[index - 1];
-        const current = ring[index];
-
-        if (Math.abs(current[0] - previous[0]) > 180) {
-          continue;
-        }
-
-        const start = globeCoordinateToCartesian(
-          previous[1],
-          previous[0],
-          options.altitude
-        );
-        const end = globeCoordinateToCartesian(
-          current[1],
-          current[0],
-          options.altitude
-        );
-        positions.push(start.x, start.y, start.z, end.x, end.y, end.z);
-      }
-    }
-  }
-
-  const geometry = new BufferGeometry();
-  geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  const geometry = options.cacheKey
+    ? geographyRepository.getOrCreateGeometry(options.cacheKey, () => buildBoundaryGeometry(countryFeatures, options.altitude)).clone()
+    : buildBoundaryGeometry(countryFeatures, options.altitude);
   const material = new LineBasicMaterial({
     color: options.color,
     opacity: options.opacity,
@@ -945,77 +1139,26 @@ function buildBoundaryMesh(
   return mesh;
 }
 
-function sampleBoundaryRing(ring: number[][], maxPoints: number) {
-  if (ring.length <= maxPoints) {
-    return ring;
-  }
-
-  const lastIndex = ring.length - 1;
-  const step = Math.ceil(
-    lastIndex / (maxPoints - 1)
-  );
-  const sampled = ring.filter(
-    (_position, index) => index === 0 || index === lastIndex || index % step === 0
-  );
-
-  if (sampled.at(-1) !== ring[lastIndex]) {
-    sampled.push(ring[lastIndex]);
-  }
-
-  return sampled;
+function buildBoundaryGeometry(countryFeatures: CountryGeoJsonFeature[], altitude: number) {
+  const boundary = buildGlobeBoundaryPositions(countryFeatures, altitude);
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(boundary.positions, 3));
+  geometry.userData.maxRenderedArcDegrees = boundary.maxRenderedArcDegrees;
+  geometry.userData.maxSourceArcDegrees = boundary.maxSourceArcDegrees;
+  geometry.userData.ringCount = boundary.ringCount;
+  return geometry;
 }
 
-function getBoundaryRings(feature: CountryGeoJsonFeature): number[][][] {
-  const coordinates = feature.geometry.coordinates;
-
-  if (feature.geometry.type === "Polygon" && isPolygonCoordinates(coordinates)) {
-    return coordinates;
-  }
-
-  if (
-    feature.geometry.type === "MultiPolygon" &&
-    Array.isArray(coordinates)
-  ) {
-    return coordinates.flatMap((polygon) =>
-      isPolygonCoordinates(polygon) ? polygon : []
-    );
-  }
-
-  return [];
-}
-
-function isPolygonCoordinates(value: unknown): value is number[][][] {
-  return (
-    Array.isArray(value) &&
-    value.every(
-      (ring) =>
-        Array.isArray(ring) &&
-        ring.every(
-          (position) =>
-            Array.isArray(position) &&
-            position.length >= 2 &&
-            position.every((coordinate) => typeof coordinate === "number")
-        )
-    )
-  );
-}
-
-function globeCoordinateToCartesian(lat: number, lng: number, altitude: number) {
-  const phi = ((90 - lat) * Math.PI) / 180;
-  const theta = ((90 - lng) * Math.PI) / 180;
-  const radius = GLOBE_RADIUS * (1 + altitude);
-  const phiSin = Math.sin(phi);
-
-  return {
-    x: radius * phiSin * Math.cos(theta),
-    y: radius * Math.cos(phi),
-    z: radius * phiSin * Math.sin(theta)
-  };
+function getMarkerPerformanceTier(): "low" | "medium" | "high" {
+  if (typeof navigator === "undefined") return "high";
+  const cores = navigator.hardwareConcurrency || 4;
+  const memory = "deviceMemory" in navigator ? Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4) : 4;
+  return cores <= 4 || memory <= 4 ? "low" : cores <= 8 || memory <= 8 ? "medium" : "high";
 }
 
 function GlobeLoadingState() {
   return (
-    <div className="grid min-h-[430px] place-items-center text-sm text-[#A99D8B]">
+    <div className="earth-renderer-status grid min-h-[430px] place-items-center text-sm">
       正在启动 3D 地球…
     </div>
   );

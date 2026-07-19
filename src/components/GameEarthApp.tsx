@@ -1,8 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { BottomControls } from "@/components/controls/BottomControls";
+import { EarthProjectionViewport } from "@/components/earth/EarthProjectionViewport";
+import { useEarthSafeViewport } from "@/components/earth/useEarthSafeViewport";
 import { LandingHub } from "@/components/home/LandingHub";
 import {
   RightPanel,
@@ -10,10 +12,16 @@ import {
 } from "@/components/panels/RightPanel";
 import { gameCatalog } from "@/data/gameCatalog";
 import {
+  filterGamesByRatingRange,
   filterGamesByCountry,
   filterGamesByYearRange,
+  isGameInRatingRange,
   isGameInYearRange
 } from "@/lib/filterGames";
+import {
+  createInitialEarthViewState,
+  deriveSpatialNavigationIntent
+} from "@/lib/earthViewState";
 import {
   createExplorationReducer,
   initialExplorationState
@@ -29,6 +37,10 @@ import type {
   ViewMode,
   YearRange
 } from "@/types/game";
+import type {
+  GlobeViewState,
+  RatingRange
+} from "@/types/earth";
 
 type MainViewMode = "hub" | "earth" | "archive";
 const { countries, games, totalStats } = gameCatalog;
@@ -67,12 +79,18 @@ export function GameEarthApp() {
     activeRegionId,
     cameraMode,
     selectedCountryCode,
-    selectedGameId
+    selectedGameId,
+    selectionRevision
   } = exploration;
+  const [earthViewState, setEarthViewState] = useState(
+    createInitialEarthViewState
+  );
+  const { projectionMode } = earthViewState;
   const [yearRange, setYearRange] = useState<YearRange>({
     min: totalStats.minReleaseYear,
     max: totalStats.maxReleaseYear
   });
+  const [ratingRange, setRatingRange] = useState<RatingRange>({ min: 0, max: 10 });
   const [coverSize, setCoverSize] = useState(56);
   const [viewMode, setViewMode] = useState<ViewMode>("countries");
   const [mainViewMode, setMainViewMode] = useState<MainViewMode>("hub");
@@ -80,6 +98,13 @@ export function GameEarthApp() {
   const [isDesktopPanelOpen, setIsDesktopPanelOpen] = useState(false);
   const [mobileSheetState, setMobileSheetState] =
     useState<MobileSheetState>("collapsed");
+  const earthWorkspaceRef = useRef<HTMLElement>(null);
+  const safeViewport = useEarthSafeViewport({
+    isActive: mainViewMode === "earth",
+    isDesktopPanelOpen,
+    mobileSheetState,
+    workspaceRef: earthWorkspaceRef
+  });
 
   const selectedCountry = selectedCountryCode
     ? gameCatalog.countryByCode.get(selectedCountryCode) ?? null
@@ -88,13 +113,17 @@ export function GameEarthApp() {
     () => filterGamesByYearRange(games, yearRange),
     [yearRange]
   );
+  const sharedFilteredGames = useMemo(
+    () => filterGamesByRatingRange(yearFilteredGames, ratingRange),
+    [ratingRange, yearFilteredGames]
+  );
   const regionCountries = useMemo(
     () => filterCountriesByRegion(countries, activeRegionId),
     [activeRegionId]
   );
   const regionFilteredGames = useMemo(
-    () => filterGamesByRegion(yearFilteredGames, countries, activeRegionId),
-    [activeRegionId, yearFilteredGames]
+    () => filterGamesByRegion(sharedFilteredGames, countries, activeRegionId),
+    [activeRegionId, sharedFilteredGames]
   );
   const visibleGames = useMemo<Game[]>(() => {
     if (!selectedCountryCode) {
@@ -106,6 +135,15 @@ export function GameEarthApp() {
   const selectedGame = selectedGameId
     ? gameCatalog.gameById.get(selectedGameId) ?? null
     : null;
+  const navigationIntent = useMemo(
+    () =>
+      deriveSpatialNavigationIntent({
+        countryByCode: gameCatalog.countryByCode,
+        exploration,
+        gameById: gameCatalog.gameById
+      }),
+    [exploration]
+  );
   const sheetSummary = selectedGame
     ? selectedGame.titleZh || selectedGame.title
     : selectedCountry
@@ -144,13 +182,17 @@ export function GameEarthApp() {
   const handleSelectGameFromMap = useCallback((gameId: string) => {
     const game = gameCatalog.gameById.get(gameId);
 
-    if (!game || !isGameInYearRange(game, yearRange)) {
+    if (
+      !game ||
+      !isGameInYearRange(game, yearRange) ||
+      !isGameInRatingRange(game, ratingRange)
+    ) {
       return;
     }
 
     dispatchExploration({ type: "selectGame", gameId });
     setMobileSheetStateIfSmallViewport("peek");
-  }, [setMobileSheetStateIfSmallViewport, yearRange]);
+  }, [ratingRange, setMobileSheetStateIfSmallViewport, yearRange]);
 
   const handleSelectGameFromPanel = useCallback(
     (gameId: string | null) => {
@@ -167,10 +209,51 @@ export function GameEarthApp() {
     const currentGame = selectedGameId
       ? gameCatalog.gameById.get(selectedGameId)
       : null;
-    if (!currentGame || !isGameInYearRange(currentGame, nextRange)) {
+    if (
+      !currentGame ||
+      !isGameInYearRange(currentGame, nextRange) ||
+      !isGameInRatingRange(currentGame, ratingRange)
+    ) {
       dispatchExploration({ type: "clearGame" });
     }
-  }, [selectedGameId]);
+  }, [ratingRange, selectedGameId]);
+
+  const handleRatingRangeChange = useCallback((nextRange: RatingRange) => {
+    setRatingRange(nextRange);
+    const currentGame = selectedGameId
+      ? gameCatalog.gameById.get(selectedGameId)
+      : null;
+    if (
+      !currentGame ||
+      !isGameInYearRange(currentGame, yearRange) ||
+      !isGameInRatingRange(currentGame, nextRange)
+    ) {
+      dispatchExploration({ type: "clearGame" });
+    }
+  }, [selectedGameId, yearRange]);
+
+  const handleSettledGlobeViewState = useCallback(
+    (nextGlobeViewState: GlobeViewState, revision: number) => {
+      setEarthViewState((currentState) => {
+        const currentGlobeViewState = currentState.globeViewState;
+        if (
+          currentGlobeViewState.altitude === nextGlobeViewState.altitude &&
+          currentGlobeViewState.lat === nextGlobeViewState.lat &&
+          currentGlobeViewState.lng === nextGlobeViewState.lng &&
+          currentState.globeViewRevision === revision
+        ) {
+          return currentState;
+        }
+
+        return {
+          ...currentState,
+          globeViewRevision: revision,
+          globeViewState: nextGlobeViewState
+        };
+      });
+    },
+    []
+  );
 
   useEffect(() => {
     window.scrollTo({ left: 0, top: 0 });
@@ -189,9 +272,30 @@ export function GameEarthApp() {
       }`}
       data-main-view={mainViewMode}
       data-mobile-sheet-state={mobileSheetState}
+      data-earth-projection={mainViewMode === "earth" ? projectionMode : undefined}
+      data-earth-selection-revision={
+        mainViewMode === "earth" ? selectionRevision : undefined
+      }
+      data-earth-region={mainViewMode === "earth" ? activeRegionId : undefined}
+      data-earth-country={
+        mainViewMode === "earth" ? selectedCountryCode ?? "" : undefined
+      }
+      data-earth-game={
+        mainViewMode === "earth" ? selectedGameId ?? "" : undefined
+      }
+      data-earth-year-range={
+        mainViewMode === "earth" ? `${yearRange.min}:${yearRange.max}` : undefined
+      }
+      data-earth-rating-range={
+        mainViewMode === "earth"
+          ? `${ratingRange.min}:${ratingRange.max}`
+          : undefined
+      }
+      data-earth-cover-size={mainViewMode === "earth" ? coverSize : undefined}
+      data-earth-marker-view={mainViewMode === "earth" ? viewMode : undefined}
     >
       <div className="deep-space-backdrop pointer-events-none fixed inset-0" />
-      {mainViewMode !== "hub" ? (
+      {mainViewMode === "archive" ? (
         <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_36%_14%,rgba(0,255,255,0.10),transparent_30%),radial-gradient(circle_at_82%_20%,rgba(255,0,110,0.08),transparent_26%),radial-gradient(circle_at_52%_92%,rgba(82,65,255,0.07),transparent_36%)]" />
       ) : null}
       <div
@@ -228,62 +332,83 @@ export function GameEarthApp() {
               </svg>
             </button>
             <div className="earth-brand-lockup">
-              <span>LUDIC ATLAS</span>
-              <h1>地球探索</h1>
+              <span>ARCHIVE ORBITAL GLOBE</span>
+              <h1>Ludic Atlas <em>地球探索</em></h1>
             </div>
             <div className="earth-current-context" aria-live="polite">
-              <span>{cameraMode === "surface" ? "近地聚焦" : "全球巡览"}</span>
-              <strong>
-                {selectedCountry
-                  ? `${selectedCountry.nameZh} ${selectedCountry.name}`
-                  : getRegionLabel(activeRegionId)}
-              </strong>
+              <span>当前观测</span>
+              <strong>{selectedCountry
+                ? `${selectedCountry.nameZh} ${selectedCountry.name}`
+                : getRegionLabel(activeRegionId)}</strong>
+              <small>{cameraMode === "surface" ? "近地聚焦" : "轨道巡览"}</small>
             </div>
-            <button
-              aria-label="打开或收起国家目录"
-              aria-controls="earth-country-panel"
-              aria-expanded={isDesktopPanelOpen || mobileSheetState !== "collapsed"}
-              className="earth-directory-button"
-              onClick={() => {
-                if (window.innerWidth <= 1023) {
-                  setMobileSheetState((state) =>
-                    state === "collapsed" ? "expanded" : "collapsed"
-                  );
-                  return;
-                }
-                setIsDesktopPanelOpen((isOpen) => !isOpen);
-              }}
-              type="button"
-            >
-              <svg aria-hidden="true" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="8.5" />
-                <path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5M12 3.5C9.8 5.8 8.7 8.6 8.7 12s1.1 6.2 3.3 8.5" />
-              </svg>
-              <span>国家目录</span>
-            </button>
+            <div className="earth-command-actions">
+              <button
+                aria-label="进入游戏编年馆"
+                className="earth-chronicle-button"
+                onClick={() => setMainViewMode("archive")}
+                type="button"
+              >
+                <span>编年馆</span>
+                <small>Chronicle</small>
+              </button>
+              <button
+                aria-label="打开或收起国家目录"
+                aria-controls="earth-country-panel"
+                aria-expanded={isDesktopPanelOpen || mobileSheetState !== "collapsed"}
+                className="earth-directory-button"
+                onClick={() => {
+                  if (window.innerWidth <= 1023) {
+                    setMobileSheetState((state) =>
+                      state === "collapsed" ? "expanded" : "collapsed"
+                    );
+                    return;
+                  }
+                  setIsDesktopPanelOpen((isOpen) => !isOpen);
+                }}
+                type="button"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="8.5" />
+                  <path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5M12 3.5C9.8 5.8 8.7 8.6 8.7 12s1.1 6.2 3.3 8.5" />
+                </svg>
+                <span>国家目录</span>
+              </button>
+            </div>
           </header>
         ) : null}
 
         {mainViewMode === "earth" ? (
-          <section className="earth-workspace-grid">
-            <GameGlobe
-              countries={countries}
-              games={regionFilteredGames}
-              activeRegionId={activeRegionId}
-              cameraMode={cameraMode}
-              isRotateEnabled={isRotateEnabled}
-              selectedCountry={selectedCountry}
-              selectedGameId={selectedGameId}
-              viewMode={viewMode}
-              coverSize={coverSize}
-              onClearCountry={handleClearCountry}
-              onSelectCountry={handleSelectCountry}
-              onSelectGame={handleSelectGameFromMap}
-              onRegionChange={handleRegionChange}
-              onCameraModeChange={(nextCameraMode) =>
-                dispatchExploration({ type: "setCameraMode", cameraMode: nextCameraMode })
-              }
-              onInteractionStart={handleGlobeInteractionStart}
+          <section className="earth-workspace-grid" ref={earthWorkspaceRef}>
+            <EarthProjectionViewport
+              navigationIntent={navigationIntent}
+              projectionMode={projectionMode}
+              renderGlobe={() => (
+                <GameGlobe
+                  countries={countries}
+                  games={regionFilteredGames}
+                  initialViewRevision={earthViewState.globeViewRevision}
+                  initialViewState={earthViewState.globeViewState}
+                  navigationIntent={navigationIntent}
+                  safeViewport={safeViewport}
+                  activeRegionId={activeRegionId}
+                  cameraMode={cameraMode}
+                  isRotateEnabled={isRotateEnabled}
+                  selectedCountry={selectedCountry}
+                  selectedGameId={selectedGameId}
+                  viewMode={viewMode}
+                  coverSize={coverSize}
+                  onClearCountry={handleClearCountry}
+                  onSelectCountry={handleSelectCountry}
+                  onSelectGame={handleSelectGameFromMap}
+                  onRegionChange={handleRegionChange}
+                  onCameraModeChange={(nextCameraMode) =>
+                    dispatchExploration({ type: "setCameraMode", cameraMode: nextCameraMode })
+                  }
+                  onInteractionStart={handleGlobeInteractionStart}
+                  onSettledViewState={handleSettledGlobeViewState}
+                />
+              )}
             />
             <RightPanel
               countries={regionCountries}
@@ -293,6 +418,7 @@ export function GameEarthApp() {
               selectedCountryCode={selectedCountryCode}
               selectedGame={selectedGame}
               selectedGameId={selectedGameId}
+              selectionRevision={selectionRevision}
               sheetState={mobileSheetState}
               sheetSummary={sheetSummary}
               isDesktopOpen={isDesktopPanelOpen}
@@ -314,6 +440,7 @@ export function GameEarthApp() {
         {mainViewMode === "earth" ? (
           <BottomControls
             yearRange={yearRange}
+            ratingRange={ratingRange}
             minYear={totalStats.minReleaseYear}
             maxYear={totalStats.maxReleaseYear}
             coverSize={coverSize}
@@ -324,6 +451,7 @@ export function GameEarthApp() {
             isRotateEnabled={isRotateEnabled}
             totalGames={visibleGames.length}
             onYearRangeChange={handleYearRangeChange}
+            onRatingRangeChange={handleRatingRangeChange}
             onCoverSizeChange={setCoverSize}
             onCameraModeChange={(nextCameraMode) =>
               dispatchExploration({ type: "setCameraMode", cameraMode: nextCameraMode })

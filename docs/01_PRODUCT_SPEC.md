@@ -37,6 +37,18 @@ Ludic Atlas should use Chinese as the primary interface language.
 
 UI titles, field labels, buttons, panel headings, empty states, and explanatory copy should be written in Chinese first. English can remain as supporting information for proper nouns such as game titles, studio / company names, publisher names, platform names, and English country names.
 
+## Current Earth Explorer Delivery Scope
+
+The current `redesign-earth-explorer` delivery completes the existing 3D Orbital Globe only. “Archive Orbital Atlas / 档案式轨道地图” remains the visual brand concept, while the actual product surface in this change is a Globe-first archival observatory with no user-facing 2D/2.5D projection switch.
+
+The Globe uses a charcoal, ink-green, oxblood, oxidized-brass, aged-gold, warm-white palette with desaturated cyan reserved for low-frequency spatial feedback. Geography remains visually primary; panels and controls avoid neon HUD dominance, glass-heavy dashboard styling, repeated equal-radius cards, and competing decorative effects. Optional original text-free atmosphere/material assets may enhance the composition only after human review and must retain CSS fallbacks.
+
+The already implemented `EarthProjectionMode`, `AtlasViewState`, active-only mount contract, and inert Atlas placeholder remain as future-compatible internals. They do not make Atlas a current product capability, and the unfinished placeholder must not be reachable from normal product UI or create canvas, WebGL, animation, listener, or geography work.
+
+The complete deferred Atlas product and implementation handoff is maintained in `docs/DEFERRED_ATLAS_MAP_PLAN.md`. Its recommended future branch is `feat/add-atlas-map-renderer`, and its recommended OpenSpec Change is `add-atlas-map-renderer`.
+
+The 3D-only delivery has completed its Phase 6 functional, viewport, accessibility, failure, lifecycle, production-performance, and human visual acceptance gates. The measured evidence and environment limits are recorded in `docs/EARTH_EXPLORER_VALIDATION.md`; Atlas remains excluded from the accepted product surface.
+
 Display rules:
 
 - Countries should prefer Chinese names and may show English names as secondary information, for example `日本 Japan`.
@@ -137,7 +149,8 @@ The first version should include:
 11. Ludic Atlas landing hub with an Earth-led 58:42 desktop composition, original responsive entrance imagery, integrated collection context, preserved local view switching, and naturally scrolling mobile stacking
 12. Chronicle Reading Room for RAWG-generated global game records, with archive-owned selection, chronological year navigation, current-year feature, annual collection, and accessible dossier reading
 13. Earth Explorer region mode with Global, Europe, East Asia, North America, Latin America, Middle East, South Asia, and Oceania camera presets
-14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace with a non-overlapping command-bar row, softened deep navy / cyan / magenta visual hierarchy, an on-demand country drawer and filter tray, Overview / regional-context Surface camera modes, persistent medium-detail country boundaries, interaction-time 60 FPS rendering targets, portrait-aware camera framing, controlled zoom, region and key-country presets, up to 8 GeoJSON-constrained selected-country markers, truthful aggregation, scroll-safe game details, and mobile three-state bottom-sheet behavior
+14. Retro-Futuristic deep-space observatory system for Earth Explorer, including a globe-dominant single-viewport workspace, on-demand country drawer and filter tray, Overview / regional-context Surface camera modes, progressive Global/Region/Country boundary LOD, interaction-time 60 FPS rendering targets, portrait-aware camera framing, controlled zoom, region and key-country presets, screen-area/zoom/cover/performance-aware marker budgets (normally 10–18 for large focused countries, 6–12 for medium/small countries, and 1–4 plus explicit overflow for tiny countries), deterministic mainland-priority placement, truthful aggregation, scroll-safe game details, and mobile three-state bottom-sheet behavior
+15. Archive Orbital Atlas visual language applied to the 3D Globe, Earth-owned panels and controls, with optional original text-free atmosphere/material assets, keyboard and reduced-motion support, desktop acceptance, and mobile non-crash safety
 
 RAWG batch data may also be previewed in a global right-panel gallery when no country is selected. This gallery is a validation surface for generated records and cover display, and does not replace the country-based exploration model.
 
@@ -185,6 +198,7 @@ Do not implement these unless explicitly requested:
 - production-level API integration
 - complex AI recommendation
 - multiplayer / social features
+- production 2D/2.5D Atlas Map, OrthographicCamera renderer, planar pan/zoom/hit testing, public Globe/Atlas switch, and Atlas runtime restoration/lifecycle acceptance; see `docs/DEFERRED_ATLAS_MAP_PLAN.md`
 
 ## Success Criteria for MVP
 

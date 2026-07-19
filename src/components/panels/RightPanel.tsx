@@ -18,6 +18,7 @@ type RightPanelProps = {
   selectedCountryCode: string | null;
   selectedGame: Game | null;
   selectedGameId: string | null;
+  selectionRevision: number;
   sheetState: MobileSheetState;
   sheetSummary: string;
   isDesktopOpen: boolean;
@@ -37,6 +38,7 @@ export function RightPanel({
   selectedCountryCode,
   selectedGame,
   selectedGameId,
+  selectionRevision,
   sheetState,
   sheetSummary,
   isDesktopOpen,
@@ -48,6 +50,7 @@ export function RightPanel({
   onSheetStateChange
 }: RightPanelProps) {
   const panelRef = useRef<HTMLElement>(null);
+  const gameDetailRef = useRef<HTMLDivElement>(null);
   const dragStartYRef = useRef<number | null>(null);
   const suppressHandleClickRef = useRef(false);
   const [isWideViewport, setIsWideViewport] = useState(false);
@@ -65,27 +68,39 @@ export function RightPanel({
   }, []);
 
   useEffect(() => {
-    if (!isGameDetailOpen) {
+    if (!isGameDetailOpen && !isDesktopOpen && sheetState === "collapsed") {
       return;
     }
 
-    panelRef.current?.scrollTo({ left: 0, top: 0 });
+    if (isGameDetailOpen) {
+      panelRef.current?.scrollTo({ left: 0, top: 0 });
+      requestAnimationFrame(() => {
+        gameDetailRef.current?.querySelector<HTMLElement>("button")?.focus();
+      });
+    }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onSelectGame(null);
+        if (isGameDetailOpen) {
+          onSelectGame(null);
+        } else if (isWideViewport) {
+          onRequestClose();
+        } else {
+          onSheetStateChange("collapsed");
+        }
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isGameDetailOpen, onSelectGame]);
+  }, [isDesktopOpen, isGameDetailOpen, isWideViewport, onRequestClose, onSelectGame, onSheetStateChange, sheetState]);
 
   return (
     <aside
       aria-label={panelTitle}
       aria-hidden={isWideViewport && !isDesktopOpen ? true : undefined}
+      data-selection-revision={selectionRevision}
       data-sheet-state={sheetState}
       inert={isWideViewport && !isDesktopOpen ? true : undefined}
       id="earth-country-panel"
@@ -228,7 +243,9 @@ export function RightPanel({
         >
           <div
             className="game-detail-layer-card"
+            data-selection-revision={selectionRevision}
             onMouseDown={(event) => event.stopPropagation()}
+            ref={gameDetailRef}
           >
             <GameDetailCard
               game={selectedGame}

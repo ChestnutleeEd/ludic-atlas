@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   filterGamesByCountry,
+  filterGamesByRatingRange,
   filterGamesByYearRange,
+  isGameInRatingRange,
   isGameInYearRange
 } from "../src/lib/filterGames.ts";
 import {
@@ -73,7 +75,7 @@ test("total statistics ignore invalid years and handle an empty catalog", () => 
   });
 });
 
-test("country and year filters preserve catalog order", () => {
+test("country, year, and rating filters preserve catalog order", () => {
   assert.deepEqual(
     filterGamesByCountry(games, "JP").map((game) => game.id),
     ["jp-action", "jp-rpg"]
@@ -88,6 +90,13 @@ test("country and year filters preserve catalog order", () => {
     isGameInYearRange(games[0], { min: 2019, max: 2022 }),
     false
   );
+  assert.deepEqual(
+    filterGamesByRatingRange(games, { min: 8, max: 9 }).map(
+      (game) => game.id
+    ),
+    ["jp-action", "us-rpg"]
+  );
+  assert.equal(isGameInRatingRange(games[1], { min: 8, max: 10 }), false);
 });
 
 test("cover selection uses the first valid source and falls back safely", () => {

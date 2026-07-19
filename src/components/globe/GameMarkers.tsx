@@ -1,26 +1,35 @@
 import { getGameTooltipMarkup } from "@/components/globe/GameTooltip";
 import {
-  getCountrySafeMarkerSlots,
-  getDistributedGlobeCoordinates,
-  type CountryGeoJsonFeature
+  getDistributedGlobeCoordinates
 } from "@/lib/geo";
+import {
+  getComponentAwareMarkerSlots,
+  type NormalizedGeographicFeature
+} from "@/lib/geography";
 import {
   FALLBACK_GAME_COVER_IMAGE,
   getGameCoverImage
 } from "@/lib/gameCover";
 import { selectStableMarkerGames } from "@/lib/globeMarkerModel";
 import {
+  calculateMarkerBudget,
+  estimateProjectedCountryArea,
+  type MarkerPerformanceTier
+} from "@/lib/markerLayout";
+import {
   getCountryDisplayName,
   getGameMarkerLabel,
   getGameSecondaryTitle
 } from "@/lib/localization";
 import type { Country, Game, RegionId, ViewMode } from "@/types/game";
+import type { SafeViewport } from "@/types/earth";
 
 export type GlobeGameMarker = {
   kind: "game";
   game: Game;
   lat: number;
   lng: number;
+  layoutIdentity: string;
   markerStyle: "card" | "dot";
   markerLayer:
     | "country-aggregate"
@@ -32,6 +41,7 @@ export type GlobeGameMarker = {
   countryLabel: string;
   countryGameCount: number;
   overflowCount: number;
+  clusterState: "none" | "collapsed" | "expanded";
   sameCountryIndex: number;
   sameCountrySelected: boolean;
   selectsCountry: boolean;
@@ -54,7 +64,13 @@ type BuildGameMarkersOptions = {
   activeRegionId: RegionId;
   countries: Country[];
   games: Game[];
-  countryFeatureByCode?: Map<string, CountryGeoJsonFeature>;
+  normalizedFeatureByCode?: Map<string, NormalizedGeographicFeature>;
+  altitude?: number;
+  coverSize?: number;
+  performanceTier?: MarkerPerformanceTier;
+  safeViewport?: SafeViewport;
+  settled?: boolean;
+  expandedTinyCountryCode?: string | null;
   selectedCountryCode: string | null;
   selectedGameId: string | null;
   viewMode: ViewMode;
@@ -73,18 +89,22 @@ type CreateGameMarkerElementOptions = {
   onHoverCountry: (countryCode: string | null) => void;
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
+  onToggleTinyCluster?: (countryCode: string) => void;
 };
 
-const GLOBAL_MARKERS_PER_COUNTRY = 1;
-const REGION_MARKERS_PER_COUNTRY = 6;
-const SELECTED_COUNTRY_MARKER_LIMIT = 8;
 const HIGH_RATING_THRESHOLD_TEN_POINT = 9;
 const HIGH_RATING_THRESHOLD_FIVE_POINT = 4.5;
 
 export function buildGameMarkers({
   activeRegionId,
   countries,
-  countryFeatureByCode,
+  normalizedFeatureByCode,
+  altitude = 1.36,
+  coverSize = 72,
+  performanceTier = "high",
+  safeViewport = { availableHeight: 720, availableWidth: 1280, bottom: 0, centerX: 640, centerY: 360, height: 720, left: 0, right: 0, top: 0, width: 1280 },
+  settled = true,
+  expandedTinyCountryCode = null,
   games,
   selectedCountryCode,
   selectedGameId,
@@ -106,12 +126,6 @@ export function buildGameMarkers({
 
     return acc;
   }, new Map());
-  const markerLimit = selectedCountryCode
-    ? SELECTED_COUNTRY_MARKER_LIMIT
-    : activeRegionId === "global"
-      ? GLOBAL_MARKERS_PER_COUNTRY
-      : REGION_MARKERS_PER_COUNTRY;
-
   const sortedCountryGroups = [...gamesByCountry.entries()].map(
     ([countryCode, countryGames]) => ({
       countryCode,
@@ -130,15 +144,27 @@ export function buildGameMarkers({
       if (!country) {
         return [];
       }
-
-      const safeSlots = selectedCountryCode && countryFeatureByCode?.get(country.code)
-        ? getCountrySafeMarkerSlots(
-            countryFeatureByCode.get(country.code)!,
-            country,
-            markerLimit
-          )
+      const normalizedFeature = normalizedFeatureByCode?.get(country.code);
+      const geographicArea = normalizedFeature?.components.reduce((sum, component) => sum + component.area, 0) ?? 8;
+      const projectedAreaPx = estimateProjectedCountryArea({ altitude, geographicArea, safeViewport });
+      const markerBudget = calculateMarkerBudget({
+        altitude,
+        coverSize,
+        explorationLevel: selectedCountryCode ? "country" : activeRegionId === "global" ? "global" : "region",
+        filteredGameCount: sortedGames.length,
+        geographicArea,
+        performanceTier,
+        projectedAreaPx,
+        projectionMode: "globe",
+        settled
+      });
+      const isExpandedTiny = markerBudget.sizeClass === "tiny" && expandedTinyCountryCode === country.code;
+      const effectiveLimit = markerBudget.sizeClass === "tiny" && !isExpandedTiny
+        ? Math.min(1, markerBudget.budget)
+        : markerBudget.budget;
+      const safeSlots = normalizedFeature
+        ? getComponentAwareMarkerSlots(normalizedFeature, effectiveLimit, markerBudget.candidateLimit)
         : null;
-      const effectiveLimit = safeSlots ? Math.min(markerLimit, safeSlots.length) : markerLimit;
       const representativeGames = selectStableMarkerGames(
         sortedGames,
         effectiveLimit,
@@ -176,12 +202,16 @@ export function buildGameMarkers({
           game,
           lat: coordinates.lat,
           lng: coordinates.lng,
+          layoutIdentity: `${country.code}:${game.id}:${coordinates.lat.toFixed(6)}:${coordinates.lng.toFixed(6)}`,
           markerStyle: markerLayer === "country-aggregate" ? "dot" : "card",
           markerLayer,
           selected,
           hovered: false,
           countryLabel: getCountryDisplayName(country),
           countryGameCount,
+          clusterState: markerBudget.sizeClass === "tiny"
+            ? isExpandedTiny ? "expanded" : "collapsed"
+            : "none",
           overflowCount:
             index === representativeGames.length - 1
               ? Math.max(0, countryGameCount - representativeGames.length)
@@ -222,7 +252,8 @@ export function createGameMarkerElement({
   renderCoverMarkers = true,
   onHoverCountry,
   onSelectCountry,
-  onSelectGame
+  onSelectGame,
+  onToggleTinyCluster
 }: CreateGameMarkerElementOptions) {
   return (markerObject: object) => {
     const marker = markerObject as GlobeHtmlMarker;
@@ -263,14 +294,21 @@ export function createGameMarkerElement({
     element.style.height = `${height}px`;
     element.title = getGameMarkerTitle(marker, markerTitle, secondaryTitle);
     element.dataset.markerLayer = marker.markerLayer;
+    element.dataset.baseMarkerLayer = marker.markerLayer;
+    element.dataset.countryCode = marker.game.countryCode;
+    element.dataset.gameId = marker.game.id;
     element.dataset.markerLat = marker.lat.toFixed(6);
     element.dataset.markerLng = marker.lng.toFixed(6);
+    element.dataset.markerLayoutId = marker.layoutIdentity;
     element.dataset.gameCount = String(marker.countryGameCount);
     element.dataset.overflowCount = String(marker.overflowCount);
+    element.dataset.clusterState = marker.clusterState;
+    if (marker.clusterState !== "none") element.setAttribute("aria-expanded", String(marker.clusterState === "expanded"));
     element.setAttribute(
       "aria-label",
       getGameMarkerAriaLabel(marker, markerTitle)
     );
+    element.setAttribute("aria-pressed", String(marker.selected));
 
     if (isCoverMarker) {
       element.innerHTML = getCoverMarkerMarkup(
@@ -288,6 +326,10 @@ export function createGameMarkerElement({
     element.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
+      if (marker.clusterState !== "none" && marker.overflowCount > 0 && onToggleTinyCluster) {
+        onToggleTinyCluster(marker.game.countryCode);
+        return;
+      }
       if (marker.selectsCountry) {
         onSelectCountry(marker.game.countryCode);
         return;
@@ -318,6 +360,21 @@ export function createGameMarkerElement({
 
     return element;
   };
+}
+
+/** Updates selection in place so three-globe does not recreate cover and image nodes. */
+export function updateGameMarkerSelection(
+  container: HTMLElement,
+  selectedGameId: string | null
+) {
+  for (const marker of container.querySelectorAll<HTMLElement>(".globe-game-marker[data-game-id]")) {
+    const selected = marker.dataset.gameId === selectedGameId;
+    marker.classList.toggle("is-selected", selected);
+    marker.setAttribute("aria-pressed", String(selected));
+    marker.dataset.markerLayer = selected
+      ? "selected-game"
+      : marker.dataset.baseMarkerLayer ?? "selected-country";
+  }
 }
 
 function createCountryMarkerElement({
@@ -368,7 +425,7 @@ function getCoverMarkerMarkup(
   loadCoverImages: boolean
 ) {
   const coverImage = getGameCoverImage(marker.game);
-  const loadingMode = marker.sameCountrySelected ? "eager" : "lazy";
+  const loadingMode = marker.selected || marker.sameCountryIndex < 3 ? "eager" : "lazy";
   const coverImageMarkup = loadCoverImages
     ? `<img class="globe-game-cover-image ${coverImage === FALLBACK_GAME_COVER_IMAGE ? "is-fallback" : ""}" alt="" width="160" height="220" data-fallback-src="${escapeAttribute(FALLBACK_GAME_COVER_IMAGE)}" decoding="async" loading="${loadingMode}" src="${escapeAttribute(coverImage)}">`
     : "";
@@ -379,6 +436,7 @@ function getCoverMarkerMarkup(
 
   return `
     <span class="globe-game-cover">
+      <span class="globe-game-cover-fallback" aria-hidden="true">${escapeHtml(getGameMarkerLabel(marker.game).slice(0, 2).toLocaleUpperCase())}</span>
       ${coverImageMarkup}
       <span class="globe-game-cover-shine"></span>
       ${marker.overflowCount > 0 ? `<span class="globe-marker-overflow" aria-hidden="true">+${marker.overflowCount}</span>` : ""}
@@ -457,6 +515,7 @@ function installCoverFallback(element: HTMLElement) {
     const fallbackSource = image.dataset.fallbackSrc;
 
     if (!fallbackSource || image.dataset.fallbackApplied === "true") {
+      element.classList.add("is-cover-failed");
       image.style.display = "none";
       return;
     }

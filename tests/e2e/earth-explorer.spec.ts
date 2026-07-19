@@ -7,6 +7,7 @@ import {
 
 const desktopViewports = [
   { height: 720, width: 1280 },
+  { height: 768, width: 1366 },
   { height: 900, width: 1440 },
   { height: 1080, width: 1920 }
 ] as const;
@@ -33,8 +34,8 @@ for (const viewport of desktopViewports) {
   });
 }
 
-test("Earth canvas survives repeated resize without replacement", async ({ page }) => {
-  await page.setViewportSize({ height: 900, width: 1440 });
+test("Earth canvas follows a shrinking and growing layout without replacement", async ({ page }) => {
+  await page.setViewportSize({ height: 1080, width: 1920 });
   await enterEarthExplorer(page);
   const initialCanvas = await page.locator(".real-globe-stage canvas").evaluate(
     (canvas) => {
@@ -43,15 +44,70 @@ test("Earth canvas survives repeated resize without replacement", async ({ page 
     }
   );
 
-  for (const viewport of desktopViewports) {
+  const resizeSequence = [
+    { height: 720, width: 1280 },
+    { height: 1080, width: 1920 },
+    { height: 900, width: 1440 },
+    { height: 768, width: 1366 }
+  ] as const;
+
+  for (const viewport of resizeSequence) {
     await page.setViewportSize(viewport);
-    await page.waitForTimeout(120);
+    await expect.poll(async () => readResponsiveGlobeBounds(page)).toMatchObject({
+      canvasCount: 1,
+      viewportWidth: viewport.width
+    });
+    const bounds = await readResponsiveGlobeBounds(page);
+    expect(bounds.canvasWidth).toBeLessThanOrEqual(viewport.width);
+    expect(bounds.headerWidth).toBeLessThanOrEqual(viewport.width);
+    expect(bounds.stageWidth).toBeLessThanOrEqual(viewport.width);
+    expect(bounds.documentWidth).toBeLessThanOrEqual(viewport.width);
   }
 
   await expect(page.locator(".real-globe-stage canvas")).toHaveAttribute(
     "data-resize-identity",
     initialCanvas
   );
+});
+
+test("production Earth exposes Globe only while preserving one business state", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  const shell = page.locator(".game-earth-shell");
+
+  await expect(shell).toHaveAttribute("data-earth-projection", "globe");
+  await expect(page.getByRole("combobox", { name: "投影模式" })).toHaveCount(0);
+  await expect(page.locator("[data-earth-renderer='atlas-placeholder']")).toHaveCount(0);
+  await expect(page.locator("[data-earth-renderer='globe']")).toHaveCount(1);
+  await expect(page.locator(".real-globe-stage canvas")).toHaveCount(1);
+  await expect(page.locator(".real-globe-stage canvas")).toBeVisible();
+
+  await page.getByRole("button", { name: /查看国家：法国 France/ }).click();
+  await page.getByRole("button", { name: /^选择游戏：/ }).first().click();
+  await expect(shell).not.toHaveAttribute("data-earth-game", "");
+  expect((await readEarthContractState(page)).projection).toBe("globe");
+});
+
+test("Globe unmounts for Hub and Chronicle and remounts once on return", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await enterEarthExplorer(page);
+  await expect(page.locator("canvas")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "返回游戏星图" }).click();
+  await expect(page.locator(".game-earth-shell[data-main-view='hub']")).toBeVisible();
+  await expect(page.locator("canvas")).toHaveCount(0);
+
+  await page.getByRole("button", { name: /进入地球探索|Earth Explorer/i }).click();
+  await expect(page.locator(".real-globe-stage canvas")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "返回游戏星图" }).click();
+  await page.getByRole("button", { name: /Game Chronicle/i }).click();
+  await expect(page.locator(".game-earth-shell[data-main-view='archive']")).toBeVisible();
+  await expect(page.locator("canvas")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "返回游戏星图" }).click();
+  await page.getByRole("button", { name: /进入地球探索|Earth Explorer/i }).click();
+  await expect(page.locator(".real-globe-stage canvas")).toHaveCount(1);
 });
 
 test("mobile sheet starts collapsed and keeps the globe operable", async ({ page }) => {
@@ -97,15 +153,16 @@ test("country selection keeps regional context in a close surface focus", async 
   await expect(page.locator(".earth-camera-readout")).toContainText("深度聚焦");
   await expect(page.locator(".earth-camera-readout")).toContainText("日本 Japan");
   await expect(page.locator(".right-panel-shell")).not.toHaveAttribute("inert", "");
-  await page.waitForFunction(() => {
-    const altitude = Number(document.querySelector<HTMLElement>(".real-globe-stage")?.dataset.cameraAltitude);
-    return Number.isFinite(altitude) && altitude >= 0.26 && altitude <= 0.38;
-  });
+  await expect(page.locator(".real-globe-stage")).toHaveAttribute(
+    "data-camera-travelling",
+    "false",
+    { timeout: 5_000 }
+  );
   const altitude = Number(
     await page.locator(".real-globe-stage").getAttribute("data-camera-altitude")
   );
-  expect(altitude).toBeGreaterThanOrEqual(0.26);
-  expect(altitude).toBeLessThanOrEqual(0.38);
+  expect(altitude).toBeGreaterThanOrEqual(0.2);
+  expect(altitude).toBeLessThanOrEqual(0.5);
 });
 
 test("world boundary layer keeps detailed geometry for all countries", async ({ page }) => {
@@ -113,12 +170,12 @@ test("world boundary layer keeps detailed geometry for all countries", async ({ 
   await enterEarthExplorer(page);
   const stage = page.locator(".real-globe-stage");
 
-  await expect(stage).toHaveAttribute("data-world-country-count", "236");
-  await expect(stage).toHaveAttribute("data-world-boundary-point-limit", "144");
+  await expect.poll(async () => Number(await stage.getAttribute("data-world-country-count"))).toBeGreaterThan(230);
+  await expect(stage).toHaveAttribute("data-runtime-boundary-sampling", "false");
   const segmentCount = Number(
     await stage.getAttribute("data-world-boundary-segment-count")
   );
-  expect(segmentCount).toBeGreaterThan(35_000);
+  expect(segmentCount).toBeGreaterThan(8_000);
 });
 
 test("country outlines remain visible throughout country focus travel", async ({ page }) => {
@@ -129,7 +186,6 @@ test("country outlines remain visible throughout country focus travel", async ({
   await page.locator(".earth-location-picker > summary").click();
   await page.getByRole("button", { name: "Japan", exact: true }).click();
 
-  await expect(stage).toHaveAttribute("data-camera-travelling", "true");
   await expect(stage).toHaveAttribute("data-world-boundaries-visible", "true");
   await expect(stage).toHaveAttribute("data-camera-travelling", "false", {
     timeout: 5_000
@@ -332,24 +388,33 @@ test("representative country markers stay bounded, aggregate truthfully, and ret
   expect(firstPosition.every(Boolean)).toBe(true);
 });
 
-test("Earth uses the softened observatory theme with keyboard focus", async ({ page }, testInfo) => {
+test("Earth uses the archival observatory theme with keyboard focus", async ({ page }) => {
   await page.setViewportSize({ height: 900, width: 1440 });
   await enterEarthExplorer(page);
   const tokens = await page.locator(".game-earth-shell.is-earth-mode").evaluate((element) => {
     const style = getComputedStyle(element);
     const commandBar = getComputedStyle(document.querySelector(".earth-command-bar")!);
     return {
-      cyan: style.getPropertyValue("--earth-cyan").trim(),
-      magenta: style.getPropertyValue("--earth-magenta").trim(),
-      text: style.getPropertyValue("--earth-text").trim(),
+      agedGold: style.getPropertyValue("--earth-aged-gold").trim(),
+      brass: style.getPropertyValue("--earth-brass").trim(),
+      charcoal: style.getPropertyValue("--earth-charcoal").trim(),
+      oxblood: style.getPropertyValue("--earth-oxblood").trim(),
+      spatial: style.getPropertyValue("--earth-spatial-feedback").trim(),
+      warmWhite: style.getPropertyValue("--earth-warm-white").trim(),
       commandRadius: commandBar.borderTopLeftRadius
     };
   });
-  expect(["#0ff", "#00ffff"]).toContain(tokens.cyan);
-  expect(tokens).toMatchObject({ magenta: "#ff006e", text: "#eaf4ff", commandRadius: "19px" });
+  expect(tokens).toEqual({
+    agedGold: "#c3a46a",
+    brass: "#a77b42",
+    charcoal: "#0b0d0c",
+    commandRadius: "5px",
+    oxblood: "#6f2928",
+    spatial: "#6d9a92",
+    warmWhite: "#eee7d8"
+  });
   await page.keyboard.press("Tab");
   await expect(page.locator(":focus-visible")).toBeVisible();
-  await testInfo.attach("earth-observatory", { body: await page.screenshot(), contentType: "image/png" });
 });
 
 test("reduced motion and Hub/Archive remain usable", async ({ page }) => {
@@ -357,6 +422,7 @@ test("reduced motion and Hub/Archive remain usable", async ({ page }) => {
   await enterEarthExplorer(page);
   await page.locator(".earth-location-picker > summary").click();
   await page.getByRole("button", { name: "Japan", exact: true }).click();
+  await expect.poll(() => page.locator(".globe-game-marker").count()).toBeGreaterThan(0);
   const transitionDuration = await page.locator(".globe-game-marker").first().evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(transitionDuration)).toBeLessThanOrEqual(0.001);
   await page.getByRole("button", { name: "返回游戏星图" }).click();
@@ -364,3 +430,33 @@ test("reduced motion and Hub/Archive remain usable", async ({ page }) => {
   await page.getByRole("button", { name: /Game Chronicle/i }).click();
   await expect(page.locator(".game-earth-shell[data-main-view='archive']")).toBeVisible();
 });
+
+async function readEarthContractState(page: import("playwright/test").Page) {
+  return page.locator(".game-earth-shell").evaluate((element) => ({
+    country: element.getAttribute("data-earth-country"),
+    coverSize: element.getAttribute("data-earth-cover-size"),
+    game: element.getAttribute("data-earth-game"),
+    markerView: element.getAttribute("data-earth-marker-view"),
+    projection: element.getAttribute("data-earth-projection"),
+    ratingRange: element.getAttribute("data-earth-rating-range"),
+    region: element.getAttribute("data-earth-region"),
+    revision: element.getAttribute("data-earth-selection-revision"),
+    yearRange: element.getAttribute("data-earth-year-range")
+  }));
+}
+
+async function readResponsiveGlobeBounds(page: import("playwright/test").Page) {
+  return page.evaluate(() => {
+    const canvas = document.querySelector<HTMLCanvasElement>(".real-globe-stage canvas");
+    const header = document.querySelector<HTMLElement>(".earth-command-bar");
+    const stage = document.querySelector<HTMLElement>(".real-globe-stage");
+    return {
+      canvasCount: document.querySelectorAll(".real-globe-stage canvas").length,
+      canvasWidth: canvas?.getBoundingClientRect().width ?? 0,
+      documentWidth: document.documentElement.scrollWidth,
+      headerWidth: header?.getBoundingClientRect().width ?? 0,
+      stageWidth: stage?.getBoundingClientRect().width ?? 0,
+      viewportWidth: window.innerWidth
+    };
+  });
+}

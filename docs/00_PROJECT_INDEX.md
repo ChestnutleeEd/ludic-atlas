@@ -47,6 +47,8 @@ If the task involves product scope, read:
 | `docs/04_DATA_SCHEMA.md`   | Game, country, genre, and filter data structures   |
 | `docs/05_TASK_LOG.md`      | Iteration log and major change history             |
 | `docs/06_CODEX_RULES.md`   | Detailed execution rules for Codex                 |
+| `docs/DEFERRED_ATLAS_MAP_PLAN.md` | Complete deferred 2D/2.5D Atlas product, architecture, requirements, tasks, and resumption handoff |
+| `docs/EARTH_EXPLORER_VALIDATION.md` | Phase 6 functional, viewport, production performance, accessibility, lifecycle, and verification evidence |
 | `docs/agents/`             | Engineering-skill issue tracker, triage, and domain-doc configuration |
 | `docs/releases/`           | Versioned GitHub release notes and release documentation |
 | `docs/assets/preview.png`  | Legacy README project preview image for GitHub     |
@@ -60,13 +62,14 @@ If the task involves product scope, read:
 | `src/components/`          | Main product shell and shared UI components               |
 | `src/components/home/`     | Ludic Atlas landing hub and product entrance components   |
 | `src/components/archive/`  | Game Chronicle timeline browsing components               |
+| `src/components/earth/`    | Globe-default active renderer boundary and inert future-Atlas compatibility placeholder |
 | `src/components/globe/`    | 3D earth, country layer, game cover markers               |
 | `src/components/panels/`   | Country list, country detail, game detail panels          |
 | `src/components/controls/` | Bottom controls, year slider, cover size slider           |
 | `src/data/`                | Local country data, generated game data entrypoint, and stable mock fallback data |
 | `src/lib/`                 | Filtering, statistics, country mapping, region / camera presets, utility functions |
 | `src/types/`               | TypeScript data types                                     |
-| `public/`                  | Static assets, including lightweight world / MVP GeoJSON country borders under `public/data/`, original generated homepage entrance imagery under `public/images/home/`, Game Chronicle SVG textures under `public/textures/`, Game Chronicle generated background imagery under `public/images/archive/`, RAWG cached covers under `public/covers/rawg/`, the shared fallback cover at `public/covers/fallback-game-cover.svg`, and future game cover images under `public/covers/` |
+| `public/`                  | Static assets, including deterministic Global/Region/Country geography LOD under `public/data/earth-lod/`, retained source/MVP GeoJSON under `public/data/`, homepage/archive imagery and RAWG/fallback covers |
 | `scripts/`                 | Local data generation scripts, including RAWG static data generation and RAWG cover caching |
 | `docs/`                    | Project planning and architecture documents               |
 | `tests/`                   | Node-native state / geometry / camera tests plus Playwright homepage and Earth Explorer browser tests under `tests/e2e/` |
@@ -161,12 +164,17 @@ http://localhost:3000
 | Homepage Earth Explorer hero | `public/images/home/earth-explorer-archive.webp` |
 | Homepage Game Chronicle hero | `public/images/home/game-chronicle-archive.webp` |
 | Homepage asset metadata | `public/images/home/README.md` |
+| Earth Explorer atmosphere assets | `public/images/earth/earth-atmosphere-archive-1280.webp`, `public/images/earth/earth-atmosphere-archive-1672.webp` |
+| Earth Explorer atmosphere metadata | `public/images/earth/README.md` |
 | MVP country border data | `public/data/mock-countries.geojson` |
 | Lightweight world country border data | `public/data/world-countries-lite.geojson` |
 | Full source country border data | `public/data/countries.geojson` |
 | Legacy README preview image | `docs/assets/preview.png` |
 | Current README screenshots | `docs/assets/readme/` |
 | Shared types         | `src/types/game.ts`               |
+| Earth state types    | `src/types/earth.ts`              |
+| Earth view / navigation contract | `src/lib/earthViewState.ts` |
+| Active projection viewport | `src/components/earth/EarthProjectionViewport.tsx` |
 | Game cover helper    | `src/lib/gameCover.ts`            |
 | Filtering logic      | `src/lib/filterGames.ts`          |
 | Statistics logic     | `src/lib/stats.ts`                |
@@ -195,6 +203,7 @@ http://localhost:3000
 | Archive browser tests | `tests/e2e/game-archive.spec.ts` |
 | Legacy 2.5D earth map view | `src/components/globe/GameGlobe2D.tsx`        |
 | 3D earth view             | `src/components/globe/GameGlobe.tsx`           |
+| Globe boundary geodesic builder | `src/lib/globeBoundary.ts`              |
 | Game cover markers        | `src/components/globe/GameMarkers.tsx`         |
 | Game hover tooltip        | `src/components/globe/GameTooltip.tsx`         |
 | Right panel wrapper       | `src/components/panels/RightPanel.tsx`         |
@@ -219,7 +228,21 @@ http://localhost:3000
 | Region / camera helpers   | `src/lib/regions.ts`                           |
 | Atomic Earth exploration state | `src/lib/explorerState.ts`               |
 | Cancellable globe camera animation | `src/lib/globeCamera.ts`              |
+| Globe semantic camera fitting | `src/lib/globeNavigation.ts`              |
+| Earth safe viewport calculation | `src/lib/safeViewport.ts`              |
+| Layout-owned safe viewport measurement | `src/components/earth/useEarthSafeViewport.ts` |
 | Stable marker selection model | `src/lib/globeMarkerModel.ts`              |
 | Earth browser regression suite | `tests/e2e/earth-explorer.spec.ts`       |
+| Globe stability browser suite | `tests/e2e/globe-stability.spec.ts`       |
+| Phase 3 marker/LOD browser suite | `tests/e2e/marker-lod.spec.ts`         |
+| Phase 4 Globe visual/interaction suite | `tests/e2e/globe-visual-phase4.spec.ts` |
+| Phase 5 atmosphere delivery/fallback suite | `tests/e2e/earth-atmosphere-phase5.spec.ts` |
+| Phase 6 comprehensive validation suite | `tests/e2e/earth-phase6-validation.spec.ts` |
+| Phase 6 validation and performance record | `docs/EARTH_EXPLORER_VALIDATION.md` |
+| Normalized geography model | `src/lib/geography.ts`                    |
+| Geography repository/cache | `src/lib/geographyRepository.ts`          |
+| Marker budget/collision engine | `src/lib/markerLayout.ts`              |
+| Phase 4 repair unit/browser regressions | `tests/globe-phase4-repair.test.ts`, `tests/e2e/globe-phase4-repair.spec.ts` |
+| Offline geography LOD generator | `scripts/generate-earth-lod.mjs`      |
 | Playwright configuration  | `playwright.config.ts`                         |
 | Search logic              | `src/lib/search.ts`                            |

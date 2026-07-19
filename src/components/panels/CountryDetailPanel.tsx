@@ -24,7 +24,7 @@ type CountryDetailPanelProps = {
   onSelectGame: (gameId: string | null) => void;
 };
 
-const DETAIL_GAME_LIMIT = 12;
+const DETAIL_GAME_LIMIT = 24;
 
 export function CountryDetailPanel({
   country,
@@ -57,7 +57,10 @@ export function CountryDetailPanel({
         return ratingDifference;
       }
 
-      return gameB.releaseYear - gameA.releaseYear;
+      const yearDifference = gameB.releaseYear - gameA.releaseYear;
+      return yearDifference !== 0
+        ? yearDifference
+        : gameA.id.localeCompare(gameB.id);
     })
     .slice(0, DETAIL_GAME_LIMIT);
   const stats = getCountryStats(country, games);
@@ -122,7 +125,9 @@ export function CountryDetailPanel({
               当前年份：{yearRange.min}-{yearRange.max}；封面 marker 代表可点击游戏
             </p>
           </div>
-          <span>{countryGames.length} 款</span>
+          <span>
+            显示 {displayedCountryGames.length}/{countryGames.length} 款
+          </span>
         </div>
 
         {countryGames.length === 0 ? (
@@ -151,6 +156,7 @@ export function CountryDetailPanel({
                   <span className="country-game-cover">
                     <img
                       alt={`${title} 封面`}
+                      height="240"
                       loading="lazy"
                       onError={(event) => {
                         if (
@@ -162,6 +168,7 @@ export function CountryDetailPanel({
                         }
                       }}
                       src={coverImage}
+                      width="180"
                     />
                   </span>
                   <span className="country-game-card-copy">

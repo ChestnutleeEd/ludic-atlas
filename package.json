@@ -11,6 +11,7 @@
     "data:covers:compress": "node scripts/compress-rawg-covers.mjs",
     "data:enrich": "node scripts/enrich-rawg-details.mjs",
     "data:apply-countries": "node scripts/apply-country-inference.mjs",
+    "data:geo-lod": "node scripts/generate-earth-lod.mjs",
     "data:infer-countries:dry": "node scripts/infer-game-countries-with-ollama.mjs",
     "build": "next build",
     "lint": "eslint .",

@@ -76,6 +76,8 @@ export type YearRange = {
 };
 ```
 
+Earth-only renderer and navigation state lives in `src/types/earth.ts`. It defines `EarthProjectionMode`, independent settled `GlobeViewState` / `AtlasViewState` snapshots, `EarthViewState`, `RatingRange`, `EarthFilterState`, `SafeViewport`, and revisioned `SpatialNavigationIntent`. These types do not change `Game` or `Country`, and they deliberately exclude Three.js camera, controls, scene, and renderer instances.
+
 ## Region / Camera Config
 
 File: `src/lib/regions.ts`
@@ -444,6 +446,14 @@ Implemented functions:
 
 - `filterGamesByCountry`
 - `filterGamesByYearRange`
+
+## Generated geography LOD
+
+`public/data/earth-lod/manifest.json` records the immutable source hash and deterministic generated outputs. Global is the startup boundary set, region bundles replace matching countries at medium detail, and `countries/{ISO2}.geojson` supplies selected-country detail. Runtime normalization adds stable component IDs, antimeridian-aware rings, bounds, approximate area, an interior anchor, catalog-anchor containment and source LOD metadata without changing the source `Country` or `Game` records.
+
+Generated LOD is derived data: rerun `npm run data:geo-lod`; never edit it as source and never overwrite `public/data/countries.geojson`.
+
+The accepted generated set contains one Global artifact, eight Region bundles, 238 Country files, and one manifest, totaling approximately 5.68 MB on disk. Phase 6 production navigation requested only the four resources required by Global → France → Poland (`global`, `europe`, `FR`, and `PL`), with matching repository fetch/parse counts and no full-source request. Exact performance and cache observations are recorded in `docs/EARTH_EXPLORER_VALIDATION.md`.
 
 ## Data Design Rules
 

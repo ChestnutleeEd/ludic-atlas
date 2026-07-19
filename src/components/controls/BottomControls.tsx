@@ -3,9 +3,11 @@ import { ViewModeToggle } from "@/components/controls/ViewModeToggle";
 import { YearSlider } from "@/components/controls/YearSlider";
 import { getCameraModeLabel } from "@/lib/regions";
 import type { CameraMode, ViewMode, YearRange } from "@/types/game";
+import type { RatingRange } from "@/types/earth";
 
 type BottomControlsProps = {
   yearRange: YearRange;
+  ratingRange: RatingRange;
   minYear: number;
   maxYear: number;
   coverSize: number;
@@ -18,6 +20,7 @@ type BottomControlsProps = {
   zoomStatusLabel?: string;
   totalGames: number;
   onYearRangeChange: (yearRange: YearRange) => void;
+  onRatingRangeChange: (ratingRange: RatingRange) => void;
   onCoverSizeChange: (coverSize: number) => void;
   onCameraModeChange: (cameraMode: CameraMode) => void;
   onViewModeChange: (viewMode: ViewMode) => void;
@@ -28,6 +31,7 @@ const cameraModes: CameraMode[] = ["overview", "surface"];
 
 export function BottomControls({
   yearRange,
+  ratingRange,
   minYear,
   maxYear,
   coverSize,
@@ -40,6 +44,7 @@ export function BottomControls({
   totalGames,
   zoomStatusLabel,
   onYearRangeChange,
+  onRatingRangeChange,
   onCoverSizeChange,
   onCameraModeChange,
   onViewModeChange,
@@ -59,7 +64,7 @@ export function BottomControls({
       </summary>
       <section
         aria-label="地球探索筛选与视图控制"
-        className="atlas-filter-tray-body grid gap-3 p-3 xl:grid-cols-[1.05fr_1.25fr_1fr_1fr_1fr]"
+        className="atlas-filter-tray-body grid gap-3 p-3 xl:grid-cols-[1.05fr_1.15fr_1.05fr_1fr_1fr_1fr]"
       >
         <dl className="atlas-control-stats">
         <div>
@@ -81,6 +86,57 @@ export function BottomControls({
         maxYear={maxYear}
         onChange={onYearRangeChange}
       />
+      <div>
+        <div className="flex items-center justify-between gap-3">
+          <span className="earth-label block text-sm" id="rating-range-label">
+            评分筛选
+          </span>
+          <span className="earth-muted text-xs" id="rating-range-summary">
+            {ratingRange.min.toFixed(1)}–{ratingRange.max.toFixed(1)}
+          </span>
+        </div>
+        <div
+          aria-describedby="rating-range-summary"
+          aria-labelledby="rating-range-label"
+          className="atlas-control-box mt-2 grid gap-3 text-sm"
+          role="group"
+        >
+          <label className="sr-only" htmlFor="rating-min">最低评分</label>
+          <input
+            aria-valuetext={`最低评分 ${ratingRange.min.toFixed(1)}`}
+            className="atlas-range-input w-full"
+            id="rating-min"
+            max={10}
+            min={0}
+            onChange={(event) =>
+              onRatingRangeChange({
+                min: Math.min(Number(event.target.value), ratingRange.max),
+                max: ratingRange.max
+              })
+            }
+            step={0.5}
+            type="range"
+            value={ratingRange.min}
+          />
+          <label className="sr-only" htmlFor="rating-max">最高评分</label>
+          <input
+            aria-valuetext={`最高评分 ${ratingRange.max.toFixed(1)}`}
+            className="atlas-range-input w-full"
+            id="rating-max"
+            max={10}
+            min={0}
+            onChange={(event) =>
+              onRatingRangeChange({
+                min: ratingRange.min,
+                max: Math.max(Number(event.target.value), ratingRange.min)
+              })
+            }
+            step={0.5}
+            type="range"
+            value={ratingRange.max}
+          />
+        </div>
+      </div>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
         <CoverSizeSlider coverSize={coverSize} onChange={onCoverSizeChange} />
         <label className="atlas-toggle-control">

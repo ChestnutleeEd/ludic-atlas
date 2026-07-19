@@ -4,6 +4,7 @@ import {
   createExplorationReducer,
   initialExplorationState
 } from "../src/lib/explorerState.ts";
+import { getCountryRegionId } from "../src/lib/regions.ts";
 import type { Country, Game } from "../src/types/game.ts";
 
 const countries: Country[] = [
@@ -16,14 +17,20 @@ const reduce = createExplorationReducer(countries, games);
 test("country and game actions atomically synchronize their region", () => {
   const sweden = reduce(initialExplorationState, { type: "selectCountry", countryCode: "SE" });
   assert.deepEqual(
-    [sweden.activeRegionId, sweden.cameraMode, sweden.selectedCountryCode, sweden.selectedGameId],
-    ["europe", "surface", "SE", null]
+    [sweden.activeRegionId, sweden.cameraMode, sweden.selectedCountryCode, sweden.selectedGameId, sweden.selectionRevision],
+    ["europe", "surface", "SE", null, 1]
   );
 
   const japan = reduce(sweden, { type: "selectGame", gameId: "jp-game" });
   assert.deepEqual(
-    [japan.activeRegionId, japan.cameraMode, japan.selectedCountryCode, japan.selectedGameId],
-    ["eastAsia", "surface", "JP", "jp-game"]
+    [japan.activeRegionId, japan.cameraMode, japan.selectedCountryCode, japan.selectedGameId, japan.selectionRevision],
+    ["eastAsia", "surface", "JP", "jp-game", 2]
+  );
+
+  const clearedGame = reduce(japan, { type: "clearGame" });
+  assert.deepEqual(
+    [clearedGame.selectedCountryCode, clearedGame.selectedGameId, clearedGame.selectionRevision],
+    ["JP", null, 3]
   );
 });
 
@@ -42,6 +49,22 @@ test("one hundred rapid selections preserve the final intent", () => {
   assert.equal(state.selectedCountryCode, "JP");
   assert.equal(state.activeRegionId, "eastAsia");
   assert.equal(state.selectionRevision, 100);
+});
+
+test("one exported country-to-region resolver preserves current mappings", () => {
+  assert.equal(getCountryRegionId(countries[0]), "europe");
+  assert.equal(getCountryRegionId(countries[1]), "eastAsia");
+  assert.equal(
+    getCountryRegionId({
+      code: "CA",
+      latitude: 56,
+      longitude: -106,
+      name: "Canada",
+      nameZh: "加拿大",
+      region: "North America"
+    }),
+    "northAmerica"
+  );
 });
 
 function game(id: string, countryCode: string): Game {

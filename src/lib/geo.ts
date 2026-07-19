@@ -610,6 +610,55 @@ function getPolygonBounds(polygons: GeoJsonPolygon[]) {
   );
 }
 
+export type CountryFocusBounds = {
+  maxLat: number;
+  maxLng: number;
+  minLat: number;
+  minLng: number;
+};
+
+/** Selects the connected land component nearest the catalog anchor for camera fitting. */
+export function getCountryFocusBounds(
+  feature: CountryGeoJsonFeature | null | undefined,
+  country: Country
+): CountryFocusBounds | null {
+  if (!feature) return null;
+  const polygons = getFeaturePolygons(feature, country.longitude);
+  if (polygons.length === 0) return null;
+  const nearbyPolygons = polygons.filter((polygon) => {
+    const bounds = getPolygonBounds([polygon]);
+    if (!bounds) return false;
+    const latitudeDistance = Math.max(
+      0,
+      bounds.minLat - country.latitude,
+      country.latitude - bounds.maxLat
+    );
+    const longitudeDistance = Math.max(
+      0,
+      bounds.minLng - country.longitude,
+      country.longitude - bounds.maxLng
+    ) * Math.max(0.35, Math.cos(country.latitude * Math.PI / 180));
+    return Math.hypot(latitudeDistance, longitudeDistance) <= 18;
+  });
+  if (nearbyPolygons.length > 0) return getPolygonBounds(nearbyPolygons);
+  const nearest = polygons.reduce((currentNearest, polygon) => {
+    const bounds = getPolygonBounds([polygon]);
+    const nearestBounds = getPolygonBounds([currentNearest]);
+    if (!bounds) return currentNearest;
+    if (!nearestBounds) return polygon;
+    const distance = Math.hypot(
+      (bounds.minLat + bounds.maxLat) / 2 - country.latitude,
+      (bounds.minLng + bounds.maxLng) / 2 - country.longitude
+    );
+    const nearestDistance = Math.hypot(
+      (nearestBounds.minLat + nearestBounds.maxLat) / 2 - country.latitude,
+      (nearestBounds.minLng + nearestBounds.maxLng) / 2 - country.longitude
+    );
+    return distance < nearestDistance ? polygon : currentNearest;
+  });
+  return getPolygonBounds([nearest]);
+}
+
 function isCoordinateInFeaturePolygons(
   longitude: number,
   latitude: number,

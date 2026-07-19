@@ -45,6 +45,8 @@ src/
 │  │  ├─ ArchiveYearModal.tsx
 │  │  ├─ ArchiveYearDrawer.tsx
 │  │  └─ ArchiveDossier.tsx
+│  ├─ earth/
+│  │  └─ EarthProjectionViewport.tsx
 │  ├─ globe/
 │  │  ├─ GameGlobe2D.tsx
 │  │  ├─ GameGlobe.tsx
@@ -66,6 +68,7 @@ src/
 │  ├─ games.generated.ts
 │  └─ games.mock.ts
 ├─ lib/
+│  ├─ earthViewState.ts
 │  ├─ filterGames.ts
 │  ├─ archiveModel.ts
 │  ├─ stats.ts
@@ -73,6 +76,7 @@ src/
 │  ├─ regions.ts
 │  └─ search.ts
 ├─ types/
+│  ├─ earth.ts
 │  └─ game.ts
 ```
 
@@ -113,6 +117,8 @@ src/components/archive/ArchiveYearDrawer.tsx	Legacy active-year drawer component
 src/components/archive/ArchiveDossier.tsx	Renders selected game cover and archive metadata with explicit missing-field and UNKNOWN-region fallbacks.
 src/lib/archiveModel.ts	Purely derives archive search, filters, chronological groups, representatives, averages, options, collection ordering, active-year fallback, and selected game from catalog data plus archive controls.
 src/components/globe/GameGlobe2D.tsx	Legacy SVG 2.5D planet map component retained on disk but not exposed by the current main UI.
+src/components/earth/EarthProjectionViewport.tsx	Owns the active-only projection mount boundary; the Phase 1 Atlas branch is deliberately renderer-free.
+src/components/earth/useEarthSafeViewport.ts	Measures renderer space and layout overlays into a shared safe viewport.
 src/components/globe/GameGlobe.tsx	Renders the default real 3D earth scene.
 src/components/globe/GameMarkers.tsx	Renders game cover markers on the globe.
 src/components/globe/GameTooltip.tsx	Shows hover information for a game marker.
@@ -131,6 +137,10 @@ src/data/games.mock.ts	Stable original mock game data fallback.
 scripts/cache-rawg-covers.mjs	Downloads generated RAWG cover URLs into `public/covers/rawg/` and rewrites `coverImage` to local static paths.
 src/data/countries.ts	Local mock country data.
 src/lib/filterGames.ts	Pure filtering functions.
+src/lib/earthViewState.ts	Owns Earth renderer-view defaults, projection updates, semantic navigation intent derivation, stale-intent checks, and the active-renderer contract.
+src/lib/globeCamera.ts	Owns the cancellable single-writer Globe camera state machine.
+src/lib/globeNavigation.ts	Fits semantic navigation targets to country bounds and the safe viewport.
+src/lib/safeViewport.ts	Provides pure safe-rectangle calculations for spatial renderers.
 src/lib/stats.ts	Pure statistics functions.
 src/lib/geo.ts	Geographic coordinate and marker position helpers.
 src/lib/regions.ts	Broad atlas region mapping, labels, game / country region filters, and cinematic camera presets.
@@ -146,10 +156,14 @@ Top-level state should include:
 
 * `exploration` from `src/lib/explorerState.ts`: `selectedCountryCode`, `selectedGameId`, `activeRegionId`, `cameraMode`, and monotonic `selectionRevision`
 * `yearRange`
+* Earth rating range
 * `coverSize`
 * `viewMode`
 * `mainViewMode` (`hub`, `earth`, or `archive`)
 * auto rotate enabled or disabled
+* `EarthViewState` from `src/types/earth.ts`: `projectionMode` plus independent settled Globe and Atlas view snapshots. Atlas fields remain forward-compatible internal contracts; the current product defaults to and exposes Globe only.
+
+`GameEarthApp` derives one `SpatialNavigationIntent` from the atomic exploration state with game → country → region → global priority. The intent contains only semantic IDs, revision, motion, and source; camera, controls, scene, and renderer references remain renderer-local. Projection changes do not copy or mutate region, country, game, or filter state.
 
 Country selection, game selection, and cross-region synchronization are one reducer action, so rapid preset / polygon / list input cannot leave the region, panel, markers, and camera on different intents. Game hover uses native marker CSS and does not participate in React marker derivation.
 
@@ -162,6 +176,8 @@ The current MVP uses a landing hub plus a real 3D globe renderer and a separate 
 * `LandingHub` is the default first-screen experience and presents Earth Explorer and Game Chronicle as independent product entrances.
 * `GameEarthApp` dynamically imports the Earth Explorer and Game Chronicle view modules after the user chooses an entrance, keeping Three.js / globe and archive implementations out of the initial hub execution path.
 * `GameGlobe` keeps the real WebGL 3D globe as the Earth Explorer experience.
+* `EarthProjectionViewport` mounts `GameGlobe` only for `projectionMode === "globe"`. Its Phase 1 `atlas` branch is a lightweight contract placeholder with no canvas, WebGL renderer, animation loop, geography load, or long-lived browser listener.
+* The current `redesign-earth-explorer` acceptance scope does not expose a Globe/Atlas switch or require Atlas restoration/lifecycle behavior. The full future OrthographicCamera renderer, projection, interaction, and acceptance design is retained in `docs/DEFERRED_ATLAS_MAP_PLAN.md` for `add-atlas-map-renderer`.
 * `GameArchiveView` is selected through `GameEarthApp` main view mode and provides the Game Chronicle surface for generated global game records.
 * `GameGlobe2D` remains on disk as a legacy component, but `GameEarthApp` no longer imports or renders it and the UI no longer exposes a 2.5D / 3D switch.
 * `GameEarthApp` owns only the cross-experience `mainViewMode` switch for Archive. Earth exploration state remains mounted but is not passed to or mutated by Game Chronicle. Earth-specific year range, cover size, and marker view controls are shown only in Earth mode.
@@ -199,37 +215,39 @@ Legacy 2.5D globe behavior:
 Current 3D globe behavior:
 
 * `GameGlobe` dynamically imports `react-globe.gl` with SSR disabled because the WebGL globe depends on browser APIs.
-* Three.js `MeshPhongMaterial` provides the deep-navy globe surface, while `react-globe.gl` provides orbit controls, zoom, drag rotation, the stable custom boundary layer, and HTML marker layers.
+* One memoized Three.js `MeshPhongMaterial` provides the charcoal / ink-green globe surface with muted mineral specular response, while `react-globe.gl` provides orbit controls, zoom, drag rotation, stable custom LOD boundary layers, and HTML marker layers.
 * `src/lib/regions.ts` owns broad Earth Explorer regions, `CAMERA_MODE_CONFIGS`, two-mode `CAMERA_PRESETS`, region labels, and pure helpers for deriving region-scoped country and game lists from existing source data.
-* `public/data/countries.geojson` stores the full source country border data copied from `https://github.com/datasets/geo-countries`.
-* `public/data/world-countries-lite.geojson` stores a simplified runtime world country outline dataset generated from the full source file. `GameGlobe` loads this file for the 3D base layer so all world country outlines are visible without loading the 14 MB source GeoJSON.
-* The world-country request checks HTTP status and uses `AbortController` on unmount. Resize observation ignores unchanged dimensions, and the external Three.js material is disposed with the globe module.
-* `public/data/mock-countries.geojson` stores the simplified legacy MVP country border subset and remains available to the 2.5D fallback mode.
-* `GameGlobe` converts the lightweight world GeoJSON into one sampled cyan world `LineSegments` mesh plus one stable magenta selection mesh. World rings retain up to 144 source points and selected-country rings up to 240, giving coastlines and borders more shape without restoring polygon triangulation. It deliberately does not create polygon or decorative point layers, preventing both triangulation stalls and raycast interception.
+* `public/data/countries.geojson` is the retained high-detail source copied from `https://github.com/datasets/geo-countries`; runtime never loads it directly.
+* `public/data/earth-lod/` contains deterministic generated Global, Region, and Country resources. `geographyRepository` deduplicates and caches their fetch/parse work, preserves a lower LOD while detail loads, and rejects stale selection results.
+* `public/data/mock-countries.geojson` stores the simplified legacy MVP country border subset and remains available only to the unused 2.5D legacy component.
+* `GameGlobe` converts generated LOD rings into stable `LineSegments` meshes without runtime coordinate-index sampling. Persistent borders use muted mineral green and the selected-country detail layer uses oxidized brass, avoiding both neon boundary dominance and polygon triangulation/raycast cost.
 * `src/lib/geo.ts` maps GeoJSON `ISO3166-1-Alpha-2` values to project country codes, with Alpha-3 / name fallback keys for non-mock countries and a small name fallback for records like France where this GeoJSON source uses `-99`.
 * `src/lib/geo.ts` owns per-country focus points and deterministic country marker distribution. Broad Global / Europe / East Asia / North America / Latin America / Middle East / South Asia / Oceania camera presets live in `src/lib/regions.ts` with both Overview and Surface altitude values.
-* `GameGlobe` supports Overview and Surface camera modes. Overview uses higher altitude and wider zoom limits for global / region browsing. Selecting a country atomically enters Surface mode, whose per-country altitude stays within 0.26–0.38 so nearby countries remain in frame while a 106-unit OrbitControls floor still permits manual close inspection; selecting a region returns to Overview. Portrait viewports apply bounded altitude compensation so a global globe remains framed at 390px widths while selected-country focus stays close.
-* `GameMarkers` converts local game records and countries into mixed globe HTML marker data. Country names render as non-interactive HTML labels only when a mock country is hovered or selected. Country marker mode uses lightweight country aggregate dots with game counts. Game marker mode promotes only high-rated representative games to cover markers, while selected countries / selected games restore richer cover markers and tooltip detail. Region mode remains capped at 6 candidate games per country and selected-country mode is capped at 8 markers.
-* Global / region markers retain deterministic representative offsets. Selected-country markers use `getCountrySafeMarkerSlots`: normalized Polygon / MultiPolygon rings, hole exclusion, date-line unwrapping, boundary-distance ranking, and deterministic farthest-point sampling keep cover anchors inside the actual country. At most 8 covers render and one `+N` badge accounts for the remainder.
+* `GameGlobe` supports Overview and Surface camera modes. Country surface altitude is deterministically fitted from the connected geometry near the catalog anchor, the layout-owned safe viewport, and current cover footprint, then clamped to `0.14–0.68`. This lets tiny countries approach more closely without allowing unbounded zoom and keeps large countries inside the available panel-adjusted view.
+* `GameMarkers` converts the Phase 3 marker model into bounded Globe HTML markers. Dynamic budgets account for exploration level, projected area, settled altitude, cover footprint, filtered count, projection contract, and coarse performance tier; only final visible markers create cover image nodes.
+* Selected-country placement is component-aware and deterministic: normalized Polygon / MultiPolygon geometry, mainland scoring, territory allocation, interior candidates, screen-space grid collision, and hysteresis keep anchors stable and inside safe geography. The visible cover band is normally 10–18 for a large country, 6–12 for medium/small countries, and 1–4 plus explicit expansion/overflow for tiny countries.
 * Game cover lookup is centralized in `src/lib/gameCover.ts`. Earth markers and country detail cards prefer real RAWG / local cover paths and fall back to `public/covers/fallback-game-cover.svg` when a cover field is missing or an image load fails.
 * Earth cover markers keep the cover image clear. They do not render title / year text on top of the image; full game metadata is available through marker tooltip and the right panel game detail layer.
 * Marker size responds to `coverSize`; view mode changes marker presentation while keeping the same local mock data source.
 * `GameTooltip` provides typed tooltip content for both the React component and escaped HTML tooltip markup for globe HTML markers.
-* `src/app/globals.css` scopes the Earth-only Retro-Futuristic observatory theme under `.is-earth-mode`: softened deep navy/black surfaces, restrained cyan geography, magenta selection, subtle scanlines, accessible focus rings, reduced-motion rules, a command bar in a dedicated row above the globe, on-demand location / filter trays, an off-canvas desktop country drawer, responsive `dvh` workspace, and an explicitly sized mobile bottom sheet. Earth WebGL overlays avoid backdrop filters so moving canvas content does not force per-frame backdrop rasterization. Hub and Archive retain their own themes.
+* `src/app/globals.css` scopes the Earth-only Archive Orbital Globe system under `.game-earth-shell.is-earth-mode`. Its semantic tokens are charcoal, ink green, oxblood, oxidized brass, aged gold, warm white, muted ink, and low-frequency desaturated spatial feedback. `GameGlobe` mounts an aria-hidden responsive `<picture>` only inside the active Globe workspace using the human-approved `public/images/earth/earth-atmosphere-archive-{1280,1672}.webp` peripheral material study. The picture sits above the opaque Globe backdrop but below the chart grid, WebGL canvas, markers, tools, and right panel; fixed intrinsic dimensions, a slightly left-biased cover crop, and a radial alpha mask preserve the central Globe and right-panel safe zones without making the image imperceptible. The underlying weak chart grid, material gradients, and optical vignette remain a complete CSS loading/failure fallback; Hub and Chronicle keep their own scoped appearance.
+* `tests/e2e/earth-phase6-validation.spec.ts` is the fresh-load and production-diagnostics acceptance entry for the four desktop viewports, 390×844 safety, responsive atmosphere delivery, Global/France/Poland frame sampling, network counts, canvas count, and browser diagnostics. Durable results live in `docs/EARTH_EXPLORER_VALIDATION.md`; measured FPS and long tasks are observations, not fixed product constants.
 
 Real 3D Globe performance strategy:
 
 * Automatic rotation is disabled by default and exposed as a rotate toggle in `BottomControls`.
-* Initial, region, and selected-country camera views use the revision-guarded animator in `src/lib/globeCamera.ts`. It interpolates the shortest longitude arc with a fifth-order smootherstep curve; normal country focus is 680ms, the shared utility has a 900ms hard cap, and reduced motion is 0ms. New intents cancel stale requests, and user input stops the animation immediately.
+* `src/lib/globeCamera.ts` owns the only programmatic camera controller and the only `pointOfView` writer. It exposes idle, programmatic-navigation, user-controlled, settled, and disposed states; interpolates the shortest longitude arc with a fifth-order smootherstep curve; caps duration at 900ms; and uses one token plus selection revision to invalidate stale RAF callbacks. OrbitControls start cancels programmatic work and end publishes the low-frequency settled snapshot.
+* `src/lib/globeNavigation.ts` converts the shared semantic intent into a Globe target. `src/components/earth/useEarthSafeViewport.ts` measures the workspace plus command, right panel, filter tray, and mobile sheet overlays; `src/lib/safeViewport.ts` provides the testable remaining rectangle. A material safe-area shrink is refitted by the same controller and never by a second effect writer.
+* Globe size comes from an outer layout boundary rather than the canvas-influenced stage. ResizeObserver notifications are coalesced through one RAF, all width/min-width constraints remain Earth-scoped, and resize changes drawing-buffer size without recreating the renderer or replaying the last selection target.
 * Orbit controls disable pan, enable damping, and constrain zoom distance so manual dragging cannot easily push the earth out of the viewport.
 * Runtime country borders use `public/data/world-countries-lite.geojson`, not the full 14MB source GeoJSON. The lightweight file is about 1.1 MB and contains simplified world country / region outlines.
 * The WebGL renderer pixel ratio is capped at 1 and antialiasing is disabled through `rendererConfig` to keep drag and zoom responsive on high-DPI screens.
 * The stable globe does not construct react-globe.gl polygon meshes. Country clicks use the globe surface latitude / longitude plus GeoJSON point containment, avoiding synchronous triangulation of 236 features and roughly 73,000 source vertices.
-* A cyan atmosphere and deep-navy low-shininess globe material provide the observatory look; graticules remain disabled to prioritize interaction smoothness.
+* A muted mineral-green atmosphere, charcoal/ink-green low-shininess material, restrained persistent borders, and brass selected-country edge provide the archival observatory look; graticules and expensive post-processing remain disabled.
 * Globe HTML country labels are disabled by default. They appear only for hovered / selected mock countries and are hidden during drag / zoom.
 * Global / country marker mode shows lightweight aggregate dots with counts instead of cover cards. Game mode promotes only high-rated representative games to cover cards. After a country is selected, the globe shows only that country's top-rated current-year game markers, capped at 8, and hides other countries' games; one `+N` badge preserves the full eligible count.
 * `src/lib/globeMarkerModel.ts` total-orders and caps representative games independently of hover. Marker descriptors remain stable during pointer hover; images declare intrinsic size and async decoding.
-* The cyan world-boundary `LineSegments` mesh and empty magenta selection mesh are created once after GeoJSON load. Selection copies new BufferGeometry into the existing magenta object instead of replacing custom-layer data, so nearby borders never flash or disappear. During drag, wheel, automatic rotation, and camera travel, HTML marker nodes stay mounted but become CSS-hidden, avoiding restore-time DOM recreation and cover-image decoding.
+* Persistent and selected boundary `LineSegments` meshes are reused after geography load. Selection copies new BufferGeometry into the existing brass object instead of replacing custom-layer data, so nearby borders never flash or disappear. During drag, wheel, automatic rotation, and camera travel, HTML marker nodes stay mounted but become visually downgraded/hidden, avoiding restore-time DOM recreation and cover-image decoding.
 * Zoom / reset / focus controls are the only camera tools that remain visible inside the globe stage. Region and key-country presets live in an on-demand location menu; year, cover, camera-mode, rotation, and marker controls live in a collapsed filter tray. This keeps the globe unobstructed while avoiding duplicate camera writes.
 * On desktop, `RightPanel` is off-canvas and inert until the directory is requested or a country is selected; it overlays the globe instead of reserving a permanent column. On mobile, `GameEarthApp` owns a three-state Earth-side sheet state (`collapsed`, `peek`, `expanded`). Country selection opens Peek, game detail opens Expanded, and globe drag / wheel interaction collapses the sheet. The collapsed state has an explicit 68px height, the globe workspace is clamped to `100vw`, and portrait camera compensation keeps the global sphere visible at 390px widths.
 * Surface clicks scan GeoJSON features with the existing date-line-aware point-in-polygon helper. Mapped countries update the atomic selection state and panel; other world countries receive the lightweight magenta boundary focus without opening unsupported detail content.
@@ -274,7 +292,7 @@ Current interaction flow:
 * `GameGlobe` resolves globe / boundary click coordinates through GeoJSON point containment and emits country selection to `GameEarthApp`.
 * `GameMarkers` emits game selection to `GameEarthApp`; hover is native CSS and country aggregate hover only updates the small country highlight state.
 * `CountryDetailPanel` emits game selection, game clear, and clear-country actions to `GameEarthApp`.
-* `BottomControls` emits year range, cover size, and view mode updates to `GameEarthApp`.
+* `BottomControls` emits year range, rating range, cover size, camera mode, rotation, and marker view updates to `GameEarthApp` from one accessible disclosure tray.
 * `GameArchiveView` keeps archive search / filter / sort / year / game selection local; archive interaction never emits Earth selected-game updates.
 * `GameGlobe` receives year-filtered games and current earth state, and emits country selection plus game hover / selection.
 * `RightPanel` owns the Earth-side game detail layer. When `selectedGame` is set, the base country / gallery content is marked inert and visually dimmed, the right panel stops background scrolling, and Escape closes the detail layer.
@@ -316,6 +334,16 @@ The current 3D globe panel also includes two local view controls:
 
 * `全球视角`: returns the camera to the global point of view.
 * `聚焦当前国家`: moves the camera back to the selected country's regional focus point.
+
+## Earth geography and marker pipeline
+
+`scripts/generate-earth-lod.mjs` reads the retained high-resolution source offline and deterministically emits a shape-aware Global file, region bundles, country detail files, and a manifest with source/output hashes, tolerances, byte sizes, feature counts and coordinate counts. Runtime never reads the high-resolution source and never samples rings by coordinate index.
+
+`geographyRepository` is module-scoped so Earth and projection remounts reuse parsed resources. It deduplicates concurrent requests, removes failed promises for retry, bounds normalized resources, and owns an LRU renderer-geometry cache whose evictions call `dispose()`. `GameGlobe` keeps Global geometry visible while region/country detail loads, rejects stale selection results by revision, and uses a separate selected-country boundary layer.
+
+The normalized geography and marker contracts stay renderer-neutral for future reuse, but this does not mount or ship an Atlas renderer in the current product. Any future Atlas implementation must begin with the prerequisites and active-only lifecycle contract in `docs/DEFERRED_ATLAS_MAP_PLAN.md` rather than extending the placeholder into production ad hoc.
+
+Marker flow is `filtered games → stable ranking → normalized connected components → dynamic budget → deterministic component candidates → screen-space grid collision → visible markers + truthful overflow`. React receives only settled altitude/layout updates; motion keeps the last layout hidden or downgraded. Main-component scoring combines area, catalog-anchor containment and proximity, so overseas territories cannot expand a whole-country bbox and starve mainland candidates.
 
 Documentation Update Rule
 

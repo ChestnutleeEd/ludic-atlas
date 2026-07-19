@@ -1,4 +1,18 @@
 export type CameraPointOfView = { altitude: number; lat: number; lng: number };
+export type GlobeCameraState =
+  | "idle"
+  | "programmatic-navigation"
+  | "user-controlled"
+  | "settled"
+  | "disposed";
+
+export type GlobeCameraSettleReason = "programmatic" | "user";
+
+export type GlobeCameraCommand = {
+  duration: number;
+  revision: number;
+  target: CameraPointOfView;
+};
 
 type CameraAnimatorOptions = {
   now: () => number;
@@ -57,4 +71,102 @@ export function createCameraAnimator(options: CameraAnimatorOptions) {
   };
 
   return { animate, cancel };
+}
+
+type GlobeCameraControllerOptions = CameraAnimatorOptions & {
+  onSettle?: (
+    point: CameraPointOfView,
+    revision: number,
+    reason: GlobeCameraSettleReason
+  ) => void;
+  onStateChange?: (state: GlobeCameraState) => void;
+  read: () => CameraPointOfView;
+};
+
+/** The only imperative writer for programmatic Globe navigation. */
+export function createGlobeCameraController(options: GlobeCameraControllerOptions) {
+  let activeFrame: number | null = null;
+  let commandToken = 0;
+  let disposed = false;
+  let latestRevision = -1;
+  let state: GlobeCameraState = "idle";
+
+  const setState = (nextState: GlobeCameraState) => {
+    if (state === nextState) return;
+    state = nextState;
+    options.onStateChange?.(state);
+  };
+
+  const invalidateAnimation = () => {
+    commandToken += 1;
+    if (activeFrame !== null) options.cancelFrame(activeFrame);
+    activeFrame = null;
+  };
+
+  const navigate = ({ duration, revision, target }: GlobeCameraCommand) => {
+    if (disposed || revision < latestRevision) return false;
+    latestRevision = revision;
+    invalidateAnimation();
+    const ownToken = commandToken;
+    const from = options.read();
+    const safeDuration = Math.max(0, duration);
+    setState("programmatic-navigation");
+
+    if (safeDuration === 0) {
+      if (disposed || ownToken !== commandToken) return false;
+      options.write(target);
+      setState("settled");
+      options.onSettle?.(target, revision, "programmatic");
+      return true;
+    }
+
+    const startedAt = options.now();
+    const step = (time: number) => {
+      if (disposed || ownToken !== commandToken || revision < latestRevision) return;
+      const progress = Math.min(1, (time - startedAt) / safeDuration);
+      const point = interpolatePointOfView(from, target, progress);
+      options.write(point);
+      if (progress < 1) {
+        activeFrame = options.requestFrame(step);
+        return;
+      }
+      activeFrame = null;
+      setState("settled");
+      options.onSettle?.(point, revision, "programmatic");
+    };
+    activeFrame = options.requestFrame(step);
+    return true;
+  };
+
+  const beginUserControl = () => {
+    if (disposed) return;
+    invalidateAnimation();
+    setState("user-controlled");
+  };
+
+  const endUserControl = () => {
+    if (disposed || state !== "user-controlled") return;
+    setState("settled");
+    options.onSettle?.(options.read(), latestRevision, "user");
+  };
+
+  const dispose = () => {
+    if (disposed) return;
+    invalidateAnimation();
+    disposed = true;
+    setState("disposed");
+  };
+
+  return {
+    beginUserControl,
+    dispose,
+    endUserControl,
+    getSnapshot: () => ({
+      activeFrame: activeFrame !== null,
+      disposed,
+      latestRevision,
+      state
+    }),
+    navigate
+  };
 }

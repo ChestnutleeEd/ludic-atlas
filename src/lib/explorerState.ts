@@ -1,4 +1,5 @@
 import type { CameraMode, Country, Game, RegionId } from "../types/game";
+import { getCountryRegionId } from "./regions.ts";
 
 export type ExplorationState = {
   activeRegionId: RegionId;
@@ -25,15 +26,6 @@ export const initialExplorationState: ExplorationState = {
   selectionRevision: 0
 };
 
-const COUNTRY_REGION: Partial<Record<string, RegionId>> = {
-  JP: "eastAsia", CN: "eastAsia", KR: "eastAsia",
-  US: "northAmerica", CA: "northAmerica",
-  MX: "latinAmerica", BR: "latinAmerica", AR: "latinAmerica", CL: "latinAmerica",
-  AE: "middleEast", IL: "middleEast", IR: "middleEast", SA: "middleEast", TR: "middleEast",
-  IN: "southAsia", PK: "southAsia", BD: "southAsia", LK: "southAsia",
-  AU: "oceania", NZ: "oceania"
-};
-
 export function createExplorationReducer(countries: Country[], games: Game[]) {
   const countryByCode = new Map(countries.map((country) => [country.code, country]));
   const gameById = new Map(games.map((game) => [game.id, game]));
@@ -54,11 +46,17 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
       };
     }
     if (action.type === "clearGame") {
-      return state.selectedGameId ? { ...state, selectedGameId: null } : state;
+      return state.selectedGameId
+        ? {
+            ...state,
+            selectedGameId: null,
+            selectionRevision: state.selectionRevision + 1
+          }
+        : state;
     }
     if (action.type === "selectRegion") {
       const country = state.selectedCountryCode ? countryByCode.get(state.selectedCountryCode) : null;
-      const keepCountry = action.regionId === "global" || (country && getExplorationCountryRegion(country) === action.regionId);
+      const keepCountry = action.regionId === "global" || (country && getCountryRegionId(country) === action.regionId);
       if (
         state.activeRegionId === action.regionId &&
         keepCountry &&
@@ -78,7 +76,7 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
       if (!country) return state;
       return {
         ...state,
-        activeRegionId: getExplorationCountryRegion(country),
+        activeRegionId: getCountryRegionId(country),
         cameraMode: "surface",
         selectedCountryCode: country.code,
         selectedGameId: null,
@@ -90,17 +88,11 @@ export function createExplorationReducer(countries: Country[], games: Game[]) {
     if (!game || !country) return state;
     return {
       ...state,
-      activeRegionId: getExplorationCountryRegion(country),
+      activeRegionId: getCountryRegionId(country),
       cameraMode: "surface",
       selectedCountryCode: country.code,
       selectedGameId: game.id,
       selectionRevision: state.selectionRevision + 1
     };
   };
-}
-
-export function getExplorationCountryRegion(country: Country): RegionId {
-  const override = COUNTRY_REGION[country.code];
-  if (override) return override;
-  return country.region.toLocaleLowerCase().includes("europe") ? "europe" : "global";
 }

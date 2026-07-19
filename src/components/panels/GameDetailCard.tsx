@@ -29,6 +29,7 @@ export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
         <div className="game-detail-cover">
           <img
             alt={`${title} 封面`}
+            height="330"
             loading="lazy"
             onError={(event) => {
               if (!event.currentTarget.src.endsWith(FALLBACK_GAME_COVER_IMAGE)) {
@@ -36,6 +37,7 @@ export function GameDetailCard({ game, onClose }: GameDetailCardProps) {
               }
             }}
             src={coverImage}
+            width="220"
           />
         </div>
         <div className="min-w-0">
