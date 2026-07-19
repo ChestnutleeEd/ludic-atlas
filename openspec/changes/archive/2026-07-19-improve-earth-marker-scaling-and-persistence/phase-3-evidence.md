@@ -28,3 +28,8 @@ Final accepted verification for the unchanged product/test workspace before docu
 - Node tests: 56/56 passed;
 - lint, TypeScript, optimized build, strict OpenSpec validation, and `git diff --check`: passed;
 - README, dependencies, Hub/Chronicle implementation, RAWG/country inference/source data, Atlas, release, packaging, course-report, and backup refs remained out of scope.
+
+### Closeout authorization
+
+- The user explicitly authorized the remaining OpenSpec sync/archive and fast-forward Git closeout in this run after the accepted final validation.
+- Phase 3 is complete at 19/19 before archival; Atlas remains deferred and is not represented as delivered.

@@ -24,4 +24,4 @@
 - [x] 3.1 Record explicit user visual acceptance of settled/moving covers, size anchors, overlap, occlusion, control layout, focus, reduced motion, and 390 px usability; this is required before any other Phase 3 task.
 - [x] 3.2 After acceptance, run the final required automated suite once and update `docs/01_PRODUCT_SPEC.md`, `docs/02_FEATURE_MAP.md`, `docs/03_ARCHITECTURE.md`, and `docs/EARTH_EXPLORER_VALIDATION.md` with the accepted contract and concise measured result; do not modify README.
 - [x] 3.3 Inspect final diff/status and unchanged backup refs, then only after explicit authorization perform the requested commit/push/PR or merge; do not create a release, package, course report, or backup.
-- [ ] 3.4 Only after implementation is merged and separately authorized, sync delta specs, archive the change, validate final main/origin state, and report immutable commit/ref evidence.
+- [x] 3.4 Only after implementation is merged and separately authorized, sync delta specs, archive the change, validate final main/origin state, and report immutable commit/ref evidence.
