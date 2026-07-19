@@ -49,6 +49,8 @@ The complete deferred Atlas product and implementation handoff is maintained in 
 
 The 3D-only delivery has completed its Phase 6 functional, viewport, accessibility, failure, lifecycle, production-performance, and human visual acceptance gates. The measured evidence and environment limits are recorded in `docs/EARTH_EXPLORER_VALIDATION.md`; Atlas remains excluded from the accepted product surface.
 
+Earth cover presentation now uses one canonical 48–112 px height with a 72 px default and 4 px step. The existing filter tray exposes a native slider, explicit decrease/increase buttons, and the current `px` value; the last valid value is restored from `ludic-atlas:earth-cover-size:v1`. During drag rotation, wheel zoom, automatic rotation, camera-tool movement, and programmatic country flight, the last accepted Marker layout remains visible and surface-anchored while only tooltip, shine, filtering, shadow, animation, pointer, and other nonessential decoration work is reduced. Retained Marker/button/image identities update in place and already loaded covers are not requested again. At 1440×900 and the 72 px default, France uses a collision-safe 10–18 direct-cover range and Poland 6–12; Belgium retains truthful tiny-country aggregation and Japan retains component-aware multi-island placement. The user accepted the final desktop and 390×844 presentation on 2026-07-19.
+
 Display rules:
 
 - Countries should prefer Chinese names and may show English names as secondary information, for example `日本 Japan`.

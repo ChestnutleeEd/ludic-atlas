@@ -163,10 +163,17 @@ test("redesigned instruments preserve the selected focus inside safe space", asy
   await page.setViewportSize({ width: 1366, height: 768 });
   await enterEarthExplorer(page);
   for (const label of ["法国 France", "波兰 Poland", "比利时 Belgium"]) {
-    await page.getByRole("button", { name: new RegExp(`查看国家：${label}`) }).first().click();
+    // Global aggregate dots can overlap in dense Europe. This assertion exercises
+    // the deterministic directory instrument because its contract is safe focus,
+    // while marker pointer activation is covered by dedicated interaction tests.
+    const directory = page.getByRole("button", { name: "打开或收起国家目录" });
+    if (await directory.getAttribute("aria-expanded") !== "true") await directory.click();
+    await page.getByRole("button", { name: new RegExp(`选择 ${label}`) }).click();
     const focus = await readSafeFocus(page);
     expect(focus.focusX).toBeGreaterThan(focus.safeLeft + 24);
     expect(focus.focusX).toBeLessThan(focus.safeRight - 24);
     await page.getByRole("button", { name: "重置为全球视角" }).click();
+    await expect(page.locator(".game-earth-shell")).toHaveAttribute("data-earth-country", "");
+    await expect(page.locator(".real-globe-stage")).toHaveAttribute("data-camera-travelling", "false", { timeout: 5_000 });
   }
 });

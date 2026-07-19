@@ -21,6 +21,7 @@ import {
   getGameMarkerLabel,
   getGameSecondaryTitle
 } from "@/lib/localization";
+import { getMarkerSemanticIdentity } from "@/lib/markerContracts";
 import type { Country, Game, RegionId, ViewMode } from "@/types/game";
 import type { SafeViewport } from "@/types/earth";
 
@@ -83,7 +84,6 @@ type BuildCountryMarkersOptions = {
 };
 
 type CreateGameMarkerElementOptions = {
-  coverSize: number;
   loadCoverImages?: boolean;
   renderCoverMarkers?: boolean;
   onHoverCountry: (countryCode: string | null) => void;
@@ -247,7 +247,6 @@ export function buildCountryMarkers({
 }
 
 export function createGameMarkerElement({
-  coverSize,
   loadCoverImages = false,
   renderCoverMarkers = true,
   onHoverCountry,
@@ -271,12 +270,6 @@ export function createGameMarkerElement({
     const isCoverMarker =
       renderCoverMarkers &&
       (marker.markerStyle === "card" || marker.selected);
-    const width = isCoverMarker
-      ? Math.max(46, Math.round(coverSize * 0.82))
-      : Math.max(9, Math.round(coverSize * 0.18));
-    const height = isCoverMarker
-      ? Math.max(58, Math.round(coverSize * 1.08))
-      : width;
     const element = document.createElement("button");
 
     element.type = "button";
@@ -290,9 +283,8 @@ export function createGameMarkerElement({
     ]
       .filter(Boolean)
       .join(" ");
-    element.style.width = `${width}px`;
-    element.style.height = `${height}px`;
     element.title = getGameMarkerTitle(marker, markerTitle, secondaryTitle);
+    element.dataset.markerIdentity = getGlobeGameMarkerIdentity(marker);
     element.dataset.markerLayer = marker.markerLayer;
     element.dataset.baseMarkerLayer = marker.markerLayer;
     element.dataset.countryCode = marker.game.countryCode;
@@ -365,15 +357,78 @@ export function createGameMarkerElement({
 /** Updates selection in place so three-globe does not recreate cover and image nodes. */
 export function updateGameMarkerSelection(
   container: HTMLElement,
-  selectedGameId: string | null
+  selectedGameId: string | null,
+  markers?: readonly GlobeGameMarker[]
 ) {
+  const markerByIdentity = new Map(
+    markers?.map((marker) => [getGlobeGameMarkerIdentity(marker), marker]) ?? []
+  );
   for (const marker of container.querySelectorAll<HTMLElement>(".globe-game-marker[data-game-id]")) {
+    const descriptor = markerByIdentity.get(marker.dataset.markerIdentity ?? "");
+    if (descriptor) updateGameMarkerElement(marker, descriptor, selectedGameId);
     const selected = marker.dataset.gameId === selectedGameId;
     marker.classList.toggle("is-selected", selected);
     marker.setAttribute("aria-pressed", String(selected));
     marker.dataset.markerLayer = selected
       ? "selected-game"
       : marker.dataset.baseMarkerLayer ?? "selected-country";
+  }
+}
+
+export function getGlobeGameMarkerIdentity(marker: GlobeGameMarker) {
+  return marker.markerStyle === "dot"
+    ? getMarkerSemanticIdentity({
+        kind: "aggregate",
+        countryCode: marker.game.countryCode,
+        layoutIdentity: marker.layoutIdentity
+      })
+    : getMarkerSemanticIdentity({
+        kind: "game",
+        gameId: marker.game.id,
+        layoutIdentity: marker.layoutIdentity
+      });
+}
+
+function updateGameMarkerElement(
+  element: HTMLElement,
+  marker: GlobeGameMarker,
+  selectedGameId: string | null
+) {
+  const markerTitle = getGameMarkerLabel(marker.game);
+  const selected = marker.game.id === selectedGameId;
+  element.classList.toggle("is-selected", selected);
+  element.classList.toggle("is-hovered", marker.hovered);
+  element.classList.toggle("is-country-selected", marker.sameCountrySelected);
+  element.classList.toggle("is-representative", marker.markerLayer === "rating-highlight");
+  element.dataset.baseMarkerLayer = marker.markerLayer;
+  element.dataset.markerLayer = selected ? "selected-game" : marker.markerLayer;
+  element.dataset.markerLat = marker.lat.toFixed(6);
+  element.dataset.markerLng = marker.lng.toFixed(6);
+  element.dataset.gameCount = String(marker.countryGameCount);
+  element.dataset.overflowCount = String(marker.overflowCount);
+  element.dataset.clusterState = marker.clusterState;
+  element.title = getGameMarkerTitle(
+    marker,
+    markerTitle,
+    getGameSecondaryTitle(marker.game)
+  );
+  element.setAttribute("aria-label", getGameMarkerAriaLabel(marker, markerTitle));
+  element.setAttribute("aria-pressed", String(selected));
+  if (marker.clusterState === "none") {
+    element.removeAttribute("aria-expanded");
+  } else {
+    element.setAttribute("aria-expanded", String(marker.clusterState === "expanded"));
+  }
+  const cover = element.querySelector<HTMLElement>(".globe-game-cover");
+  const overflow = cover?.querySelector<HTMLElement>(".globe-marker-overflow");
+  if (marker.overflowCount > 0 && cover) {
+    const badge = overflow ?? document.createElement("span");
+    badge.className = "globe-marker-overflow";
+    badge.setAttribute("aria-hidden", "true");
+    badge.textContent = `+${marker.overflowCount}`;
+    if (!overflow) cover.append(badge);
+  } else {
+    overflow?.remove();
   }
 }
 

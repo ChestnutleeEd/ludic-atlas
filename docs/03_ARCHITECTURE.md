@@ -145,8 +145,12 @@ src/lib/stats.ts	Pure statistics functions.
 src/lib/geo.ts	Geographic coordinate and marker position helpers.
 src/lib/regions.ts	Broad atlas region mapping, labels, game / country region filters, and cinematic camera presets.
 src/lib/gameCover.ts	Normalizes game cover fields and provides the shared fallback cover image path.
+src/lib/coverSize.ts	Defines the canonical 48–112 px / 72 px default / 4 px step contract plus safe versioned localStorage normalization.
+src/lib/markerContracts.ts	Defines semantic/layout marker identities, accepted-set reconciliation, and the in-motion interaction-quality policy.
 src/types/game.ts	Shared TypeScript types.
 tests/core-data.test.ts	Node-native characterization tests for filtering, statistics, and cover selection.
+tests/cover-size-contract.test.ts	Node-native cover-size, stepping, storage, and collision-bucket contract tests.
+tests/marker-contracts.test.ts	Node-native marker identity, reconciliation, interaction-tier, hysteresis, and aggregate-clamp contract tests.
 
 State Management Strategy
 
@@ -157,7 +161,7 @@ Top-level state should include:
 * `exploration` from `src/lib/explorerState.ts`: `selectedCountryCode`, `selectedGameId`, `activeRegionId`, `cameraMode`, and monotonic `selectionRevision`
 * `yearRange`
 * Earth rating range
-* `coverSize`
+* `coverSize`, initialized/restored through the versioned `ludic-atlas:earth-cover-size:v1` contract with a 72 px fallback
 * `viewMode`
 * `mainViewMode` (`hub`, `earth`, or `archive`)
 * auto rotate enabled or disabled
@@ -228,7 +232,8 @@ Current 3D globe behavior:
 * Selected-country placement is component-aware and deterministic: normalized Polygon / MultiPolygon geometry, mainland scoring, territory allocation, interior candidates, screen-space grid collision, and hysteresis keep anchors stable and inside safe geography. The visible cover band is normally 10–18 for a large country, 6–12 for medium/small countries, and 1–4 plus explicit expansion/overflow for tiny countries.
 * Game cover lookup is centralized in `src/lib/gameCover.ts`. Earth markers and country detail cards prefer real RAWG / local cover paths and fall back to `public/covers/fallback-game-cover.svg` when a cover field is missing or an image load fails.
 * Earth cover markers keep the cover image clear. They do not render title / year text on top of the image; full game metadata is available through marker tooltip and the right panel game detail layer.
-* Marker size responds to `coverSize`; view mode changes marker presentation while keeping the same local mock data source.
+* `GameEarthApp` owns one canonical cover height. `src/lib/coverSize.ts` constrains it to 48–112 px with a 72 px default and 4 px step, safely restores/persists `ludic-atlas:earth-cover-size:v1`, and leaves Hub/Chronicle and server rendering untouched. `CoverSizeSlider` exposes one native slider, decrease/increase buttons, the current px value, bound/ARIA/focus states, and a compact 390 px layout.
+* Cover dimensions update through Earth-scoped CSS variables without recreating retained marker buttons or images. Eight-pixel layout buckets, RAF coalescing, final commit, and one-marker hysteresis keep collision work low-frequency while truthful overflow and SafeViewport remain authoritative.
 * `GameTooltip` provides typed tooltip content for both the React component and escaped HTML tooltip markup for globe HTML markers.
 * `src/app/globals.css` scopes the Earth-only Archive Orbital Globe system under `.game-earth-shell.is-earth-mode`. Its semantic tokens are charcoal, ink green, oxblood, oxidized brass, aged gold, warm white, muted ink, and low-frequency desaturated spatial feedback. `GameGlobe` mounts an aria-hidden responsive `<picture>` only inside the active Globe workspace using the human-approved `public/images/earth/earth-atmosphere-archive-{1280,1672}.webp` peripheral material study. The picture sits above the opaque Globe backdrop but below the chart grid, WebGL canvas, markers, tools, and right panel; fixed intrinsic dimensions, a slightly left-biased cover crop, and a radial alpha mask preserve the central Globe and right-panel safe zones without making the image imperceptible. The underlying weak chart grid, material gradients, and optical vignette remain a complete CSS loading/failure fallback; Hub and Chronicle keep their own scoped appearance.
 * `tests/e2e/earth-phase6-validation.spec.ts` is the fresh-load and production-diagnostics acceptance entry for the four desktop viewports, 390×844 safety, responsive atmosphere delivery, Global/France/Poland frame sampling, network counts, canvas count, and browser diagnostics. Durable results live in `docs/EARTH_EXPLORER_VALIDATION.md`; measured FPS and long tasks are observations, not fixed product constants.
@@ -245,9 +250,9 @@ Real 3D Globe performance strategy:
 * The stable globe does not construct react-globe.gl polygon meshes. Country clicks use the globe surface latitude / longitude plus GeoJSON point containment, avoiding synchronous triangulation of 236 features and roughly 73,000 source vertices.
 * A muted mineral-green atmosphere, charcoal/ink-green low-shininess material, restrained persistent borders, and brass selected-country edge provide the archival observatory look; graticules and expensive post-processing remain disabled.
 * Globe HTML country labels are disabled by default. They appear only for hovered / selected mock countries and are hidden during drag / zoom.
-* Global / country marker mode shows lightweight aggregate dots with counts instead of cover cards. Game mode promotes only high-rated representative games to cover cards. After a country is selected, the globe shows only that country's top-rated current-year game markers, capped at 8, and hides other countries' games; one `+N` badge preserves the full eligible count.
+* Global marker mode uses bounded country aggregates. A selected country promotes deterministic current-filter cover markers through the geography/budget/collision pipeline: normally 10–18 direct covers for France-class large geography, 6–12 for Poland-class medium/small geography, and 1–4 plus explicit overflow for tiny geography. Belgium retains truthful aggregation and Japan allocates candidates across normalized island components.
 * `src/lib/globeMarkerModel.ts` total-orders and caps representative games independently of hover. Marker descriptors remain stable during pointer hover; images declare intrinsic size and async decoding.
-* Persistent and selected boundary `LineSegments` meshes are reused after geography load. Selection copies new BufferGeometry into the existing brass object instead of replacing custom-layer data, so nearby borders never flash or disappear. During drag, wheel, automatic rotation, and camera travel, HTML marker nodes stay mounted but become visually downgraded/hidden, avoiding restore-time DOM recreation and cover-image decoding.
+* Persistent and selected boundary `LineSegments` meshes are reused after geography load. Selection copies new BufferGeometry into the existing brass object instead of replacing custom-layer data, so nearby borders never flash or disappear. During drag, wheel, automatic rotation, camera-tool motion, and programmatic travel, the last accepted HTML marker layout stays mounted, visible, surface-anchored, and back-face occluded. The low-detail tier disables tooltip, shine, filter, shadow, animation, transition, pointer, and other nonessential work without hiding the marker layer; retained marker/image identities and loaded cover requests remain stable.
 * Zoom / reset / focus controls are the only camera tools that remain visible inside the globe stage. Region and key-country presets live in an on-demand location menu; year, cover, camera-mode, rotation, and marker controls live in a collapsed filter tray. This keeps the globe unobstructed while avoiding duplicate camera writes.
 * On desktop, `RightPanel` is off-canvas and inert until the directory is requested or a country is selected; it overlays the globe instead of reserving a permanent column. On mobile, `GameEarthApp` owns a three-state Earth-side sheet state (`collapsed`, `peek`, `expanded`). Country selection opens Peek, game detail opens Expanded, and globe drag / wheel interaction collapses the sheet. The collapsed state has an explicit 68px height, the globe workspace is clamped to `100vw`, and portrait camera compensation keeps the global sphere visible at 390px widths.
 * Surface clicks scan GeoJSON features with the existing date-line-aware point-in-polygon helper. Mapped countries update the atomic selection state and panel; other world countries receive the lightweight magenta boundary focus without opening unsupported detail content.
@@ -343,7 +348,7 @@ The current 3D globe panel also includes two local view controls:
 
 The normalized geography and marker contracts stay renderer-neutral for future reuse, but this does not mount or ship an Atlas renderer in the current product. Any future Atlas implementation must begin with the prerequisites and active-only lifecycle contract in `docs/DEFERRED_ATLAS_MAP_PLAN.md` rather than extending the placeholder into production ad hoc.
 
-Marker flow is `filtered games → stable ranking → normalized connected components → dynamic budget → deterministic component candidates → screen-space grid collision → visible markers + truthful overflow`. React receives only settled altitude/layout updates; motion keeps the last layout hidden or downgraded. Main-component scoring combines area, catalog-anchor containment and proximity, so overseas territories cannot expand a whole-country bbox and starve mainland candidates.
+Marker flow is `filtered games → stable ranking → normalized connected components → dynamic budget → deterministic component candidates → screen-space grid collision → visible markers + truthful overflow`. React receives only settled altitude/layout updates; motion keeps the last accepted layout visible with downgraded decoration while `react-globe.gl` continues projection and back-face occlusion. Main-component scoring combines area, catalog-anchor containment and proximity, so overseas territories cannot expand a whole-country bbox and starve mainland candidates.
 
 Documentation Update Rule
 

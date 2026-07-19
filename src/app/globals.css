@@ -10612,11 +10612,22 @@ body .chronicle-year-modal .archive-dossier-section div {
 .game-earth-shell.is-earth-mode .real-globe-stage.is-globe-low-detail .globe-country-marker {
   pointer-events: none !important;
   transition: none !important;
-  visibility: hidden !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-low-detail .globe-game-cover {
+  filter: none !important;
+  box-shadow: none !important;
+  transition: none !important;
 }
 
 .game-earth-shell.is-earth-mode .real-globe-stage.is-globe-interacting .game-marker-tooltip,
-.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-interacting .globe-game-cover-shine {
+.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-interacting .globe-game-tooltip,
+.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-interacting .globe-game-cover-shine,
+.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-low-detail .game-marker-tooltip,
+.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-low-detail .globe-game-tooltip,
+.game-earth-shell.is-earth-mode .real-globe-stage.is-globe-low-detail .globe-game-cover-shine {
   display: none;
 }
 
@@ -11292,7 +11303,8 @@ body .chronicle-year-modal .archive-dossier-section div {
   right: 22px;
   bottom: 22px;
   left: auto;
-  z-index: 35;
+  /* Keep the open controls above the renderer's HTML marker layer. */
+  z-index: 70;
   width: min(390px, calc(100vw - 44px));
   max-height: none;
   overflow: visible;
@@ -12076,10 +12088,17 @@ body .chronicle-year-modal .archive-dossier-section div {
 }
 
 .game-earth-shell.is-earth-mode .globe-game-marker.is-cover {
+  width: var(--earth-cover-width, 55px);
+  height: var(--earth-cover-height, 72px);
   border: 1px solid rgba(195, 164, 106, 0.5);
   border-radius: 2px;
   background: var(--earth-charcoal);
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.58), 0 0 0 1px rgba(238, 231, 216, 0.035);
+}
+
+.game-earth-shell.is-earth-mode .globe-game-marker.is-dot {
+  width: max(24px, var(--earth-aggregate-size, 20px));
+  height: max(24px, var(--earth-aggregate-size, 20px));
 }
 
 .game-earth-shell.is-earth-mode .globe-game-marker:hover,
@@ -12128,6 +12147,44 @@ body .chronicle-year-modal .archive-dossier-section div {
 .game-earth-shell.is-earth-mode .real-globe-stage.is-globe-low-detail .globe-game-marker {
   animation: none !important;
   transition: none !important;
+}
+
+.game-earth-shell.is-earth-mode .earth-cover-size-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-earth-shell.is-earth-mode .earth-cover-size-step {
+  display: inline-grid;
+  width: 32px;
+  min-width: 32px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--earth-rule);
+  border-radius: 3px;
+  color: var(--earth-warm-white);
+  background: rgba(8, 13, 10, 0.9);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.game-earth-shell.is-earth-mode .earth-cover-size-step:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+@media (max-width: 560px) {
+  .game-earth-shell.is-earth-mode .earth-cover-size-row {
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+  }
+
+  .game-earth-shell.is-earth-mode .earth-cover-size-step {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
 }
 
 .game-earth-shell.is-earth-mode .right-panel-shell.is-desktop-open,

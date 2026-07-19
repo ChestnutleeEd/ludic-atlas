@@ -22,6 +22,7 @@ type BottomControlsProps = {
   onYearRangeChange: (yearRange: YearRange) => void;
   onRatingRangeChange: (ratingRange: RatingRange) => void;
   onCoverSizeChange: (coverSize: number) => void;
+  onCoverSizeCommit: () => void;
   onCameraModeChange: (cameraMode: CameraMode) => void;
   onViewModeChange: (viewMode: ViewMode) => void;
   onRotateChange: (isEnabled: boolean) => void;
@@ -46,6 +47,7 @@ export function BottomControls({
   onYearRangeChange,
   onRatingRangeChange,
   onCoverSizeChange,
+  onCoverSizeCommit,
   onCameraModeChange,
   onViewModeChange,
   onRotateChange
@@ -60,7 +62,7 @@ export function BottomControls({
         </svg>
         <span>筛选与显示</span>
         <strong>{yearRange.min}–{yearRange.max}</strong>
-        <small>{activeRegionLabel} · {totalGames} 款</small>
+        <small>{activeRegionLabel} · {totalGames} 款 · 封面 {coverSize}px</small>
       </summary>
       <section
         aria-label="地球探索筛选与视图控制"
@@ -138,7 +140,11 @@ export function BottomControls({
         </div>
       </div>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
-        <CoverSizeSlider coverSize={coverSize} onChange={onCoverSizeChange} />
+        <CoverSizeSlider
+          coverSize={coverSize}
+          onChange={onCoverSizeChange}
+          onCommit={onCoverSizeCommit}
+        />
         <label className="atlas-toggle-control">
           <span>
             自动旋转

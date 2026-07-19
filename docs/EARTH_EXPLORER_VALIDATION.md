@@ -2,9 +2,9 @@
 
 ## Scope and environment
 
-This record closes the comprehensive validation stage of OpenSpec Change `redesign-earth-explorer`. It covers the production 3D Orbital Globe only. The deferred 2D/2.5D Atlas renderer and any user-facing projection switch remain outside this acceptance and are preserved in `docs/DEFERRED_ATLAS_MAP_PLAN.md`.
+This record closes the comprehensive validation stage of OpenSpec Change `redesign-earth-explorer` and records the accepted marker-continuity / cover-size follow-up from `improve-earth-marker-scaling-and-persistence`. It covers the production 3D Orbital Globe only. The deferred 2D/2.5D Atlas renderer and any user-facing projection switch remain outside this acceptance and are preserved in `docs/DEFERRED_ATLAS_MAP_PLAN.md`.
 
-Validation date: 2026-07-19, on branch `feat/redesign-earth-explorer`, using local Chromium on macOS. Production measurements used an optimized `next build` followed by `next start`; they are machine- and headless-browser-specific observations, not hardware-independent performance guarantees.
+Validation date: 2026-07-19, with the final follow-up on branch `feat/improve-earth-marker-scaling-and-persistence`, using local Chromium on macOS. Measurements are machine- and headless-browser-specific observations, not hardware-independent performance guarantees.
 
 ## Functional and viewport acceptance
 
@@ -21,30 +21,32 @@ At 1440×900 and the default cover size:
 
 | Geography | Visible result | Acceptance evidence |
 | --- | ---: | --- |
-| France | 21 direct cover markers, `+14` overflow | Mainland-priority MultiPolygon placement; 18–24 focused band; Country LOD |
-| Poland | 13 direct cover markers, `+1` overflow | Deterministic compact layout; 12–14 focused band; Country LOD |
+| France | 14 direct cover markers, `+21` overflow with the tray closed | Mainland-priority MultiPolygon placement; accepted 10–18 band at 72 px; repeated entry keeps identical identities/coordinates |
+| Poland | 8 direct cover markers, `+6` overflow | Deterministic compact layout; accepted 6–12 band at 72 px; Country LOD |
 | Belgium | 1 collapsed aggregate, bounded expansion to at most 4 | Tiny-country strategy and explicit `aria-expanded` path |
-| Japan | 10–24 depending on collision-free space | Multi-island component allocation and Country LOD |
+| Japan | 5–24 depending on collision-free space | Multi-island component allocation and Country LOD remain component-aware |
 
 Opening and switching game detail preserved every unrelated marker/image DOM identity and caused no additional requests for already loaded covers across five selections. Year, rating, cover size, and marker view changes retained authoritative selection and truthful filtered totals/overflow.
 
+The canonical cover height is 48–112 px with a 72 px default and 4 px step. The filter tray provides a native slider, decrease/increase buttons, and current px display, and safely restores `ludic-atlas:earth-cover-size:v1`. With the tray open, the final France size matrix was 20 markers / `+15` at 48 px, 12 / `+23` at 72 px, and 7 / `+28` at 112 px; every result equals the 35-game filtered total, remains nonzero, and reflects the smaller open-tray SafeViewport. Drag, wheel, automatic rotation, camera tools, and programmatic flight retain the last accepted layout. Low-detail styling removes only nonessential decoration/pointer work, retained button/image nodes stay identical, and 19 cover requests remain 19 unique URLs.
+
 ## Production frame and network observations
 
-Three successful serial Phase 6 production runs produced the following range. The last run is the final post-documentation sample.
+The final serialized full-project browser run produced the following marker-continuity sample. It is recorded as an observation rather than a universal performance constant.
 
 | Context | FPS | p95 frame | Maximum frame | Long tasks |
 | --- | ---: | ---: | ---: | ---: |
-| Global | 60.1–60.9 | 17.0–17.7 ms | 17.2–33.9 ms | 0 |
-| France | 53.2–58.5 | 17.5–33.3 ms | 49.9–99.8 ms | 1–2 |
-| Poland | 59.9–60.6 | 17.2–17.6 ms | 17.4–33.3 ms | 0 |
+| Global | 50.9 | 33.4 ms | 33.7 ms | 0 |
+| France | 41.8 | 33.4 ms | 33.8 ms | 0 |
+| Poland | 42.3 | 33.4 ms | 34.0 ms | 0 |
 
-France still produces a small, variable headless long-task tail while focused Country LOD and 21 covers settle. It is substantially bounded and did not cause stale selection, marker flashing, second canvas creation, console errors, or failed interaction assertions. The result is recorded rather than normalized away.
+An isolated ownership/performance check also passed the explicit maximum-long-task gate with Global/France/Poland continuous markers, one canvas, one controller, two OrbitControls listeners, one ResizeObserver, no retained-cover re-request, and no long task above 200 ms. Multi-worker performance sampling was intentionally not treated as a product measurement because parallel Chromium workers contend for the same machine resources.
 
 The final production sample observed:
 
 - one responsive Earth atmosphere WebP request;
 - 22 lightweight aggregate Marker DOM nodes and zero cover images at Global;
-- 21 cover Marker/image nodes for France and 13 for Poland;
+- 14 cover Marker/image nodes for France and 8 for Poland at the closed-tray 72 px default;
 - 19 cover requests across Global → France → Poland, with already cached images reused;
 - four geographic requests: Global, Europe Region, France Country, and Poland Country;
 - geography repository diagnostics of four fetches and four parses for those four unique resources;
@@ -64,17 +66,17 @@ The earlier ReadPixels GPU-stall message was not reproduced in the current produ
 
 | Command or suite | Result |
 | --- | --- |
-| `openspec validate redesign-earth-explorer --strict` | passed |
+| `openspec validate improve-earth-marker-scaling-and-persistence --strict` | passed |
 | `npm run lint` | passed |
 | `npm run typecheck` | passed |
-| `npm test` | 42/42 passed |
-| Phase 6 production Playwright | 6/6 passed |
-| Complete Earth Playwright | 56/56 passed |
-| Complete project Playwright | 73/73 passed |
+| `npm test` | 56/56 passed |
+| Marker continuity / size audit | passed, including 48/72/112, overflow, repeated France layout, safe-space selection, identity, request, ownership, and diagnostics |
+| Complete Earth Playwright | 63/63 passed, 0 skipped, serialized |
+| Complete project Playwright | 80/80 passed, 0 skipped, serialized |
 | `npm run build` | passed; static `/` generated |
 
 One attempted full-suite rerun failed uniformly with `ERR_CONNECTION_REFUSED` after the auto-started development server exited. A stable manual development server was started and the identical Earth suite then passed 56/56; this was classified as test infrastructure failure, not a product defect. A production full-Earth attempt passed 54 tests before two environment-specific failures: one asynchronous fresh-load assertion that was corrected to wait for real LOD readiness, and the deliberately development-only WebGL injection hook. Production Phase 6 was then rerun successfully.
 
 ## Human acceptance and finalization boundary
 
-The user explicitly accepted the adopted Phase 5 Globe atmosphere/effect before this Phase 6 apply turn and requested completion of the full validation flow. That acceptance satisfies task 6.13 for the 3D Orbital Globe and approved optional assets. This change is ready for a later OpenSpec sync/archive and Git submission stage, but no sync, archive, commit, push, merge, reset, revert, or rebase was performed in this validation turn.
+The user explicitly accepted the adopted Phase 5 Globe atmosphere/effect and the final marker-continuity delivery. The accepted marker review covers the default 72 px size, the full 48–112 px control, persistent covers during rotation/zoom/automatic rotation/programmatic flight, France/Poland/Belgium/Japan layout, persistence, interaction smoothness, focus/reduced motion, occlusion, and 390×844 usability. Atlas remains excluded from the accepted product surface.

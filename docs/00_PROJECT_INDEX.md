@@ -48,7 +48,7 @@ If the task involves product scope, read:
 | `docs/05_TASK_LOG.md`      | Iteration log and major change history             |
 | `docs/06_CODEX_RULES.md`   | Detailed execution rules for Codex                 |
 | `docs/DEFERRED_ATLAS_MAP_PLAN.md` | Complete deferred 2D/2.5D Atlas product, architecture, requirements, tasks, and resumption handoff |
-| `docs/EARTH_EXPLORER_VALIDATION.md` | Phase 6 functional, viewport, production performance, accessibility, lifecycle, and verification evidence |
+| `docs/EARTH_EXPLORER_VALIDATION.md` | Earth functional, viewport, marker-continuity, cover-size, production performance, accessibility, lifecycle, and verification evidence |
 | `docs/agents/`             | Engineering-skill issue tracker, triage, and domain-doc configuration |
 | `docs/releases/`           | Versioned GitHub release notes and release documentation |
 | `docs/assets/preview.png`  | Legacy README project preview image for GitHub     |
@@ -232,13 +232,16 @@ http://localhost:3000
 | Earth safe viewport calculation | `src/lib/safeViewport.ts`              |
 | Layout-owned safe viewport measurement | `src/components/earth/useEarthSafeViewport.ts` |
 | Stable marker selection model | `src/lib/globeMarkerModel.ts`              |
+| Cover-size pure contract | `src/lib/coverSize.ts` |
+| Marker identity and interaction policy contract | `src/lib/markerContracts.ts` |
+| Marker continuity and cover-size browser suite | `tests/e2e/earth-marker-phase1.spec.ts` |
 | Earth browser regression suite | `tests/e2e/earth-explorer.spec.ts`       |
 | Globe stability browser suite | `tests/e2e/globe-stability.spec.ts`       |
 | Phase 3 marker/LOD browser suite | `tests/e2e/marker-lod.spec.ts`         |
 | Phase 4 Globe visual/interaction suite | `tests/e2e/globe-visual-phase4.spec.ts` |
 | Phase 5 atmosphere delivery/fallback suite | `tests/e2e/earth-atmosphere-phase5.spec.ts` |
 | Phase 6 comprehensive validation suite | `tests/e2e/earth-phase6-validation.spec.ts` |
-| Phase 6 validation and performance record | `docs/EARTH_EXPLORER_VALIDATION.md` |
+| Earth validation, marker-continuity, and performance record | `docs/EARTH_EXPLORER_VALIDATION.md` |
 | Normalized geography model | `src/lib/geography.ts`                    |
 | Geography repository/cache | `src/lib/geographyRepository.ts`          |
 | Marker budget/collision engine | `src/lib/markerLayout.ts`              |

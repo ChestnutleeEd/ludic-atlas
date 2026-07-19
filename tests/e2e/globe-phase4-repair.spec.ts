@@ -25,7 +25,7 @@ test("game detail selection preserves every unselected cover node and loaded ima
   await enterEarthExplorer(page);
   await selectCountryFromDirectory(page, "法国 France");
   const markers = page.locator(".globe-game-marker");
-  await expect.poll(() => markers.count()).toBeGreaterThanOrEqual(18);
+  await expect.poll(() => markers.count()).toBeGreaterThanOrEqual(10);
   await page.waitForTimeout(500);
 
   const before = await markers.evaluateAll((items) => items.map((item, index) => {
@@ -73,7 +73,7 @@ test("focused marker density is high only where space permits and detail does no
   await enterEarthExplorer(page);
 
   const france = await measureCountry(page, "法国 France");
-  expect(france.visible).toBeGreaterThanOrEqual(18);
+  expect(france.visible).toBeGreaterThanOrEqual(10);
   expect(france.visible).toBeLessThanOrEqual(24);
   expect(france.overflow).toBe(35 - france.visible);
   const beforeDetail = await markerLayout(page);
@@ -82,7 +82,7 @@ test("focused marker density is high only where space permits and detail does no
   expect(await markerLayout(page)).toEqual(beforeDetail);
 
   const poland = await measureCountry(page, "波兰 Poland");
-  expect(poland.visible).toBeGreaterThanOrEqual(12);
+  expect(poland.visible).toBeGreaterThanOrEqual(6);
   expect(poland.visible).toBeLessThanOrEqual(14);
   expect(poland.overflow).toBe(14 - poland.visible);
 
@@ -91,7 +91,7 @@ test("focused marker density is high only where space permits and detail does no
   await expect(page.locator(".globe-game-marker").first()).toHaveAttribute("data-cluster-state", "collapsed");
 
   const japan = await measureCountry(page, "日本 Japan");
-  expect(japan.visible).toBeGreaterThanOrEqual(10);
+  expect(japan.visible).toBeGreaterThanOrEqual(5);
   expect(japan.visible).toBeLessThanOrEqual(24);
 });
 

@@ -23,7 +23,9 @@ import {
   buildCountryMarkers,
   buildGameMarkers,
   createGameMarkerElement,
+  getGlobeGameMarkerIdentity,
   updateGameMarkerSelection,
+  type GlobeGameMarker,
   type GlobeHtmlMarker
 } from "@/components/globe/GameMarkers";
 import {
@@ -35,6 +37,11 @@ import {
 } from "@/lib/geo";
 import { geographyRepository, type GeographyResource } from "@/lib/geographyRepository";
 import { applyScreenSpaceCollision } from "@/lib/markerLayout";
+import {
+  clampAggregateMarkerDiameter,
+  reconcileMarkerDescriptors
+} from "@/lib/markerContracts";
+import { getCoverSizeLayoutBucket } from "@/lib/coverSize";
 import {
   createGlobeCameraController,
   getCameraDuration,
@@ -105,6 +112,7 @@ type GameGlobeProps = {
   selectedGameId: string | null;
   viewMode: ViewMode;
   coverSize: number;
+  coverSizeCommitRevision: number;
   onClearCountry: () => void;
   onSelectCountry: (countryCode: string) => void;
   onSelectGame: (gameId: string) => void;
@@ -128,6 +136,7 @@ export function GameGlobe({
   selectedGameId,
   viewMode,
   coverSize,
+  coverSizeCommitRevision,
   onClearCountry,
   onSelectCountry,
   onSelectGame,
@@ -167,6 +176,8 @@ export function GameGlobe({
   const [controlListenerCount, setControlListenerCount] = useState(0);
   const [expandedTinyCountryCode, setExpandedTinyCountryCode] = useState<string | null>(null);
   const [settledAltitude, setSettledAltitude] = useState(initialViewState.altitude);
+  const [layoutCoverSize, setLayoutCoverSize] = useState(coverSize);
+  const liveCoverSizeRef = useRef(coverSize);
   const activeRegionGeography = regionGeography?.key === activeRegionId ? regionGeography : null;
   const activeCountryGeography = countryGeography?.key === selectedCountry?.code ? countryGeography : null;
   const cameraModeConfig = CAMERA_MODE_CONFIGS[cameraMode];
@@ -203,6 +214,14 @@ export function GameGlobe({
   useEffect(() => {
     latestIntentRef.current = navigationIntent;
   }, [navigationIntent]);
+  const coverSizeLayoutBucket = getCoverSizeLayoutBucket(coverSize);
+  useEffect(() => {
+    liveCoverSizeRef.current = coverSize;
+  }, [coverSize]);
+  useEffect(() => {
+    const frameId = requestAnimationFrame(() => setLayoutCoverSize(liveCoverSizeRef.current));
+    return () => cancelAnimationFrame(frameId);
+  }, [coverSizeCommitRevision, coverSizeLayoutBucket]);
   const getCurrentPointOfView = useCallback((): GlobePointOfView => {
     const currentPointOfView = globeRef.current?.pointOfView();
     const fallbackPointOfView = lastCameraPointOfViewRef.current;
@@ -615,11 +634,11 @@ export function GameGlobe({
         normalizedFeatureByCode,
         games,
         altitude: settledAltitude,
-        coverSize,
+        coverSize: layoutCoverSize,
         performanceTier: getMarkerPerformanceTier(),
         safeViewport,
-        // Keep the last settled layout model while the camera moves; CSS hides the
-        // lightweight HTML layer until the controller publishes a settled altitude.
+        // Keep a settled candidate model; the published HTML layout remains mounted
+        // while the camera moves and is replaced only after the next settled pass.
         settled: true,
         expandedTinyCountryCode,
         selectedCountryCode,
@@ -634,7 +653,7 @@ export function GameGlobe({
       selectedCountryCode,
       viewMode,
       settledAltitude,
-      coverSize,
+      layoutCoverSize,
       safeViewport,
       expandedTinyCountryCode
     ]
@@ -653,71 +672,105 @@ export function GameGlobe({
     },
     [countries, hoveredCountryCode, isGlobeInteracting, selectedCountryCode]
   );
-  const [collidedGameMarkers, setCollidedGameMarkers] = useState<typeof gameMarkers>([]);
+  const [publishedGameMarkers, setPublishedGameMarkers] = useState<typeof gameMarkers>(gameMarkers);
+  const publishedContextRef = useRef(
+    `${activeRegionId}:${selectedCountryCode ?? "global"}:${viewMode}:${expandedTinyCountryCode ?? "collapsed"}`
+  );
+  const lastCollisionCommitRevisionRef = useRef(coverSizeCommitRevision);
   useEffect(() => {
     if (isCameraAnimating || isGlobeInteracting) return;
-    if (!selectedCountryCode && activeRegionId === "global") return;
-    const globe = globeRef.current;
-    if (!globe) return;
-    const width = Math.max(32, Math.round(coverSize * 0.82));
-    const height = Math.max(42, Math.round(coverSize * 1.08));
-    const collision = applyScreenSpaceCollision({
-      candidates: gameMarkers.flatMap((marker) => {
-        const point = globe.getScreenCoords(marker.lat, marker.lng, 0.03);
-        return point ? [{ height, id: marker.game.id, payload: marker, width, x: point.x, y: point.y }] : [];
-      }),
-      gap: selectedCountryCode ? 2 : 6,
-      safeViewport
-    });
-    const lastByCountry = new Map<string, number>();
-    const visibleByCountry = new Map<string, number>();
-    collision.visible.forEach((candidate, index) => lastByCountry.set(candidate.payload.game.countryCode, index));
-    collision.visible.forEach((candidate) => visibleByCountry.set(
-      candidate.payload.game.countryCode,
-      (visibleByCountry.get(candidate.payload.game.countryCode) ?? 0) + 1
-    ));
-    setCollidedGameMarkers(collision.visible.map((candidate, index) => index === lastByCountry.get(candidate.payload.game.countryCode)
-      ? {
-          ...candidate.payload,
-          overflowCount: Math.max(
-            0,
-            candidate.payload.countryGameCount -
-              (visibleByCountry.get(candidate.payload.game.countryCode) ?? 0)
-          )
+    const frameId = requestAnimationFrame(() => {
+      const nextContext = `${activeRegionId}:${selectedCountryCode ?? "global"}:${viewMode}:${expandedTinyCountryCode ?? "collapsed"}`;
+      let nextMarkers = gameMarkers;
+      if (selectedCountryCode || activeRegionId !== "global") {
+        const globe = globeRef.current;
+        if (!globe) return;
+        const height = layoutCoverSize;
+        const width = Math.round(layoutCoverSize * 0.76);
+        const collision = applyScreenSpaceCollision({
+          candidates: gameMarkers.flatMap((marker) => {
+            const point = globe.getScreenCoords(marker.lat, marker.lng, 0.03);
+            return point ? [{ height, id: marker.game.id, payload: marker, width, x: point.x, y: point.y }] : [];
+          }),
+          gap: selectedCountryCode ? 2 : 6,
+          safeViewport
+        });
+        const lastByCountry = new Map<string, number>();
+        const visibleByCountry = new Map<string, number>();
+        collision.visible.forEach((candidate, index) => lastByCountry.set(candidate.payload.game.countryCode, index));
+        collision.visible.forEach((candidate) => visibleByCountry.set(
+          candidate.payload.game.countryCode,
+          (visibleByCountry.get(candidate.payload.game.countryCode) ?? 0) + 1
+        ));
+        nextMarkers = collision.visible.map((candidate, index) => index === lastByCountry.get(candidate.payload.game.countryCode)
+          ? {
+              ...candidate.payload,
+              overflowCount: Math.max(
+                0,
+                candidate.payload.countryGameCount -
+                  (visibleByCountry.get(candidate.payload.game.countryCode) ?? 0)
+              )
+            }
+          : candidate.payload);
+        if (nextMarkers.length === 0 && gameMarkers.length > 0) {
+          nextMarkers = [{
+            ...gameMarkers[0],
+            overflowCount: Math.max(0, gameMarkers[0].countryGameCount - 1)
+          }];
         }
-      : candidate.payload));
-  }, [activeRegionId, coverSize, gameMarkers, isCameraAnimating, isGlobeInteracting, safeViewport, selectedCountryCode]);
-  const visibleGameMarkers = !selectedCountryCode && activeRegionId === "global"
-    ? gameMarkers
-    : collidedGameMarkers;
+      }
+      const isCommitPass = coverSizeCommitRevision !== lastCollisionCommitRevisionRef.current;
+      if (
+        !isCommitPass &&
+        nextContext === publishedContextRef.current &&
+        publishedGameMarkers.length > 0 &&
+        Math.abs(nextMarkers.length - publishedGameMarkers.length) <= 1
+      ) {
+        return;
+      }
+      lastCollisionCommitRevisionRef.current = coverSizeCommitRevision;
+      publishedContextRef.current = nextContext;
+      setPublishedGameMarkers(reconcileMarkerDescriptors(
+        markerDescriptorRegistryRef.current,
+        nextMarkers,
+        getGlobeGameMarkerIdentity
+      ));
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [
+    activeRegionId,
+    coverSizeCommitRevision,
+    expandedTinyCountryCode,
+    gameMarkers,
+    isCameraAnimating,
+    isGlobeInteracting,
+    layoutCoverSize,
+    publishedGameMarkers,
+    safeViewport,
+    selectedCountryCode,
+    viewMode
+  ]);
+  const markerDescriptorRegistryRef = useRef(new Map<string, GlobeGameMarker>());
+  const visibleGameMarkers = publishedGameMarkers;
+  useEffect(() => () => markerDescriptorRegistryRef.current.clear(), []);
   useEffect(() => {
     if (!containerRef.current) return;
-    updateGameMarkerSelection(containerRef.current, selectedGameId);
+    updateGameMarkerSelection(containerRef.current, selectedGameId, visibleGameMarkers);
   }, [selectedGameId, visibleGameMarkers]);
   const globeHtmlMarkers = useMemo<GlobeHtmlMarker[]>(
     () => [...countryMarkers, ...visibleGameMarkers],
     [countryMarkers, visibleGameMarkers]
   );
   const createMarkerElement = useMemo(
-    () =>
-      createGameMarkerElement({
-        coverSize: Math.round(
-          coverSize * (activeRegionId === "global" ? 0.72 : 0.92)
-        ),
-        loadCoverImages: true,
-        renderCoverMarkers: true,
-        onHoverCountry: handleHoverCountry,
-        onSelectCountry: handleSelectGlobeCountry,
-        onSelectGame
-        ,onToggleTinyCluster: (countryCode) => setExpandedTinyCountryCode((current) => current === countryCode ? null : countryCode)
-      }),
-    [
-      activeRegionId,
-      coverSize,
-      handleHoverCountry,
-      handleSelectGlobeCountry,
-      onSelectGame
-    ]
+    () => createGameMarkerElement({
+      loadCoverImages: true,
+      renderCoverMarkers: true,
+      onHoverCountry: handleHoverCountry,
+      onSelectCountry: handleSelectGlobeCountry,
+      onSelectGame,
+      onToggleTinyCluster: (countryCode) => setExpandedTinyCountryCode((current) => current === countryCode ? null : countryCode)
+    }),
+    [handleHoverCountry, handleSelectGlobeCountry, onSelectGame]
   );
   const rendererConfig = useMemo(
     () => ({
@@ -883,6 +936,11 @@ export function GameGlobe({
           data-safe-viewport-right={safeViewport.right.toFixed(2)}
           data-safe-viewport-top={safeViewport.top.toFixed(2)}
           ref={containerRef}
+          style={{
+            "--earth-aggregate-size": `${clampAggregateMarkerDiameter(coverSize)}px`,
+            "--earth-cover-height": `${coverSize}px`,
+            "--earth-cover-width": `${Math.round(coverSize * 0.76)}px`
+          } as React.CSSProperties}
         >
           <div className="earth-globe-orbit-halo pointer-events-none absolute left-1/2 top-1/2 h-[min(94vw,920px)] w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           <div className="earth-camera-readout" aria-live="polite">

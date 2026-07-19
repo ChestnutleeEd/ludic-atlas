@@ -33,7 +33,7 @@ test("Poland layout is deterministic, filters remain selected, and images follow
   const before = await markerCoordinates(page);
   expect(before.length).toBeGreaterThanOrEqual(6);
   await page.locator(".atlas-bottom-controls > summary").click();
-  const cover = page.getByRole("slider", { name: "marker 大小" });
+  const cover = page.getByRole("slider", { name: "封面尺寸" });
   await cover.fill("84");
   await page.waitForTimeout(100);
   await expect(page.locator(".real-globe-stage")).toHaveAttribute("data-camera-travelling", "false", { timeout: 5_000 });
@@ -47,17 +47,19 @@ test("Poland layout is deterministic, filters remain selected, and images follow
   expect(await waitForStableMarkerCoordinates(page)).toEqual(layoutAt84);
 });
 
-test("tiny country exposes a bounded explicit cluster expansion", async ({ page }) => {
+test("tiny country keeps a truthful bounded aggregate at the 72px default", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await enterEarthExplorer(page);
-  await selectCountry(page, "比利时 Belgium");
+  await selectCountryFromDirectory(page, "比利时 Belgium");
   const markers = page.locator(".globe-game-marker");
   await expect(markers).toHaveCount(1);
   await expect(markers.first()).toHaveAttribute("data-cluster-state", "collapsed");
+  await expect(markers.first()).toHaveAttribute("data-overflow-count", "4");
   await markers.first().click();
-  await expect.poll(() => visibleMarkerCount(page)).toBeGreaterThan(1);
-  expect(await visibleMarkerCount(page)).toBeLessThanOrEqual(4);
+  await expect(markers).toHaveCount(1);
   await expect(markers.first()).toHaveAttribute("aria-expanded", "true");
+  await expect(markers.first()).toHaveAttribute("data-overflow-count", "4");
+  await expect(markers.first()).toHaveClass(/is-cover/);
 });
 
 test("Japan uses country LOD, rapid France to Poland rejects stale detail, and failed detail keeps lower LOD", async ({ page }) => {

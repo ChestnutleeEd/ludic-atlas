@@ -27,6 +27,12 @@ import {
   initialExplorationState
 } from "@/lib/explorerState";
 import {
+  COVER_SIZE_DEFAULT,
+  normalizeCoverSize,
+  readStoredCoverSize,
+  writeStoredCoverSize
+} from "@/lib/coverSize";
+import {
   filterCountriesByRegion,
   filterGamesByRegion,
   getRegionLabel,
@@ -91,7 +97,8 @@ export function GameEarthApp() {
     max: totalStats.maxReleaseYear
   });
   const [ratingRange, setRatingRange] = useState<RatingRange>({ min: 0, max: 10 });
-  const [coverSize, setCoverSize] = useState(56);
+  const [coverSize, setCoverSize] = useState(COVER_SIZE_DEFAULT);
+  const [coverSizeCommitRevision, setCoverSizeCommitRevision] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>("countries");
   const [mainViewMode, setMainViewMode] = useState<MainViewMode>("hub");
   const [isRotateEnabled, setIsRotateEnabled] = useState(false);
@@ -105,6 +112,31 @@ export function GameEarthApp() {
     mobileSheetState,
     workspaceRef: earthWorkspaceRef
   });
+
+  useEffect(() => {
+    const frameId = requestAnimationFrame(() => {
+      try {
+        setCoverSize(readStoredCoverSize(window.localStorage));
+      } catch {
+        setCoverSize(COVER_SIZE_DEFAULT);
+      }
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, []);
+
+  const handleCoverSizeChange = useCallback((value: number) => {
+    const normalized = normalizeCoverSize(value);
+    setCoverSize(normalized);
+    try {
+      writeStoredCoverSize(window.localStorage, normalized);
+    } catch {
+      // Browser privacy policies may make the storage object itself unavailable.
+    }
+  }, []);
+
+  const handleCoverSizeCommit = useCallback(() => {
+    setCoverSizeCommitRevision((revision) => revision + 1);
+  }, []);
 
   const selectedCountry = selectedCountryCode
     ? gameCatalog.countryByCode.get(selectedCountryCode) ?? null
@@ -398,6 +430,7 @@ export function GameEarthApp() {
                   selectedGameId={selectedGameId}
                   viewMode={viewMode}
                   coverSize={coverSize}
+                  coverSizeCommitRevision={coverSizeCommitRevision}
                   onClearCountry={handleClearCountry}
                   onSelectCountry={handleSelectCountry}
                   onSelectGame={handleSelectGameFromMap}
@@ -452,7 +485,8 @@ export function GameEarthApp() {
             totalGames={visibleGames.length}
             onYearRangeChange={handleYearRangeChange}
             onRatingRangeChange={handleRatingRangeChange}
-            onCoverSizeChange={setCoverSize}
+            onCoverSizeChange={handleCoverSizeChange}
+            onCoverSizeCommit={handleCoverSizeCommit}
             onCameraModeChange={(nextCameraMode) =>
               dispatchExploration({ type: "setCameraMode", cameraMode: nextCameraMode })
             }

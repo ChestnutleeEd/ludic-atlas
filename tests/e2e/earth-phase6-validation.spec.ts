@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "playwright/test";
+import { expect, test, type Locator, type Page } from "playwright/test";
 import { collectPageErrors, enterEarthExplorer } from "./earth-fixture";
 
 const desktopViewports = [
@@ -124,9 +124,14 @@ test("Phase 6 production diagnostics report Global, France, and Poland delivery"
     markerCount: element.querySelectorAll(".globe-country-marker, .globe-game-marker").length,
     markerCandidateCount: Number(element.dataset.markerCandidateCount)
   }));
-  const france = await selectAndMeasureCountry(page, "法国 France", 18);
+  await expect(page.locator(".game-earth-shell")).toHaveAttribute("data-earth-cover-size", "72");
+  const france = await selectAndMeasureCountry(page, "法国 France");
+  const franceRepeat = await selectAndMeasureCountry(page, "法国 France");
+  const franceAt48 = await setCoverSizeAndMeasure(page, 48);
+  const franceAt112 = await setCoverSizeAndMeasure(page, 112);
+  const franceAt72 = await setCoverSizeAndMeasure(page, 72);
   const franceFrames = await sampleFrameDelivery(page);
-  const poland = await selectAndMeasureCountry(page, "波兰 Poland", 12);
+  const poland = await selectAndMeasureCountry(page, "波兰 Poland");
   const polandFrames = await sampleFrameDelivery(page);
   const diagnostics = {
     atmosphereRequestCount: atmosphereRequests.length,
@@ -134,6 +139,10 @@ test("Phase 6 production diagnostics report Global, France, and Poland delivery"
     consoleErrorCount: consoleErrors.length,
     coverRequestCount: coverRequests.length,
     france,
+    franceAt48,
+    franceAt72,
+    franceAt112,
+    franceRepeat,
     frameDelivery: { global, france: franceFrames, poland: polandFrames },
     global: globalDelivery,
     geographyFetchCount: Number(await stage.getAttribute("data-geography-fetch-count")),
@@ -151,16 +160,30 @@ test("Phase 6 production diagnostics report Global, France, and Poland delivery"
   expect(diagnostics.consoleErrorCount).toBe(0);
   expect(diagnostics.hydrationWarningCount).toBe(0);
   expect(diagnostics.atmosphereRequestCount).toBe(1);
-  expect(france.markerCount).toBeGreaterThanOrEqual(18);
-  expect(france.markerCount).toBeLessThanOrEqual(24);
-  expect(poland.markerCount).toBeGreaterThanOrEqual(12);
-  expect(poland.markerCount).toBeLessThanOrEqual(14);
+  // The former 18-marker floor was captured with the historical 56 px default.
+  // The canonical 72 px cards intentionally admit fewer collision-safe covers.
+  expect(france.markerCount).toBeGreaterThanOrEqual(10);
+  expect(france.markerCount).toBeLessThanOrEqual(18);
+  expect(france.overflow).toBe(35 - france.markerCount);
+  expect(france.imageCount).toBe(france.markerCount);
+  expect(franceRepeat).toEqual(france);
+  expect(franceAt48.markerCount).toBeGreaterThanOrEqual(france.markerCount);
+  expect(franceAt48.overflow).toBe(35 - franceAt48.markerCount);
+  expect(franceAt112.markerCount).toBeGreaterThan(0);
+  expect(franceAt112.markerCount).toBeLessThanOrEqual(france.markerCount);
+  expect(franceAt112.overflow).toBe(35 - franceAt112.markerCount);
+  expect(franceAt72.markerCount).toBeGreaterThanOrEqual(10);
+  expect(franceAt72.markerCount).toBeLessThanOrEqual(18);
+  expect(franceAt72.overflow).toBe(35 - franceAt72.markerCount);
+  expect(poland.markerCount).toBeGreaterThanOrEqual(6);
+  expect(poland.markerCount).toBeLessThanOrEqual(12);
+  expect(poland.overflow).toBe(14 - poland.markerCount);
   expect(geographyRequests.some((url) => url.endsWith("/global.geojson"))).toBe(true);
   expect(geographyRequests.some((url) => url.endsWith("/countries/FR.geojson"))).toBe(true);
   expect(geographyRequests.some((url) => url.endsWith("/countries/PL.geojson"))).toBe(true);
 });
 
-async function selectAndMeasureCountry(page: Page, label: string, minimumMarkers: number) {
+async function selectAndMeasureCountry(page: Page, label: string) {
   if (await page.getByRole("dialog", { name: /游戏详情/ }).count()) await page.keyboard.press("Escape");
   if (await page.locator(".game-earth-shell").getAttribute("data-earth-country")) {
     await page.getByRole("button", { name: "重置为全球视角" }).click();
@@ -172,10 +195,40 @@ async function selectAndMeasureCountry(page: Page, label: string, minimumMarkers
   const stage = page.locator(".real-globe-stage");
   await expect(stage).toHaveAttribute("data-camera-travelling", "false", { timeout: 6_000 });
   await expect(stage).toHaveAttribute("data-selected-geography-lod", "country");
-  await expect.poll(() => page.locator(".globe-game-marker").count()).toBeGreaterThanOrEqual(minimumMarkers);
-  await page.waitForTimeout(350);
+  return waitForStableCountryMarkers(page);
+}
+
+async function setCoverSizeAndMeasure(page: Page, size: number) {
+  const controls = page.locator(".atlas-bottom-controls");
+  if (await controls.getAttribute("open") === null) await controls.locator(":scope > summary").click();
+  const slider = page.getByRole("slider", { name: "封面尺寸" });
+  await slider.fill(String(size));
+  await slider.blur();
+  await expect(page.locator(".game-earth-shell")).toHaveAttribute("data-earth-cover-size", String(size));
+  return waitForStableCountryMarkers(page);
+}
+
+async function waitForStableCountryMarkers(page: Page) {
+  const stage = page.locator(".real-globe-stage");
+  let previous = "";
+  let stableSamples = 0;
+  await expect.poll(async () => {
+    const current = JSON.stringify(await readCountryMarkerMetrics(stage));
+    stableSamples = current !== previous ? 0 : stableSamples + 1;
+    previous = current;
+    return JSON.parse(current).markerCount > 0 && stableSamples >= 2;
+  }, { intervals: [150, 200, 250, 350, 500, 700] }).toBe(true);
+  return readCountryMarkerMetrics(stage);
+}
+
+async function readCountryMarkerMetrics(stage: Locator) {
   return stage.evaluate((element) => ({
     imageCount: element.querySelectorAll(".globe-game-cover-image").length,
+    layout: [...element.querySelectorAll<HTMLElement>(".globe-game-marker")].map((item) => ({
+      id: item.dataset.markerLayoutId,
+      lat: item.dataset.markerLat,
+      lng: item.dataset.markerLng
+    })),
     markerCount: element.querySelectorAll(".globe-game-marker").length,
     overflow: Math.max(0, ...[...element.querySelectorAll<HTMLElement>(".globe-game-marker")].map((item) => Number(item.dataset.overflowCount)))
   }));
